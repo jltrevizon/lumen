@@ -1,0 +1,3752 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CarFlex API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "servers": [{
+        "url": "https://api.gestorcampas.grupomobius.com/api",
+        "variables": {}
+    }],
+    "paths": {
+        "/users": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Add a new user",
+                "operationId": "Addanewuser",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddanewuserRequest"
+                            },
+                            "example": {
+                                "name": "Administrador",
+                                "surname": "Global",
+                                "email": "admin@mail.com",
+                                "phone": "666777888",
+                                "avatar": "12345679.jpg",
+                                "password": "password",
+                                "type": 3
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
+                "operationId": "Getallusers",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/users/status": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update  user status",
+                "operationId": "Updateuserstatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateuserstatusRequest"
+                            },
+                            "example": {
+                                "user_id": 1,
+                                "status": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/users/update": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user",
+                "operationId": "Updateuser",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateuserRequest"
+                            },
+                            "example": {
+                                "user_id": 3,
+                                "name": "User",
+                                "surname": "App",
+                                "email": "userapp@mail.com",
+                                "phone": "666555888",
+                                "avatar": "111111.jpg",
+                                "password": "password",
+                                "type": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/users/pictures": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user avatar",
+                "operationId": "Updateuseravatar",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateuseravatarRequest"
+                            },
+                            "example": {
+                                "user_id": 3,
+                                "url": "https://365psd.com/images/istock/previews/1009/100996291-male-avatar-profile-picture-vector.jpg"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/users/campas": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user campas",
+                "operationId": "Updateusercampas",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateusercampasRequest"
+                            },
+                            "example": {
+                                "user_id": 3,
+                                "user_campas": [
+                                    1
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/users/3": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user by Id",
+                "operationId": "GetuserbyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/users/permissions/1": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get User Permissions by user id",
+                "operationId": "GetUserPermissionsbyuserid",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/users/permissions": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Set User Permissions by user id",
+                "operationId": "SetUserPermissionsbyuserid",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetUserPermissionsbyuseridRequest"
+                            },
+                            "example": {
+                                "user_id": 2,
+                                "campas": [
+                                    1
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login",
+                "operationId": "Login",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            },
+                            "example": {
+                                "password": "password",
+                                "email": "admin@mail.com"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/campas": {
+            "post": {
+                "tags": [
+                    "Campas"
+                ],
+                "summary": "Add a new campa",
+                "operationId": "Addanewcampa",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddanewcampaRequest"
+                            },
+                            "example": {
+                                "name": "Madrid Norte",
+                                "province": 31,
+                                "region": 13
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "get": {
+                "tags": [
+                    "Campas"
+                ],
+                "summary": "Get all campas",
+                "operationId": "Getallcampas",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/campas/status": {
+            "post": {
+                "tags": [
+                    "Campas"
+                ],
+                "summary": "Update campa status",
+                "operationId": "Updatecampastatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatecampastatusRequest"
+                            },
+                            "example": {
+                                "campa_id": 1,
+                                "status": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/campas/update": {
+            "post": {
+                "tags": [
+                    "Campas"
+                ],
+                "summary": "Update campa",
+                "operationId": "Updatecampa",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatecampaRequest"
+                            },
+                            "example": {
+                                "campa_id": 1,
+                                "name": "Central Madrid",
+                                "province": 31,
+                                "region": 13
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/campas/1": {
+            "get": {
+                "tags": [
+                    "Campas"
+                ],
+                "summary": "Get campa by id",
+                "operationId": "Getcampabyid",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks": {
+            "get": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Get All Pending",
+                "operationId": "getAllPendingTask",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Create Pending Tasks",
+                "operationId": "CreatePendingTasks",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreatePendingTasksRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "tasks": [{
+                                    "task_id": 4,
+                                    "manual_duration": 10.13,
+                                    "task_order": 1
+                                }]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/status": {
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Update Pending Tasks  status",
+                "operationId": "UpdatePendingTasksstatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePendingTasksstatusRequest"
+                            },
+                            "example": {
+                                "pending_task_id": 1,
+                                "status": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/state": {
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Update Pending Tasks state",
+                "operationId": "UpdatePendingTasksstate",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePendingTasksstateRequest"
+                            },
+                            "example": {
+                                "pending_task_id": 1,
+                                "state_id": 3
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/alert": {
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Pending Tasks Set Alert",
+                "operationId": "PendingTasksSetAlert",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PendingTasksSetAlertRequest"
+                            },
+                            "example": {
+                                "pending_task_id": 1,
+                                "alert_status": 0,
+                                "description": ""
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/update": {
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Update Pending Tasks",
+                "operationId": "UpdatePendingTasks",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePendingTasksRequest"
+                            },
+                            "example": {
+                                "pending_task_id": 1,
+                                "vehicle_id": 12,
+                                "task_id": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/duration": {
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Set Manual duration of Pending Tasks",
+                "operationId": "SetManualdurationofPendingTasks",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SetManualdurationofPendingTasksRequest"
+                            },
+                            "example": {
+                                "pending_task_id": 1,
+                                "manual_duration": 65
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/1": {
+            "get": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Get Pending Tasks by Id",
+                "operationId": "GetPendingTasksbyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/user": {
+            "get": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Get Pending Tasks by user Logged",
+                "operationId": "GetPendingTasksbyuserLogged",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/plate": {
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Get Pending Tasks by plate",
+                "operationId": "GetPendingTasksbyplate",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GetPendingTasksbyplateRequest"
+                            },
+                            "example": {
+                                "plate": "8181CLB"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pending-tasks/order": {
+            "post": {
+                "tags": [
+                    "Pending Tasks"
+                ],
+                "summary": "Pending tasks order",
+                "operationId": "PendingTasksOrder",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PendingTasksOrderRequest"
+                            },
+                            "example": 
+                                [
+                                    {
+                                        "pending_task_id":1,
+                                        "task_order": 1
+                                    }
+                                ]
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/tasks-status": {
+            "post": {
+                "tags": [
+                    "Task Status"
+                ],
+                "summary": "Create Task Status",
+                "operationId": "CreateTaskStatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTaskStatusRequest"
+                            },
+                            "example": {
+                                "campa_id": 1,
+                                "green": 2,
+                                "yellow": 3
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/tasks-status/1": {
+            "get": {
+                "tags": [
+                    "Task Status"
+                ],
+                "summary": "Get Task Status by campa Id",
+                "operationId": "GetTaskStatusbycampaId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/tasks": {
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Create Task",
+                "operationId": "CreateTask",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTaskRequest"
+                            },
+                            "example": {
+                                "name": "Tarea Inicial",
+                                "state_id": 1,
+                                "duration": 45
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/tasks/status": {
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Update task tatus",
+                "operationId": "Updatetasktatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatetasktatusRequest"
+                            },
+                            "example": {
+                                "task_id": 1,
+                                "status": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/tasks/update": {
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Update task",
+                "operationId": "Updatetask",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatetaskRequest"
+                            },
+                            "example": {
+                                "task_id": 1,
+                                "name": "Tarea Inicial Editada",
+                                "duration": 31,
+                                "state_id": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/tasks/1": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Get task by Id",
+                "operationId": "GettaskbyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Create Route",
+                "operationId": "CreateRoute",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRouteRequest"
+                            },
+                            "example": {
+                                "name": "Ruta recuperación"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Get all Routes",
+                "operationId": "GetallRoutes",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes/state": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Create Route State",
+                "operationId": "CreateRouteState",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateRouteStateRequest"
+                            },
+                            "example": {
+                                "route_id": 1,
+                                "state_id": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes/state/status": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Update Route state status",
+                "operationId": "UpdateRoutestatestatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRoutestatestatusRequest"
+                            },
+                            "example": {
+                                "route_state_id": 1,
+                                "status": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes/status": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Update Route status",
+                "operationId": "UpdateRoutestatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRoutestatusRequest"
+                            },
+                            "example": {
+                                "route_id": 1,
+                                "status": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes/update": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Update Route",
+                "operationId": "UpdateRoute",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRouteRequest"
+                            },
+                            "example": {
+                                "route_id": 1,
+                                "name": "Ruta inicial"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes/state/update": {
+            "post": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Update Route State",
+                "operationId": "UpdateRouteState",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRouteStateRequest"
+                            },
+                            "example": {
+                                "route_id": 1,
+                                "state_id": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes/1": {
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Get Route by Id",
+                "operationId": "GetRoutebyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/routes/state/1": {
+            "get": {
+                "tags": [
+                    "Routes"
+                ],
+                "summary": "Get Route state by Id",
+                "operationId": "GetRoutestatebyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/pictures": {
+            "post": {
+                "tags": [
+                    "Vehicles Pictures"
+                ],
+                "summary": "Create Vehicle Picture",
+                "operationId": "CreateVehiclePicture",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateVehiclePictureRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "latitude": 40.5317841,
+                                "longitude": -3.6365331,
+                                "url": "https://hips.hearstapps.com/es.h-cdn.co/cades/contenidos/50389/bentley-continental-gt-first-edition-1.jpg",
+                                "campa_id": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/pictures/1": {
+            "get": {
+                "tags": [
+                    "Vehicles Pictures"
+                ],
+                "summary": "Get Vehicle Picture by Id",
+                "operationId": "GetVehiclePicturebyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/pictures/status": {
+            "post": {
+                "tags": [
+                    "Vehicles Pictures"
+                ],
+                "summary": "Update Vehicle Picture status",
+                "operationId": "UpdateVehiclePicturestatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehiclePicturestatusRequest"
+                            },
+                            "example": {
+                                "vehicle_picture_id": 1,
+                                "status": 0
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/routes": {
+            "post": {
+                "tags": [
+                    "Vehicles Routes"
+                ],
+                "summary": "Create Vehicles Routes",
+                "operationId": "CreateVehiclesRoutes",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateVehiclesRoutesRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "route_id": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/routes/1": {
+            "get": {
+                "tags": [
+                    "Vehicles Routes"
+                ],
+                "summary": "Get Vehicle Route by Id",
+                "operationId": "GetVehicleRoutebyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/routes/status": {
+            "post": {
+                "tags": [
+                    "Vehicles Routes"
+                ],
+                "summary": "Update Vehicle Route status",
+                "operationId": "UpdateVehicleRoutestatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehicleRoutestatusRequest"
+                            },
+                            "example": {
+                                "vehicle_route_id": 1,
+                                "status": 0
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/routes/update": {
+            "post": {
+                "tags": [
+                    "Vehicles Routes"
+                ],
+                "summary": "Update Vehicle Route",
+                "operationId": "UpdateVehicleRoute",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehicleRouteRequest"
+                            },
+                            "example": {
+                                "vehicle_route_id": 1,
+                                "route_id": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Create Vehicle",
+                "operationId": "CreateVehicle",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateVehicleRequest"
+                            },
+                            "example": {
+                                "plate": "5351BBB",
+                                "remote_id": null,
+                                "campa_id": null,
+                                "make": "BENTLEY",
+                                "model": "Continental",
+                                "version": "Coupe",
+                                "vin": "SCBFR7ZA5CC07225",
+                                "priority": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "get": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Get All Vehicles",
+                "operationId": "GetAllVehicles",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/update": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Update Vehicle",
+                "operationId": "UpdateVehicle",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehicleRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "plate": "5351BBB",
+                                "remote_id": 123,
+                                "make": "BENTLEY Edit",
+                                "model": "Continental Edit",
+                                "version": "Coupe EDit",
+                                "vin": "EDITR7ZA5CC07225",
+                                "priority": 0
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/1": {
+            "get": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Get Vehicles by Id",
+                "operationId": "GetVehiclesbyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/status": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Update Vehicle status",
+                "operationId": "UpdateVehiclestatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehiclestatusRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "status": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/state": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Update Vehicle state",
+                "operationId": "UpdateVehiclestate",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehiclestateRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "state_id": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/on-campa": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Update Vehicle status in_Campa",
+                "operationId": "UpdateVehiclestatusin_Campa",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVehiclestatusin_CampaRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "on_campa": 0
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/coordinates": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Vehicle Set coordinates",
+                "operationId": "VehicleSetcoordinates",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleSetcoordinatesRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "latitude": 40.5317841,
+                                "longitude": -3.6365331
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/external-id": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Vehicle Set external ID",
+                "operationId": "VehicleSetexternalID",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleSetexternalIDRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "remote_id": 9898
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/kilometers": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Vehicle Set kilometers",
+                "operationId": "VehicleSetkilometers",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleSetkilometersRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "kilometers": 99999
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/defleet": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Vehicle Set defleet",
+                "operationId": "VehicleSetdefleet",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleSetdefleetRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "defleet": 0
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "get": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Get vehicles for defleet",
+                "operationId": "VehicleGetdefleet",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/defleet-requested": {
+            "get": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Get requested vehicles for defleet",
+                "operationId": "VehicleGetRequestedVehiclesforDefleet",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/ubication": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Vehicle Set ubication",
+                "operationId": "VehicleSetubication",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleSetubicationRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "ubication": "A"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/verify-plate": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Verify plate of vehicle",
+                "operationId": "VehicleVerifyPlate",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleVerifyPlateRequest"
+                            },
+                            "example": {
+                                "plate": "7547BBB"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/reserve": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Vehicle reserve",
+                "operationId": "VehicleVehicleReserve",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleVehicleReserveRequest"
+                            },
+                            "example": {
+                                "vehicle_id": 15,
+                                "status_reserve": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/filter-defleet": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Deflected Vehicle filter",
+                "operationId": "DeflectedVehicleFilter",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeflectedVehicleFilterReserveRequest"
+                            },
+                            "example": {
+                                "defleet":1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/update-checklist": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Update checklist vehicle",
+                "operationId": "UpdateChecklistVehicle",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateChecklistVehicleRequest"
+                            },
+                            "example": {
+                                "vehicle_id":1,
+                                "checklist_delivered":1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/reserved": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Filter vehicle by reserve",
+                "operationId": "FilterVehicleByReserve",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FilterVehicleByReserveRequest"
+                            },
+                            "example": {
+                                "reserved":1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/vehicles/reserved-on-campa": {
+            "get": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Get vehicles reserved on campa",
+                "operationId": "GetVehiclesReservedOnCampa",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/chats": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Create Chat by app",
+                "operationId": "CreateChatbyapp",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateChatbyappRequest"
+                            },
+                            "example": {
+                                "message": "Secado"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/chats-campa": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Create Chat by web",
+                "operationId": "CreateChatbyweb",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateChatbywebRequest"
+                            },
+                            "example": {
+                                "campa_id": 1,
+                                "message": "Lo estamos limpiando el domingo"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/chats/user": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get chats",
+                "operationId": "Getchats",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/chats/conversation": {
+            "get": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get Chat by Id",
+                "operationId": "GetChatbyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/chats/conversation-campa": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Get Chat campa ID",
+                "operationId": "GetChatcampaID",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GetChatcampaIDRequest"
+                            },
+                            "example": {
+                                "campa_id": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/chats/status": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Update Chat status",
+                "operationId": "UpdateChatstatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateChatstatusRequest"
+                            },
+                            "example": {
+                                "chat_id": 1,
+                                "status": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/chats/mark": {
+            "post": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Mark Read Unread",
+                "operationId": "MarkReadUnread",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MarkReadUnreadRequest"
+                            },
+                            "example": {
+                                "chat_id": 1,
+                                "read": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/notifications": {
+            "post": {
+                "tags": [
+                    "Notificactions"
+                ],
+                "summary": "Create Notification",
+                "operationId": "CreateNotification",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateNotificationRequest"
+                            },
+                            "example": {
+                                "user_id": 1,
+                                "source": 2,
+                                "pending_tasks_id": 2
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/notifications/1": {
+            "get": {
+                "tags": [
+                    "Notificactions"
+                ],
+                "summary": "Get Notification by Id",
+                "operationId": "GetNotificationbyId",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/notifications/status": {
+            "post": {
+                "tags": [
+                    "Notificactions"
+                ],
+                "summary": "Update Notification status",
+                "operationId": "UpdateNotificationstatus",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateNotificationstatusRequest"
+                            },
+                            "example": {
+                                "notification_id": 1,
+                                "status": 0
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/notifications/mark": {
+            "post": {
+                "tags": [
+                    "Notificactions"
+                ],
+                "summary": "Mark Read Unread",
+                "operationId": "PostMarkReadUnread",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MarkReadUnreadRequest1"
+                            },
+                            "example": {
+                                "notification_id": 1,
+                                "read": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/Questions": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Get all questions",
+                "operationId": "GetAllQuestions",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Create question",
+                "operationId": "PostCreateQuestion",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateQuestionRequest1"
+                            },
+                            "example": {
+                                "question": "¿Pregunta?",
+                                "description": "Description"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/questions-answers": {
+            "post": {
+                "tags": [
+                    "Questions answers"
+                ],
+                "summary": "Create question answers",
+                "operationId": "PostCreateQuestionAnswers",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateQuestionAnswerRequest1"
+                            },
+                            "example": {
+                                "vehicle_id": 1,
+                                "questions": [{
+                                    "question_id": 1,
+                                    "response": 0,
+                                    "description": "Description"
+                                }]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/pruchase-operations": {
+            "post": {
+                "tags": [
+                    "Purchase Operations"
+                ],
+                "summary": "Created purchase operations",
+                "operationId": "VehicleCreatePurchaseOperations",
+                "parameters": [],
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VehicleCreatePurchaseOperationsRequest"
+                            },
+                            "example": {
+                                "pending_task_id": 1,
+                                "price": 0
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            },
+            "get": {
+                "tags": [
+                    "Purchase Operations"
+                ],
+                "summary": "Get purchase operations",
+                "operationId": "GetPurchaseOperations",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/states": {
+            "get": {
+                "tags": [
+                    "Various"
+                ],
+                "summary": "Get States",
+                "operationId": "GetStates",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/state-types": {
+            "get": {
+                "tags": [
+                    "Various"
+                ],
+                "summary": "Get States Type",
+                "operationId": "GetStatesType",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/task-status": {
+            "get": {
+                "tags": [
+                    "Various"
+                ],
+                "summary": "Get Tasks Status",
+                "operationId": "GetTaskStatus",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "headers": {}
+                    }
+                },
+                "deprecated": false
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AddanewuserRequest": {
+                "title": "AddanewuserRequest",
+                "required": [
+                    "name",
+                    "surname",
+                    "email",
+                    "phone",
+                    "avatar",
+                    "password",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "surname": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "name": "Administrador",
+                    "surname": "Global",
+                    "email": "admin@mail.com",
+                    "phone": "666777888",
+                    "avatar": "12345679.jpg",
+                    "password": "password",
+                    "type": 3
+                }
+            },
+            "UpdateuserstatusRequest": {
+                "title": "UpdateuserstatusRequest",
+                "required": [
+                    "user_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "user_id": 1,
+                    "status": 1
+                }
+            },
+            "UpdateuserRequest": {
+                "title": "UpdateuserRequest",
+                "required": [
+                    "user_id",
+                    "name",
+                    "surname",
+                    "email",
+                    "phone",
+                    "avatar",
+                    "password",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "surname": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "user_id": 3,
+                    "name": "User",
+                    "surname": "App",
+                    "email": "userapp@mail.com",
+                    "phone": "666555888",
+                    "avatar": "111111.jpg",
+                    "password": "password",
+                    "type": 1
+                }
+            },
+            "UpdateuseravatarRequest": {
+                "title": "UpdateuseravatarRequest",
+                "required": [
+                    "user_id",
+                    "url"
+                ],
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "user_id": 3,
+                    "url": "https://365psd.com/images/istock/previews/1009/100996291-male-avatar-profile-picture-vector.jpg"
+                }
+            },
+            "UpdateusercampasRequest": {
+                "title": "UpdateusercampasRequest",
+                "required": [
+                    "user_id",
+                    "user_campas"
+                ],
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_campas": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "description": ""
+                    }
+                },
+                "example": {
+                    "user_id": 3,
+                    "user_campas": [
+                        1
+                    ]
+                }
+            },
+            "SetUserPermissionsbyuseridRequest": {
+                "title": "SetUserPermissionsbyuseridRequest",
+                "required": [
+                    "user_id",
+                    "campas"
+                ],
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "campas": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "description": ""
+                    }
+                },
+                "example": {
+                    "user_id": 2,
+                    "campas": [
+                        1
+                    ]
+                }
+            },
+            "LoginRequest": {
+                "title": "LoginRequest",
+                "required": [
+                    "password",
+                    "email"
+                ],
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "password": "password",
+                    "email": "admin@mail.com"
+                }
+            },
+            "AddanewcampaRequest": {
+                "title": "AddanewcampaRequest",
+                "required": [
+                    "name",
+                    "province",
+                    "region"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "province": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "region": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "name": "Madrid Norte",
+                    "province": 31,
+                    "region": 13
+                }
+            },
+            "UpdatecampastatusRequest": {
+                "title": "UpdatecampastatusRequest",
+                "required": [
+                    "campa_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "campa_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "campa_id": 1,
+                    "status": 1
+                }
+            },
+            "UpdatecampaRequest": {
+                "title": "UpdatecampaRequest",
+                "required": [
+                    "campa_id",
+                    "name",
+                    "province",
+                    "region"
+                ],
+                "type": "object",
+                "properties": {
+                    "campa_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "province": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "region": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "campa_id": 1,
+                    "name": "Central Madrid",
+                    "province": 31,
+                    "region": 13
+                }
+            },
+            "CreatePendingTasksRequest": {
+                "title": "CreatePendingTasksRequest",
+                "required": [
+                    "vehicle_id",
+                    "task_id",
+                    "user_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "task_id": 1,
+                    "user_id": 1
+                }
+            },
+            "UpdatePendingTasksstatusRequest": {
+                "title": "UpdatePendingTasksstatusRequest",
+                "required": [
+                    "pending_task_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "pending_task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "pending_task_id": 1,
+                    "status": 1
+                }
+            },
+            "UpdatePendingTasksstateRequest": {
+                "title": "UpdatePendingTasksstateRequest",
+                "required": [
+                    "pending_task_id",
+                    "state_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "pending_task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "state_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "pending_task_id": 1,
+                    "state_id": 3
+                }
+            },
+            "PendingTasksSetAlertRequest": {
+                "title": "PendingTasksSetAlertRequest",
+                "required": [
+                    "pending_task_id",
+                    "alert_status",
+                    "description"
+                ],
+                "type": "object",
+                "properties": {
+                    "pending_task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "alert_status": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "pending_task_id": 1,
+                    "alert_status": 0,
+                    "description": ""
+                }
+            },
+            "UpdatePendingTasksRequest": {
+                "title": "UpdatePendingTasksRequest",
+                "required": [
+                    "pending_task_id",
+                    "vehicle_id",
+                    "task_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "pending_task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "pending_task_id": 1,
+                    "vehicle_id": 12,
+                    "task_id": 2
+                }
+            },
+            "SetManualdurationofPendingTasksRequest": {
+                "title": "SetManualdurationofPendingTasksRequest",
+                "required": [
+                    "pending_task_id",
+                    "manual_duration"
+                ],
+                "type": "object",
+                "properties": {
+                    "pending_task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "manual_duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "pending_task_id": 1,
+                    "manual_duration": 65
+                }
+            },
+            "GetPendingTasksbyplateRequest": {
+                "title": "GetPendingTasksbyplateRequest",
+                "required": [
+                    "plate"
+                ],
+                "type": "object",
+                "properties": {
+                    "plate": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "plate": "8181CLB"
+                }
+            },
+            "CreateTaskStatusRequest": {
+                "title": "CreateTaskStatusRequest",
+                "required": [
+                    "campa_id",
+                    "green",
+                    "yellow"
+                ],
+                "type": "object",
+                "properties": {
+                    "campa_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "green": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "yellow": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "campa_id": 1,
+                    "green": 2,
+                    "yellow": 3
+                }
+            },
+            "CreateTaskRequest": {
+                "title": "CreateTaskRequest",
+                "required": [
+                    "name",
+                    "state_id",
+                    "duration"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "state_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "name": "Tarea Inicial",
+                    "state_id": 1,
+                    "duration": 45
+                }
+            },
+            "UpdatetasktatusRequest": {
+                "title": "UpdatetasktatusRequest",
+                "required": [
+                    "task_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "task_id": 1,
+                    "status": 1
+                }
+            },
+            "UpdatetaskRequest": {
+                "title": "UpdatetaskRequest",
+                "required": [
+                    "task_id",
+                    "name",
+                    "duration",
+                    "state_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "task_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "state_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "task_id": 1,
+                    "name": "Tarea Inicial Editada",
+                    "duration": 31,
+                    "state_id": 2
+                }
+            },
+            "CreateRouteRequest": {
+                "title": "CreateRouteRequest",
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "Ruta recuperación"
+                }
+            },
+            "CreateRoutetasksRequest": {
+                "title": "CreateRoutetasksRequest",
+                "required": [
+                    "route_id",
+                    "route_tasks"
+                ],
+                "type": "object",
+                "properties": {
+                    "route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "route_tasks": {
+                        "$ref": "#/components/schemas/RouteTasks"
+                    }
+                },
+                "example": {
+                    "route_id": 1,
+                    "route_tasks": {
+                        "task_1": 1,
+                        "task_2": 2
+                    }
+                }
+            },
+            "RouteTasks": {
+                "title": "RouteTasks",
+                "required": [
+                    "task_1",
+                    "task_2"
+                ],
+                "type": "object",
+                "properties": {
+                    "task_1": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "task_2": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "task_1": 1,
+                    "task_2": 2
+                }
+            },
+            "CreateRouteStateRequest": {
+                "title": "CreateRouteStateRequest",
+                "required": [
+                    "route_id",
+                    "state_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "state_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "route_id": 1,
+                    "state_id": 1
+                }
+            },
+            "UpdateRoutestatestatusRequest": {
+                "title": "UpdateRoutestatestatusRequest",
+                "required": [
+                    "route_state_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "route_state_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "route_state_id": 1,
+                    "status": 2
+                }
+            },
+            "UpdateRoutestatusRequest": {
+                "title": "UpdateRoutestatusRequest",
+                "required": [
+                    "route_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "route_id": 1,
+                    "status": 1
+                }
+            },
+            "UpdateRouteRequest": {
+                "title": "UpdateRouteRequest",
+                "required": [
+                    "route_id",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "route_id": 1,
+                    "name": "Ruta inicial"
+                }
+            },
+            "UpdateRouteStateRequest": {
+                "title": "UpdateRouteStateRequest",
+                "required": [
+                    "route_id",
+                    "state_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "state_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "route_id": 1,
+                    "state_id": 2
+                }
+            },
+            "CreateVehiclePictureRequest": {
+                "title": "CreateVehiclePictureRequest",
+                "required": [
+                    "vehicle_id",
+                    "latitude",
+                    "longitude",
+                    "url",
+                    "campa_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "campa_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "latitude": 40.5317841,
+                    "longitude": -3.6365331,
+                    "url": "https://hips.hearstapps.com/es.h-cdn.co/cades/contenidos/50389/bentley-continental-gt-first-edition-1.jpg",
+                    "campa_id": 1
+                }
+            },
+            "UpdateVehiclePicturestatusRequest": {
+                "title": "UpdateVehiclePicturestatusRequest",
+                "required": [
+                    "vehicle_picture_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_picture_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_picture_id": 1,
+                    "status": 0
+                }
+            },
+            "CreateVehiclesRoutesRequest": {
+                "title": "CreateVehiclesRoutesRequest",
+                "required": [
+                    "vehicle_id",
+                    "route_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "route_id": 1
+                }
+            },
+            "UpdateVehicleRoutestatusRequest": {
+                "title": "UpdateVehicleRoutestatusRequest",
+                "required": [
+                    "vehicle_route_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_route_id": 1,
+                    "status": 0
+                }
+            },
+            "UpdateVehicleRouteRequest": {
+                "title": "UpdateVehicleRouteRequest",
+                "required": [
+                    "vehicle_route_id",
+                    "route_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "route_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_route_id": 1,
+                    "route_id": 2
+                }
+            },
+            "CreateVehicleRequest": {
+                "title": "CreateVehicleRequest",
+                "required": [
+                    "plate",
+                    "remote_id",
+                    "campa_id",
+                    "make",
+                    "model",
+                    "version",
+                    "vin",
+                    "priority"
+                ],
+                "type": "object",
+                "properties": {
+                    "plate": {
+                        "type": "string"
+                    },
+                    "remote_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "campa_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "make": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "vin": {
+                        "type": "string"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "plate": "5351BBB",
+                    "remote_id": null,
+                    "campa_id": null,
+                    "make": "BENTLEY",
+                    "model": "Continental",
+                    "version": "Coupe",
+                    "vin": "SCBFR7ZA5CC07225",
+                    "priority": 1
+                }
+            },
+            "UpdateVehicleRequest": {
+                "title": "UpdateVehicleRequest",
+                "required": [
+                    "vehicle_id",
+                    "plate",
+                    "remote_id",
+                    "make",
+                    "model",
+                    "version",
+                    "vin",
+                    "priority"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "plate": {
+                        "type": "string"
+                    },
+                    "remote_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "make": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "vin": {
+                        "type": "string"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "plate": "5351BBB",
+                    "remote_id": 123,
+                    "make": "BENTLEY Edit",
+                    "model": "Continental Edit",
+                    "version": "Coupe EDit",
+                    "vin": "EDITR7ZA5CC07225",
+                    "priority": 0
+                }
+            },
+            "UpdateVehiclestatusRequest": {
+                "title": "UpdateVehiclestatusRequest",
+                "required": [
+                    "vehicle_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "status": 1
+                }
+            },
+            "UpdateVehiclestateRequest": {
+                "title": "UpdateVehiclestateRequest",
+                "required": [
+                    "vehicle_id",
+                    "state_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "state_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "state_id": 2
+                }
+            },
+            "UpdateVehiclestatusin_CampaRequest": {
+                "title": "UpdateVehiclestatusin_CampaRequest",
+                "required": [
+                    "vehicle_id",
+                    "on_campa"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "on_campa": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "on_campa": 0
+                }
+            },
+            "VehicleSetcoordinatesRequest": {
+                "title": "VehicleSetcoordinatesRequest",
+                "required": [
+                    "vehicle_id",
+                    "latitude",
+                    "longitude"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "latitude": 40.5317841,
+                    "longitude": -3.6365331
+                }
+            },
+            "VehicleSetexternalIDRequest": {
+                "title": "VehicleSetexternalIDRequest",
+                "required": [
+                    "vehicle_id",
+                    "remote_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "remote_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "remote_id": 9898
+                }
+            },
+            "VehicleSetkilometersRequest": {
+                "title": "VehicleSetkilometersRequest",
+                "required": [
+                    "vehicle_id",
+                    "kilometers"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "kilometers": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "vehicle_id": 1,
+                    "kilometers": 99999
+                }
+            },
+            "PendingTasksOrderRequest": {
+                "title": "PendingTasksOrderRequest",
+                "required": [
+                    "pending_task_id",
+                    "task_order"
+                ],
+                "type": "object",
+                "properties": {
+                    "vehicle_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "kilometers": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": [{
+                    "pending_task_id": 1,
+                    "task_id": 1
+                }]
+            },
+            "CreateChatbyappRequest": {
+                "title": "CreateChatbyappRequest",
+                "required": [
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "message": "Secado"
+                }
+            },
+            "CreateChatbywebRequest": {
+                "title": "CreateChatbywebRequest",
+                "required": [
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "campa_id": 1,
+                    "message": "Lo estamos limpiando el domingo"
+                }
+            },
+            "GetChatcampaIDRequest": {
+                "title": "GetChatcampaIDRequest",
+                "required": [
+                    "campa_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "campa_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "campa_id": 1
+                }
+            },
+            "UpdateChatstatusRequest": {
+                "title": "UpdateChatstatusRequest",
+                "required": [
+                    "chat_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "chat_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "chat_id": 1,
+                    "status": 1
+                }
+            },
+            "MarkReadUnreadRequest": {
+                "title": "MarkReadUnreadRequest",
+                "required": [
+                    "chat_id",
+                    "read"
+                ],
+                "type": "object",
+                "properties": {
+                    "chat_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "read": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "chat_id": 1,
+                    "read": 2
+                }
+            },
+            "CreateNotificationRequest": {
+                "title": "CreateNotificationRequest",
+                "required": [
+                    "user_id",
+                    "source",
+                    "pending_tasks_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "source": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pending_tasks_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "user_id": 1,
+                    "source": 2,
+                    "pending_tasks_id": 2
+                }
+            },
+            "UpdateNotificationstatusRequest": {
+                "title": "UpdateNotificationstatusRequest",
+                "required": [
+                    "notification_id",
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "notification_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "notification_id": 1,
+                    "status": 0
+                }
+            },
+            "MarkReadUnreadRequest1": {
+                "title": "MarkReadUnreadRequest1",
+                "required": [
+                    "notification_id",
+                    "read"
+                ],
+                "type": "object",
+                "properties": {
+                    "notification_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "read": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "example": {
+                    "notification_id": 1,
+                    "read": 1
+                }
+            }
+        },
+        "securitySchemes": {
+            "httpBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [{
+        "httpBearer": []
+    }],
+    "tags": [{
+            "name": "Users"
+        },
+        {
+            "name": "Campas"
+        },
+        {
+            "name": "Pending Tasks"
+        },
+        {
+            "name": "Task Status"
+        },
+        {
+            "name": "Tasks"
+        },
+        {
+            "name": "Routes"
+        },
+        {
+            "name": "Vehicles Pictures"
+        },
+        {
+            "name": "Vehicles Routes"
+        },
+        {
+            "name": "Vehicles"
+        },
+        {
+            "name": "Chats"
+        },
+        {
+            "name": "Notificactions"
+        },
+        {
+            "name": "Various"
+        }
+    ]
+}
