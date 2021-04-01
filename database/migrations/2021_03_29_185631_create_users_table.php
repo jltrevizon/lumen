@@ -19,10 +19,11 @@ class CreateUsersTable extends Migration
             $table->foreignId('campa_id')->nullable();
             $table->string('name');
             $table->string('surname')->nullable();
+            $table->string('password')->nullable();
             $table->string('email');
             $table->string('avatar')->nullable();
             $table->integer('phone')->nullable();
-            $table->string('password');
+            $table->boolean('first_login');
             $table->boolean('active')->default(1);
             $table->timestamps();
         });
