@@ -14,7 +14,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return '<h2>API CarFlex</h2>';
 });
 
 
