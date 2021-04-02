@@ -52,5 +52,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/campas', 'CampaController@create');
         $router->put('/campas/update/{id}', 'CampaController@update');
         $router->delete('/campas/delete/{id}', 'CampaController@delete');
+
+        /**
+         * Category
+         */
+        $router->get('/categories/getall', 'CategoryController@getall');
+        $router->get('/categories/{id}', 'CategoryController@getById');
+        $router->post('/categories', 'CategoryController@create');
+        $router->put('/categories/update/{id}', 'CategoryController@update');
+        $router->delete('/categories/delete/{id}', 'CategoryController@delete');
+
     });
 });
