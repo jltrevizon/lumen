@@ -79,5 +79,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/customers', 'CustomerController@create');
         $router->put('/customers/update/{id}', 'CustomerController@update');
         $router->delete('/customers/delete/{id}', 'CustomerController@delete');
+
+        /**
+         * Group Tasks
+         */
+        $router->get('/grouptasks/getall', 'GroupTaskController@getall');
+        $router->get('/grouptasks/{id}', 'GroupTaskController@getById');
+        $router->post('/grouptasks', 'GroupTaskController@create');
+        $router->put('/grouptasks/update/{id}', 'GroupTaskController@update');
+        $router->delete('/grouptasks/delete/{id}', 'GroupTaskController@delete');
     });
 });
