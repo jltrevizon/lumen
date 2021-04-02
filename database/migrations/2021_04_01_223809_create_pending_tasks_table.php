@@ -18,9 +18,8 @@ class CreatePendingTasksTable extends Migration
             $table->foreignId('vehicle_id');
             $table->foreignId('task_id');
             $table->foreignId('state_pending_task_id')->nullable();
-            $table->foreignId('task_group_id');
+            $table->foreignId('group_task_id');
             $table->foreignId('incidence_id')->nullable();
-            $table->foreignId('state_pending_task_id');
             $table->double('duration');
             $table->integer('order');
             $table->dateTime('datetime_pending')->nullable();
