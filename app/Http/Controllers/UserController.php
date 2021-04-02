@@ -33,6 +33,7 @@ class UserController extends Controller
         if(isset($request['email'])) $user->email = $request->get('email');
         if(isset($request['avatar'])) $user->avatar = $request->get('avatar');
         if(isset($request['phone'])) $user->phone = $request->get('phone');
+        $user->updated_at = date('Y-m-d H:i:s');
         $user->save();
         return $user;
     }
