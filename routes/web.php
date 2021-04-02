@@ -1,6 +1,7 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,12 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['prefix' => 'api'], function () use ($router) {
+
     $router->post('/auth/signup', 'AuthController@register');
     $router->post('/auth/signin', 'AuthController@login');
+
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+
+        $router->get('/users/getall', 'UserController@getAll');
+    });
 });

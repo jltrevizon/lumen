@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('email');
             $table->string('avatar')->nullable();
             $table->integer('phone')->nullable();
-            $table->boolean('first_login');
+            $table->boolean('first_login')->default(0);
             $table->boolean('active')->default(1);
             $table->timestamps();
         });
