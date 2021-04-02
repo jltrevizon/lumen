@@ -36,6 +36,7 @@ class CampaController extends Controller
         if(isset($request['location'])) $campa->location = $request->get('location');
         if(isset($request['address'])) $campa->address = $request->get('address');
         if(isset($request['active'])) $campa->active = $request->get('active');
+        $campa->updated_at = date('Y-m-d H:i:s');
         $campa->save();
         return $campa;
     }

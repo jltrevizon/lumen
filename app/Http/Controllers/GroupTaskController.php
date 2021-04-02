@@ -28,6 +28,7 @@ class GroupTaskController extends Controller
         $group_task = GroupTask::where('id', $id)
                         ->first();
         $group_task->vehicle_id = $request->get('vehicle_id');
+        $group_task->updated_at = date('Y-m-d H:i:s');
         $group_task->save();
         return $group_task;
     }

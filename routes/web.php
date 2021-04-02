@@ -88,5 +88,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/grouptasks', 'GroupTaskController@create');
         $router->put('/grouptasks/update/{id}', 'GroupTaskController@update');
         $router->delete('/grouptasks/delete/{id}', 'GroupTaskController@delete');
+
+        /**
+         * Incidences
+         */
+        $router->get('/incidences/getall', 'IncidenceController@getall');
+        $router->get('/incidences/{id}', 'IncidenceController@getById');
+        $router->post('/incidences', 'IncidenceController@create');
+        $router->put('/incidences/update/{id}', 'IncidenceController@update');
+        $router->delete('/incidences/delete/{id}', 'IncidenceController@delete');
     });
 });

@@ -34,6 +34,7 @@ class CustomerController extends Controller
         if(isset($request['cif'])) $customer->cif = $request->get('cif');
         if(isset($request['phone'])) $customer->phone = $request->get('phone');
         if(isset($request['address'])) $customer->address = $request->get('address');
+        $customer->updated_at = date('Y-m-d H:i:s');
         $customer->save();
         return $customer;
     }

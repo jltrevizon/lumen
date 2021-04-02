@@ -39,6 +39,7 @@ class CompanyController extends Controller
         if(isset($request['location'])) $company->location = $request->get('location');
         if(isset($request['phone'])) $company->phone = $request->get('phone');
         if(isset($request['logo'])) $company->logo = $request->get('logo');
+        $company->updated_at = date('Y-m-d H:i:s');
         $company->save();
         return $company;
     }

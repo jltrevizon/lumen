@@ -29,6 +29,7 @@ class CategoryController extends Controller
                             ->first();
         if(isset($request['name'])) $category->name = $request->get('name');
         if(isset($request['description'])) $category->description = $request->get('description');
+        $category->updated_at = date('Y-m-d H:i:s');
         $category->save();
         return $category;
     }
