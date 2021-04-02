@@ -37,7 +37,7 @@ class RoleController extends Controller
         Role::where('id', $id)
             ->delete();
         return [
-            'message' => 'User deleted'
+            'message' => 'Role deleted'
         ];
     }
 }

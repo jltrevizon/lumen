@@ -36,12 +36,21 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/users/delete/{id}', 'UserController@delete');
 
         /**
-         * Role
+         * Roles
          */
         $router->get('/roles/getall', 'RoleController@getAll');
         $router->get('/roles/{id}', 'RoleController@getById');
         $router->post('/roles', 'RoleController@create');
         $router->put('/roles/update/{id}', 'RoleController@update');
         $router->delete('/roles/delete/{id}', 'RoleController@delete');
+
+        /**
+         * Campas
+         */
+        $router->get('/campas/getall', 'CampaController@getall');
+        $router->get('/campas/{id}', 'CampaController@getById');
+        $router->post('/campas', 'CampaController@create');
+        $router->put('/campas/update/{id}', 'CampaController@update');
+        $router->delete('/campas/delete/{id}', 'CampaController@delete');
     });
 });
