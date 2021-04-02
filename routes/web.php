@@ -26,6 +26,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
+        /**
+         * Users
+         */
         $router->get('/users/getall', 'UserController@getAll');
+        $router->get('/users/{id}', 'UserController@getById');
+        $router->post('/users/create-without-password', 'UserController@createUserWithoutPassword');
+        $router->put('/users/update/{id}', 'UserController@update');
+        $router->delete('/users/delete/{id}', 'UserController@delete');
+
     });
 });
