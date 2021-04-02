@@ -106,5 +106,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/regions', 'RegionController@create');
         $router->put('/regions/update/{id}', 'RegionController@update');
         $router->delete('/regions/delete/{id}', 'RegionController@delete');
+
+         /**
+         * Provinces
+         */
+        $router->get('/provinces/getall', 'ProvinceController@getall');
+        $router->get('/provinces/{id}', 'ProvinceController@getById');
+        $router->post('/provinces', 'ProvinceController@create');
+        $router->put('/provinces/update/{id}', 'ProvinceController@update');
+        $router->delete('/provinces/delete/{id}', 'ProvinceController@delete');
     });
 });
