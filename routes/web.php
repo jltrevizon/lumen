@@ -97,5 +97,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/incidences', 'IncidenceController@create');
         $router->put('/incidences/update/{id}', 'IncidenceController@update');
         $router->delete('/incidences/delete/{id}', 'IncidenceController@delete');
+
+        /**
+         * Regions
+         */
+        $router->get('/regions/getall', 'RegionController@getall');
+        $router->get('/regions/{id}', 'RegionController@getById');
+        $router->post('/regions', 'RegionController@create');
+        $router->put('/regions/update/{id}', 'RegionController@update');
+        $router->delete('/regions/delete/{id}', 'RegionController@delete');
     });
 });
