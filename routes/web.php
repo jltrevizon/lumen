@@ -54,7 +54,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/campas/delete/{id}', 'CampaController@delete');
 
         /**
-         * Category
+         * Categories
          */
         $router->get('/categories/getall', 'CategoryController@getall');
         $router->get('/categories/{id}', 'CategoryController@getById');
@@ -62,5 +62,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/categories/update/{id}', 'CategoryController@update');
         $router->delete('/categories/delete/{id}', 'CategoryController@delete');
 
+        /**
+         * Companies
+         */
+        $router->get('/companies/getall', 'CompanyController@getall');
+        $router->get('/companies/{id}', 'CompanyController@getById');
+        $router->post('/companies', 'CompanyController@create');
+        $router->put('/companies/update/{id}', 'CompanyController@update');
+        $router->delete('/companies/delete/{id}', 'CompanyController@delete');
     });
 });
