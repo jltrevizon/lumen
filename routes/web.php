@@ -205,5 +205,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/types-requests', 'TypeRequestController@create');
         $router->put('/types-requests/update/{id}', 'TypeRequestController@update');
         $router->delete('/types-requests/delete/{id}', 'TypeRequestController@delete');
+
+        /**
+         * TypeRequest
+         */
+        $router->get('/types-tasks/getall', 'TypeTaskController@getall');
+        $router->get('/types-tasks/{id}', 'TypeTaskController@getById');
+        $router->post('/types-tasks', 'TypeTaskController@create');
+        $router->put('/types-tasks/update/{id}', 'TypeTaskController@update');
+        $router->delete('/types-tasks/delete/{id}', 'TypeTaskController@delete');
     });
 });
