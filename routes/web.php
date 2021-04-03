@@ -171,7 +171,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/state-requests/delete/{id}', 'StateRequestController@delete');
 
         /**
-         * States request
+         * Sub states
          */
         $router->get('/sub-states/getall', 'SubStateController@getall');
         $router->get('/sub-states/{id}', 'SubStateController@getById');
@@ -180,12 +180,21 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/sub-states/delete/{id}', 'SubStateController@delete');
 
         /**
-         * States request
+         * Tasks
          */
         $router->get('/tasks/getall', 'TaskController@getall');
         $router->get('/tasks/{id}', 'TaskController@getById');
         $router->post('/tasks', 'TaskController@create');
         $router->put('/tasks/update/{id}', 'TaskController@update');
         $router->delete('/tasks/delete/{id}', 'TaskController@delete');
+
+        /**
+         * Tasks
+         */
+        $router->get('/transports/getall', 'TransportController@getall');
+        $router->get('/transports/{id}', 'TransportController@getById');
+        $router->post('/transports', 'TransportController@create');
+        $router->put('/transports/update/{id}', 'TransportController@update');
+        $router->delete('/transports/delete/{id}', 'TransportController@delete');
     });
 });
