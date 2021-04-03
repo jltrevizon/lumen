@@ -160,5 +160,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/states-pending-tasks', 'StatePendingTaskController@create');
         $router->put('/states-pending-tasks/update/{id}', 'StatePendingTaskController@update');
         $router->delete('/states-pending-tasks/delete/{id}', 'StatePendingTaskController@delete');
+
+        /**
+         * States request
+         */
+        $router->get('/state-requests/getall', 'StateRequestController@getall');
+        $router->get('/state-requests/{id}', 'StateRequestController@getById');
+        $router->post('/state-requests', 'StateRequestController@create');
+        $router->put('/state-requests/update/{id}', 'StateRequestController@update');
+        $router->delete('/state-requests/delete/{id}', 'StateRequestController@delete');
     });
 });
