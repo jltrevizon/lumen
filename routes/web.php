@@ -34,6 +34,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/users/create-without-password', 'UserController@createUserWithoutPassword');
         $router->put('/users/update/{id}', 'UserController@update');
         $router->delete('/users/delete/{id}', 'UserController@delete');
+        $router->get('/users/campa/{campa_id}', 'UserController@getUsersByCampa');
+        $router->post('/users/role/{role_id}', 'UserController@getUsersByRole');
+        $router->post('/users/active', 'UserController@getActiveUsers');
+        $router->post('/users/by-email', 'UserController@getUserByEmail');
 
         /**
          * Roles

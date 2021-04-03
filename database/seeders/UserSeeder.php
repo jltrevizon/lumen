@@ -26,6 +26,7 @@ class UserSeeder extends Seeder
     public function createUserAdmin(){
         return [
             'name' => 'Admin',
+            'role_id' => 1,
             'email' => 'admin@mail.com',
             'password' => Hash::make('password')
         ];

@@ -45,4 +45,26 @@ class UserController extends Controller
             'message' => 'User deleted'
         ];
     }
+
+    public function getUsersByCampa($campa_id){
+        return User::where('campa_id', $campa_id)
+                    ->get();
+    }
+
+    public function getUsersByRole(Request $request, $role_id){
+        return User::where('role_id', $role_id)
+                    ->where('campa_id', $request->get('campa_id'))
+                    ->get();
+    }
+
+    public function getActiveUsers(Request $request){
+        return User::where('active', true)
+                    ->where('campa_id', $request->get('campa_id'))
+                    ->get();
+    }
+
+    public function getUserByEmail(Request $request){
+        return User::where('email', $request->get('email'))
+                    ->first();
+    }
 }
