@@ -169,5 +169,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/state-requests', 'StateRequestController@create');
         $router->put('/state-requests/update/{id}', 'StateRequestController@update');
         $router->delete('/state-requests/delete/{id}', 'StateRequestController@delete');
+
+        /**
+         * States request
+         */
+        $router->get('/sub-states/getall', 'SubStateController@getall');
+        $router->get('/sub-states/{id}', 'SubStateController@getById');
+        $router->post('/sub-states', 'SubStateController@create');
+        $router->put('/sub-states/update/{id}', 'SubStateController@update');
+        $router->delete('/sub-states/delete/{id}', 'SubStateController@delete');
     });
 });
