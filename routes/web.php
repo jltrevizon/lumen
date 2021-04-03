@@ -189,12 +189,21 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/tasks/delete/{id}', 'TaskController@delete');
 
         /**
-         * Tasks
+         * Transports
          */
         $router->get('/transports/getall', 'TransportController@getall');
         $router->get('/transports/{id}', 'TransportController@getById');
         $router->post('/transports', 'TransportController@create');
         $router->put('/transports/update/{id}', 'TransportController@update');
         $router->delete('/transports/delete/{id}', 'TransportController@delete');
+
+        /**
+         * TypeRequest
+         */
+        $router->get('/types-requests/getall', 'TypeRequestController@getall');
+        $router->get('/types-requests/{id}', 'TypeRequestController@getById');
+        $router->post('/types-requests', 'TypeRequestController@create');
+        $router->put('/types-requests/update/{id}', 'TypeRequestController@update');
+        $router->delete('/types-requests/delete/{id}', 'TypeRequestController@delete');
     });
 });
