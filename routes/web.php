@@ -115,5 +115,41 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/provinces', 'ProvinceController@create');
         $router->put('/provinces/update/{id}', 'ProvinceController@update');
         $router->delete('/provinces/delete/{id}', 'ProvinceController@delete');
+
+        /**
+         * Pending task
+         */
+        $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
+        $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
+        $router->post('/pending-tasks', 'PendingTaskController@create');
+        $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
+        $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
+
+        /**
+         * Purchase operations
+         */
+        $router->get('/purchase-operations/getall', 'PurchaseOperationController@getall');
+        $router->get('/purchase-operations/{id}', 'PurchaseOperationController@getById');
+        $router->post('/purchase-operations', 'PurchaseOperationController@create');
+        $router->put('/purchase-operations/update/{id}', 'PurchaseOperationController@update');
+        $router->delete('/purchase-operations/delete/{id}', 'PurchaseOperationController@delete');
+
+        /**
+         * Requests
+         */
+        $router->get('/requests/getall', 'RequestController@getall');
+        $router->get('/requests/{id}', 'RequestController@getById');
+        $router->post('/requests', 'RequestController@create');
+        $router->put('/requests/update/{id}', 'RequestController@update');
+        $router->delete('/requests/delete/{id}', 'RequestController@delete');
+
+        /**
+         * States
+         */
+        $router->get('/states/getall', 'StateController@getall');
+        $router->get('/states/{id}', 'StateController@getById');
+        $router->post('/states', 'StateController@create');
+        $router->put('/states/update/{id}', 'StateController@update');
+        $router->delete('/states/delete/{id}', 'StateController@delete');
     });
 });
