@@ -86,4 +86,52 @@ class PendingTaskController extends Controller
                         ->where('state_pending_task_id', 1)
                         ->get();
     }
+
+    public function startPendingTask(Request $request){
+        $pending_task = PendingTask::where('id', $request->get('pending_task_id'))
+                                ->first();
+        if($pending_task->state_pending_task_id == 1){
+            $pending_task->state_pending_task_id = 2;
+            $pending_task->datetime_start = date('Y-m-d H:i:s');
+            $pending_task->save();
+            return PendingTask::with(['state_pending_task'])
+                        ->where('id', $request->get('pending_task_id'))
+                        ->first();
+        } else {
+            return [
+                'message' => 'La tarea no está en estado pendiente'
+            ];
+        }
+    }
+
+    public function finishPendingTask(Request $request){
+        $pending_task = PendingTask::where('id', $request->get('pending_task_id'))
+                                ->first();
+        if($pending_task->state_pending_task_id == 2){
+            $pending_task->state_pending_task_id = 3;
+            $pending_task->datetime_finish = date('Y-m-d H:i:s');
+            $pending_task->save();
+            $pending_task_next = PendingTask::where('group_task_id', $pending_task->group_task_id)
+                                    ->where('order','>',$pending_task->order)
+                                    ->orderBy('order', 'asc')
+                                    ->first();
+            if($pending_task_next){
+                $pending_task_next->state_pending_task_id = 1;
+                $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
+                $pending_task_next->save();
+                return PendingTask::with(['state_pending_task'])
+                                ->where('id', $pending_task_next->id)
+                                ->first();
+            } else {
+                return [
+                    "status" => "OK",
+                    "message" => "No hay más tareas"
+                ];
+            }
+        } else {
+            return [
+                'message' => 'La tarea no está en estado iniciada'
+            ];
+        }
+    }
 }
