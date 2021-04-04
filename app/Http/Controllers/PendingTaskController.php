@@ -76,6 +76,14 @@ class PendingTaskController extends Controller
             $pending_task->order = $task['task_order'];
             $pending_task->save();
         }
-        return 'OK';
+        return [
+            'message' => 'OK'
+        ];
+    }
+
+    public function getPendingTask(){
+        return PendingTask::with(['vehicle','state_pending_task'])
+                        ->where('state_pending_task_id', 1)
+                        ->get();
     }
 }

@@ -19,7 +19,7 @@ class PendingTask extends Model
         return $this->belongsTo(Task::class, 'task_id');
     }
 
-    public function state_pending_task_id(){
+    public function state_pending_task(){
         return $this->belongsTo(StatePendingTask::class, 'state_pending_task_id');
     }
 

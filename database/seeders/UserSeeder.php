@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
         $user = $this->createUserAdmin();
         $newUser = new User();
         $newUser->name = $user['name'];
+        $newUser->role_id = $user['role_id'];
         $newUser->email = $user['email'];
         $newUser->password = $user['password'];
         $newUser->save();
