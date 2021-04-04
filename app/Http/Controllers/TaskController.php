@@ -21,6 +21,7 @@ class TaskController extends Controller
         $task->sub_state_id = $request->get('sub_state_id');
         $task->type_task_id = $request->get('type_task_id');
         $task->name = $request->get('name');
+        $task->duration = $request->get('duration');
         $task->save();
         return $task;
     }
@@ -31,6 +32,7 @@ class TaskController extends Controller
         if(isset($request['sub_state_id'])) $task->sub_state_id = $request->get('sub_state_id');
         if(isset($request['type_task_id'])) $task->type_task_id = $request->get('type_task_id');
         if(isset($request['name'])) $task->name = $request->get('name');
+        if(isset($request['duration'])) $task->duration = $request->get('duration');
         $task->updated_at = date('Y-m-d H:i:s');
         $task->save();
         return $task;

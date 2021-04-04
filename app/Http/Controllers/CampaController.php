@@ -8,11 +8,13 @@ use App\Models\Campa;
 class CampaController extends Controller
 {
     public function getAll(){
-        return Campa::all();
+        return Campa::with(['province'])
+                    ->get();
     }
 
     public function getById($id){
-        return Campa::where('id', $id)
+        return Campa::with(['province'])
+                    ->where('id', $id)
                     ->first();
     }
 

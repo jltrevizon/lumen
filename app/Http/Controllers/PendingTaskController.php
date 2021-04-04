@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PendingTask;
+use App\Http\Controllers\GroupTaskController;
+use App\Http\Controllers\TaskController;
 
 class PendingTaskController extends Controller
 {
+    public function __construct(GroupTaskController $groupTaskController, TaskController $taskController)
+    {
+        $this->groupTaskController = $groupTaskController;
+        $this->taskController = $taskController;
+    }
+
     public function getAll(){
         return PendingTask::all();
     }
@@ -50,5 +58,24 @@ class PendingTaskController extends Controller
         return [
             'message' => 'Pending task deleted'
         ];
+    }
+
+    public function createFromArray(Request $request){
+        $groupTask = $this->groupTaskController->create($request);
+        foreach($request->get('tasks') as $task){
+            $pending_task = new PendingTask();
+            $pending_task->vehicle_id = $request->get('vehicle_id');
+            $taskDescription = $this->taskController->getById($task['task_id']);
+            $pending_task->task_id = $task['task_id'];
+            if($task['task_order'] == 1){
+                $pending_task->state_pending_task_id = 1;
+                $pending_task->datetime_pending = date('Y-m-d H:i:s');
+            }
+            $pending_task->group_task_id = $groupTask->id;
+            $pending_task->duration = $taskDescription['duration'];
+            $pending_task->order = $task['task_order'];
+            $pending_task->save();
+        }
+        return 'OK';
     }
 }

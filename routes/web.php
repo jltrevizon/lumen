@@ -128,6 +128,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
+        $router->post('/pending-tasks/create-from-array', 'PendingTaskController@createFromArray');
 
         /**
          * Purchase operations
