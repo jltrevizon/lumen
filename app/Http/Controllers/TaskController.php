@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
+use App\Repositories\TaskRepository;
 
 class TaskController extends Controller
 {
@@ -44,5 +45,9 @@ class TaskController extends Controller
         return [
             'message' => 'Task deleted'
         ];
+    }
+
+    public function getTest(TaskRepository $taskRepository){
+        return $taskRepository->getTestRepository();
     }
 }

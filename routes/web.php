@@ -231,5 +231,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles', 'VehicleController@create');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
+
+
+        $router->get('/test','TaskController@getTest');
     });
 });
