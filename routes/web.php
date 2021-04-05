@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 */
 
 $router->get('/', function () use ($router) {
-    return '<h2>API CarFlex 3</h2>';
+    return '<h2>API CarFlex 4</h2>';
 });
 
 
