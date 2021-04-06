@@ -21,16 +21,9 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->group(['middleware' => ['cors']], function () use ($router) {
+    $router->post('/auth/signin', 'AuthController@login');
 
-        $router->post('/auth/signin', 'AuthController@login');
-    });
-       /* $router->group(['middleware' => 'cors'], function () use ($router) {
-            $router->post('/auth/signup', 'AuthController@register');
-            $router->get('/auth/signin', 'AuthController@login');
-        });*/
-
-    $router->group(['middleware' => ['auth', 'cors']], function () use ($router) {
+    $router->group(['middleware' => ['auth']], function () use ($router) {
 
         /**
          * Users
