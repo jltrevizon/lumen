@@ -19,10 +19,16 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->group(['prefix' => 'api', 'middleware' => 'cors'], function () use ($router) {
+$router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->post('/auth/signup', 'AuthController@register');
-    $router->post('/auth/signin', 'AuthController@login');
+    $router->group(['middleware' => ['cors']], function () use ($router) {
+
+        $router->post('/auth/signin', 'AuthController@login');
+    });
+       /* $router->group(['middleware' => 'cors'], function () use ($router) {
+            $router->post('/auth/signup', 'AuthController@register');
+            $router->get('/auth/signin', 'AuthController@login');
+        });*/
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
 
