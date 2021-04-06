@@ -19,7 +19,7 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group(['prefix' => 'api', 'middleware' => 'cors'], function () use ($router) {
 
     $router->post('/auth/signup', 'AuthController@register');
     $router->post('/auth/signin', 'AuthController@login');
