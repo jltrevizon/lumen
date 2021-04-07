@@ -44,6 +44,7 @@ class VehicleController extends Controller
         if($request->json()->get('state_id')) $vehicle->state_id = $request->json()->get('state_id');
         if($request->json()->get('ubication')) $vehicle->ubication = $request->json()->get('ubication');
         if($request->json()->get('plate')) $vehicle->plate = $request->json()->get('plate');
+        if($request->json()->get('kms')) $vehicle->kms = $request->json()->get('kms');
         if($request->json()->get('branch')) $vehicle->branch = $request->json()->get('branch');
         if($request->json()->get('vehicle_model')) $vehicle->vehicle_model = $request->json()->get('vehicle_model');
         if($request->json()->get('version')) $vehicle->version = $request->json()->get('version');
