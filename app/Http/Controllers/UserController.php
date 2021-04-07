@@ -18,8 +18,12 @@ class UserController extends Controller
 
     public function createUserWithoutPassword(Request $request){
         $user = new User();
-        $user->name = $request->get('name');
-        $user->email = $request->get('email');
+        $user->name = $request->json()->get('name');
+        $user->email = $request->json()->get('email');
+        if($request->json()->get('role_id')) $user->role_id = $request->json()->get('role_id');
+        if($request->json()->get('campa_id')) $user->campa_id = $request->json()->get('campa_id');
+        if($request->json()->get('avatar')) $user->avatar = $request->json()->get('avatar');
+        if($request->json()->get('phone')) $user->phone = $request->json()->get('phone');
         $user->save();
         return $user;
     }
@@ -27,12 +31,12 @@ class UserController extends Controller
     public function update(Request $request, $id){
         $user = User::where('id', $id)
                     ->first();
-        if(isset($request['role_id'])) $user->role_id = $request->get('role_id');
-        if(isset($request['campa_id'])) $user->campa_id = $request->get('campa_id');
-        if(isset($request['name'])) $user->name = $request->get('name');
-        if(isset($request['email'])) $user->email = $request->get('email');
-        if(isset($request['avatar'])) $user->avatar = $request->get('avatar');
-        if(isset($request['phone'])) $user->phone = $request->get('phone');
+        if($request->json()->get('role_id')) $user->role_id = $request->json()->get('role_id');
+        if($request->json()->get('campa_id')) $user->campa_id = $request->json()->get('campa_id');
+        if($request->json()->get('name')) $user->name = $request->json()->get('name');
+        if($request->json()->get('email')) $user->email = $request->json()->get('email');
+        if($request->json()->get('avatar')) $user->avatar = $request->json()->get('avatar');
+        if($request->json()->get('phone')) $user->phone = $request->json()->get('phone');
         $user->updated_at = date('Y-m-d H:i:s');
         $user->save();
         return $user;
@@ -53,18 +57,18 @@ class UserController extends Controller
 
     public function getUsersByRole(Request $request, $role_id){
         return User::where('role_id', $role_id)
-                    ->where('campa_id', $request->get('campa_id'))
+                    ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
     }
 
     public function getActiveUsers(Request $request){
         return User::where('active', true)
-                    ->where('campa_id', $request->get('campa_id'))
+                    ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
     }
 
     public function getUserByEmail(Request $request){
-        return User::where('email', $request->get('email'))
+        return User::where('email', $request->json()->get('email'))
                     ->first();
     }
 }

@@ -20,11 +20,11 @@ class CampaController extends Controller
 
     public function create(Request $request){
         $campa = new Campa();
-        $campa->company_id = $request->get('company_id');
-        if(isset($request['province_id'])) $campa->province_id = $request->get('province_id');
-        $campa->name = $request->get('name');
-        if(isset($request['location'])) $campa->location = $request->get('location');
-        if(isset($request['address'])) $campa->address = $request->get('address');
+        $campa->company_id = $request->json()->get('company_id');
+        if($request->json()->get('province_id')) $campa->province_id = $request->json()->get('province_id');
+        $campa->name = $request->json()->get('name');
+        if($request->json()->get('location')) $campa->location = $request->json()->get('location');
+        if($request->json()->get('address')) $campa->address = $request->json()->get('address');
         $campa->save();
         return $campa;
     }
@@ -32,12 +32,12 @@ class CampaController extends Controller
     public function update(Request $request, $id){
         $campa = Campa::where('id', $id)
                     ->first();
-        if(isset($request['company_id'])) $campa->company_id = $request->get('company_id');
-        if(isset($request['province_id'])) $campa->province_id = $request->get('province_id');
-        if(isset($request['name'])) $campa->name = $request->get('name');
-        if(isset($request['location'])) $campa->location = $request->get('location');
-        if(isset($request['address'])) $campa->address = $request->get('address');
-        if(isset($request['active'])) $campa->active = $request->get('active');
+        if($request->json()->get('company_id')) $campa->company_id = $request->json()->get('company_id');
+        if($request->json()->get('province_id')) $campa->province_id = $request->json()->get('province_id');
+        if($request->json()->get('name')) $campa->name = $request->json()->get('name');
+        if($request->json()->get('location')) $campa->location = $request->json()->get('location');
+        if($request->json()->get('address')) $campa->address = $request->json()->get('address');
+        if($request->json()->get('active')) $campa->active = $request->json()->get('active');
         $campa->updated_at = date('Y-m-d H:i:s');
         $campa->save();
         return $campa;
