@@ -8,7 +8,8 @@ use App\Models\SubState;
 class SubStateController extends Controller
 {
     public function getAll(){
-        return SubState::all();
+        return SubState::with(['state'])
+                    ->get();
     }
 
     public function getById($id){
