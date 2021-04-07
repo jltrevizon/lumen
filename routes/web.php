@@ -124,11 +124,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
+        //$router->get('/pending-tasks/pending', 'PendingTaskController@getPendingTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
         $router->post('/pending-tasks/create-from-array', 'PendingTaskController@createFromArray');
-        $router->get('/pending-tasks/pending', 'PendingTaskController@getPendingTask');
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
 
@@ -214,7 +214,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/types-requests/delete/{id}', 'TypeRequestController@delete');
 
         /**
-         * TypeRequest
+         * TypeTasks
          */
         $router->get('/types-tasks/getall', 'TypeTaskController@getall');
         $router->get('/types-tasks/{id}', 'TypeTaskController@getById');
@@ -223,7 +223,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/types-tasks/delete/{id}', 'TypeTaskController@delete');
 
         /**
-         * TypeRequest
+         * Vehicles
          */
         $router->get('/vehicles/getall', 'VehicleController@getall');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
