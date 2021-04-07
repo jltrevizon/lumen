@@ -19,4 +19,10 @@ class VehiclePictureController extends Controller
         $vehicle_picture->save();
         return $vehicle_picture;
     }
+
+    public function getPicturesByVehicle(Request $request){
+        return VehiclePicture::with(['vehicle'])
+                            ->where('vehicle_id', $request->json()->get('vehicle_id'))
+                            ->get();
+    }
 }

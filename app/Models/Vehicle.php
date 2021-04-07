@@ -9,6 +9,7 @@ use App\Models\state;
 use App\Models\Request;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
+use App\Models\VehiclePicture;
 
 class Vehicle extends Model
 {
@@ -34,5 +35,9 @@ class Vehicle extends Model
 
     public function group_tasks(){
         return $this->hasMany(GroupTask::class, 'vehicle_id');
+    }
+
+    public function vehicle_pictures(){
+        return $this->hasMany(VehiclePicture::class, 'vehicle_id');
     }
 }

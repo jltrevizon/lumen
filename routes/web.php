@@ -235,6 +235,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Vehicle Picture
          */
         $router->post('/vehicle-pictures', 'VehiclePictureController@create');
+        $router->post('/vehicle-pictures/by-vehicle', 'VehiclePictureController@getPicturesByVehicle');
+
         $router->get('/test','TaskController@getTest');
     });
 });

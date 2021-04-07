@@ -13,7 +13,8 @@ class VehicleController extends Controller
     }
 
     public function getById($id){
-        return Vehicle::where('id', $id)
+        return Vehicle::with(['campa'])
+                    ->where('id', $id)
                     ->first();
     }
 
