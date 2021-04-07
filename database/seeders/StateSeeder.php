@@ -27,6 +27,13 @@ class StateSeeder extends Seeder
             [ 'name' => 'En campa'],
             [ 'name' => 'Reservado' ],
             [ 'name' => 'Defletado' ],
+            [ 'name' => 'Taller' ],
+            [ 'name' => 'Disponible' ],
+            [ 'name' => 'Pre-Disponible' ],
+            [ 'name' => 'Pendiente Venta V.O.' ],
+            [ 'name' => 'Pendiente Recoger Cliente' ],
+            [ 'name' => 'En tránsito' ],
+            [ 'name' => 'Reservado Pre-Entrega' ],
         ];
     }
 }
