@@ -19,16 +19,17 @@ class VehicleController extends Controller
 
     public function create(Request $request){
         $vehicle = new Vehicle();
-        $vehicle->remote_id = $request->json()->get('remote_id');
+        if($request->json()->get('remote_id')) $vehicle->remote_id = $request->json()->get('remote_id');
         $vehicle->campa_id = $request->json()->get('campa_id');
         $vehicle->category_id = $request->json()->get('category_id');
-        $vehicle->state_id = $request->json()->get('state_id');
+        if($request->json()->get('state_id')) $vehicle->state_id = $request->json()->get('state_id');
+        if($request->json()->get('kms')) $vehicle->kms = $request->json()->get('kms');
         $vehicle->ubication = $request->json()->get('ubication');
         $vehicle->plate = $request->json()->get('plate');
         $vehicle->branch = $request->json()->get('branch');
         $vehicle->vehicle_model = $request->json()->get('vehicle_model');
-        $vehicle->version = $request->json()->get('version');
-        $vehicle->vin = $request->json()->get('vin');
+        if($request->json()->get('version')) $vehicle->version = $request->json()->get('version');
+        if($request->json()->get('vin')) $vehicle->vin = $request->json()->get('vin');
         $vehicle->first_plate = $request->json()->get('first_plate');
         $vehicle->save();
         return $vehicle;
