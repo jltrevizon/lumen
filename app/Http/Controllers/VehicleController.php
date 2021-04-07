@@ -8,7 +8,8 @@ use App\Models\Vehicle;
 class VehicleController extends Controller
 {
     public function getAll(){
-        return Vehicle::all();
+        return Vehicle::with(['campa'])
+                    ->get();
     }
 
     public function getById($id){
