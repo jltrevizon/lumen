@@ -234,6 +234,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
+        $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
 
         /**
          * Vehicle Picture

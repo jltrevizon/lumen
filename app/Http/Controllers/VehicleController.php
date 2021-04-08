@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DefleetVariable;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
+use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 
 class VehicleController extends Controller
@@ -73,6 +75,15 @@ class VehicleController extends Controller
         } else {
             return response()->json(['registered' => false], 200);
         }
+    }
+
+    public function vehicleDefleet(){
+        $variables = DefleetVariable::first();
+        $date1 = new DateTime("Y-m-d");
+        $vehicle = Vehicle::where('plate', '8181CLB')->first();
+        $date2 = new DateTime($vehicle['first_plate']);
+        $diff = $date1->diff($date2);
+        return $diff->d;
     }
 
     public function delete($id){
