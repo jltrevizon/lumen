@@ -18,7 +18,7 @@ class StateRequestController extends Controller
 
     public function create(Request $request){
         $state_request = new StateRequest();
-        $state_request->name = $request->get('name');
+        $state_request->name = $request->json()->get('name');
         $state_request->save();
         return $state_request;
     }
@@ -26,7 +26,7 @@ class StateRequestController extends Controller
     public function update(Request $request, $id){
         $state_request = StateRequest::where('id', $id)
                     ->first();
-        $state_request->name = $request->get('name');
+        $state_request->name = $request->json()->get('name');
         $state_request->updated_at = date('Y-m-d H:i:s');
         $state_request->save();
         return $state_request;

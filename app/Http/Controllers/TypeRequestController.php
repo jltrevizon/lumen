@@ -18,7 +18,7 @@ class TypeRequestController extends Controller
 
     public function create(Request $request){
         $type_request = new TypeRequest();
-        $type_request->name = $request->get('name');
+        $type_request->name = $request->json()->get('name');
         $type_request->save();
         return $type_request;
     }
@@ -26,7 +26,7 @@ class TypeRequestController extends Controller
     public function update(Request $request, $id){
         $type_request = TypeRequest::where('id', $id)
                     ->first();
-        if(isset($request['name'])) $type_request->name = $request->get('name');
+        if(isset($request['name'])) $type_request->name = $request->json()->get('name');
         $type_request->updated_at = date('Y-m-d H:i:s');
         $type_request->save();
         return $type_request;
