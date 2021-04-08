@@ -27,6 +27,7 @@ class UserController extends Controller
         if($request->json()->get('avatar')) $user->avatar = $request->json()->get('avatar');
         if($request->json()->get('phone')) $user->phone = $request->json()->get('phone');
         $user->save();
+        return $user;
     }
 
     public function createUserWithoutPassword(Request $request){
