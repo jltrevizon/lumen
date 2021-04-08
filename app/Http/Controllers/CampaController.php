@@ -18,6 +18,11 @@ class CampaController extends Controller
                     ->first();
     }
 
+    public function getByCompany(Request $request){
+        return Campa::where('company_id', $request->json()->get('company_id'))
+                    ->get();
+    }
+
     public function create(Request $request){
         $campa = new Campa();
         $campa->company_id = $request->get('company_id');
