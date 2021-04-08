@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function getAll(){
-        return User::all();
+        return User::with(['campa'])
+                    ->get();
     }
 
     public function getById($id){
-        return User::where('id', $id)
+        return User::with(['campa'])
+                    ->where('id', $id)
                     ->first();
     }
 
@@ -70,19 +72,22 @@ class UserController extends Controller
     }
 
     public function getUsersByRole(Request $request, $role_id){
-        return User::where('role_id', $role_id)
+        return User::with(['campa'])
+                    ->where('role_id', $role_id)
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
     }
 
     public function getActiveUsers(Request $request){
-        return User::where('active', true)
+        return User::with(['campa'])
+                    ->where('active', true)
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
     }
 
     public function getUserByEmail(Request $request){
-        return User::where('email', $request->json()->get('email'))
+        return User::with(['campa'])
+                    ->where('email', $request->json()->get('email'))
                     ->first();
     }
 }
