@@ -91,6 +91,17 @@ class PendingTaskController extends Controller
         ];
     }
 
+    public function getPendingOrNextTask(){
+        return PendingTask::with(['vehicle', 'state_pending_task'])
+                    ->where(function ($query) {
+                        return $query->where('state_pending_task_id', 1)
+                                ->orWhere('state_pending_task_id', 2);
+                    })
+
+                    ->get();
+
+    }
+
     public function getPendingTask(){
         return PendingTask::with(['vehicle','state_pending_task'])
                         ->where('state_pending_task_id', 1)
