@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 
 class VehicleController extends Controller
 {
@@ -16,6 +17,15 @@ class VehicleController extends Controller
         return Vehicle::with(['campa'])
                     ->where('id', $id)
                     ->first();
+    }
+
+    public function getByCompany(Request $request){
+        return Vehicle::with(['campa'])
+                ->whereHas('campa', function(Builder $builder) use ($request) {
+                    return $builder->where('company_id', $request->json()->get('company_id'));
+                })
+                ->get();
+
     }
 
     public function create(Request $request){
