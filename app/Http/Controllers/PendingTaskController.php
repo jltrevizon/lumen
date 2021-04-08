@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PendingTask;
 use App\Http\Controllers\GroupTaskController;
 use App\Http\Controllers\TaskController;
+use App\Models\Task;
 
 class PendingTaskController extends Controller
 {
@@ -76,6 +77,15 @@ class PendingTaskController extends Controller
             $pending_task->order = $task['task_order'];
             $pending_task->save();
         }
+        $pending_task = new PendingTask();
+        $pending_task->vehicle_id = $request->json()->get('vehicle_id');
+        $task = Task::where('id', 1)->first();
+        $pending_task->task_id = $task->id;
+        $pending_task->duration = $task->duration;
+        $pending_task->group_task_id = $groupTask->id;
+        $pending_task->order = 100;
+        $pending_task->save();
+
         return [
             'message' => 'OK'
         ];
