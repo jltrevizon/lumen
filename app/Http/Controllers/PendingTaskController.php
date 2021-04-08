@@ -62,9 +62,9 @@ class PendingTaskController extends Controller
 
     public function createFromArray(Request $request){
         $groupTask = $this->groupTaskController->create($request);
-        foreach($request->get('tasks') as $task){
+        foreach($request->json()->get('tasks') as $task){
             $pending_task = new PendingTask();
-            $pending_task->vehicle_id = $request->get('vehicle_id');
+            $pending_task->vehicle_id = $request->json()->get('vehicle_id');
             $taskDescription = $this->taskController->getById($task['task_id']);
             $pending_task->task_id = $task['task_id'];
             if($task['task_order'] == 1){

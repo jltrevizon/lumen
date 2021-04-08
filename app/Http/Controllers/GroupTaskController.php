@@ -19,7 +19,7 @@ class GroupTaskController extends Controller
 
     public function create(Request $request){
         $group_task = new GroupTask();
-        $group_task->vehicle_id = $request->get('vehicle_id');
+        $group_task->vehicle_id = $request->json()->get('vehicle_id');
         $group_task->save();
         return $group_task;
     }
@@ -27,7 +27,7 @@ class GroupTaskController extends Controller
     public function update(Request $request, $id){
         $group_task = GroupTask::where('id', $id)
                         ->first();
-        $group_task->vehicle_id = $request->get('vehicle_id');
+        $group_task->vehicle_id = $request->json()->get('vehicle_id');
         $group_task->updated_at = date('Y-m-d H:i:s');
         $group_task->save();
         return $group_task;
