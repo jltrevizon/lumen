@@ -20,7 +20,8 @@ class VehiclePictureController extends Controller
         $vehicle_picture->latitude = $request->json()->get('latitude');
         $vehicle_picture->longitude = $request->json()->get('longitude');
         $vehicle_picture->save();
-        return $vehicle_picture;
+        return VehiclePicture::where('vehicle_id', $request->json()->get('vehicle_id'))
+                            ->get();
     }
 
     public function getPicturesByVehicle(Request $request){
