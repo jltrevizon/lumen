@@ -25,7 +25,6 @@ class VehicleController extends Controller
                     return $builder->where('company_id', $request->json()->get('company_id'));
                 })
                 ->get();
-
     }
 
     public function create(Request $request){
@@ -64,6 +63,16 @@ class VehicleController extends Controller
         $vehicle->updated_at = date('Y-m-d H:i:s');
         $vehicle->save();
         return $vehicle;
+    }
+
+    public function verifyPlate(Request $request){
+        $vehicle = Vehicle::where('plate', $request->json()->get('plate'))
+                    ->first();
+        if($vehicle){
+            return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
+        } else {
+            return response()->json(['registered' => false], 200);
+        }
     }
 
     public function delete($id){
