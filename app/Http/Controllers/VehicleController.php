@@ -66,7 +66,6 @@ class VehicleController extends Controller
     }
 
     public function verifyPlate(Request $request){
-        return response()->json(['Hola' => 'Hola']);
         $vehicle = Vehicle::where('plate', $request->json()->get('plate'))
                     ->first();
         if($vehicle){
