@@ -242,5 +242,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicle-pictures/by-vehicle', 'VehiclePictureController@getPicturesByVehicle');
 
         $router->get('/test','TaskController@getTest');
+
+        /**
+         * Variables defleet
+         */
+        $router->get('/defleet-variables', 'DefleetVariableController@getVariables');
+        $router->put('/defleet-variables', 'DefleetVariableController@updateVariables');
+
     });
 });
