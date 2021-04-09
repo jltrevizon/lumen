@@ -23,6 +23,10 @@ class VehicleController extends Controller
 
     public function getByCompany(Request $request){
         return Vehicle::with(['campa'])
+                ->whereHas('requests', function(Builder $builder) use ($request) {
+                    return $builder->where('state_request_id', 3);
+                })
+                ->orWhereDoesntHave('requests')
                 ->whereHas('campa', function(Builder $builder) use ($request) {
                     return $builder->where('company_id', $request->json()->get('company_id'));
                 })
