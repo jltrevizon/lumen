@@ -126,7 +126,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
-        $router->get('/pending-tasks/pending', 'PendingTaskController@getPendingTask');
         $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
