@@ -19,7 +19,7 @@ class RequestController extends Controller
     public function create(Request $request){
         $request_vehicle = new RequestVehicle();
         $request_vehicle->vehicle_id = $request->json()->get('vehicle_id');
-        $request_vehicle->state_request_id = $request->json()->get('state_request_id');
+        $request_vehicle->state_request_id = 1;
         $request_vehicle->type_request_id = $request->json()->get('type_request_id');
         $request_vehicle->save();
         return $request_vehicle;
