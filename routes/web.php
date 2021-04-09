@@ -126,7 +126,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
-        //$router->get('/pending-tasks/pending', 'PendingTaskController@getPendingTask');
+        $router->get('/pending-tasks/pending', 'PendingTaskController@getPendingTask');
         $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
@@ -235,15 +235,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
-        $router->get('/vehicles/request/defleet', 'VehicleController@vehicleDefleet');
+        $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
 
         /**
          * Vehicle Picture
          */
         $router->post('/vehicle-pictures', 'VehiclePictureController@create');
         $router->post('/vehicle-pictures/by-vehicle', 'VehiclePictureController@getPicturesByVehicle');
-
-        $router->get('/test','TaskController@getTest');
 
         /**
          * Variables defleet

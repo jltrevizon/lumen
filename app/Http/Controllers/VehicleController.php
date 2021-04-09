@@ -77,13 +77,22 @@ class VehicleController extends Controller
         }
     }
 
-    public function vehicleDefleet(){
+    public function vehicleDefleet(Request $request){
         $variables = DefleetVariable::first();
-        $date1 = new DateTime("Y-m-d");
-        $vehicle = Vehicle::where('plate', '8181CLB')->first();
-        $date2 = new DateTime($vehicle['first_plate']);
-        $diff = $date1->diff($date2);
-        return $diff->d;
+        $date = date("Y-m-d");
+        $date1 = new DateTime($date);
+        $vehicles = Vehicle::where('campa_id', $request->json()->get('campa_id'))
+                        ->get();
+        $array_vehicles = [];
+        foreach($vehicles as $vehicle){
+            $date2 = new DateTime($vehicle['first_plate']);
+            $diff = $date1->diff($date2);
+            $age = $diff->y;
+            if($age > $variables->years || $vehicle['kms'] > $variables->kms){
+                array_push($array_vehicles, $vehicle);
+            }
+        }
+        return $array_vehicles;
     }
 
     public function delete($id){
