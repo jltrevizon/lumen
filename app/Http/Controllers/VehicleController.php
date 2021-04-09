@@ -84,6 +84,7 @@ class VehicleController extends Controller
         $vehicles = Vehicle::with(['campa', 'category', 'state'])
                         ->where('campa_id', $request->json()->get('campa_id'))
                         ->get();
+        return $vehicles;
         $array_vehicles = [];
         foreach($vehicles as $vehicle){
             $date2 = new DateTime($vehicle['first_plate']);
