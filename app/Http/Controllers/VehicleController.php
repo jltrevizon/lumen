@@ -81,10 +81,9 @@ class VehicleController extends Controller
         $variables = DefleetVariable::first();
         $date = date("Y-m-d");
         $date1 = new DateTime($date);
-        $vehicles = Vehicle::with(['campa', 'category', 'state'])
+        $vehicles = Vehicle::with(['campa', 'state'])
                         ->where('campa_id', $request->json()->get('campa_id'))
                         ->get();
-        return $vehicles;
         $array_vehicles = [];
         foreach($vehicles as $vehicle){
             $date2 = new DateTime($vehicle['first_plate']);
