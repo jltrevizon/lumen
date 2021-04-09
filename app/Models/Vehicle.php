@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Campa;
 use App\Models\Category;
-use App\Models\state;
+use App\Models\State;
 use App\Models\Request;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
