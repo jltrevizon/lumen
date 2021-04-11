@@ -254,5 +254,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/questions/getall', 'QuestionController@getAll');
         $router->post('/questions', 'QuestionController@create');
         $router->delete('/questions/{id}', 'QuestionController@delete');
+
+        /**
+         * Questions answer
+         */
+        $router->post('/questions-answers', 'QuestionAnswerController@create');
     });
 });
