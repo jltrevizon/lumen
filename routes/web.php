@@ -248,5 +248,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/defleet-variables', 'DefleetVariableController@getVariables');
         $router->put('/defleet-variables', 'DefleetVariableController@updateVariables');
 
+        /**
+         * Questions
+         */
+        $router->get('/questions/getall', 'QuestionController@getAll');
+        $router->post('/questions', 'QuestionController@create');
+        $router->delete('/questions/{id}', 'QuestionController@delete');
     });
 });
