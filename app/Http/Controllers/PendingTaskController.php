@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\PendingTask;
 use App\Http\Controllers\GroupTaskController;
 use App\Http\Controllers\TaskController;
+use App\Models\Incidence;
 use App\Models\User;
 use App\Models\VehiclePicture;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,10 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PendingTaskController extends Controller
 {
-    public function __construct(GroupTaskController $groupTaskController, TaskController $taskController)
+    public function __construct(GroupTaskController $groupTaskController, TaskController $taskController, IncidenceController $incidenceController)
     {
         $this->groupTaskController = $groupTaskController;
         $this->taskController = $taskController;
+        $this->incidenceController = $incidenceController;
     }
 
     public function getAll(){
@@ -75,6 +77,17 @@ class PendingTaskController extends Controller
         $pending_task->updated_at = date('Y-m-d H:i:s');
         $pending_task->save();
         return $pending_task;
+    }
+
+    public function createIncidence(Request $request){
+        $incidence = $this->incidenceController->createIncidence($request);
+        $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
+                                ->first();
+        $pending_task->incidence_id = $incidence->id;
+        $pending_task->save();
+        return [
+            'message' => 'Ok'
+        ];
     }
 
     public function delete($id){

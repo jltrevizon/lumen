@@ -24,6 +24,14 @@ class IncidenceController extends Controller
         return $incidence;
     }
 
+    public function createIncidence($request){
+        $incidence = new Incidence();
+        $incidence->description = $request->json()->get('description');
+        $incidence->resolved = false;
+        $incidence->save();
+        return $incidence;
+    }
+
     public function update(Request $request, $id){
         $incidence = Incidence::where('id', $id)
                         ->first();
