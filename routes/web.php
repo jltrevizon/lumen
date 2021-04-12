@@ -151,6 +151,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/requests', 'RequestController@create');
         $router->put('/requests/update/{id}', 'RequestController@update');
         $router->delete('/requests/delete/{id}', 'RequestController@delete');
+        $router->get('requests/defleet/requested', 'RequestController@vehiclesRequestedDefleet');
 
         /**
          * States

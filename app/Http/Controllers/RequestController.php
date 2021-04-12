@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Request as RequestVehicle;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller
 {
@@ -54,6 +57,18 @@ class RequestController extends Controller
         $request_vehicle->updated_at = date('Y-m-d H:i:s');
         $request_vehicle->save();
         return $request_vehicle;
+    }
+
+    public function vehiclesRequestedDefleet(){
+        $user = User::where('id', Auth::id())
+                ->first();
+        return RequestVehicle::with(['vehicle','state_request','type_request'])
+                            ->whereHas('vehicle', function(Builder $builder) use ($user){
+                                return $builder->where('campa_id', $user->campa_id);
+                            })
+                            ->where('type_request_id', 1)
+                            ->where('state_request_id', 2)
+                            ->get();
     }
 
     public function delete($id){
