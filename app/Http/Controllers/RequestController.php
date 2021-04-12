@@ -80,7 +80,6 @@ class RequestController extends Controller
     }
 
     public function declineRequest(Request $request){
-        return  'hola';
         $request_vehicle = RequestVehicle::where('id', $request->json()->get('request_id'))
                                     ->first();
         $request_vehicle->state_request_id = 3;
