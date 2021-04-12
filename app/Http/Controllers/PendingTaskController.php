@@ -23,7 +23,8 @@ class PendingTaskController extends Controller
     }
 
     public function getById($id){
-        return PendingTask::where('id', $id)
+        return PendingTask::with(['vehicle','task','state_pending_task'])
+                        ->where('id', $id)
                         ->first();
     }
 
