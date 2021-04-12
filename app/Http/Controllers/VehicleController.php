@@ -91,11 +91,11 @@ class VehicleController extends Controller
         $date = date("Y-m-d");
         $date1 = new DateTime($date);
         $vehicles = Vehicle::with(['campa','category','state'])
-                        ->where('campa_id', $request->json()->get('campa_id'))
                         ->whereHas('requests', function(Builder $builder) use ($request) {
                             return $builder->where('state_request_id', 3);
                         })
                         ->orWhereDoesntHave('requests')
+                        ->where('campa_id', $request->json()->get('campa_id'))
                         ->get();
         $array_vehicles = [];
         foreach($vehicles as $vehicle){
