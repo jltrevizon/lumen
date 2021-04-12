@@ -60,7 +60,7 @@ class RequestController extends Controller
     }
 
     public function vehiclesRequestedDefleet(Request $request){
-        return RequestVehicle::with(['vehicle.state','vehicle.category','state_request','type_request'])
+        return RequestVehicle::with(['vehicle.state','vehicle.category','vehicle.campa','state_request','type_request'])
                             ->whereHas('vehicle', function(Builder $builder) use ($request){
                                 return $builder->where('campa_id', $request->json()->get('campa_id'));
                             })
