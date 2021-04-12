@@ -29,7 +29,7 @@ class RequestController extends Controller
                                             ->where('state_request_id', 1)
                                             ->get();
             if(count($request_active) > 0){
-
+                $request_active = true;
             } else {
                 $request_vehicle->vehicle_id = $vehicle['vehicle_id'];
                 $request_vehicle->state_request_id = 1;
