@@ -134,6 +134,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
         $router->post('/pending-tasks/incidence', 'PendingTaskController@createIncidence');
+        $router->post('/pending-tasks/resolved', 'PendingTaskController@resolvedIncidence');
 
         /**
          * Purchase operations

@@ -30,7 +30,7 @@ class PendingTaskController extends Controller
                                 ->first();
         $vehicle_pictures = VehiclePicture::where('vehicle_id', $task->vehicle_id)
                                     ->first();
-        $pending_task = PendingTask::with(['vehicle','task','state_pending_task'])
+        $pending_task = PendingTask::with(['vehicle','task','state_pending_task','incidende'])
                                     ->where('id', $id)
                                     ->first();
         return [
@@ -88,6 +88,13 @@ class PendingTaskController extends Controller
         return [
             'message' => 'Ok'
         ];
+    }
+
+    public function resolvedIncidence(Request $request){
+        $this->incidenceController->resolved($request);
+        return PendingTask::with(['incidence'])
+                        ->where('id', $request->json()->get('pending_task_id'))
+                        ->first();
     }
 
     public function delete($id){
