@@ -59,15 +59,13 @@ class RequestController extends Controller
         return $request_vehicle;
     }
 
-    public function vehiclesRequestedDefleet(){
-        $user = User::where('id', Auth::id())
-                ->first();
+    public function vehiclesRequestedDefleet(Request $request){
         return RequestVehicle::with(['vehicle','state_request','type_request'])
-                            ->whereHas('vehicle', function(Builder $builder) use ($user){
-                                return $builder->where('campa_id', $user->campa_id);
+                            ->whereHas('vehicle', function(Builder $builder) use ($request){
+                                return $builder->where('campa_id', $request->json()->get('campa_id'));
                             })
                             ->where('type_request_id', 1)
-                            ->where('state_request_id', 2)
+                            ->where('state_request_id', 1)
                             ->get();
     }
 
