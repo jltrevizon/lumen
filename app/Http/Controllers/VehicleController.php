@@ -116,4 +116,12 @@ class VehicleController extends Controller
             'message' => 'Vehicle deleted'
         ];
     }
+
+    public function updateGeolocation($request){
+        $vehicle = Vehicle::where('id', $request->json()->get('vehicle_id'))
+                    ->first();
+        $vehicle->latitude = $request->json()->get('latitude');
+        $vehicle->longitude = $request->json()->get('longitude');
+        $vehicle->save();
+    }
 }

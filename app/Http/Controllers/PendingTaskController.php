@@ -14,11 +14,12 @@ use Illuminate\Support\Facades\Auth;
 
 class PendingTaskController extends Controller
 {
-    public function __construct(GroupTaskController $groupTaskController, TaskController $taskController, IncidenceController $incidenceController)
+    public function __construct(GroupTaskController $groupTaskController, TaskController $taskController, IncidenceController $incidenceController, VehicleController $vehicleController)
     {
         $this->groupTaskController = $groupTaskController;
         $this->taskController = $taskController;
         $this->incidenceController = $incidenceController;
+        $this->vehicleController = $vehicleController;
     }
 
     public function getAll(){
@@ -129,6 +130,7 @@ class PendingTaskController extends Controller
         $pending_task->duration = $taskDescription['duration'];
         $pending_task->order = 100;
         $pending_task->save();
+        $this->vehicleController->updateGeolocation($request);
         return [
             'message' => 'OK'
         ];
