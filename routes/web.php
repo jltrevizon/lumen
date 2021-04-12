@@ -261,6 +261,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Questions answer
          */
-        $router->post('/questions-answers', 'QuestionAnswerController@create');
+        $router->post('/question-answers', 'QuestionAnswerController@create');
     });
 });

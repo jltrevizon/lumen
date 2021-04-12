@@ -79,6 +79,15 @@ class RequestController extends Controller
                         ->first();
     }
 
+    public function getConfirmedRequest(Request $request){
+        return RequestVehicle::whereHas('vehicle', function (Builder $builder) use($request){
+            return $builder->where('campa_id', $request->json()->get('campa_id'));
+        })
+                            ->where('type_request_id', $request->json()->get('type_request_id'))
+                            ->where('state_request_id', 2)
+                            ->get();
+    }
+
     public function declineRequest(Request $request){
         $request_vehicle = RequestVehicle::where('id', $request->json()->get('request_id'))
                                     ->first();
