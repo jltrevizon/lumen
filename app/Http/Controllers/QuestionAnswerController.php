@@ -14,12 +14,18 @@ class QuestionAnswerController extends Controller
     }
 
     public function create(Request $request){
-        $questionAnswer = new QuestionAnswer();
-        $questionAnswer->questionnaire_id = $this->questionnaireController->create($request->json()->get('vehicle_id'));
-        $questionAnswer->question_id = $request->json()->get('question_id');
-        $questionAnswer->response = $request->json()->get('response');
-        $questionAnswer->description = $request->json()->get('description');
-        $questionAnswer->save();
-        return $questionAnswer;
+        $questionnaire = $this->questionnaireController->create($request->json()->get('vehicle_id'));
+        $questions = $request->json()->get('questions');
+        foreach($questions as $question){
+            $questionAnswer = new QuestionAnswer();
+            $questionAnswer->questionnaire_id = $questionnaire->id;
+            $questionAnswer->question_id = $question['question_id'];
+            $questionAnswer->response = $question['response'];
+            $questionAnswer->description = $question['description'];
+            $questionAnswer->save();
+        }
+        return [
+            'message' => 'Ok'
+        ];
     }
 }
