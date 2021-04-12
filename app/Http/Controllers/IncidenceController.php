@@ -36,6 +36,7 @@ class IncidenceController extends Controller
         $incidence = Incidence::where('id', $request->json()->get('incidence_id'))
                             ->first();
         $incidence->resolved = true;
+        $incidence->save();
     }
 
     public function update(Request $request, $id){
