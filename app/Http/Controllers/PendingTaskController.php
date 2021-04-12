@@ -30,7 +30,7 @@ class PendingTaskController extends Controller
                                 ->first();
         $vehicle_pictures = VehiclePicture::where('vehicle_id', $task->vehicle_id)
                                     ->first();
-        $pending_task = PendingTask::with(['vehicle','task','state_pending_task','incidende'])
+        $pending_task = PendingTask::with(['vehicle','task','state_pending_task','incidence'])
                                     ->where('id', $id)
                                     ->first();
         return [
