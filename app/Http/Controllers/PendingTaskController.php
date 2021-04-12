@@ -116,7 +116,7 @@ class PendingTaskController extends Controller
 
 
     public function startPendingTask(Request $request){
-        $pending_task = PendingTask::where('id', $request->get('pending_task_id'))
+        $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
                                 ->first();
         if($pending_task->state_pending_task_id == 1){
             $pending_task->state_pending_task_id = 2;
@@ -131,7 +131,7 @@ class PendingTaskController extends Controller
     }
 
     public function finishPendingTask(Request $request){
-        $pending_task = PendingTask::where('id', $request->get('pending_task_id'))
+        $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
                                 ->first();
         if($pending_task->state_pending_task_id == 2){
             $pending_task->state_pending_task_id = 3;
