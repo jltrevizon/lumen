@@ -18,7 +18,7 @@ class QuestionAnswerController extends Controller
         $questions = $request->json()->get('questions');
         foreach($questions as $question){
             $questionAnswer = new QuestionAnswer();
-            $questionAnswer->questionnaire_id = $questionnaire->id;
+            $questionAnswer->questionnaire_id = $questionnaire;
             $questionAnswer->question_id = $question['question_id'];
             $questionAnswer->response = $question['response'];
             $questionAnswer->description = $question['description'];
