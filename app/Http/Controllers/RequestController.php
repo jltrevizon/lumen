@@ -69,6 +69,27 @@ class RequestController extends Controller
                             ->get();
     }
 
+    public function confirmedRequest(Request $request){
+        $request_vehicle = RequestVehicle::where('id', $request->json()->get('request_id'))
+                                    ->first();
+        $request_vehicle->state_request_id = 2;
+        $request_vehicle->save();
+        return RequestVehicle::with(['state_request'])
+                        ->where('id', $request->json()->get('request_id'))
+                        ->first();
+    }
+
+    public function declineRequest(Request $request){
+        return  'hola';
+        $request_vehicle = RequestVehicle::where('id', $request->json()->get('request_id'))
+                                    ->first();
+        $request_vehicle->state_request_id = 3;
+        $request_vehicle->save();
+        return RequestVehicle::with(['state_request'])
+                        ->where('id', $request->json()->get('request_id'))
+                        ->first();
+    }
+
     public function delete($id){
         RequestVehicle::where('id', $id)
                 ->delete();
