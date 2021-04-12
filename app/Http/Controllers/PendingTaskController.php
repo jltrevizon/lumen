@@ -153,6 +153,16 @@ class PendingTaskController extends Controller
                 ];
             }
         } else {
+            if($pending_task->task_id == 1){
+                $pending_task->state_pending_task_id = 3;
+                $pending_task->datetime_start = date('Y-m-d H:i:s');
+                $pending_task->datetime_finish = date('Y-m-d H:i:s');
+                $pending_task->save();
+
+                return [
+                    'message' => 'Tareas terminadas'
+                ];
+            }
             return [
                 'message' => 'La tarea no está en estado iniciada'
             ];
