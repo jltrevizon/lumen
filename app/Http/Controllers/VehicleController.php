@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\DefleetVariable;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
@@ -72,7 +74,10 @@ class VehicleController extends Controller
     }
 
     public function verifyPlate(Request $request){
+        $user = User::where('id', Auth::id())
+                    ->first();
         $vehicle = Vehicle::where('plate', $request->json()->get('plate'))
+                    ->where('campa_id', $user->campa_id)
                     ->first();
         if($vehicle){
             return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
