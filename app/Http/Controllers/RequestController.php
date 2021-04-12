@@ -19,14 +19,28 @@ class RequestController extends Controller
     public function create(Request $request){
         $array_request = [];
         $vehicles = $request->json()->get('vehicles');
+        $request_active = false;
         foreach($vehicles as $vehicle){
             $request_vehicle = new RequestVehicle();
-            $request_vehicle->vehicle_id = $vehicle['vehicle_id'];
-            $request_vehicle->state_request_id = 1;
-            $request_vehicle->type_request_id = $vehicle['type_request_id'];
-            $request_vehicle->datetime_request = date('Y-m-d H:i:s');
-            $request_vehicle->save();
-            array_push($array_request, $request_vehicle);
+            $request_active = RequestVehicle::where('vehicle_id', $vehicle['vehicle_id'])
+                                            ->where('state_request_id', 1)
+                                            ->get();
+            if(count($request_active) > 0){
+
+            } else {
+                $request_vehicle->vehicle_id = $vehicle['vehicle_id'];
+                $request_vehicle->state_request_id = 1;
+                $request_vehicle->type_request_id = $vehicle['type_request_id'];
+                $request_vehicle->datetime_request = date('Y-m-d H:i:s');
+                $request_vehicle->save();
+                array_push($array_request, $request_vehicle);
+            }
+        }
+        if($request_active == true){
+            return [
+                'message' => 'Existen vehículos que tienen una solicitud activa',
+                'requests' => $array_request
+            ];
         }
         return $array_request;
     }
