@@ -7,6 +7,7 @@ use App\Models\PendingTask;
 use App\Http\Controllers\GroupTaskController;
 use App\Http\Controllers\TaskController;
 use App\Models\User;
+use App\Models\VehiclePicture;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,9 +24,17 @@ class PendingTaskController extends Controller
     }
 
     public function getById($id){
-        return PendingTask::with(['vehicle','task','state_pending_task'])
-                        ->where('id', $id)
-                        ->first();
+        $task = PendingTask::where('id', $id)
+                                ->first();
+        $vehicle_pictures = VehiclePicture::where('vehicle_id', $task->vehicle_id)
+                                    ->first();
+        $pending_task = PendingTask::with(['vehicle','task','state_pending_task'])
+                                    ->where('id', $id)
+                                    ->first();
+        return [
+            'task' => $pending_task,
+            'picture' => $vehicle_pictures
+        ];
     }
 
     public function getPendingOrNextTask(){
