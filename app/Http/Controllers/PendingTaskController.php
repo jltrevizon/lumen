@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\PendingTask;
 use App\Http\Controllers\GroupTaskController;
 use App\Http\Controllers\TaskController;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class PendingTaskController extends Controller
 {
@@ -22,6 +25,18 @@ class PendingTaskController extends Controller
     public function getById($id){
         return PendingTask::where('id', $id)
                         ->first();
+    }
+
+    public function getPendingOrNextTask(){
+        $user = User::where('id', Auth::id())
+                ->first();
+        return PendingTask::with(['task','state_pending_task','group_task','vehicle'])
+                        ->whereHas('vehicle', function(Builder $builder) use($user){
+                            return $builder->where('campa_id', $user->campa_id);
+                        })
+                        ->where('state_pending_task_id', 1)
+                        ->orWhere('state_pending_task_id', 2)
+                        ->get();
     }
 
     public function create(Request $request){
@@ -62,9 +77,9 @@ class PendingTaskController extends Controller
 
     public function createFromArray(Request $request){
         $groupTask = $this->groupTaskController->create($request);
-        foreach($request->get('tasks') as $task){
+        foreach($request->json()->get('tasks') as $task){
             $pending_task = new PendingTask();
-            $pending_task->vehicle_id = $request->get('vehicle_id');
+            $pending_task->vehicle_id = $request->json()->get('vehicle_id');
             $taskDescription = $this->taskController->getById($task['task_id']);
             $pending_task->task_id = $task['task_id'];
             if($task['task_order'] == 1){
@@ -76,6 +91,14 @@ class PendingTaskController extends Controller
             $pending_task->order = $task['task_order'];
             $pending_task->save();
         }
+        $pending_task = new PendingTask();
+        $pending_task->vehicle_id = $request->json()->get('vehicle_id');
+        $taskDescription = $this->taskController->getById(1);
+        $pending_task->group_task_id = $groupTask->id;
+        $pending_task->task_id = $taskDescription->id;
+        $pending_task->duration = $taskDescription['duration'];
+        $pending_task->order = 100;
+        $pending_task->save();
         return [
             'message' => 'OK'
         ];
