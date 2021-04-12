@@ -112,9 +112,7 @@ class PendingTaskController extends Controller
             $pending_task->state_pending_task_id = 2;
             $pending_task->datetime_start = date('Y-m-d H:i:s');
             $pending_task->save();
-            return PendingTask::with(['state_pending_task'])
-                        ->where('id', $request->get('pending_task_id'))
-                        ->first();
+            return $this->getPendingOrNextTask();
         } else {
             return [
                 'message' => 'La tarea no está en estado pendiente'
@@ -137,9 +135,7 @@ class PendingTaskController extends Controller
                 $pending_task_next->state_pending_task_id = 1;
                 $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
                 $pending_task_next->save();
-                return PendingTask::with(['state_pending_task'])
-                                ->where('id', $pending_task_next->id)
-                                ->first();
+                return $this->getPendingOrNextTask();
             } else {
                 return [
                     "status" => "OK",
