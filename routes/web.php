@@ -156,6 +156,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/requests/defleet/requested', 'RequestController@vehiclesRequestedDefleet');
         $router->post('/requests/confirm', 'RequestController@confirmedRequest');
         $router->post('/requests/decline', 'RequestController@declineRequest');
+        $router->post('/requests/confirmed', 'RequestController@getConfirmedRequest');
 
         /**
          * States
