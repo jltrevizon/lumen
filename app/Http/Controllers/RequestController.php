@@ -80,7 +80,7 @@ class RequestController extends Controller
     }
 
     public function getConfirmedRequest(Request $request){
-        return RequestVehicle::with(['type_request','state_request','vehicle'])
+        return RequestVehicle::with(['type_request','state_request','vehicle.state','vehicle.campa','vehicle.category'])
                             ->whereHas('vehicle', function (Builder $builder) use($request){
                                 return $builder->where('campa_id', $request->json()->get('campa_id'));
                             })
