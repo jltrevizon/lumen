@@ -154,6 +154,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/requests/update/{id}', 'RequestController@update');
         $router->delete('/requests/delete/{id}', 'RequestController@delete');
         $router->post('/requests/defleet/requested', 'RequestController@vehiclesRequestedDefleet');
+        $router->post('/requests/reserve/requested', 'RequestController@vehiclesRequestedReserve');
         $router->post('/requests/confirm', 'RequestController@confirmedRequest');
         $router->post('/requests/decline', 'RequestController@declineRequest');
         $router->post('/requests/confirmed', 'RequestController@getConfirmedRequest');

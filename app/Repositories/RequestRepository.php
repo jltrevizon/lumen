@@ -23,7 +23,6 @@ class RequestRepository {
             $vehicle_request_active = RequestVehicle::where('vehicle_id', $vehicle['vehicle_id'])
                                             ->where('state_request_id', 1)
                                             ->get();
-                                            //return $vehicle_request_active;
             if(count($vehicle_request_active) > 0){
                 $request_active = true;
             } else {
@@ -72,6 +71,16 @@ class RequestRepository {
                                 return $builder->where('campa_id', $request->json()->get('campa_id'));
                             })
                             ->where('type_request_id', 1)
+                            ->where('state_request_id', 1)
+                            ->get();
+    }
+
+    public function vehiclesRequestedReserve($request){
+        return RequestVehicle::with(['vehicle.state','vehicle.category','vehicle.campa','state_request','type_request'])
+                            ->whereHas('vehicle', function(Builder $builder) use ($request){
+                                return $builder->where('campa_id', $request->json()->get('campa_id'));
+                            })
+                            ->where('type_request_id', 2)
                             ->where('state_request_id', 1)
                             ->get();
     }

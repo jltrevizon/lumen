@@ -36,6 +36,10 @@ class RequestController extends Controller
         return $this->requestRepository->vehiclesRequestedDefleet($request);
     }
 
+    public function vehiclesRequestedReserve(Request $request){
+        return $this->requestRepository->vehiclesRequestedReserve($request);
+    }
+
     public function confirmedRequest(Request $request){
         return $this->requestRepository->confirmedRequest($request);
     }
