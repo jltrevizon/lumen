@@ -30,7 +30,7 @@ class VehicleController extends Controller
     }
 
     public function getByCompany(Request $request){
-        return Vehicle::with(['campa'])
+        return Vehicle::with(['campa','state','category'])
                 ->whereHas('requests', function(Builder $builder) use ($request) {
                     return $builder->where('state_request_id', 3);
                 })
