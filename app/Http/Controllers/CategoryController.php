@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Repositories\CategoryRepository;
 
 class CategoryController extends Controller
 {
+
+    public function __construct(CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     public function getAll(){
         return Category::all();
     }
@@ -17,21 +24,11 @@ class CategoryController extends Controller
     }
 
     public function create(Request $request){
-        $category = new Category();
-        $category->name = $request->get('name');
-        if(isset($request['description'])) $category->description = $request->get('description');
-        $category->save();
-        return $category;
+        return $this->categoryRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $category = Category::where('id', $id)
-                            ->first();
-        if(isset($request['name'])) $category->name = $request->get('name');
-        if(isset($request['description'])) $category->description = $request->get('description');
-        $category->updated_at = date('Y-m-d H:i:s');
-        $category->save();
-        return $category;
+        return $this->categoryRepository->create($request, $id);
     }
 
     public function delete($id){
