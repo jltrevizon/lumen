@@ -48,7 +48,4 @@ class TaskController extends Controller
         ];
     }
 
-    public function getTest(TaskRepository $taskRepository){
-        return $taskRepository->getTestRepository();
-    }
 }

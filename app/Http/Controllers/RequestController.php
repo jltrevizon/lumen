@@ -7,9 +7,17 @@ use App\Models\Request as RequestVehicle;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\TaskReservationRepository;
+use App\Repositories\PendingTaskRepository;
 
 class RequestController extends Controller
 {
+    public function __construct(TaskReservationRepository $taskReservationRepository, PendingTaskRepository $pendingTaskRepository)
+    {
+        $this->taskReservationRepository = $taskReservationRepository;
+        $this->pendingTaskRepository = $pendingTaskRepository;
+    }
+
     public function getAll(){
         return RequestVehicle::all();
     }
@@ -25,10 +33,11 @@ class RequestController extends Controller
         $request_active = false;
         foreach($vehicles as $vehicle){
             $request_vehicle = new RequestVehicle();
-            $request_active = RequestVehicle::where('vehicle_id', $vehicle['vehicle_id'])
+            $vehicle_request_active = RequestVehicle::where('vehicle_id', $vehicle['vehicle_id'])
                                             ->where('state_request_id', 1)
                                             ->get();
-            if(count($request_active) > 0){
+                                            //return $vehicle_request_active;
+            if(count($vehicle_request_active) > 0){
                 $request_active = true;
             } else {
                 $request_vehicle->vehicle_id = $vehicle['vehicle_id'];
@@ -36,6 +45,9 @@ class RequestController extends Controller
                 $request_vehicle->type_request_id = $vehicle['type_request_id'];
                 $request_vehicle->datetime_request = date('Y-m-d H:i:s');
                 $request_vehicle->save();
+                if($vehicle['type_request_id'] == 2){
+                    $this->taskReservationRepository->create($request_vehicle->id, $request->json()->get('tasks'), $vehicle['vehicle_id']);
+                }
                 array_push($array_request, $request_vehicle);
             }
         }
@@ -74,9 +86,12 @@ class RequestController extends Controller
                                     ->first();
         $request_vehicle->state_request_id = 2;
         $request_vehicle->save();
-        return RequestVehicle::with(['state_request'])
-                        ->where('id', $request->json()->get('request_id'))
-                        ->first();
+        if($request_vehicle['type_request_id'] == 2){
+            return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
+        }
+        return [
+            'message' => 'Ok'
+        ];
     }
 
     public function getConfirmedRequest(Request $request){
