@@ -23,6 +23,12 @@ class VehicleController extends Controller
                     ->first();
     }
 
+    public function getByCampa(Request $request){
+        return Vehicle::with(['state','campa','category'])
+                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->get();
+    }
+
     public function getByCompany(Request $request){
         return Vehicle::with(['campa'])
                 ->whereHas('requests', function(Builder $builder) use ($request) {
