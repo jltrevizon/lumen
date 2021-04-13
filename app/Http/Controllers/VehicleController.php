@@ -23,8 +23,12 @@ class VehicleController extends Controller
                     ->first();
     }
 
-    public function getByCampa(Request $request){
+    public function getByCampaWithoutReserve(Request $request){
         return Vehicle::with(['state','campa','category'])
+                    ->whereHas('requests', function(Builder $builder) use ($request) {
+                        return $builder->where('state_request_id', 3);
+                    })
+                    ->orWhereDoesntHave('requests')
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
     }
