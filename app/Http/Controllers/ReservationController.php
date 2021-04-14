@@ -20,4 +20,8 @@ class ReservationController extends Controller
         return $this->reservationRepository->getReservationActiveByCampa($request);
     }
 
+    public function update(Request $request){
+        return $this->reservationRepository->update($request);
+    }
+
 }

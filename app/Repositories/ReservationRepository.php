@@ -38,4 +38,15 @@ class ReservationRepository {
                             ->get();
     }
 
+    public function update($request){
+        $reservation = Reservation::where('id', $request->json()->get('reservation_id'))
+                                ->first();
+        if($request->json()->get('dni')) $reservation->dni = $request->json()->get('dni');
+        if($request->json()->get('order')) $reservation->order = $request->json()->get('order');
+        if($request->json()->get('contract')) $reservation->contract = $request->json()->get('contract');
+        $reservation->save();
+        return $reservation;
+
+    }
+
 }
