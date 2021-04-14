@@ -6,7 +6,8 @@ use App\Models\Task;
 class TaskRepository {
 
     public function getById($id){
-        return Task::where('id', $id)
+        return Task::with(['sub_state.state'])
+                    ->where('id', $id)
                     ->first();
     }
 

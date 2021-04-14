@@ -81,6 +81,13 @@ class VehicleRepository {
         return $vehicle;
     }
 
+    public function updateState($vehicle_id, $state_id){
+        $vehicle = Vehicle::where('id', $vehicle_id)
+                        ->first();
+        $vehicle->state_id = $state_id;
+        $vehicle->save();
+    }
+
     public function verifyPlate($request){
         $user = $this->userRepository->getById(Auth::id());
 
