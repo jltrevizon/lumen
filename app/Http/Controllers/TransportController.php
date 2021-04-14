@@ -4,39 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transport;
+use App\Repositories\TransportRepository;
 
 class TransportController extends Controller
 {
+
+    public function __construct(TransportRepository $transportRepository)
+    {
+        $this->transportRepository = $transportRepository;
+    }
+
     public function getAll(){
         return Transport::all();
     }
 
     public function getById($id){
-        return Transport::where('id', $id)
-                    ->first();
+        return $this->transportRepository->getById($id);
     }
 
     public function create(Request $request){
-        $transport = new Transport();
-        $transport->name = $request->get('name');
-        $transport->save();
-        return $transport;
+        return $this->transportRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $transport = Transport::where('id', $id)
-                    ->first();
-        if(isset($request['name'])) $transport->name = $request->get('name');
-        $transport->updated_at = date('Y-m-d H:i:s');
-        $transport->save();
-        return $transport;
+        return $this->transportRepository->update($request, $id);
     }
 
     public function delete($id){
-        Transport::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'Transport deleted'
-        ];
+        return $this->transportRepository->update($id);
     }
 }

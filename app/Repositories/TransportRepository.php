@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\TypeRequest;
+use App\Models\Transport;
 
 class TransportRepository {
 
@@ -12,31 +12,31 @@ class TransportRepository {
     }
 
     public function getById($id){
-        return TypeRequest::where('id', $id)
+        return Transport::where('id', $id)
                     ->first();
     }
 
     public function create($request){
-        $type_request = new TypeRequest();
-        $type_request->name = $request->json()->get('name');
-        $type_request->save();
-        return $type_request;
+        $transport = new Transport();
+        $transport->name = $request->get('name');
+        $transport->save();
+        return $transport;
     }
 
     public function update($request, $id){
-        $type_request = TypeRequest::where('id', $id)
+        $transport = Transport::where('id', $id)
                     ->first();
-        if(isset($request['name'])) $type_request->name = $request->json()->get('name');
-        $type_request->updated_at = date('Y-m-d H:i:s');
-        $type_request->save();
-        return $type_request;
+        if(isset($request['name'])) $transport->name = $request->get('name');
+        $transport->updated_at = date('Y-m-d H:i:s');
+        $transport->save();
+        return $transport;
     }
 
     public function delete($id){
-        TypeRequest::where('id', $id)
+        Transport::where('id', $id)
             ->delete();
         return [
-            'message' => 'Type request deleted'
+            'message' => 'Transport deleted'
         ];
     }
 }
