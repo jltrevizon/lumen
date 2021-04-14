@@ -34,6 +34,7 @@ class StateSeeder extends Seeder
             [ 'name' => 'Pendiente Recoger Cliente' ],
             [ 'name' => 'En tránsito' ],
             [ 'name' => 'Reservado Pre-Entrega' ],
+            [ 'name' => 'Entregado']
         ];
     }
 }

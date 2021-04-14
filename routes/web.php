@@ -267,5 +267,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Questions answer
          */
         $router->post('/question-answers', 'QuestionAnswerController@create');
+
+        /**
+         * Manual Questionnaire
+         */
+        $router->post('/manual-questionnaire', 'ManualQuestionnaireController@create');
     });
 });
