@@ -23,6 +23,6 @@ class Request extends Model
     }
 
     public function reservation(){
-        return $this->belongsTo(Reservation::class, 'request_id');
+        return $this->hasOne(Reservation::class, 'request_id');
     }
 }

@@ -18,9 +18,9 @@ class CreateReservationsTable extends Migration
             $table->foreignId('request_id');
             $table->foreignId('vehicle_id');
             $table->integer('reservation_time');
-            $table->string('dni');
-            $table->string('order');
-            $table->string('contract');
+            $table->string('dni')->nullable();
+            $table->string('order')->nullable();
+            $table->string('contract')->nullable();
             $table->timestamps();
         });
     }

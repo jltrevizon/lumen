@@ -15,6 +15,7 @@ class RequestRepository {
     {
         $this->taskReservationRepository = $taskReservationRepository;
         $this->pendingTaskRepository = $pendingTaskRepository;
+        $this->reservationRepository = $reservationRepository;
     }
 
     public function create($request){
@@ -92,6 +93,7 @@ class RequestRepository {
         $request_vehicle = RequestVehicle::where('id', $request->json()->get('request_id'))
                                     ->first();
         $request_vehicle->state_request_id = 2;
+        $request_vehicle->datetime_approved = date('Y-m-d H:i:s');
         $request_vehicle->save();
         if($request_vehicle['type_request_id'] == 2){
             $this->reservationRepository->create($request->json()->get('request_id'), $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'));

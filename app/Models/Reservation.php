@@ -9,7 +9,7 @@ use App\Models\Vehicle;
 class Reservation extends Model
 {
     public function request(){
-        return $this->hasOne(VehicleRequest::class, 'request_id');
+        return $this->belongsTo(VehicleRequest::class, 'request_id');
     }
 
     public function vehicle(){

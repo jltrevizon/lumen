@@ -279,5 +279,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Manual Questionnaire
          */
         $router->post('/manual-questionnaire', 'ManualQuestionnaireController@create');
+
+        /**
+         * Reservation
+         */
+        $router->post('/get-reservations', 'ReservationController@getReservationActive');
     });
 });

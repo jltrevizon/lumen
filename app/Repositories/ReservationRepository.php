@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Reservation;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReservationRepository {
 
@@ -18,6 +19,15 @@ class ReservationRepository {
         $reservation->reservation_time = $reservation_time;
         $reservation->save();
         return $reservation;
+    }
+
+    public function getReservationActive($request){
+        return Reservation::with(['vehicle.state','vehicle.category','request.type_request','request.state_request'])
+                            ->whereHas('vehicle.campa', function (Builder $builder) use($request){
+                                return $builder->where('company_id', $request->json()->get('company_id'));
+                            })
+                            ->get();
+
     }
 
 }
