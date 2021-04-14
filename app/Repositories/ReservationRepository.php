@@ -30,4 +30,12 @@ class ReservationRepository {
 
     }
 
+    public function getReservationActiveByCampa($request){
+        return Reservation::with(['vehicle.state','vehicle.category','request.type_request','request.state_request'])
+                            ->whereHas('vehicle', function (Builder $builder) use($request){
+                                return $builder->where('campa_id', $request->json()->get('campa_id'));
+                            })
+                            ->get();
+    }
+
 }

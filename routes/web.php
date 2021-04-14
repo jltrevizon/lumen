@@ -284,5 +284,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Reservation
          */
         $router->post('/get-reservations', 'ReservationController@getReservationActive');
+        $router->post('/get-reservations/by-campa', 'ReservationController@getReservationActiveByCampa');
     });
 });

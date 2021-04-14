@@ -16,5 +16,8 @@ class ReservationController extends Controller
         return $this->reservationRepository->getReservationActive($request);
     }
 
+    public function getReservationActiveByCampa(Request $request){
+        return $this->reservationRepository->getReservationActiveByCampa($request);
+    }
 
 }
