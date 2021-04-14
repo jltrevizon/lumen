@@ -4,39 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\State;
+use App\Repositories\StateRepository;
 
 class StateController extends Controller
 {
+
+    public function __construct(StateRepository $stateRepository)
+    {
+        $this->stateRepository = $stateRepository;
+    }
+
     public function getAll(){
         return State::all();
     }
 
     public function getById($id){
-        return State::where('id', $id)
-                    ->first();
+        return $this->stateRepository->getById($id);
     }
 
     public function create(Request $request){
-        $state = new State();
-        $state->name = $request->get('name');
-        $state->save();
-        return $state;
+        return $this->stateRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $state = State::where('id', $id)
-                    ->first();
-        $state->name = $request->get('name');
-        $state->updated_at = date('Y-m-d H:i:s');
-        $state->save();
-        return $state;
+        return $this->stateRepository->update($request, $id);
     }
 
     public function delete($id){
-        State::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'State deleted'
-        ];
+        return $this->stateRepository->delete($id);
     }
 }

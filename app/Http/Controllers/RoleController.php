@@ -4,40 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
+use App\Repositories\RoleRepository;
 use DateTime;
 
 class RoleController extends Controller
 {
+
+    public function __construct(RoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
+
     public function getAll(){
         return Role::all();
     }
 
     public function getById($id){
-        return Role::where('id', $id)
-                    ->first();
+        return $this->roleRepository->getById($id);
     }
 
     public function create(Request $request){
-        $role = new Role();
-        $role->description = $request->get('description');
-        $role->save();
-        return $role;
+        return $this->roleRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $role = Role::where('id', $id)
-                    ->first();
-        $role->description = $request->get('description');
-        $role->updated_at = date('Y-m-d H:i:s');
-        $role->save();
-        return $role;
+        return $this->roleRepository->update($request, $id);
     }
 
     public function delete($id){
-        Role::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'Role deleted'
-        ];
+        return $this->roleRepository->delete($id);
     }
 }
