@@ -20,7 +20,7 @@ class ReservationTimeRepository {
     public function create($request){
         $exists_reservation_time = ReservationTime::where('company_id', $request->json()->get('company_id'))
                                                 ->first();
-        if($exists_reservation_time){
+        if(!$exists_reservation_time){
             $reservation_time = new ReservationTime();
             $reservation_time->company_id = $request->json()->get('comapny_id');
             $reservation_time->hours = $request->json()->get('hours');
