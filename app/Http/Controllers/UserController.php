@@ -4,19 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function getAll(){
         return User::with(['campa'])
                     ->get();
     }
 
     public function getById($id){
-        return User::with(['campa'])
-                    ->where('id', $id)
-                    ->first();
+        return $this->userRepository->getById($id);
     }
 
     public function create(Request $request){

@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Incidence;
+use App\Repositories\IncidenceRepository;
 
 class IncidenceController extends Controller
 {
+
+    public function __construct(IncidenceRepository $incidenceRepository)
+    {
+        $this->incidenceRepository = $incidenceRepository;
+    }
+
     public function getAll(){
         return Incidence::all();
     }
@@ -17,44 +24,22 @@ class IncidenceController extends Controller
     }
 
     public function create(Request $request){
-        $incidence = new Incidence();
-        $incidence->description = $request->get('description');
-        $incidence->resolved = false;
-        $incidence->save();
-        return $incidence;
+        return $this->incidenceRepository->create($request);
     }
 
     public function createIncidence($request){
-        $incidence = new Incidence();
-        $incidence->description = $request->json()->get('description');
-        $incidence->resolved = false;
-        $incidence->save();
-        return $incidence;
+        return $this->incidenceRepository->createIncidence($request);
     }
 
     public function resolved($request){
-        $incidence = Incidence::where('id', $request->json()->get('incidence_id'))
-                            ->first();
-        $incidence->resolved = true;
-        $incidence->save();
+        return $this->incidenceRepository->resolved($request);
     }
 
     public function update(Request $request, $id){
-        $incidence = Incidence::where('id', $id)
-                        ->first();
-        if(isset($request['description'])) $incidence->description = $request->get('description');
-        if(isset($request['resolved'])) $incidence->resolved = $request->get('resolved');
-        $incidence->updated_at = date('Y-m-d H:i:s');
-        $incidence->save();
-        return $incidence;
+        return $this->incidenceRepository->update($request, $id);
     }
 
     public function delete($id){
-        Incidence::where('id', $id)
-            ->delete();
-
-        return [
-            'message' => 'Incidence deleted'
-        ];
+        return $this->incidenceRepository->delete($id);
     }
 }
