@@ -22,7 +22,7 @@ class ReservationTimeRepository {
                                                 ->first();
         if(!$exists_reservation_time){
             $reservation_time = new ReservationTime();
-            $reservation_time->company_id = $request->json()->get('comapny_id');
+            $reservation_time->company_id = $request->json()->get('company_id');
             $reservation_time->hours = $request->json()->get('hours');
             $reservation_time->save();
             return $reservation_time;
