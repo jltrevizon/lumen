@@ -4,39 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TypeRequest;
+use App\Repositories\TransportRepository;
 
 class TypeRequestController extends Controller
 {
+
+    public function __construct(TransportRepository $transportRepository)
+    {
+        $this->transportRepository = $transportRepository;
+    }
+
     public function getAll(){
         return TypeRequest::all();
     }
 
     public function getById($id){
-        return TypeRequest::where('id', $id)
-                    ->first();
+        return $this->transportRepository->getById($id);
     }
 
     public function create(Request $request){
-        $type_request = new TypeRequest();
-        $type_request->name = $request->json()->get('name');
-        $type_request->save();
-        return $type_request;
+        return $this->transportRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $type_request = TypeRequest::where('id', $id)
-                    ->first();
-        if(isset($request['name'])) $type_request->name = $request->json()->get('name');
-        $type_request->updated_at = date('Y-m-d H:i:s');
-        $type_request->save();
-        return $type_request;
+        return $this->transportRepository->update($request);
     }
 
     public function delete($id){
-        TypeRequest::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'Type request deleted'
-        ];
+        return $this->transportRepository->delete($id);
     }
 }

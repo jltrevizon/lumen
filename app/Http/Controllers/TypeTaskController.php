@@ -4,39 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TypeTask;
+use App\Repositories\TypeTaskRepository;
 
 class TypeTaskController extends Controller
 {
+
+    public function __construct(TypeTaskRepository $typeTaskRepository)
+    {
+        $this->typeTaskRepository = $typeTaskRepository;
+    }
+
     public function getAll(){
         return TypeTask::all();
     }
 
     public function getById($id){
-        return TypeTask::where('id', $id)
-                    ->first();
+        return $this->typeTaskRepository->getById($id);
     }
 
     public function create(Request $request){
-        $type_task = new TypeTask();
-        $type_task->name = $request->get('name');
-        $type_task->save();
-        return $type_task;
+        return $this->typeTaskRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $type_task = TypeTask::where('id', $id)
-                    ->first();
-        if(isset($request['name'])) $type_task->name = $request->get('name');
-        $type_task->updated_at = date('Y-m-d H:i:s');
-        $type_task->save();
-        return $type_task;
+        return $this->typeTaskRepository->update($request, $id);
     }
 
     public function delete($id){
-        TypeTask::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'Type task deleted'
-        ];
+        return $this->typeTaskRepository->delete($id);
     }
 }
