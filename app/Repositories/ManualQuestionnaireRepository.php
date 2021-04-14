@@ -14,7 +14,7 @@ class ManualQuestionnaireRepository {
     public function create($request){
         $manual_questionnaire = new ManualQuestionnaire();
         $manual_questionnaire->vehicle_id = $request->json()->get('vehicle_id');
-        $manual_questionnaire->response = $request->json()->get('response');
+        $manual_questionnaire->filled_in = $request->json()->get('filled_in');
         $manual_questionnaire->save();
         return $manual_questionnaire;
     }

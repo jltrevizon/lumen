@@ -264,6 +264,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/questions/{id}', 'QuestionController@delete');
 
         /**
+         *
+         */
+        $router->post('/reservation-time', 'ReservationTimeController@getByCompany');
+        $router->post('/reservation-time/create', 'ReservationTimeController@create');
+        $router->post('/reservation-time/update', 'ReservationTimeController@update');
+
+        /**
          * Questions answer
          */
         $router->post('/question-answers', 'QuestionAnswerController@create');
