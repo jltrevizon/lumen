@@ -183,7 +183,7 @@ class PendingTaskRepository {
             $pending_task->state_pending_task_id = 2;
             $pending_task->datetime_start = date('Y-m-d H:i:s');
             $pending_task->save();
-            $detail_task = $this->taskReporitory->getById($pending_task['task_id']);
+            $detail_task = $this->taskRepository->getById($pending_task['task_id']);
             $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_tate']['state']['id']);
             return $this->getPendingOrNextTask();
         } else {
