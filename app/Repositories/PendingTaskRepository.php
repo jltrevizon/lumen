@@ -222,7 +222,7 @@ class PendingTaskRepository {
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
                 $pending_task->save();
-
+                $this->vehicleRepository->updateState($pending_task['vehicle_id'], 5);
                 return [
                     'message' => 'Tareas terminadas'
                 ];
