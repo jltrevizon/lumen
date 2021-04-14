@@ -8,7 +8,10 @@ use App\Repositories\PendingTaskRepository;
 
 class RequestRepository {
 
-    public function __construct(TaskReservationRepository $taskReservationRepository, PendingTaskRepository $pendingTaskRepository)
+    public function __construct(
+        TaskReservationRepository $taskReservationRepository,
+        PendingTaskRepository $pendingTaskRepository,
+        ReservationRepository $reservationRepository)
     {
         $this->taskReservationRepository = $taskReservationRepository;
         $this->pendingTaskRepository = $pendingTaskRepository;
@@ -91,6 +94,7 @@ class RequestRepository {
         $request_vehicle->state_request_id = 2;
         $request_vehicle->save();
         if($request_vehicle['type_request_id'] == 2){
+            $this->reservationRepository->create($request->json()->get('request_id'), $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'));
             return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
         return [

@@ -10,6 +10,7 @@ use App\Models\Request;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
 use App\Models\VehiclePicture;
+use App\Models\Reservation;
 
 class Vehicle extends Model
 {
@@ -39,5 +40,9 @@ class Vehicle extends Model
 
     public function vehicle_pictures(){
         return $this->hasMany(VehiclePicture::class, 'vehicle_id');
+    }
+
+    public function reservations(){
+        return $this->hasMany(Reservation::class, 'vehicle_id');
     }
 }
