@@ -59,4 +59,12 @@ class VehicleController extends Controller
         return $this->vehicleRepository->updateGeolocation($request);
     }
 
+    public function vehiclesDefleeted(){
+        return $this->vehicleRepository->vehiclesDefleeted();
+    }
+
+    public function vehiclesReserved(){
+        return $this->vehicleRepository->vehiclesReserved();
+    }
+
 }

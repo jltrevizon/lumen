@@ -179,12 +179,15 @@ class PendingTaskRepository {
     public function startPendingTask($request){
         $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
                                 ->first();
+        $vehicle = $this->vehicleRepository->getById($pending_task['vehicle_id']);
         if($pending_task->state_pending_task_id == 1){
             $pending_task->state_pending_task_id = 2;
             $pending_task->datetime_start = date('Y-m-d H:i:s');
             $pending_task->save();
             $detail_task = $this->taskRepository->getById($pending_task['task_id']);
-            $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_state']['state']['id']);
+            if($vehicle->state_id != 2){
+                $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_state']['state']['id']);
+            }
             return $this->getPendingOrNextTask();
         } else {
             return [
@@ -196,6 +199,7 @@ class PendingTaskRepository {
     public function finishPendingTask($request){
         $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
                                 ->first();
+        $vehicle = $this->vehicleRepository->getById($pending_task['vehicle_id']);
         if($pending_task->state_pending_task_id == 2){
             $pending_task->state_pending_task_id = 3;
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
@@ -208,7 +212,9 @@ class PendingTaskRepository {
                 $pending_task_next->state_pending_task_id = 1;
                 $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
                 $pending_task_next->save();
-                $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
+                if($vehicle->state_id != 2){
+                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
+                }
                 return $this->getPendingOrNextTask();
             } else {
                 return [
@@ -222,7 +228,9 @@ class PendingTaskRepository {
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
                 $pending_task->save();
-                $this->vehicleRepository->updateState($pending_task['vehicle_id'], 5);
+                if($vehicle->state_id != 2){
+                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 5);
+                }
                 return [
                     'message' => 'Tareas terminadas'
                 ];

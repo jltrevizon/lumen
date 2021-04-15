@@ -163,6 +163,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/requests/confirm', 'RequestController@confirmedRequest');
         $router->post('/requests/decline', 'RequestController@declineRequest');
         $router->post('/requests/confirmed', 'RequestController@getConfirmedRequest');
+        $router->get('/requests/defleet/app','RequestController@getRequestDefleetApp');
+        $router->get('/requests/reserve/app','RequestController@getRequestReserveApp');
 
         /**
          * States
@@ -248,6 +250,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
         $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
+        $router->get('/vehicles/defleeted', 'VehicleController@vehiclesDefleeted');
+        $router->get('/vehicles/reserved', 'VehicleController@vehiclesReserved');
 
         /**
          * Vehicle Picture

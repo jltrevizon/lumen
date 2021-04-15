@@ -55,4 +55,12 @@ class RequestController extends Controller
                 ->delete();
         return [ 'message' => 'Request deleted' ];
     }
+
+    public function getRequestDefleetApp(){
+        return $this->requestRepository->getRequestDefleetApp();
+    }
+
+    public function getRequestReserveApp(){
+        return $this->requestRepository->getRequestReserveApp();
+    }
 }

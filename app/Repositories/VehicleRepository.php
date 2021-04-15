@@ -140,4 +140,20 @@ class VehicleRepository {
         $vehicle->save();
     }
 
+    public function vehiclesDefleeted(){
+        $user = $this->userRepository->getById(Auth::id());
+        return Vehicle::with(['state'])
+                    ->where('state_id', 3)
+                    ->where('campa_id', $user->campa_id)
+                    ->get();
+    }
+
+    public function vehiclesReserved(){
+        $user = $this->userRepository->getById(Auth::id());
+        return Vehicle::with(['state'])
+                    ->where('state_id', 2)
+                    ->where('campa_id', $user->campa_id)
+                    ->get();
+    }
+
 }

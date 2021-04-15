@@ -5,17 +5,22 @@ use App\Models\Request as RequestVehicle;
 use App\Repositories\TaskReservationRepository;
 use Illuminate\Database\Eloquent\Builder;
 use App\Repositories\PendingTaskRepository;
+use Illuminate\Support\Facades\Auth;
 
 class RequestRepository {
 
     public function __construct(
         TaskReservationRepository $taskReservationRepository,
         PendingTaskRepository $pendingTaskRepository,
-        ReservationRepository $reservationRepository)
+        ReservationRepository $reservationRepository,
+        UserRepository $userRepository,
+        VehicleRepository $vehicleRepository)
     {
         $this->taskReservationRepository = $taskReservationRepository;
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->reservationRepository = $reservationRepository;
+        $this->userRepository = $userRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function create($request){
@@ -97,8 +102,10 @@ class RequestRepository {
         $request_vehicle->save();
         if($request_vehicle['type_request_id'] == 2){
             $this->reservationRepository->create($request->json()->get('request_id'), $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'));
+            $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], 2);
             return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
+        $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], 3);
         return [
             'message' => 'Ok'
         ];
@@ -124,6 +131,28 @@ class RequestRepository {
                         ->first();
     }
 
+    public function getRequestDefleetApp(){
+        $user = $this->userRepository->getById(Auth::id());
+        return RequestVehicle::with(['vehicle.category','type_request'])
+                            ->whereHas('vehicle', function (Builder $builder) use($user){
+                                return $builder->where('campa_id', $user->campa_id);
+                            })
+                            ->where('type_request_id', 1)
+                            ->where('state_request_id', 1)
+                            ->get();
 
+    }
+
+    public function getRequestReserveApp(){
+        $user = $this->userRepository->getById(Auth::id());
+        return RequestVehicle::with(['vehicle.category','type_request'])
+                            ->whereHas('vehicle', function (Builder $builder) use($user){
+                                return $builder->where('campa_id', $user->campa_id);
+                            })
+                            ->where('type_request_id', 2)
+                            ->where('state_request_id', 1)
+                            ->get();
+
+    }
 
 }
