@@ -295,5 +295,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/get-reservations', 'ReservationController@getReservationActive');
         $router->post('/get-reservations/by-campa', 'ReservationController@getReservationActiveByCampa');
         $router->post('/reservations/update', 'ReservationController@update');
+
+        /**
+         * Chat
+         */
+        $router->post('/chat', 'ChatController@createMessage');
+        $router->post('/get-message', 'ChatController@getMessage');
+        $router->post('/read-messages', 'ChatController@readMessages');
+
     });
 });
