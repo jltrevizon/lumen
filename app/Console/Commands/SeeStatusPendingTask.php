@@ -41,17 +41,20 @@ class SeeStatusPendingTask extends Command
     public function handle()
     {
         $pending_tasks = PendingTask::where('state_pending_task_id', 2)
-                    ->where('status_color', 'Green')
                     ->get();
         foreach($pending_tasks as $pending_task){
             $diff = $this->diffHours($pending_task['datetime_start'], date("Y-m-d H:i:s"));
             $task = Task::where('id', $pending_task['task_id'])
                         ->first();
+            $update_pending_task = PendingTask::with(['incidence'])
+                                            ->where('id', $pending_task['id'])
+                                            ->first();
             if($diff > $task->duration){
-                $this->info('Tarea retrasada');
-                $update_pending_task = PendingTask::where('id', $pending_task['id'])
-                                                ->first();
                 $update_pending_task->status_color = 'Yellow';
+                $update_pending_task->save();
+            }
+            if($update_pending_task['incidence'] != null && $update_pending_task['incidence']['resolved'] == 0){
+                $update_pending_task->status_color = 'Red';
                 $update_pending_task->save();
             }
         }
