@@ -9,10 +9,10 @@ use App\Models\SubState;
 class State extends Model
 {
     public function vehicles(){
-        return $this->hasMany(Vehicle::class, 'vehicle_id');
+        return $this->hasMany(Vehicle::class, 'state_id');
     }
 
     public function sub_states(){
-        return $this->hasMany(SubState::class, 'sub_state_id');
+        return $this->hasMany(SubState::class, 'state_id');
     }
 }

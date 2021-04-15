@@ -22,6 +22,14 @@ class StateController extends Controller
         return $this->stateRepository->getById($id);
     }
 
+    public function getStatesWithVehicles(Request $request){
+        return $this->stateRepository->getStatesWithVehicles($request);
+    }
+
+    public function getStatesWithVehiclesCampa(Request $request){
+        return $this->stateRepository->getStatesWithVehiclesCampa($request);
+    }
+
     public function create(Request $request){
         return $this->stateRepository->create($request);
     }

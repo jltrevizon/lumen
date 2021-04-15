@@ -139,4 +139,5 @@ class VehicleRepository {
         $vehicle->longitude = $request->json()->get('longitude');
         $vehicle->save();
     }
+
 }

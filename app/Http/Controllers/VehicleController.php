@@ -58,4 +58,5 @@ class VehicleController extends Controller
     public function updateGeolocation($request){
         return $this->vehicleRepository->updateGeolocation($request);
     }
+
 }

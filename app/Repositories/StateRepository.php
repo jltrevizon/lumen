@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\State;
+use Illuminate\Database\Eloquent\Builder;
 
 class StateRepository {
 
