@@ -68,4 +68,12 @@ class PendingTaskController extends Controller
     public function finishPendingTask(Request $request){
         return $this->pendingTaskRepository->finishPendingTask($request);
     }
+
+    public function getPendingTaskByState(Request $request){
+        return $this->pendingTaskRepository->getPendingTaskByState($request);
+    }
+
+    public function getPendingTaskByStateCampa(Request $request){
+        return $this->pendingTaskRepository->getPendingTaskByStateCampa($request);
+    }
 }

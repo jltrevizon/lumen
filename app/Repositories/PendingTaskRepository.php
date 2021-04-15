@@ -231,5 +231,24 @@ class PendingTaskRepository {
                 'message' => 'La tarea no está en estado iniciada'
             ];
         }
+
+    }
+
+    public function getPendingTaskByState($request){
+        return PendingTask::with(['vehicle','task'])
+                ->whereHas('vehicle.campa', function (Builder $builder) use($request){
+                        return $builder->where('company_id', $request->json()->get('company_id'));
+                    })
+                ->where('state_pending_task_id', $request->json()->get('state_pending_task_id'))
+                ->get();
+    }
+
+    public function getPendingTaskByStateCampa($request){
+        return PendingTask::with(['vehicle','task'])
+                ->whereHas('vehicle.campa', function (Builder $builder) use($request){
+                        return $builder->where('id', $request->json()->get('campa_id'));
+                    })
+                ->where('state_pending_task_id', $request->json()->get('state_pending_task_id'))
+                ->get();
     }
 }
