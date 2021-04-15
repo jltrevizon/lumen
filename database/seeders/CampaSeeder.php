@@ -19,6 +19,7 @@ class CampaSeeder extends Seeder
             Campa::create([
                 'company_id' => $campa['company_id'],
                 'name' => $campa['name'],
+                'province_id' => $campa['province_id'],
                 'active' => $campa['active']
             ]);
         }
