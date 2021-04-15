@@ -9,7 +9,7 @@ use App\Repositories\RegionRepository;
 class RegionController extends Controller
 {
 
-    public function __construct(RegionRepository $regionRepository )
+    public function __construct(RegionRepository $regionRepository)
     {
         $this->regionRepository = $regionRepository;
     }

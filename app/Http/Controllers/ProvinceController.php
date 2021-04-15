@@ -22,6 +22,10 @@ class ProvinceController extends Controller
         return $this->provinceRepository->getById($id);
     }
 
+    public function provinceByRegion(Request $request){
+        return $this->provinceRepository->provinceByRegion($request);
+    }
+
     public function create(Request $request){
         return $this->provinceRepository->create($request);
     }

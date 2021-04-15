@@ -3,12 +3,22 @@
 namespace App\Repositories;
 
 use App\Models\Campa;
+use Illuminate\Database\Eloquent\Builder;
 
 class CampaRepository {
 
     public function __construct()
     {
 
+    }
+
+    public function getCampasByRegion($request){
+        return Campa::with(['province.region'])
+                    ->whereHas('province', function (Builder $builder) use($request){
+                        return $builder->where('region_id', $request->json()->get('region_id'));
+                    })
+                    ->where('company_id', $request->json()->get('company_id'))
+                    ->get();
     }
 
     public function create($request){

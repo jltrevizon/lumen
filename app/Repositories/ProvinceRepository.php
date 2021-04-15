@@ -6,14 +6,14 @@ use App\Models\Province;
 
 class ProvinceRepository {
 
-    public function __construct(ProvinceRepository $provinceRepository)
-    {
-        $this->provinceRepository = $provinceRepository;
-    }
-
     public function getById($id){
         return Province::where('id', $id)
                         ->first();
+    }
+
+    public function provinceByRegion($request){
+        return Province::where('region_id', $request->json()->get('region_id'))
+                    ->get();
     }
 
     public function create($request){
