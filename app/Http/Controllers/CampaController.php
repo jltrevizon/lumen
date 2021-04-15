@@ -29,6 +29,10 @@ class CampaController extends Controller
         return $this->campaRepository->getCampasByRegion($request);
     }
 
+    public function getCampasByProvince(Request $request){
+        return $this->campaRepository->getCampasByProvince($request);
+    }
+
     public function getByCompany(Request $request){
         return Campa::with(['company'])
                     ->where('company_id', $request->json()->get('company_id'))

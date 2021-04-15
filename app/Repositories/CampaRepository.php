@@ -21,6 +21,13 @@ class CampaRepository {
                     ->get();
     }
 
+    public function getCampasByProvince($request){
+        return Campa::with(['province'])
+                    ->where('province_id', $request->json()->get('province_id'))
+                    ->where('company_id', $request->json()->get('company_id'))
+                    ->get();
+    }
+
     public function create($request){
         $campa = new Campa();
         $campa->company_id = $request->json()->get('company_id');
