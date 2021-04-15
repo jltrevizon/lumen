@@ -240,6 +240,7 @@ class PendingTaskRepository {
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
                 ->where('state_pending_task_id', $request->json()->get('state_pending_task_id'))
+                ->whereDate('created_at', $request->json()->get('date'))
                 ->get();
     }
 
@@ -249,6 +250,7 @@ class PendingTaskRepository {
                         return $builder->where('id', $request->json()->get('campa_id'));
                     })
                 ->where('state_pending_task_id', $request->json()->get('state_pending_task_id'))
+                ->whereDate('created_at', $request->json()->get('date'))
                 ->get();
     }
 }
