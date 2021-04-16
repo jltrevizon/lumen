@@ -70,6 +70,9 @@ class RequestRepository {
         if($request->json()->get('type_request_id')) $request_vehicle->type_request_id = $request->get('type_request_id');
         $request_vehicle->updated_at = date('Y-m-d H:i:s');
         $request_vehicle->save();
+        if($request->json()->get('type_request_id') == 2){
+            $this->reservationRepository->create($request_vehicle['id'], $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'));
+        }
         return $request_vehicle;
     }
 
@@ -101,7 +104,6 @@ class RequestRepository {
         $request_vehicle->datetime_approved = date('Y-m-d H:i:s');
         $request_vehicle->save();
         if($request_vehicle['type_request_id'] == 2){
-            $this->reservationRepository->create($request->json()->get('request_id'), $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'));
             $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], 2);
             return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
