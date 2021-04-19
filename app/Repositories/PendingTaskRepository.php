@@ -274,4 +274,12 @@ class PendingTaskRepository {
                         ->first();
         return $pending_task;
     }
+
+    public function getPendingTasksByPlate($request){
+        return PendingTask::with(['vehicle','state_pending_task'])
+        ->whereHas('vehicle', function (Builder $builder) use($request) {
+            return $builder->where('plate', $request->json()->get('plate'));
+        })
+        ->get();
+    }
 }
