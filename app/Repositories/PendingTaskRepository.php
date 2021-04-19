@@ -124,6 +124,7 @@ class PendingTaskRepository {
         $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
                                 ->first();
         $pending_task->incidence_id = $incidence->id;
+        $pending_task->status_color = "Red";
         $pending_task->save();
         return [
             'message' => 'Ok'
@@ -177,7 +178,8 @@ class PendingTaskRepository {
     }
 
     public function startPendingTask($request){
-        $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
+        $pending_task = PendingTask::with(['incidence'])
+                                ->where('id', $request->json()->get('pending_task_id'))
                                 ->first();
         $vehicle = $this->vehicleRepository->getById($pending_task['vehicle_id']);
         if($pending_task->state_pending_task_id == 1){
