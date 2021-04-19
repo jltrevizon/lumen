@@ -43,6 +43,11 @@ class VehicleRepository {
                 ->get();
     }
 
+    public function getByPlate($request){
+        return Vehicle::where('plate', $request->json()->get('plate'))
+                    ->first();
+    }
+
     public function create($request){
         $vehicle = new Vehicle();
         if($request->json()->get('remote_id')) $vehicle->remote_id = $request->json()->get('remote_id');

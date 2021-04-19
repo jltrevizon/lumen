@@ -32,4 +32,9 @@ class GroupTaskRepository {
         $group_task->save();
         return $group_task;
     }
+
+    public function getLastByVehicle($vehicle_id){
+        return GroupTask::where('vehicle_id', $vehicle_id)
+                        ->first();
+    }
 }

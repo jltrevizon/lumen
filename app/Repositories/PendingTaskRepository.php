@@ -177,6 +177,19 @@ class PendingTaskRepository {
         ];
     }
 
+    public function orderPendingTask($request){
+        foreach($request->jons()->get('pending_tasks') as $pending_task){
+            $update_pending_task = PendingTask::where('id', $pending_task['id'])
+                                            ->first();
+            if($update_pending_task->state_pending_task_id != 2 && $update_pending_task->state_pending_task_id != 3 ){
+                $update_pending_task->state_pending_task_id = null;
+                $update_pending_task->datetime_pending = null;
+                $update_pending_task->save();
+            }
+
+        }
+    }
+
     public function startPendingTask($request){
         $pending_task = PendingTask::with(['incidence'])
                                 ->where('id', $request->json()->get('pending_task_id'))
@@ -276,10 +289,10 @@ class PendingTaskRepository {
     }
 
     public function getPendingTasksByPlate($request){
+        $vehicle = $this->vehicleRepository->getByPlate($request);
+        $group = $this->groupTaskRepository->getLastByVehicle($vehicle->id);
         return PendingTask::with(['vehicle','state_pending_task'])
-        ->whereHas('vehicle', function (Builder $builder) use($request) {
-            return $builder->where('plate', $request->json()->get('plate'));
-        })
+        ->where('group_task_id', $group->id)
         ->get();
     }
 }
