@@ -259,4 +259,15 @@ class PendingTaskRepository {
                 ->where('state_pending_task_id', $request->json()->get('state_pending_task_id'))
                 ->get();
     }
+
+    public function getPendingTaskByPlate($request){
+        $pending_task = PendingTask::with(['vehicle','state_pending_task'])
+                ->whereHas('vehicle', function (Builder $builder) use($request) {
+                    return $builder->where('plate', $request->json()->get('plate'));
+                })
+                ->where('state_pending_task_id', 1)
+                ->orWhere('state_pending_task_id', 2)
+                ->get();
+        return $pending_task;
+    }
 }
