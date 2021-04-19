@@ -184,6 +184,7 @@ class PendingTaskRepository {
             if($update_pending_task->state_pending_task_id != 2 && $update_pending_task->state_pending_task_id != 3 ){
                 $update_pending_task->state_pending_task_id = null;
                 $update_pending_task->datetime_pending = null;
+                $update_pending_task->order = $pending_task['order'];
                 $update_pending_task->save();
             }
         }
