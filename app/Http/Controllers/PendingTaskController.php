@@ -84,4 +84,8 @@ class PendingTaskController extends Controller
     public function getPendingTasksByPlate(Request $request){
         return $this->pendingTaskRepository->getPendingTasksByPlate($request);
     }
+
+    public function orderPendingTask(Request $request){
+        return $this->pendingTaskRepository->orderPendingTask($request);
+    }
 }

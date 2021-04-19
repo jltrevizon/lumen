@@ -142,7 +142,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/by-state/by-campa', 'PendingTaskController@getPendingTaskByStateCampa');
         $router->post('/pending-tasks/by-plate', 'PendingTaskController@getPendingTaskByPlate');
         $router->post('/pending-tasks/by-vehicle', 'PendingTaskController@getPendingTasksByPlate');
-
+        $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
         /**
          * Purchase operations
          */
