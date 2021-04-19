@@ -32,7 +32,7 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->userRepository->createUserWithoutPassword($request, $id);
+        return $this->userRepository->update($request, $id);
     }
 
     public function delete($id){
