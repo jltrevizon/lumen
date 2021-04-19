@@ -35,6 +35,7 @@ class GroupTaskRepository {
 
     public function getLastByVehicle($vehicle_id){
         return GroupTask::where('vehicle_id', $vehicle_id)
+                        ->orderBy('id', 'desc')
                         ->first();
     }
 }
