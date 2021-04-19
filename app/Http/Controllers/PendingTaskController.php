@@ -46,7 +46,7 @@ class PendingTaskController extends Controller
     }
 
     public function createIncidence(Request $request){
-        return $this->pendingTaskRepository->update($request);
+        return $this->pendingTaskRepository->createIncidence($request);
     }
 
     public function resolvedIncidence(Request $request){
