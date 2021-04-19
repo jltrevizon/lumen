@@ -186,8 +186,12 @@ class PendingTaskRepository {
                 $update_pending_task->datetime_pending = null;
                 $update_pending_task->save();
             }
-
         }
+        $pending_task = PendingTask::where('vehicle_id', $request->json()->get('vehicle_id'))
+                                ->where('state_pending_task_id','!=', 2)
+                                ->where('state_pending_task_id','!=', 3)
+                                ->orderBy('order','asc')
+                                ->first();
     }
 
     public function startPendingTask($request){
@@ -291,7 +295,7 @@ class PendingTaskRepository {
     public function getPendingTasksByPlate($request){
         $vehicle = $this->vehicleRepository->getByPlate($request);
         $group = $this->groupTaskRepository->getLastByVehicle($vehicle->id);
-        return PendingTask::with(['vehicle','state_pending_task'])
+        return PendingTask::with(['vehicle','state_pending_task','task'])
         ->where('group_task_id', $group->id)
         ->get();
     }
