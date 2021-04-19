@@ -243,7 +243,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Vehicles
          */
         $router->get('/vehicles/getall', 'VehicleController@getall');
-        $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-company', 'VehicleController@getByCompany');
         $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
         $router->post('/vehicles', 'VehicleController@create');
@@ -253,6 +252,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
         $router->get('/vehicles/defleeted', 'VehicleController@vehiclesDefleeted');
         $router->get('/vehicles/reserved', 'VehicleController@vehiclesReserved');
+        $router->get('/vehicles/{id}', 'VehicleController@getById');
 
         /**
          * Vehicle Picture
