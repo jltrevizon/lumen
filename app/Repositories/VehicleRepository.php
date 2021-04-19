@@ -156,4 +156,28 @@ class VehicleRepository {
                     ->get();
     }
 
+    public function vehiclesDefleetByCampa(){
+        $user = $this->userRepository->getById(Auth::id());
+        $variables = DefleetVariable::first();
+        $date = date("Y-m-d");
+        $date1 = new DateTime($date);
+        $vehicles = Vehicle::with(['campa','category','state'])
+                        ->whereHas('requests', function(Builder $builder) {
+                            return $builder->where('state_request_id', 3);
+                        })
+                        ->orWhereDoesntHave('requests')
+                        ->where('campa_id', $user->campa_id)
+                        ->get();
+        $array_vehicles = [];
+        foreach($vehicles as $vehicle){
+            $date2 = new DateTime($vehicle['first_plate']);
+            $diff = $date1->diff($date2);
+            $age = $diff->y;
+            if($age > $variables->years || $vehicle['kms'] > $variables->kms){
+                array_push($array_vehicles, $vehicle);
+            }
+        }
+        return $array_vehicles;
+    }
+
 }

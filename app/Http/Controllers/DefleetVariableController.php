@@ -15,7 +15,12 @@ class DefleetVariableController extends Controller
     }
 
     public function getVariables(){
-        return DefleetVariable::first();
+        return $this->defleetVariablesRepository->getVariables();
+
+    }
+
+    public function createVariables(Request $request){
+        return $this->defleetVariablesRepository->createVariables($request);
     }
 
     public function updateVariables(Request $request){

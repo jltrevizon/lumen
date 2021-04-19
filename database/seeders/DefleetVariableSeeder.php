@@ -17,6 +17,7 @@ class DefleetVariableSeeder extends Seeder
         $variables = $this->data();
         foreach($variables as $variable){
             DefleetVariable::create([
+                'company_id' => $variable['company_id'],
                 'kms' => $variable['kms'],
                 'years' => $variable['years']
             ]);
@@ -26,6 +27,7 @@ class DefleetVariableSeeder extends Seeder
     public function data(){
         return [
             [
+                'company_id' => 1,
                 'kms' => '12000',
                 'years' => 6
             ]
