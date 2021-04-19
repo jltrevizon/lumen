@@ -193,6 +193,9 @@ class PendingTaskRepository {
                                 ->where('state_pending_task_id','!=', 3)
                                 ->orderBy('order','asc')
                                 ->first();
+        $pending_task->state_pending_task_id = 1;
+        $pending_task->datetime_pending = date('Y-m-d H:i:s');
+        $pending_task->save();
     }
 
     public function startPendingTask($request){
