@@ -269,7 +269,7 @@ class PendingTaskRepository {
                             return $query->where('state_pending_task_id', 1)
                                     ->orWhere('state_pending_task_id', 2);
                         })
-                        ->get();
+                        ->first();
         return $pending_task;
     }
 }
