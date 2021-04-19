@@ -178,7 +178,7 @@ class PendingTaskRepository {
     }
 
     public function orderPendingTask($request){
-        foreach($request->jons()->get('pending_tasks') as $pending_task){
+        foreach($request->json()->get('pending_tasks') as $pending_task){
             $update_pending_task = PendingTask::where('id', $pending_task['id'])
                                             ->first();
             if($update_pending_task->state_pending_task_id != 2 && $update_pending_task->state_pending_task_id != 3 ){
