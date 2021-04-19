@@ -82,7 +82,7 @@ class PendingTaskRepository {
 
     public function getPendingOrNextTask(){
         $user = $this->userRepository->getById(Auth::id());
-        return PendingTask::with(['task','state_pending_task','group_task','vehicle'])
+        return PendingTask::with(['task','state_pending_task','group_task','vehicle','incidence'])
                         ->whereHas('vehicle', function(Builder $builder) use($user){
                             return $builder->where('campa_id', $user->campa_id);
                         })
