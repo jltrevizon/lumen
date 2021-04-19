@@ -44,7 +44,7 @@ class UserController extends Controller
     }
 
     public function getUsersByRole(Request $request, $role_id){
-        return $this->userRepository->getUsersByCampa($request, $role_id);
+        return $this->userRepository->getUsersByRole($request, $role_id);
     }
 
     public function getActiveUsers(Request $request){
