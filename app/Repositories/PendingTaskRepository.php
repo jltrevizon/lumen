@@ -178,22 +178,23 @@ class PendingTaskRepository {
     }
 
     public function orderPendingTask($request){
-        foreach($request->json()->get('pending_tasks') as $pending_task){
-            $update_pending_task = PendingTask::where('id', $pending_task['id'])
-                                            ->first();
-            if($update_pending_task->state_pending_task_id != 2 && $update_pending_task->state_pending_task_id != 3 ){
-                $update_pending_task->state_pending_task_id = null;
-                $update_pending_task->datetime_pending = null;
-                $update_pending_task->order = $pending_task['order'];
-                $update_pending_task->save();
-            }
-        }
+        // foreach($request->json()->get('pending_tasks') as $pending_task){
+        //     $update_pending_task = PendingTask::where('id', $pending_task['id'])
+        //                                     ->first();
+        //     if($update_pending_task->state_pending_task_id != 2 && $update_pending_task->state_pending_task_id != 3 ){
+        //         $update_pending_task->state_pending_task_id = null;
+        //         $update_pending_task->datetime_pending = null;
+        //         $update_pending_task->order = $pending_task['order'];
+        //         $update_pending_task->save();
+        //     }
+        // }
         $pending_task = PendingTask::where('vehicle_id', $request->json()->get('vehicle_id'))
-                                ->where('state_pending_task_id','!=', 2)
-                                ->where('state_pending_task_id','!=', 3)
+                                ->where(function ($query) {
+                                    return $query->where('state_pending_task_id', null)
+                                            ->orWhere('state_pending_task_id', 1);
+                                })
                                 ->orderBy('order','asc')
                                 ->first();
-        return $pending_task;
         $pending_task->state_pending_task_id = 1;
         $pending_task->datetime_pending = date("Y-m-d H:i:s");
         $pending_task->save();
