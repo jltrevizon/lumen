@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnCustomerIdToRequests extends Migration
+class CreateReceptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddColumnCustomerIdToRequests extends Migration
      */
     public function up()
     {
-        Schema::table('requests', function (Blueprint $table) {
-            $table->foreignId('customer_id')->after('id')->nullable();
+        Schema::create('receptions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('vehicle_id');
+            $table->boolean('has_accessories');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddColumnCustomerIdToRequests extends Migration
      */
     public function down()
     {
-        Schema::table('requests', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('receptions');
     }
 }

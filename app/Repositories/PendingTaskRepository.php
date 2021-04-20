@@ -17,7 +17,8 @@ class PendingTaskRepository {
         TaskRepository $taskRepository,
         UserRepository $userRepository,
         IncidenceRepository $incidenceRepository,
-        VehicleRepository $vehicleRepository)
+        VehicleRepository $vehicleRepository,
+        ReceptionRepository $receptionRepository)
     {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
@@ -25,6 +26,7 @@ class PendingTaskRepository {
         $this->userRepository = $userRepository;
         $this->incidenceRepository = $incidenceRepository;
         $this->vehicleRepository = $vehicleRepository;
+        $this->receptionRepository = $receptionRepository;
     }
 
     public function createPendingTaskFromReservation($vehicle_id, $request_id){
@@ -164,6 +166,7 @@ class PendingTaskRepository {
         $pending_task->order = 100;
         $pending_task->save();
         $this->vehicleRepository->updateGeolocation($request);
+        $this->receptionRepository->create($request->json()->get('vehicle_id'), $request->json()->get('has_accessories'));
         return [
             'message' => 'OK'
         ];
