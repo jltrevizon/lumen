@@ -13,11 +13,11 @@ class CustomerRepository {
 
     public function create($request){
         $customer = new Customer();
-        $customer->name = $request->get('name');
-        if(isset($request['province_id'])) $customer->province_id = $request->get('province_id');
-        if(isset($request['cif'])) $customer->cif = $request->get('cif');
-        if(isset($request['phone'])) $customer->phone = $request->get('phone');
-        if(isset($request['address'])) $customer->address = $request->get('address');
+        $customer->name = $request->json()->get('name');
+        if($request->json()->get('province_id')) $customer->province_id = $request->json()->get('province_id');
+        if($request->json()->get('cif')) $customer->cif = $request->json()->get('cif');
+        if($request->json()->get('phone')) $customer->phone = $request->json()->get('phone');
+        if($request->json()->get('address')) $customer->address = $request->json()->get('address');
         $customer->save();
         return $customer;
     }
@@ -25,10 +25,10 @@ class CustomerRepository {
     public function update($request, $id){
         $customer = Customer::where('id', $id)
                         ->first();
-        if(isset($request['name'])) $customer->name = $request->get('name');
-        if(isset($request['cif'])) $customer->cif = $request->get('cif');
-        if(isset($request['phone'])) $customer->phone = $request->get('phone');
-        if(isset($request['address'])) $customer->address = $request->get('address');
+        if($request->json()->get('name')) $customer->name = $request->json()->get('name');
+        if($request->json()->get('cif')) $customer->cif = $request->json()->get('cif');
+        if($request->json()->get('phone')) $customer->phone = $request->json()->get('phone');
+        if($request->json()->get('address')) $customer->address = $request->json()->get('address');
         $customer->updated_at = date('Y-m-d H:i:s');
         $customer->save();
         return $customer;
