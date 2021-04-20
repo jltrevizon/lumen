@@ -269,7 +269,7 @@ class PendingTaskRepository {
     }
 
     public function getPendingTaskByState($request){
-        return PendingTask::with(['vehicle','task'])
+        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task'])
                 ->whereHas('vehicle.campa', function (Builder $builder) use($request){
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
@@ -278,7 +278,7 @@ class PendingTaskRepository {
     }
 
     public function getPendingTaskByStateCampa($request){
-        return PendingTask::with(['vehicle','task'])
+        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task'])
                 ->whereHas('vehicle.campa', function (Builder $builder) use($request){
                         return $builder->where('id', $request->json()->get('campa_id'));
                     })
