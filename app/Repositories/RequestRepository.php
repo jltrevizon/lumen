@@ -37,6 +37,7 @@ class RequestRepository {
             } else {
                 $request_vehicle->vehicle_id = $vehicle['vehicle_id'];
                 $request_vehicle->state_request_id = 1;
+                $request_vehicle->customer_id = $request->json()->get('customer_id');
                 $request_vehicle->type_request_id = $vehicle['type_request_id'];
                 $request_vehicle->datetime_request = date('Y-m-d H:i:s');
                 $request_vehicle->save();
@@ -66,6 +67,7 @@ class RequestRepository {
         $request_vehicle = RequestVehicle::where('id', $id)
                             ->first();
         if($request->json()->get('vehicle_id')) $request_vehicle->vehicle_id = $request->get('vehicle_id');
+        if($request->json()->get('customer_id')) $request_vehicle->customer_id = $request->get('customer_id');
         if($request->json()->get('state_request_id')) $request_vehicle->state_request_id = $request->get('state_request_id');
         if($request->json()->get('type_request_id')) $request_vehicle->type_request_id = $request->get('type_request_id');
         $request_vehicle->updated_at = date('Y-m-d H:i:s');
