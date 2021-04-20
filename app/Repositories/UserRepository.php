@@ -48,6 +48,7 @@ class UserRepository {
         if($request->json()->get('role_id')) $user->role_id = $request->json()->get('role_id');
         if($request->json()->get('campa_id')) $user->campa_id = $request->json()->get('campa_id');
         if($request->json()->get('name')) $user->name = $request->json()->get('name');
+        if($request->json()->get('surname')) $user->surname = $request->json()->get('surname');
         if($request->json()->get('email')) $user->email = $request->json()->get('email');
         if($request->json()->get('avatar')) $user->avatar = $request->json()->get('avatar');
         if($request->json()->get('phone')) $user->phone = $request->json()->get('phone');
