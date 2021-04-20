@@ -31,6 +31,10 @@ class CustomerController extends Controller
         return $this->customerRepository->update($request, $id);
     }
 
+    public function getUserByCompany(Request $request){
+        return $this->customerRepository->getUserByCompany($request);
+    }
+
     public function delete($id){
         Customer::where('id', $id)
             ->delete();
