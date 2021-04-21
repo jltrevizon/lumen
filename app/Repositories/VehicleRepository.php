@@ -45,7 +45,9 @@ class VehicleRepository {
 
     public function getAllByCompany($request){
         return Vehicle::with(['campa','state','category'])
-            ->where('company_id', $request->json()->get('company_id'))
+            ->whereHas('campa', function (Builder $builder) use($request){
+                return $builder->where('company_id', $request->json()->get('company_id'));
+            })
             ->get();
     }
 
