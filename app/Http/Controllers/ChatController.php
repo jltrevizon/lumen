@@ -17,8 +17,16 @@ class ChatController extends Controller
         return $this->chatRepository->createMessage($request);
     }
 
+    public function createMessageApp(Request $request){
+        return $this->chatRepository->createMessageApp($request);
+    }
+
     public function getMessage(Request $request){
         return $this->chatRepository->getMessage($request);
+    }
+
+    public function getMessageApp(Request $request){
+        return $this->chatRepository->getMessageApp($request);
     }
 
     public function readMessages(Request $request){

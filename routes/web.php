@@ -306,7 +306,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Chat
          */
         $router->post('/chat', 'ChatController@createMessage');
+        $router->post('/chat-app', 'ChatController@createMessageApp');
         $router->post('/get-message', 'ChatController@getMessage');
+        $router->get('/get-message-app', 'ChatController@getMessageApp');
         $router->post('/read-messages', 'ChatController@readMessages');
 
     });
