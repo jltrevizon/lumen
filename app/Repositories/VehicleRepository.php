@@ -43,6 +43,12 @@ class VehicleRepository {
                 ->get();
     }
 
+    public function getAllByCompany($request){
+        return Vehicle::with(['campa','state','category'])
+            ->where('company_id', $request->json()->get('company_id'))
+            ->get();
+    }
+
     public function getByPlate($request){
         return Vehicle::where('plate', $request->json()->get('plate'))
                     ->first();

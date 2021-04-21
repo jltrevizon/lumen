@@ -246,6 +246,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/vehicles/getall', 'VehicleController@getall');
         $router->post('/vehicles/by-company', 'VehicleController@getByCompany');
+        $router->post('/vehicles/all-by-company', 'VehicleController@getAllByCompany');
         $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
         $router->post('/vehicles', 'VehicleController@create');
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
