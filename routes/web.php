@@ -244,10 +244,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Vehicles
          */
-        $router->get('/vehicles/getall', 'VehicleController@getall');
+        $router->get('/vehicle/getall', 'VehicleController@getall');
         $router->post('/vehicles/by-company', 'VehicleController@getByCompany');
         $router->post('/vehicles/all-by-company', 'VehicleController@getAllByCompany');
         $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
+        $router->post('/vehicles/all-by-campa', 'VehicleController@getAllByCampa');
         $router->post('/vehicles', 'VehicleController@create');
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');

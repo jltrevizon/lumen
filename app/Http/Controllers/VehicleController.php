@@ -71,4 +71,8 @@ class VehicleController extends Controller
         return $this->vehicleRepository->getAllByCompany($request);
     }
 
+    public function getAllByCampa(Request $request){
+        return $this->vehicleRepository->getAllByCampa($request);
+    }
+
 }
