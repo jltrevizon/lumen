@@ -7,12 +7,13 @@ use App\Models\Vehicle;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-
+use App\Repositories\CategoryRepository;
 class VehicleRepository {
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, CategoryRepository $categoryRepository)
     {
         $this->userRepository = $userRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function getById($id){
@@ -29,6 +30,33 @@ class VehicleRepository {
                     ->orWhereDoesntHave('requests')
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
+    }
+
+    public function createFromExcel($request){
+        $vehicles = $request->json()->get('vehicles');
+        $array_vehicles = [];
+        foreach($vehicles as $vehicle){
+            $new_vehicle = new Vehicle();
+            if($vehicle['remote_id']) $new_vehicle->remote_id = $vehicle['remote_id'];
+            $new_vehicle->campa_id = $vehicle['campa_id'];
+            $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
+            $new_vehicle->category_id = $category->id;
+            $new_vehicle->state_id = $vehicle['state_id'];
+            $new_vehicle->ubication = $vehicle['ubication'];
+            $new_vehicle->plate = $vehicle['plate'];
+            $new_vehicle->branch = $vehicle['branch'];
+            $new_vehicle->vehicle_model = $vehicle['vehicle_model'];
+            if($vehicle['kms']) $new_vehicle->kms = $vehicle['kms'];
+            $new_vehicle->priority = $vehicle['priority'];
+            if($vehicle['version']) $new_vehicle->version = $vehicle['version'];
+            if($vehicle['vin']) $new_vehicle->vin = $vehicle['vin'];
+            $new_vehicle->first_plate = $vehicle['first_plate'];
+            if($vehicle['latitude']) $new_vehicle->latitude = $vehicle['latitude'];
+            if($vehicle['longitude']) $new_vehicle->longitude = $vehicle['longitude'];
+            $new_vehicle->save();
+            array_push($array_vehicles, $new_vehicle);
+        }
+        return $array_vehicles;
     }
 
     public function getByCompany($request){

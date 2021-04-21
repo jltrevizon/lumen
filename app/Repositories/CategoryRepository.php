@@ -11,6 +11,11 @@ class CategoryRepository {
 
     }
 
+    public function searchCategoryByName($name){
+        return Category::where('name', $name)
+                    ->first();
+    }
+
     public function create($request){
         $category = new Category();
         $category->name = $request->get('name');

@@ -75,4 +75,8 @@ class VehicleController extends Controller
         return $this->vehicleRepository->getAllByCampa($request);
     }
 
+    public function createFromExcel(Request $request){
+        return $this->vehicleRepository->createFromExcel($request);
+    }
+
 }
