@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PurchaseOperation;
-use App\Repositories\PruchaseOperationRepository;
+use App\Repositories\PurchaseOperationRepository;
 
 class PurchaseOperationController extends Controller
 {
 
-    public function __construct(PruchaseOperationRepository $purchaseOperationRepository)
+    public function __construct(PurchaseOperationRepository $purchaseOperationRepository)
     {
         $this->purchaseOperationRepository = $purchaseOperationRepository;
     }

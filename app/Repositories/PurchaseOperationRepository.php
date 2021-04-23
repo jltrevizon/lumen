@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\PurchaseOperation;
 
-class PruchaseOperationRepository {
+class PurchaseOperationRepository {
 
     public function __construct()
     {
