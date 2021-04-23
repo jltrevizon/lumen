@@ -18,9 +18,9 @@ class ProvinceRepository {
 
     public function create($request){
         $province = new Province();
-        $province->region_id = $request->get('region_id');
-        $province->province_code = $request->get('province_code');
-        $province->name = $request->get('name');
+        $province->region_id = $request->json()->get('region_id');
+        $province->province_code = $request->json()->get('province_code');
+        $province->name = $request->json()->get('name');
         $province->save();
         return $province;
     }
@@ -28,9 +28,9 @@ class ProvinceRepository {
     public function update($request, $id){
         $province = Province::where('id', $id)
                             ->first();
-        if(isset($request['name'])) $province->name = $request->get('name');
-        if(isset($request['region_id'])) $province->region_id = $request->get('region_id');
-        if(isset($request['province_code'])) $province->province_code = $request->get('province_code');
+        if($request->json()->get('name')) $province->name = $request->json()->get('name');
+        if($request->json()->get('region_id')) $province->region_id = $request->json()->get('region_id');
+        if($request->json()->get('province_code')) $province->province_code = $request->json()->get('province_code');
         $province->updated_at = date('Y-m-d H:i:s');
         $province->save();
         return $province;
