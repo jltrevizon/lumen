@@ -34,6 +34,7 @@ class UserRepository {
         $user = new User();
         $user->name = $request->json()->get('name');
         $user->email = $request->json()->get('email');
+        if($request->json()->get('password')) $user->password = Hash::make($request->json()->get('password'));
         if($request->json()->get('role_id')) $user->role_id = $request->json()->get('role_id');
         if($request->json()->get('campa_id')) $user->campa_id = $request->json()->get('campa_id');
         if($request->json()->get('avatar')) $user->avatar = $request->json()->get('avatar');
