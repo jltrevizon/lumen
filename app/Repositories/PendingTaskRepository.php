@@ -8,6 +8,7 @@ use App\Repositories\TaskReservationRepository;
 use App\Repositories\TaskRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\PendingTaskCanceledRepository;
 
 class PendingTaskRepository {
 
@@ -18,7 +19,8 @@ class PendingTaskRepository {
         UserRepository $userRepository,
         IncidenceRepository $incidenceRepository,
         VehicleRepository $vehicleRepository,
-        ReceptionRepository $receptionRepository)
+        ReceptionRepository $receptionRepository,
+        PendingTaskCanceledRepository $pendingTaskCanceledRepository)
     {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
@@ -27,6 +29,7 @@ class PendingTaskRepository {
         $this->incidenceRepository = $incidenceRepository;
         $this->vehicleRepository = $vehicleRepository;
         $this->receptionRepository = $receptionRepository;
+        $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
     }
 
     public function createPendingTaskFromReservation($vehicle_id, $request_id){
@@ -231,6 +234,7 @@ class PendingTaskRepository {
         $pending_task->state_pending_task_id = 1;
         $pending_task->datetime_start = null;
         $pending_task->save();
+        $this->pendingTaskCanceledRepository->create($request);
         return $this->getPendingOrNextTask();
     }
 
