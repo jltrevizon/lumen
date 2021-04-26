@@ -225,6 +225,15 @@ class PendingTaskRepository {
         }
     }
 
+    public function cancelPendingTask($request){
+        $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
+                                ->first();
+        $pending_task->state_pending_task_id = 1;
+        $pending_task->datetime_start = null;
+        $pending_task->save();
+        return $this->getPendingOrNextTask();
+    }
+
     public function finishPendingTask($request){
         $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
                                 ->first();

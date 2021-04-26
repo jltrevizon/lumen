@@ -136,6 +136,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
         $router->post('/pending-tasks/create-from-array', 'PendingTaskController@createFromArray');
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
+        $router->post('/pending-tasks/cancel-pending-task', 'PendingTaskController@cancelPendingTask');
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
         $router->post('/pending-tasks/incidence', 'PendingTaskController@createIncidence');
         $router->post('/pending-tasks/resolved', 'PendingTaskController@resolvedIncidence');
