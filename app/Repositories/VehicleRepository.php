@@ -76,12 +76,16 @@ class VehicleRepository {
             ->whereHas('campa', function (Builder $builder) use($request){
                 return $builder->where('company_id', $request->json()->get('company_id'));
             })
+            ->offset($request->json()->get('offset'))
+            ->limit($request->json()->get('limit'))
             ->get();
     }
 
     public function getAllByCampa($request){
         return Vehicle::with(['campa','state','category'])
             ->where('campa_id', $request->json()->get('campa_id'))
+            ->offset($request->json()->get('offset'))
+            ->limit($request->json()->get('limit'))
             ->get();
     }
 
@@ -226,5 +230,4 @@ class VehicleRepository {
         }
         return $array_vehicles;
     }
-
 }
