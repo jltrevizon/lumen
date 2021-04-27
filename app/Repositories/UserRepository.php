@@ -46,6 +46,7 @@ class UserRepository {
     public function update($request, $id){
         $user = User::where('id', $id)
                     ->first();
+        if($request->json()->get('password')) $user->password = Hash::make($request->json()->get('password'));
         if($request->json()->get('role_id')) $user->role_id = $request->json()->get('role_id');
         if($request->json()->get('campa_id')) $user->campa_id = $request->json()->get('campa_id');
         if($request->json()->get('name')) $user->name = $request->json()->get('name');
