@@ -15,7 +15,7 @@ class AddColumnPlannedReservationToReservations extends Migration
     {
         Schema::table('reservations', function (Blueprint $table) {
             $table->date('planned_reservation')->after('contract')->nullable();
-            $table->foreignId('campa_id')->after('planned_reservation')->nullable()->constrained();
+            $table->foreignId('campa_id')->after('planned_reservation')->nullable();
         });
     }
 
