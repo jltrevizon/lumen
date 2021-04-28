@@ -12,6 +12,7 @@ use App\Models\GroupTask;
 use App\Models\VehiclePicture;
 use App\Models\Reservation;
 use App\Models\Reception;
+use App\Models\TradeState;
 
 class Vehicle extends Model
 {
@@ -49,5 +50,9 @@ class Vehicle extends Model
 
     public function reception(){
         return $this->hasMany(Reception::class, 'vehicle_id');
+    }
+
+    public function trade_state(){
+        return $this->belongsTo(TradeState::class, 'trade_state_id');
     }
 }

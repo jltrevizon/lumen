@@ -133,6 +133,8 @@ class PendingTaskRepository {
         if(isset($request['incidence_id'])) $pending_task->incidence_id = $request->get('incidence_id');
         if(isset($request['duration'])) $pending_task->duration = $request->get('duration');
         if(isset($request['order'])) $pending_task->order = $request->get('order');
+        if(isset($request['trade_state_id'])) $pending_task->trade_state_id = $request->get('trade_state_id');
+
         $pending_task->updated_at = date('Y-m-d H:i:s');
         $pending_task->save();
         return $pending_task;
@@ -168,6 +170,8 @@ class PendingTaskRepository {
                 $pending_task->state_pending_task_id = 1;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
                 $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
+                //El estado comercial del vehículo pasa a No disponible
+                $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 5);
             }
             $pending_task->group_task_id = $groupTask->id;
             $pending_task->duration = $taskDescription['duration'];
@@ -225,15 +229,13 @@ class PendingTaskRepository {
         $pending_task = PendingTask::with(['incidence'])
                                 ->where('id', $request->json()->get('pending_task_id'))
                                 ->first();
-        $vehicle = $this->vehicleRepository->getById($pending_task['vehicle_id']);
+
         if($pending_task->state_pending_task_id == 1){
             $pending_task->state_pending_task_id = 2;
             $pending_task->datetime_start = date('Y-m-d H:i:s');
             $pending_task->save();
             $detail_task = $this->taskRepository->getById($pending_task['task_id']);
-            if($vehicle->state_id != 2){
-                $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_state']['state']['id']);
-            }
+            $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_state']['state']['id']);
             return $this->getPendingOrNextTask();
         } else {
             return [
@@ -268,11 +270,11 @@ class PendingTaskRepository {
                 $pending_task_next->state_pending_task_id = 1;
                 $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
                 $pending_task_next->save();
-                if($vehicle->state_id != 2){
-                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
-                }
+                $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
                 return $this->getPendingOrNextTask();
             } else {
+                //Si no hay más tareas el estado comercial pasa a disponible
+                $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 1);
                 return [
                     "status" => "OK",
                     "message" => "No hay más tareas"
@@ -284,8 +286,9 @@ class PendingTaskRepository {
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
                 $pending_task->save();
-                if($vehicle->state_id != 2){
-                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 5);
+                $this->vehicleRepository->updateState($pending_task['vehicle_id'], 5);
+                if($vehicle->trade_state_id != 2){
+                    $this->vehicleRepository->updateTradeState($vehicle->id, 1);
                 }
                 return [
                     'message' => 'Tareas terminadas'

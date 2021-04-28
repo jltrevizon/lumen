@@ -45,6 +45,7 @@ class VehicleRepository {
             $new_vehicle->ubication = $vehicle['ubication'];
             $new_vehicle->plate = $vehicle['plate'];
             $new_vehicle->branch = $vehicle['branch'];
+            $new_vehicle->trade_state_id = 1;
             $new_vehicle->vehicle_model = $vehicle['vehicle_model'];
             if($vehicle['kms']) $new_vehicle->kms = $vehicle['kms'];
             $new_vehicle->priority = $vehicle['priority'];
@@ -149,6 +150,7 @@ class VehicleRepository {
         $vehicle->ubication = $request->json()->get('ubication');
         $vehicle->plate = $request->json()->get('plate');
         $vehicle->branch = $request->json()->get('branch');
+        $vehicle->trade_state_id = 1;
         $vehicle->vehicle_model = $request->json()->get('vehicle_model');
         if($request->json()->get('version')) $vehicle->version = $request->json()->get('version');
         if($request->json()->get('vin')) $vehicle->vin = $request->json()->get('vin');
@@ -181,6 +183,13 @@ class VehicleRepository {
         $vehicle = Vehicle::where('id', $vehicle_id)
                         ->first();
         $vehicle->state_id = $state_id;
+        $vehicle->save();
+    }
+
+    public function updateTradeState($vehicle_id, $trade_state_id){
+        $vehicle = Vehicle::where('id', $vehicle_id)
+                        ->first();
+        $vehicle->trade_state_id = $trade_state_id;
         $vehicle->save();
     }
 
