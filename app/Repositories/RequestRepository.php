@@ -73,7 +73,7 @@ class RequestRepository {
         $request_vehicle->updated_at = date('Y-m-d H:i:s');
         $request_vehicle->save();
         if($request->json()->get('type_request_id') == 2){
-            $this->reservationRepository->create($request_vehicle['id'], $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'));
+            $this->reservationRepository->create($request_vehicle['id'], $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'), $request->json()->get('planned_reservation'), $request->json()->get('campa_id'));
         }
         return $request_vehicle;
     }
