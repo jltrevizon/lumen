@@ -72,37 +72,66 @@ class VehicleRepository {
     }
 
     public function getAllByCompany($request){
+        if($request->json()->get('limit')){
+            $vehicles = Vehicle::with(['campa','state','category'])
+                ->whereHas('campa', function (Builder $builder) use($request){
+                    return $builder->where('company_id', $request->json()->get('company_id'));
+                })
+                ->offset($request->json()->get('offset'))
+                ->limit($request->json()->get('limit'))
+                ->get();
+            $total_vehicles = Vehicle::with(['campa','state','category'])
+                ->whereHas('campa', function (Builder $builder) use($request){
+                    return $builder->where('company_id', $request->json()->get('company_id'));
+                })
+                ->count();
+            return [
+                'vehicles' => $vehicles,
+                'total' => $total_vehicles
+            ];
+        }
         $vehicles = Vehicle::with(['campa','state','category'])
-            ->whereHas('campa', function (Builder $builder) use($request){
-                return $builder->where('company_id', $request->json()->get('company_id'));
-            })
-            ->offset($request->json()->get('offset'))
-            ->limit($request->json()->get('limit'))
-            ->get();
-        $total_vehicles = Vehicle::with(['campa','state','category'])
-            ->whereHas('campa', function (Builder $builder) use($request){
-                return $builder->where('company_id', $request->json()->get('company_id'));
-            })
-            ->count();
-        return [
-            'vehicles' => $vehicles,
-            'total' => $total_vehicles
-        ];
+                ->whereHas('campa', function (Builder $builder) use($request){
+                    return $builder->where('company_id', $request->json()->get('company_id'));
+                })
+                ->get();
+            $total_vehicles = Vehicle::with(['campa','state','category'])
+                ->whereHas('campa', function (Builder $builder) use($request){
+                    return $builder->where('company_id', $request->json()->get('company_id'));
+                })
+                ->count();
+            return [
+                'vehicles' => $vehicles,
+                'total' => $total_vehicles
+            ];
     }
 
     public function getAllByCampa($request){
+        if($request->json()->get('limit')){
+            $vehicles = Vehicle::with(['campa','state','category'])
+                ->where('campa_id', $request->json()->get('campa_id'))
+                ->offset($request->json()->get('offset'))
+                ->limit($request->json()->get('limit'))
+                ->get();
+            $total_vehicles = Vehicle::with(['campa','state','category'])
+                ->where('campa_id', $request->json()->get('campa_id'))
+                ->count();
+            return [
+                'vehicles' => $vehicles,
+                'total' => $total_vehicles
+            ];
+        }
+
         $vehicles = Vehicle::with(['campa','state','category'])
-            ->where('campa_id', $request->json()->get('campa_id'))
-            ->offset($request->json()->get('offset'))
-            ->limit($request->json()->get('limit'))
-            ->get();
-        $total_vehicles = Vehicle::with(['campa','state','category'])
-            ->where('campa_id', $request->json()->get('campa_id'))
-            ->count();
-        return [
-            'vehicles' => $vehicles,
-            'total' => $total_vehicles
-        ];
+                ->where('campa_id', $request->json()->get('campa_id'))
+                ->get();
+            $total_vehicles = Vehicle::with(['campa','state','category'])
+                ->where('campa_id', $request->json()->get('campa_id'))
+                ->count();
+            return [
+                'vehicles' => $vehicles,
+                'total' => $total_vehicles
+            ];
     }
 
     public function getByPlate($request){
