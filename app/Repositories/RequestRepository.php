@@ -43,6 +43,8 @@ class RequestRepository {
                 $request_vehicle->save();
                 if($vehicle['type_request_id'] == 2){
                     $this->taskReservationRepository->create($request_vehicle->id, $request->json()->get('tasks'), $vehicle['vehicle_id']);
+                    //Estado comercial cambia a solicitado para reserva
+                    $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 6);
                 }
                 array_push($array_request, $request_vehicle);
             }

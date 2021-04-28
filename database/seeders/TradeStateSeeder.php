@@ -28,7 +28,10 @@ class TradeStateSeeder extends Seeder
             [ 'name' => 'Reservado'],
             [ 'name' => 'Defletado'],
             [ 'name' => 'Entregado' ],
-            [ 'name' => 'No disponible' ]
+            [ 'name' => 'No disponible' ],
+            [ 'name' => 'Solicitado para reserva' ],
+            [ 'name' => 'Solicitado para defleet' ],
+
         ];
     }
 }
