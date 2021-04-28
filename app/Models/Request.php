@@ -28,6 +28,6 @@ class Request extends Model
     }
 
     public function customer(){
-        return $this->belongsTo(Customer::class, 'request_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }
