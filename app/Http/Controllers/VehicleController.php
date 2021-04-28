@@ -79,4 +79,12 @@ class VehicleController extends Controller
         return $this->vehicleRepository->createFromExcel($request);
     }
 
+    public function getVehiclesAvailableReserveByCampa(Request $request){
+        return $this->vehicleRepository->getVehiclesAvailableReserveByCampa($request);
+    }
+
+    public function getVehiclesAvailableReserveByCompany(Request $request){
+        return $this->vehicleRepository->getVehiclesAvailableReserveByCompany($request);
+    }
+
 }
