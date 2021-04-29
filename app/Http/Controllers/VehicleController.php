@@ -91,6 +91,10 @@ class VehicleController extends Controller
         return $this->vehicleRepository->vehiclesRequestReserveByCampa($request);
     }
 
+    public function vehiclesRequestReserveByCompany(Request $request){
+        return $this->vehicleRepository->vehiclesRequestReserveByCompany($request);
+    }
+
     public function VehiclesReserveByCompany(Request $request){
         return $this->vehicleRepository->VehiclesReserveByCompany($request);
     }
