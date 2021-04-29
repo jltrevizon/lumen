@@ -262,6 +262,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/available/reserve/by-company', 'VehicleController@getVehiclesAvailableReserveByCompany');
         $router->post('/vehicles/request/reserve/by-campa', 'VehicleController@vehiclesRequestReserveByCampa');
         $router->post('/vehicles/request/reserve/by-company', 'VehicleController@vehiclesRequestReserveByCompany');
+        $router->post('/vehicles/reserved/by-campa', 'VehicleController@vehiclesReservedByCampa');
+        $router->post('/vehicles/reserved/by-company', 'VehicleController@vehiclesReservedByCompany');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
 
         /**
