@@ -254,7 +254,7 @@ class VehicleRepository {
     }
 
     public function vehiclesRequestReserveByCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state'])
+        return Vehicle::with(['category','campa','state','trade_state','reservations'])
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->where('trade_state_id', 6)
                     ->get();

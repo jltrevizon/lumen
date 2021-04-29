@@ -48,7 +48,7 @@ class Vehicle extends Model
         return $this->hasMany(Reservation::class, 'vehicle_id');
     }
 
-    public function reception(){
+    public function receptions(){
         return $this->hasMany(Reception::class, 'vehicle_id');
     }
 
