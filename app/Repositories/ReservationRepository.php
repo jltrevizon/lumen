@@ -59,4 +59,10 @@ class ReservationRepository {
 
     }
 
+    public function getReservationsByVehicle($request){
+        return Reservation::where('vehicle_id', $request->json()->get('vehicle_id'))
+                            ->where('active', 0)
+                            ->first();
+    }
+
 }

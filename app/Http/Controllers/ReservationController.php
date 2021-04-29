@@ -24,4 +24,8 @@ class ReservationController extends Controller
         return $this->reservationRepository->update($request);
     }
 
+    public function getReservationsByVehicle(Request $request){
+        return $this->reservationRepository->getReservationsByVehicle($request);
+    }
+
 }
