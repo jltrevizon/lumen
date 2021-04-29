@@ -31,7 +31,7 @@ class TradeStateSeeder extends Seeder
             [ 'name' => 'No disponible' ],
             [ 'name' => 'Solicitado para reserva' ],
             [ 'name' => 'Solicitado para defleet' ],
-
+            [ 'name' => 'Puesta a disposición' ]
         ];
     }
 }

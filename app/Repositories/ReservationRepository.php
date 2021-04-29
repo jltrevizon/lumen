@@ -54,6 +54,7 @@ class ReservationRepository {
         if($request->json()->get('dni')) $reservation->dni = $request->json()->get('dni');
         if($request->json()->get('order')) $reservation->order = $request->json()->get('order');
         if($request->json()->get('contract')) $reservation->contract = $request->json()->get('contract');
+        if($request->json()->get('actual_date')) $reservation->actual_date = $request->json()->get('actual_date');
         $reservation->save();
         return $reservation;
 
