@@ -138,6 +138,8 @@ class RequestRepository {
     public function declineRequest($request){
         $request_vehicle = RequestVehicle::where('id', $request->json()->get('request_id'))
                                     ->first();
+                                    //Ponemos el vehículo disponible
+        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 1);
         $request_vehicle->state_request_id = 3;
         $request_vehicle->save();
         //Eliminamos reservation
