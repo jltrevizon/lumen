@@ -270,7 +270,7 @@ class VehicleRepository {
     }
 
     public function VehiclesReserveByCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state'])
+        return Vehicle::with(['category','campa','state','trade_state', ])
                     ->whereHas('campa', function (Builder $builder) use($request){
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
@@ -327,14 +327,14 @@ class VehicleRepository {
     }
 
     public function vehiclesReservedByCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state'])
+        return Vehicle::with(['category','campa','state','trade_state','reservations', 'requests.customer'])
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->where('trade_state_id', 2)
                     ->get();
     }
 
     public function vehiclesReservedByCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state'])
+        return Vehicle::with(['category','campa','state','trade_state','reservations', 'requests.customer'])
                     ->whereHas('campa', function(Builder $builder) use($request){
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
