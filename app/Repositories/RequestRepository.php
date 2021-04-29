@@ -140,6 +140,8 @@ class RequestRepository {
                                     ->first();
         $request_vehicle->state_request_id = 3;
         $request_vehicle->save();
+        //Eliminamos reservation
+        $this->reervationRepository->deleteReservation($request);
         return RequestVehicle::with(['state_request'])
                         ->where('id', $request->json()->get('request_id'))
                         ->first();

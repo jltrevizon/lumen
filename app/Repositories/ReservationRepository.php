@@ -66,4 +66,9 @@ class ReservationRepository {
                             ->first();
     }
 
+    public function deleteReservation($request){
+        Reservation::where('request_id', $request->json()->get('request_id'))
+                ->delete();
+    }
+
 }
