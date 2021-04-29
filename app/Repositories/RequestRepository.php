@@ -45,6 +45,8 @@ class RequestRepository {
                     $this->taskReservationRepository->create($request_vehicle->id, $request->json()->get('tasks'), $vehicle['vehicle_id']);
                     //Estado comercial cambia a solicitado para reserva
                     $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 6);
+                    //Creamos la reserva con active 0
+                    $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->json()->get('reservation_time'), $request->json()->get('planned_reservation'), $request->json()->get('campa_id'), 0);
                 }
                 array_push($array_request, $request_vehicle);
             }
@@ -110,10 +112,14 @@ class RequestRepository {
         $request_vehicle->datetime_approved = date('Y-m-d H:i:s');
         $request_vehicle->save();
         if($request_vehicle['type_request_id'] == 2){
-            $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], 2);
+            //Cambio de estado comercial a reservado
+            $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 2);
+            //Marcamos la reserva como ejecutada con el active 1
+            $this->reservationRepository->changeStateReservation($request_vehicle['id'], 1);
+            //Se crean las tareas solicitadas al momento de la reserva
             return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
-        $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], 3);
+        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 3);
         return [
             'message' => 'Ok'
         ];

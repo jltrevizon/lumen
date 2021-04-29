@@ -12,15 +12,23 @@ class ReservationRepository {
 
     }
 
-    public function create($request_id, $vehicle_id, $reservation_time, $planned_reservation, $campa_id){
+    public function create($request_id, $vehicle_id, $reservation_time, $planned_reservation, $campa_id, $active){
         $reservation = new Reservation();
         $reservation->request_id = $request_id;
         $reservation->vehicle_id = $vehicle_id;
         $reservation->reservation_time = $reservation_time;
         $reservation->planned_reservation = $planned_reservation;
         $reservation->campa_id = $campa_id;
+        $reservation->active = $active;
         $reservation->save();
         return $reservation;
+    }
+
+    public function changeStateReservation($request_vehicle, $active){
+        $reservation = Reservation::where('request_id', $request_vehicle)
+                                ->first();
+        $reservation->active = $active;
+        $reservation->save();
     }
 
     public function getReservationActive($request){
