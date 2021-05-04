@@ -342,4 +342,20 @@ class VehicleRepository {
                     ->get();
     }
 
+    public function vehiclesByStateCampa($request){
+        return Vehicle::with(['category','campa','state','trade_state'])
+                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->where('state_id', $request->json()->get('state_id'))
+                    ->get();
+    }
+
+    public function vehiclesByStateCompany($request){
+        return Vehicle::with(['category','campa','state','trade_state'])
+                    ->whereHas('campa', function(Builder $builder) use($request){
+                        return $builder->where('company_id', $request->json()->get('company_id'));
+                    })
+                    ->where('state_id', $request->json()->get('state_id'))
+                    ->get();
+    }
+
 }
