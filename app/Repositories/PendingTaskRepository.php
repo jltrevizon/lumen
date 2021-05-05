@@ -273,6 +273,11 @@ class PendingTaskRepository {
                 $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
                 return $this->getPendingOrNextTask();
             } else {
+                //Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                if($vehicle->trade_state_id == 2 || $vehicle->trade_state_id == 9){
+                    $vehicle->ready_to_delivery = true;
+                    $vehicle->save();
+                }
                 //Si no hay más tareas el estado comercial pasa a disponible
                 $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 1);
                 return [

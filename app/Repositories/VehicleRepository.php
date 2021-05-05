@@ -358,4 +358,36 @@ class VehicleRepository {
                     ->get();
     }
 
+    public function vehiclesByTradeStateCampa($request){
+        return Vehicle::with(['category','campa','state','trade_state'])
+                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->where('trade_state_id', $request->json()->get('trade_state_id'))
+                    ->get();
+    }
+
+    public function vehiclesByTradeStateCompany($request){
+        return Vehicle::with(['category','campa','state','trade_state'])
+                    ->whereHas('campa', function(Builder $builder) use($request){
+                        return $builder->where('company_id', $request->json()->get('company_id'));
+                    })
+                    ->where('trade_state_id', $request->json()->get('trade_state_id'))
+                    ->get();
+    }
+
+    public function getVehiclesReadyToDeliveryCampa($request){
+        return Vehicle::with(['category','campa','state','trade_state'])
+                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->where('ready_to_delivery', true)
+                    ->get();
+    }
+
+    public function getVehiclesReadyToDeliveryCompany($request){
+        return Vehicle::with(['category','campa','state','trade_state'])
+                    ->whereHas('campa', function(Builder $builder) use($request){
+                        return $builder->where('company_id', $request->json()->get('company_id'));
+                    })
+                    ->where('ready_to_delivery', true)
+                    ->get();
+    }
+
 }

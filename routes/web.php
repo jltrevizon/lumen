@@ -266,6 +266,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/reserved/by-company', 'VehicleController@vehiclesReservedByCompany');
         $router->post('/vehicles/by-state-campa', 'VehicleController@vehiclesByStateCampa');
         $router->post('/vehicles/by-state-company', 'VehicleController@vehiclesByStateCompany');
+        $router->post('/vehicles/by-trade-state/campa', 'VehicleController@vehiclesByTradeStateCampa');
+        $router->post('/vehicles/by-trade-state/company', 'VehicleController@vehiclesByTradeStateCompany');
+        $router->post('/vehicles/ready-to-delivery/campa', 'VehicleController@getVehiclesReadyToDeliveryCampa');
+        $router->post('/vehicles/ready-to-delivery/company', 'VehicleController@getVehiclesReadyToDeliveryCompany');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
 
         /**
@@ -322,5 +326,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/get-message-app', 'ChatController@getMessageApp');
         $router->post('/read-messages', 'ChatController@readMessages');
 
+        /**
+         * TradeState
+         */
+        $router->get('/trade-states', 'TradeStateController@getAll');
+
+        /**
+         * Type Reservations
+         */
+        $router->get('/type-reservations', 'TypeReservationController@getAll');
     });
 });

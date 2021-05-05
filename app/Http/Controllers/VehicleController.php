@@ -115,4 +115,20 @@ class VehicleController extends Controller
         return $this->vehicleRepository->vehiclesByStateCompany($request);
     }
 
+    public function vehiclesByTradeStateCampa(Request $request){
+        return $this->vehicleRepository->vehiclesByTradeStateCampa($request);
+    }
+
+    public function vehiclesByTradeStateCompany(Request $request){
+        return $this->vehicleRepository->vehiclesByTradeStateCompany($request);
+    }
+
+    public function getVehiclesReadyToDeliveryCampa(Request $request){
+        return $this->vehicleRepository->getVehiclesReadyToDeliveryCampa($request);
+    }
+
+    public function getVehiclesReadyToDeliveryCompany(Request $request){
+        return $this->vehicleRepository->getVehiclesReadyToDeliveryCompany($request);
+    }
+
 }
