@@ -61,6 +61,7 @@ class ReservationRepository {
         if($request->json()->get('order')) $reservation->order = $request->json()->get('order');
         if($request->json()->get('contract')) $reservation->contract = $request->json()->get('contract');
         if($request->json()->get('actual_date')) $reservation->actual_date = $request->json()->get('actual_date');
+        if($request->json()->get('contract')) $reservation->active = 0;
         $reservation->save();
         return $reservation;
 
