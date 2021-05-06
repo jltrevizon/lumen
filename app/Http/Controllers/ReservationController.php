@@ -28,4 +28,12 @@ class ReservationController extends Controller
         return $this->reservationRepository->getReservationsByVehicle($request);
     }
 
+    public function vehicleWithoutOrder(Request $request){
+        return $this->reservationRepository->vehicleWithoutOrder($request);
+    }
+
+    public function vehicleWithoutContract(Request $request){
+        return $this->reservationRepository->vehicleWithoutContract($request);
+    }
+
 }

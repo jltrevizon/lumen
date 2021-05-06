@@ -79,4 +79,26 @@ class ReservationRepository {
                 ->delete();
     }
 
+    public function vehicleWithoutOrder($request){
+        return Reservation::with(['request.state_request','vehicle.category','vehicle.state'])
+                        ->where('vehicle_id', $request->json()->get('vehicle_id'))
+                        ->where('order', null)
+                        ->whereHas('request', function (Builder $builder) {
+                            return $builder->where('state_request_id', 1);
+                        })
+                        ->orderBy('id','desc')
+                        ->first();
+    }
+
+    public function vehicleWithoutContract($request){
+        return Reservation::with(['request.state_request','vehicle.category','vehicle.state'])
+                        ->where('vehicle_id', $request->json()->get('vehicle_id'))
+                        ->where('contract', null)
+                        ->whereHas('request', function (Builder $builder) {
+                            return $builder->where('state_request_id', 2);
+                        })
+                        ->orderBy('id','desc')
+                        ->first();
+    }
+
 }

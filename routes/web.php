@@ -316,6 +316,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/get-reservations/by-campa', 'ReservationController@getReservationActiveByCampa');
         $router->post('/reservations/update', 'ReservationController@update');
         $router->post('/get-reservation/by-vehicle', 'ReservationController@getReservationsByVehicle');
+        $router->post('/reservation/without-order', 'ReservationController@vehicleWithoutOrder');
+        $router->post('/reservation/without-contract', 'ReservationController@vehicleWithoutContract');
 
         /**
          * Chat
