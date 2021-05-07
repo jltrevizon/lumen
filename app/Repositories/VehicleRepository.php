@@ -311,14 +311,20 @@ class VehicleRepository {
     }
 
     public function getVehiclesAvailableReserveByCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state'])
+        return Vehicle::with(['category','campa','state','trade_state','pending_tasks' => function ($query) {
+                        return $query->where('state_pending_task_id', '!=', 3)
+                                    ->orWhere('state_pending_task_id', null);
+                    }])
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->where('trade_state_id', 1)
                     ->get();
     }
 
     public function getVehiclesAvailableReserveByCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state'])
+        return Vehicle::with(['category','campa','state','trade_state','pending_tasks' => function ($query) {
+                        return $query->where('state_pending_task_id', '!=', 3)
+                                    ->orWhere('state_pending_task_id', null);
+                    }])
                     ->whereHas('campa', function (Builder $builder) use($request){
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
