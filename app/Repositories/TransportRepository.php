@@ -18,7 +18,7 @@ class TransportRepository {
 
     public function create($request){
         $transport = new Transport();
-        $transport->name = $request->get('name');
+        $transport->name = $request->json()->get('name');
         $transport->save();
         return $transport;
     }
@@ -26,7 +26,7 @@ class TransportRepository {
     public function update($request, $id){
         $transport = Transport::where('id', $id)
                     ->first();
-        if(isset($request['name'])) $transport->name = $request->get('name');
+        if($request->json()->get('name')) $transport->name = $request->json()->get('name');
         $transport->updated_at = date('Y-m-d H:i:s');
         $transport->save();
         return $transport;
