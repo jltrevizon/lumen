@@ -18,6 +18,6 @@ class Reservation extends Model
     }
 
     public function transport(){
-        return $this->belongsTo(Transport::class, 'transport_id');
+        return $this->belongsTo(Reservation::class);
     }
 }
