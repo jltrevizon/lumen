@@ -24,17 +24,10 @@ class StateSeeder extends Seeder
 
     public function data(){
         return [
-            [ 'name' => 'En campa'],
-            [ 'name' => 'Reservado' ],
-            [ 'name' => 'Defletado' ],
+            [ 'name' => 'Disponible'],
             [ 'name' => 'Taller' ],
-            [ 'name' => 'Disponible' ],
-            [ 'name' => 'Pre-Disponible' ],
             [ 'name' => 'Pendiente Venta V.O.' ],
-            [ 'name' => 'Pendiente Recoger Cliente' ],
-            [ 'name' => 'En tránsito' ],
-            [ 'name' => 'Reservado Pre-Entrega' ],
-            [ 'name' => 'Entregado']
+            [ 'name' => 'No disponible' ]
         ];
     }
 }
