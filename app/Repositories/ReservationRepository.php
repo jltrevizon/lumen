@@ -63,7 +63,7 @@ class ReservationRepository {
         if($request->json()->get('contract')) $reservation->contract = $request->json()->get('contract');
         if($request->json()->get('actual_date')) $reservation->actual_date = $request->json()->get('actual_date');
         if($request->json()->get('contract')) $reservation->active = 0;
-        if($request->json()->get('pickup_by_customer')) $reservation->pickup_by_customer = $request->json()->get('pickup_by_customer');
+        if($request->json()->get('pickup_by_customer') == false || $request->json()->get('pickup_by_customer') == true) $reservation->pickup_by_customer = $request->json()->get('pickup_by_customer');
         if($request->json()->get('transport_id')) $reservation->transport_id = $request->json()->get('transport_id');
         $reservation->save();
         return $reservation;
