@@ -17,7 +17,7 @@ class ReservationRepository {
                         ->first();
     }
 
-    public function create($request_id, $vehicle_id, $reservation_time, $planned_reservation, $campa_id, $active, $reservation_type_id){
+    public function create($request_id, $vehicle_id, $reservation_time, $planned_reservation, $campa_id, $active, $reservation_type_id, $pickup_by_customer){
         $reservation = new Reservation();
         $reservation->request_id = $request_id;
         $reservation->vehicle_id = $vehicle_id;
@@ -25,6 +25,7 @@ class ReservationRepository {
         $reservation->planned_reservation = $planned_reservation;
         $reservation->campa_id = $campa_id;
         $reservation->active = $active;
+        $reservation->pickup_by_customer = $pickup_by_customer;
         $reservation->type_reservation_id = $reservation_type_id;
         $reservation->save();
         return $reservation;

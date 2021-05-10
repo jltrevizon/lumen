@@ -46,7 +46,7 @@ class RequestRepository {
                     //Estado comercial cambia a solicitado para reserva
                     $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 6);
                     //Creamos la reserva con active 0
-                    $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->json()->get('reservation_time'), $request->json()->get('planned_reservation'), $request->json()->get('campa_id'), 0, $request->json()->get('type_reservation_id'));
+                    $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->json()->get('reservation_time'), $request->json()->get('planned_reservation'), $request->json()->get('campa_id'), 0, $request->json()->get('type_reservation_id'), $request->json()->get('pickup_by_customer'));
                 }
                 array_push($array_request, $request_vehicle);
             }
