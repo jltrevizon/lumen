@@ -188,6 +188,12 @@ class TaskSeeder extends Seeder
                 'type_task_id' => 1,
                 'name' => 'Panelados',
                 'duration' => 2,
+            ],
+            [
+                'sub_state_id' => 2,
+                'type_task_id' => 1,
+                'name' => 'Lavado exterior',
+                'duration' => 2,
             ]
         ];
     }
