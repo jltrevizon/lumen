@@ -8,6 +8,6 @@ use App\Models\Reservation;
 class Transport extends Model
 {
     public function reservations(){
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class, 'transport_id');
     }
 }
