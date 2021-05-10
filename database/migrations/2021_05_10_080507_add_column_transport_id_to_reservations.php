@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnPickupByCustomerToReservations extends Migration
+class AddColumnTransportIdToReservations extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddColumnPickupByCustomerToReservations extends Migration
     public function up()
     {
         Schema::table('reservations', function (Blueprint $table) {
-            $table->boolean('pickup_by_customer')->after('planned_reservation')->nullable();
+            $table->foreignId('transport_id')->after('pickup_by_customer')->nullable()->constrained();
         });
     }
 
@@ -26,7 +26,7 @@ class AddColumnPickupByCustomerToReservations extends Migration
     public function down()
     {
         Schema::table('reservations', function (Blueprint $table) {
-            $table->dropColumn('pickup_by_customer');
+            $table->dropColumn('transport_id');
         });
     }
 }
