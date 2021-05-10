@@ -55,7 +55,8 @@ class ReservationRepository {
     }
 
     public function update($request){
-        $reservation = Reservation::where('id', $request->json()->get('reservation_id'))
+        $reservation = Reservation::with(['transport'])
+                                ->where('id', $request->json()->get('reservation_id'))
                                 ->first();
         if($request->json()->get('dni')) $reservation->dni = $request->json()->get('dni');
         if($request->json()->get('order')) $reservation->order = $request->json()->get('order');
@@ -66,7 +67,6 @@ class ReservationRepository {
         if($request->json()->get('transport_id')) $reservation->transport_id = $request->json()->get('transport_id');
         $reservation->save();
         return $reservation;
-
     }
 
     public function getReservationsByVehicle($request){
