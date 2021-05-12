@@ -43,8 +43,15 @@ class RequestRepository {
                 $request_vehicle->save();
                 if($vehicle['type_request_id'] == 2){
                     $this->taskReservationRepository->create($request_vehicle->id, $request->json()->get('tasks'), $vehicle['vehicle_id']);
-                    //Estado comercial cambia a solicitado para reserva
-                    $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 6);
+                    //Estado comercial cambia a pre-reservado (Es reservado pero con tareas pendientes)
+                    $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
+                    if(count($tasks) > 0) {
+                        //Si hay tareas pasamos el vehículo al estado pre-reservado
+                        $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 2);
+                    } else {
+                        //Si no hay tareas pasamos el vehículo al estado reservado
+                        $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 1);
+                    }
                     //Creamos la reserva con active 0
                     $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->json()->get('reservation_time'), $request->json()->get('planned_reservation'), $request->json()->get('campa_id'), 0, $request->json()->get('type_reservation_id'));
                 }
@@ -78,8 +85,14 @@ class RequestRepository {
         $request_vehicle->save();
         if($request->json()->get('type_request_id') == 2){
             $this->reservationRepository->create($request_vehicle['id'], $request_vehicle['vehicle_id'], $request->json()->get('reservation_time'), $request->json()->get('planned_reservation'), $request->json()->get('campa_id'));
-            //Cambia a estado comercial reservado
-            $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 2);
+            $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
+            if(count($tasks) > 0) {
+                //Si hay tareas pasamos el vehículo al estado pre-reservado
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 2);
+            } else {
+                //Si no hay tareas pasamos el vehículo al estado reservado
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 1);
+            }
         }
         return $request_vehicle;
     }
@@ -115,11 +128,17 @@ class RequestRepository {
             //Buscamos reservation
             $reservation = $this->reservationRepository->getByRequestId($request_vehicle['id']);
             if($reservation['type_reservation_id'] == 1){
-                //Cambio de estado comercial a reservado
+                $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
+            if(count($tasks) > 0) {
+                //Si hay tareas pasamos el vehículo al estado pre-reservado
                 $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 2);
             } else {
+                //Si no hay tareas pasamos el vehículo al estado reservado
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 1);
+            }
+            } else {
                 //Cambio de estado comercial a reservado pre-entrega
-                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 9);
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 3);
 
             }
             //Marcamos la reserva como ejecutada con el active 1
@@ -128,7 +147,7 @@ class RequestRepository {
             return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
         //Si no es una solicitud de reserva lo será de defleet
-        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 3);
+        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 4);
         return [
             'message' => 'Ok'
         ];
@@ -148,7 +167,7 @@ class RequestRepository {
         $request_vehicle = RequestVehicle::where('id', $request->json()->get('request_id'))
                                     ->first();
         //Ponemos el vehículo disponible
-        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 1);
+        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], null);
         $request_vehicle->state_request_id = 3;
         $request_vehicle->save();
         //Eliminamos reservation
