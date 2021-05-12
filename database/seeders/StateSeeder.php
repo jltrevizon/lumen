@@ -27,7 +27,8 @@ class StateSeeder extends Seeder
             [ 'name' => 'Disponible'],
             [ 'name' => 'Taller' ],
             [ 'name' => 'Pendiente Venta V.O.' ],
-            [ 'name' => 'No disponible' ]
+            [ 'name' => 'No disponible' ],
+            [ 'name' => 'Entregado' ]
         ];
     }
 }

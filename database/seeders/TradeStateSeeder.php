@@ -24,15 +24,10 @@ class TradeStateSeeder extends Seeder
 
     public function data(){
         return [
-            [ 'name' => 'Disponible' ],
             [ 'name' => 'Reservado'],
-            [ 'name' => 'Defletado'],
-            [ 'name' => 'Entregado' ],
-            [ 'name' => 'No disponible' ],
-            [ 'name' => 'Solicitado para reserva' ],
+            [ 'name' => 'Pre-reservado'],
+            [ 'name' => 'Reservado pre-entrega'],
             [ 'name' => 'Solicitado para defleet' ],
-            [ 'name' => 'Puesta a disposición' ],
-            [ 'name' => 'Reservado pre-entrega']
         ];
     }
 }
