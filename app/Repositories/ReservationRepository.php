@@ -4,12 +4,18 @@ namespace App\Repositories;
 
 use App\Models\Reservation;
 use Illuminate\Database\Eloquent\Builder;
+use App\Repositories\TaskReservationRepository;
+use App\Repositories\VehicleRepository;
 
 class ReservationRepository {
 
-    public function __construct()
+    public function __construct(
+        TaskReservationRepository $taskReservationRepository,
+        VehicleRepository $vehicleRepository
+    )
     {
-
+        $this->taskReservationRepository = $taskReservationRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function getByRequestId($request_id){
@@ -65,6 +71,21 @@ class ReservationRepository {
         if($request->json()->get('pickup_by_customer') == false || $request->json()->get('pickup_by_customer') == true) $reservation->pickup_by_customer = $request->json()->get('pickup_by_customer');
         if($request->json()->get('transport_id') == false || $request->json()->get('transport_id') != false) $reservation->transport_id = $request->json()->get('transport_id');
         $reservation->save();
+        if($reservation->order != null && $reservation->contract != null){
+            $task_reservation = $this->taskReservationRepository->getByRequest($reservation->request_id);
+            if($reservation->type_reservation_id == 2){
+                //Si el tipo de reserva es pre-entrega el estado del vehículo pasa a reservado pre-entrega
+                $this->vehicleRepository->updateTradeState($reservation['vehicle_id'], 3);
+            } else {
+                if(count($task_reservation) > 0){
+                    //Si la reserva es normal el vehículo no tiene tareas pasa a reservado
+                    $this->vehicleRepository->updateTradeState($reservation['vehicle_id'], 1);
+                } else {
+                    //Si la reserva es normal el vehículo tiene tareas pasa a reservado pre-entrega
+                    $this->vehicleRepository->updateTradeState($reservation['vehicle_id'], 2);
+                }
+            }
+        }
         return Reservation::with(['transport'])
                         ->where('id', $request->json()->get('reservation_id'))
                         ->first();
