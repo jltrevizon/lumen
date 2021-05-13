@@ -381,7 +381,7 @@ class VehicleRepository {
     }
 
     public function getVehiclesWithReservationWithoutOrderCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                         return $query->whereNull('order')
                                     ->where('active', true);
                     }])
@@ -394,7 +394,7 @@ class VehicleRepository {
     }
 
     public function getVehiclesWithReservationWithoutOrderCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                         return $query->whereNull('order')
                                     ->where('active', true);
                     }])
@@ -409,7 +409,7 @@ class VehicleRepository {
     }
 
     public function getVehiclesWithReservationWithoutContractCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                         return $query->whereNotNull('order')
                                     ->whereNull('contract')
                                     ->where('active', true);
@@ -424,7 +424,7 @@ class VehicleRepository {
     }
 
     public function getVehiclesWithReservationWithoutContractCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                         return $query->whereNotNull('order')
                                     ->whereNull('contract')
                                     ->where('active', true);
