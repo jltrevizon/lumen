@@ -253,22 +253,6 @@ class VehicleRepository {
                     ->get();
     }
 
-    public function vehiclesRequestReserveByCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','reservations.transport', 'requests.customer'])
-                    ->where('campa_id', $request->json()->get('campa_id'))
-                    ->where('trade_state_id', 6)
-                    ->get();
-    }
-
-    public function vehiclesRequestReserveByCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','reservations.transport', 'requests.customer'])
-                    ->whereHas('campa', function (Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->where('trade_state_id', 6)
-                    ->get();
-    }
-
     public function VehiclesReserveByCompany($request){
         return Vehicle::with(['category','campa','state','trade_state', ])
                     ->whereHas('campa', function (Builder $builder) use($request){
@@ -395,5 +379,34 @@ class VehicleRepository {
                     ->where('ready_to_delivery', true)
                     ->get();
     }
+
+    public function getVehiclesWithReservationWithoutOrderCampa($request){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+                        return $query->whereNull('order')
+                                    ->where('active', true);
+                    }])
+                    ->whereHas('reservations', function(Builder $builder) use($request){
+                        return $builder->whereNull('order')
+                                    ->where('active', true);
+                    })
+                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->get();
+    }
+
+    public function getVehiclesWithReservationWithoutOrderCompany($request){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+                        return $query->whereNull('order')
+                                    ->where('active', true);
+                    }])
+                    ->whereHas('reservations', function(Builder $builder) use($request){
+                        return $builder->whereNull('order')
+                                    ->where('active', true);
+                    })
+                    ->whereHas('campa', function(Builder $builder) use($request){
+                        return $builder->where('company_id', $request->json()->get('company_id'));
+                    })
+                    ->get();
+    }
+
 
 }

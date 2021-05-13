@@ -87,14 +87,6 @@ class VehicleController extends Controller
         return $this->vehicleRepository->getVehiclesAvailableReserveByCompany($request);
     }
 
-    public function vehiclesRequestReserveByCampa(Request $request){
-        return $this->vehicleRepository->vehiclesRequestReserveByCampa($request);
-    }
-
-    public function vehiclesRequestReserveByCompany(Request $request){
-        return $this->vehicleRepository->vehiclesRequestReserveByCompany($request);
-    }
-
     public function VehiclesReserveByCompany(Request $request){
         return $this->vehicleRepository->VehiclesReserveByCompany($request);
     }
@@ -129,6 +121,14 @@ class VehicleController extends Controller
 
     public function getVehiclesReadyToDeliveryCompany(Request $request){
         return $this->vehicleRepository->getVehiclesReadyToDeliveryCompany($request);
+    }
+
+    public function getVehiclesWithReservationWithoutOrderCampa(Request $request){
+        return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request);
+    }
+
+    public function getVehiclesWithReservationWithoutOrderCompany(Request $request){
+        return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCompany($request);
     }
 
 }
