@@ -408,5 +408,37 @@ class VehicleRepository {
                     ->get();
     }
 
+    public function getVehiclesWithReservationWithoutContractCampa($request){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+                        return $query->whereNotNull('order')
+                                    ->whereNull('contract')
+                                    ->where('active', true);
+                    }])
+                    ->whereHas('reservations', function(Builder $builder) use($request){
+                        return $builder->whereNotNull('order')
+                                    ->whereNull('contract')
+                                    ->where('active', true);
+                    })
+                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->get();
+    }
+
+    public function getVehiclesWithReservationWithoutContractCompany($request){
+        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations' => function($query){
+                        return $query->whereNotNull('order')
+                                    ->whereNull('contract')
+                                    ->where('active', true);
+                    }])
+                    ->whereHas('reservations', function(Builder $builder) use($request){
+                        return $builder->whereNotNull('order')
+                                    ->whereNull('contract')
+                                    ->where('active', true);
+                    })
+                    ->whereHas('campa', function(Builder $builder) use($request){
+                        return $builder->where('company_id', $request->json()->get('company_id'));
+                    })
+                    ->get();
+    }
+
 
 }

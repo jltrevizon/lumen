@@ -131,4 +131,12 @@ class VehicleController extends Controller
         return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCompany($request);
     }
 
+    public function getVehiclesWithReservationWithoutContractCampa(Request $request){
+        return $this->vehicleRepository->getVehiclesWithReservationWithoutContractCampa($request);
+    }
+
+    public function getVehiclesWithReservationWithoutContractCompany(Request $request){
+        return $this->vehicleRepository->getVehiclesWithReservationWithoutContractCompany($request);
+    }
+
 }
