@@ -254,6 +254,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles', 'VehicleController@create');
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
+        $router->put('/vehicles/update-documentation/{id}', 'VehicleController@updateDocumentation');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
         $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
         $router->get('/vehicles/defleeted', 'VehicleController@vehiclesDefleeted');

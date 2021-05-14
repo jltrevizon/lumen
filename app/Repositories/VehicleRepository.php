@@ -171,11 +171,18 @@ class VehicleRepository {
         if($request->json()->get('kms')) $vehicle->kms = $request->json()->get('kms');
         if($request->json()->get('branch')) $vehicle->branch = $request->json()->get('branch');
         if($request->json()->get('vehicle_model')) $vehicle->vehicle_model = $request->json()->get('vehicle_model');
-        if($request->json()->get('documentation')) $vehicle->documentation = $request->json()->get('documentation');
         if($request->json()->get('version')) $vehicle->version = $request->json()->get('version');
         if($request->json()->get('vin')) $vehicle->vin = $request->json()->get('vin');
         if($request->json()->get('first_plate')) $vehicle->first_plate = $request->json()->get('first_plate');
         $vehicle->updated_at = date('Y-m-d H:i:s');
+        $vehicle->save();
+        return $vehicle;
+    }
+
+    public function updateDocumentation($request, $id){
+        $vehicle = Vehicle::where('id', $id)
+                    ->first();
+        $vehicle->documentation = $request->json()->get('documentation');
         $vehicle->save();
         return $vehicle;
     }
