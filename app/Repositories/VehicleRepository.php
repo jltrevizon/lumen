@@ -344,6 +344,7 @@ class VehicleRepository {
         return Vehicle::with(['category','campa','state','trade_state'])
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->where('state_id', $request->json()->get('state_id'))
+                    ->whereNull('trade_state_id')
                     ->get();
     }
 
@@ -353,6 +354,7 @@ class VehicleRepository {
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
                     ->where('state_id', $request->json()->get('state_id'))
+                    ->whereNull('trade_state_id')
                     ->get();
     }
 
