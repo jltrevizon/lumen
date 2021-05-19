@@ -13,7 +13,7 @@
         "laravelista/lumen-vendor-publish": "^8.0",
         "nordsoftware/lumen-cors": "^3.4",
         "palanik/lumen-cors": "dev-master",
-        "tymon/jwt-auth": "dev-develop"
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
