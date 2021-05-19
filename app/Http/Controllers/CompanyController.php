@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Company;
+use App\Repositories\CompanyRepository;
 
 class CompanyController extends Controller
 {
+
+    public function __construct(CompanyRepository $companyRepository)
+    {
+        $this->companyRepository = $companyRepository;
+    }
+
     public function getAll(){
         return Company::all();
     }
@@ -17,39 +24,17 @@ class CompanyController extends Controller
     }
 
     public function create(Request $request){
-        $company = new Company();
-        $company->name = $request->get('name');
-        if(isset($request['tradename'])) $company->tradename = $request->get('tradename');
-        if(isset($request['nif'])) $company->nif = $request->get('nif');
-        if(isset($request['address'])) $company->address = $request->get('address');
-        if(isset($request['location'])) $company->location = $request->get('location');
-        if(isset($request['phone'])) $company->phone = $request->get('phone');
-        if(isset($request['logo'])) $company->logo = $request->get('logo');
-        $company->save();
-        return $company;
+        return $this->companyRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $company = Company::where('id', $id)
-                        ->first();
-        if(isset($request['name'])) $company->name = $request->get('name');
-        if(isset($request['tradename'])) $company->tradename = $request->get('tradename');
-        if(isset($request['nif'])) $company->nif = $request->get('nif');
-        if(isset($request['address'])) $company->address = $request->get('address');
-        if(isset($request['location'])) $company->location = $request->get('location');
-        if(isset($request['phone'])) $company->phone = $request->get('phone');
-        if(isset($request['logo'])) $company->logo = $request->get('logo');
-        $company->updated_at = date('Y-m-d H:i:s');
-        $company->save();
-        return $company;
+        return $this->companyRepository->update($request, $id);
     }
 
     public function delete($id){
         Company::where('id', $id)
             ->delete();
 
-        return [
-            'message' => 'Company deleted'
-        ];
+        return [ 'message' => 'Company deleted' ];
     }
 }

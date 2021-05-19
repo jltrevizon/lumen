@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Repositories\CustomerRepository;
 
 class CustomerController extends Controller
 {
+
+    public function __construct(CustomerRepository $customerRepository)
+    {
+        $this->customerRepository = $customerRepository;
+    }
+
     public function getAll(){
         return Customer::all();
     }
@@ -17,26 +24,15 @@ class CustomerController extends Controller
     }
 
     public function create(Request $request){
-        $customer = new Customer();
-        $customer->name = $request->get('name');
-        if(isset($request['province_id'])) $customer->province_id = $request->get('province_id');
-        if(isset($request['cif'])) $customer->cif = $request->get('cif');
-        if(isset($request['phone'])) $customer->phone = $request->get('phone');
-        if(isset($request['address'])) $customer->address = $request->get('address');
-        $customer->save();
-        return $customer;
+        return $this->customerRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $customer = Customer::where('id', $id)
-                        ->first();
-        if(isset($request['name'])) $customer->name = $request->get('name');
-        if(isset($request['cif'])) $customer->cif = $request->get('cif');
-        if(isset($request['phone'])) $customer->phone = $request->get('phone');
-        if(isset($request['address'])) $customer->address = $request->get('address');
-        $customer->updated_at = date('Y-m-d H:i:s');
-        $customer->save();
-        return $customer;
+        return $this->customerRepository->update($request, $id);
+    }
+
+    public function getUserByCompany(Request $request){
+        return $this->customerRepository->getUserByCompany($request);
     }
 
     public function delete($id){

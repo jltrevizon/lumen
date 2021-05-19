@@ -15,22 +15,22 @@ use Illuminate\Http\Request;
 */
 
 $router->get('/', function () use ($router) {
-    return '<h2>API CarFlex 2</h2>';
+    return '<h2>API CarFlex</h2>';
 });
 
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->post('/auth/signup', 'AuthController@register');
     $router->post('/auth/signin', 'AuthController@login');
 
-    $router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->group(['middleware' => ['auth']], function () use ($router) {
 
         /**
          * Users
          */
         $router->get('/users/getall', 'UserController@getAll');
         $router->get('/users/{id}', 'UserController@getById');
+        $router->post('/users', 'UserController@create');
         $router->post('/users/create-without-password', 'UserController@createUserWithoutPassword');
         $router->put('/users/update/{id}', 'UserController@update');
         $router->delete('/users/delete/{id}', 'UserController@delete');
@@ -53,6 +53,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/campas/getall', 'CampaController@getall');
         $router->get('/campas/{id}', 'CampaController@getById');
+        $router->post('/campas/by-region', 'CampaController@getCampasByRegion');
+        $router->post('/campas/by-province', 'CampaController@getCampasByProvince');
+        $router->post('/campas/by-company', 'CampaController@getByCompany');
         $router->post('/campas', 'CampaController@create');
         $router->put('/campas/update/{id}', 'CampaController@update');
         $router->delete('/campas/delete/{id}', 'CampaController@delete');
@@ -81,6 +84,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/customers/getall', 'CustomerController@getall');
         $router->get('/customers/{id}', 'CustomerController@getById');
         $router->post('/customers', 'CustomerController@create');
+        $router->post('/customers/by-company', 'CustomerController@getUserByCompany');
         $router->put('/customers/update/{id}', 'CustomerController@update');
         $router->delete('/customers/delete/{id}', 'CustomerController@delete');
 
@@ -116,6 +120,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/provinces/getall', 'ProvinceController@getall');
         $router->get('/provinces/{id}', 'ProvinceController@getById');
+        $router->post('/provinces/by-region', 'ProvinceController@provinceByRegion');
         $router->post('/provinces', 'ProvinceController@create');
         $router->put('/provinces/update/{id}', 'ProvinceController@update');
         $router->delete('/provinces/delete/{id}', 'ProvinceController@delete');
@@ -125,14 +130,21 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
+        $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
         $router->post('/pending-tasks/create-from-array', 'PendingTaskController@createFromArray');
-        $router->get('/pending-tasks/pending', 'PendingTaskController@getPendingTask');
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
+        $router->post('/pending-tasks/cancel-pending-task', 'PendingTaskController@cancelPendingTask');
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
-
+        $router->post('/pending-tasks/incidence', 'PendingTaskController@createIncidence');
+        $router->post('/pending-tasks/resolved', 'PendingTaskController@resolvedIncidence');
+        $router->post('/pending-tasks/by-state', 'PendingTaskController@getPendingTaskByState');
+        $router->post('/pending-tasks/by-state/by-campa', 'PendingTaskController@getPendingTaskByStateCampa');
+        $router->post('/pending-tasks/by-plate', 'PendingTaskController@getPendingTaskByPlate');
+        $router->post('/pending-tasks/by-vehicle', 'PendingTaskController@getPendingTasksByPlate');
+        $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
         /**
          * Purchase operations
          */
@@ -150,6 +162,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/requests', 'RequestController@create');
         $router->put('/requests/update/{id}', 'RequestController@update');
         $router->delete('/requests/delete/{id}', 'RequestController@delete');
+        $router->post('/requests/defleet/requested', 'RequestController@vehiclesRequestedDefleet');
+        $router->post('/requests/reserve/requested', 'RequestController@vehiclesRequestedReserve');
+        $router->post('/requests/confirm', 'RequestController@confirmedRequest');
+        $router->post('/requests/decline', 'RequestController@declineRequest');
+        $router->post('/requests/confirmed', 'RequestController@getConfirmedRequest');
+        $router->get('/requests/defleet/app','RequestController@getRequestDefleetApp');
+        $router->get('/requests/reserve/app','RequestController@getRequestReserveApp');
 
         /**
          * States
@@ -215,7 +234,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/types-requests/delete/{id}', 'TypeRequestController@delete');
 
         /**
-         * TypeRequest
+         * TypeTasks
          */
         $router->get('/types-tasks/getall', 'TypeTaskController@getall');
         $router->get('/types-tasks/{id}', 'TypeTaskController@getById');
@@ -224,15 +243,102 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/types-tasks/delete/{id}', 'TypeTaskController@delete');
 
         /**
-         * TypeRequest
+         * Vehicles
          */
-        $router->get('/vehicles/getall', 'VehicleController@getall');
-        $router->get('/vehicles/{id}', 'VehicleController@getById');
+        $router->get('/vehicle/getall', 'VehicleController@getall');
+        $router->post('/vehicles/by-company', 'VehicleController@getByCompany');
+        $router->post('/vehicles/all-by-company', 'VehicleController@getAllByCompany');
+        $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
+        $router->post('/vehicles/all-by-campa', 'VehicleController@getAllByCampa');
+        $router->post('/vehicles/create-from-excel', 'VehicleController@createFromExcel');
         $router->post('/vehicles', 'VehicleController@create');
+        $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
+        $router->put('/vehicles/update-documentation/{id}', 'VehicleController@updateDocumentation');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
+        $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
+        $router->get('/vehicles/defleeted', 'VehicleController@vehiclesDefleeted');
+        $router->get('/vehicles/reserved', 'VehicleController@vehiclesReserved');
+        $router->post('/vehicles/available/reserve/by-campa', 'VehicleController@getVehiclesAvailableReserveByCampa');
+        $router->post('/vehicles/available/reserve/by-company', 'VehicleController@getVehiclesAvailableReserveByCompany');
+        $router->post('/vehicles/request/reserve/by-campa', 'VehicleController@vehiclesRequestReserveByCampa');
+        $router->post('/vehicles/request/reserve/by-company', 'VehicleController@vehiclesRequestReserveByCompany');
+        $router->post('/vehicles/by-state-campa', 'VehicleController@vehiclesByStateCampa');
+        $router->post('/vehicles/by-state-company', 'VehicleController@vehiclesByStateCompany');
+        $router->post('/vehicles/by-trade-state/campa', 'VehicleController@vehiclesByTradeStateCampa');
+        $router->post('/vehicles/by-trade-state/company', 'VehicleController@vehiclesByTradeStateCompany');
+        $router->post('/vehicles/ready-to-delivery/campa', 'VehicleController@getVehiclesReadyToDeliveryCampa');
+        $router->post('/vehicles/ready-to-delivery/company', 'VehicleController@getVehiclesReadyToDeliveryCompany');
+        $router->get('/vehicles/{id}', 'VehicleController@getById');
+        $router->post('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
+        $router->post('/vehicle-with-reservation-without-order/company', 'VehicleController@getVehiclesWithReservationWithoutOrderCompany');
+        $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
+        $router->post('/vehicle-with-reservation-without-contract/company', 'VehicleController@getVehiclesWithReservationWithoutContractCompany');
 
+        /**
+         * Vehicle Picture
+         */
+        $router->post('/vehicle-pictures', 'VehiclePictureController@create');
+        $router->post('/vehicle-pictures/by-vehicle', 'VehiclePictureController@getPicturesByVehicle');
 
-        $router->get('/test','TaskController@getTest');
+        /**
+         * Variables defleet
+         */
+        $router->get('/defleet-variables', 'DefleetVariableController@getVariables');
+        $router->put('/defleet-variables', 'DefleetVariableController@updateVariables');
+        $router->post('/defleet-variables', 'DefleetVariableController@createVariables');
+
+        /**
+         * Questions
+         */
+        $router->get('/questions/getall', 'QuestionController@getAll');
+        $router->post('/questions', 'QuestionController@create');
+        $router->delete('/questions/{id}', 'QuestionController@delete');
+
+        /**
+         *
+         */
+        $router->post('/reservation-time', 'ReservationTimeController@getByCompany');
+        $router->post('/reservation-time/create', 'ReservationTimeController@create');
+        $router->post('/reservation-time/update', 'ReservationTimeController@update');
+
+        /**
+         * Questions answer
+         */
+        $router->post('/question-answers', 'QuestionAnswerController@create');
+
+        /**
+         * Manual Questionnaire
+         */
+        $router->post('/manual-questionnaire', 'ManualQuestionnaireController@create');
+
+        /**
+         * Reservation
+         */
+        $router->post('/get-reservations', 'ReservationController@getReservationActive');
+        $router->post('/get-reservations/by-campa', 'ReservationController@getReservationActiveByCampa');
+        $router->post('/reservations/update', 'ReservationController@update');
+        $router->post('/get-reservation/by-vehicle', 'ReservationController@getReservationsByVehicle');
+        $router->post('/reservation/without-order', 'ReservationController@vehicleWithoutOrder');
+        $router->post('/reservation/without-contract', 'ReservationController@vehicleWithoutContract');
+
+        /**
+         * Chat
+         */
+        $router->post('/chat', 'ChatController@createMessage');
+        $router->post('/chat-app', 'ChatController@createMessageApp');
+        $router->post('/get-message', 'ChatController@getMessage');
+        $router->get('/get-message-app', 'ChatController@getMessageApp');
+        $router->post('/read-messages', 'ChatController@readMessages');
+
+        /**
+         * TradeState
+         */
+        $router->get('/trade-states', 'TradeStateController@getAll');
+
+        /**
+         * Type Reservations
+         */
+        $router->get('/type-reservations', 'TypeReservationController@getAll');
     });
 });

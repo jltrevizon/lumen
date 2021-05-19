@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use App\Models\StateRequest;
 use App\Models\TypeRequest;
+use App\Models\Reservation;
+use App\Models\Customer;
 
 class Request extends Model
 {
@@ -19,5 +21,13 @@ class Request extends Model
 
     public function type_request(){
         return $this->belongsTo(TypeRequest::class, 'type_request_id');
+    }
+
+    public function reservation(){
+        return $this->hasOne(Reservation::class, 'request_id');
+    }
+
+    public function customer(){
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }

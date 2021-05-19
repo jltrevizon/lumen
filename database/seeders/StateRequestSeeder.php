@@ -26,7 +26,8 @@ class StateRequestSeeder extends Seeder
     public function data(){
         return [
             [ 'name' => 'Solicitado' ],
-            [ 'name' => 'Aprobado']
+            [ 'name' => 'Aprobado'],
+            [ 'name' => 'Declinado' ]
         ];
     }
 }

@@ -8,8 +8,11 @@
         "php": "^7.3|^8.0",
         "darkaonline/swagger-lume": "8.*",
         "flipbox/lumen-generator": "^8.2",
+        "fruitcake/laravel-cors": "^2.0",
         "laravel/lumen-framework": "^8.0",
         "laravelista/lumen-vendor-publish": "^8.0",
+        "nordsoftware/lumen-cors": "^3.4",
+        "palanik/lumen-cors": "dev-master",
         "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {

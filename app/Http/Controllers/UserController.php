@@ -4,67 +4,54 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function getAll(){
-        return User::all();
+        return User::with(['campa'])
+                    ->get();
     }
 
     public function getById($id){
-        return User::where('id', $id)
-                    ->first();
+        return $this->userRepository->getById($id);
+    }
+
+    public function create(Request $request){
+        return $this->userRepository->create($request);
     }
 
     public function createUserWithoutPassword(Request $request){
-        $user = new User();
-        $user->name = $request->get('name');
-        $user->email = $request->get('email');
-        $user->save();
-        return $user;
+        return $this->userRepository->createUserWithoutPassword($request);
     }
 
     public function update(Request $request, $id){
-        $user = User::where('id', $id)
-                    ->first();
-        if(isset($request['role_id'])) $user->role_id = $request->get('role_id');
-        if(isset($request['campa_id'])) $user->campa_id = $request->get('campa_id');
-        if(isset($request['name'])) $user->name = $request->get('name');
-        if(isset($request['email'])) $user->email = $request->get('email');
-        if(isset($request['avatar'])) $user->avatar = $request->get('avatar');
-        if(isset($request['phone'])) $user->phone = $request->get('phone');
-        $user->updated_at = date('Y-m-d H:i:s');
-        $user->save();
-        return $user;
+        return $this->userRepository->update($request, $id);
     }
 
     public function delete($id){
-        User::where('id', $id)
-                    ->delete();
-        return [
-            'message' => 'User deleted'
-        ];
+        return $this->userRepository->delete($id);
     }
 
     public function getUsersByCampa($campa_id){
-        return User::where('campa_id', $campa_id)
-                    ->get();
+        return $this->userRepository->getUsersByCampa($campa_id);
     }
 
     public function getUsersByRole(Request $request, $role_id){
-        return User::where('role_id', $role_id)
-                    ->where('campa_id', $request->get('campa_id'))
-                    ->get();
+        return $this->userRepository->getUsersByRole($request, $role_id);
     }
 
     public function getActiveUsers(Request $request){
-        return User::where('active', true)
-                    ->where('campa_id', $request->get('campa_id'))
-                    ->get();
+        return $this->userRepository->getActiveUsers($request);
     }
 
     public function getUserByEmail(Request $request){
-        return User::where('email', $request->get('email'))
-                    ->first();
+        return $this->userRepository->getUserByEmail($request);
     }
 }

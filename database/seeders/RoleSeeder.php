@@ -27,7 +27,9 @@ class RoleSeeder extends Seeder
             ['description' => 'Admin'],
             ['description' => 'Gestor Global'],
             ['description' => 'Gestor Campa'],
-            ['description' => 'User App']
+            ['description' => 'User App'],
+            ['description' => 'Recepción'],
+            ['description' => 'Comercial']
         ];
     }
 }

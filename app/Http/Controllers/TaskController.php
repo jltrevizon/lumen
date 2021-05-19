@@ -8,46 +8,31 @@ use App\Repositories\TaskRepository;
 
 class TaskController extends Controller
 {
+
+    public function __construct(TaskRepository $taskRepository)
+    {
+        $this->taskRepository = $taskRepository;
+    }
+
     public function getAll(){
-        return Task::all();
+        return Task::with(['sub_state.state','type_task'])
+                    ->get();
     }
 
     public function getById($id){
-        return Task::where('id', $id)
-                    ->first();
+        return $this->taskRepository->getById($id);
     }
 
     public function create(Request $request){
-        $task = new Task();
-        $task->sub_state_id = $request->get('sub_state_id');
-        $task->type_task_id = $request->get('type_task_id');
-        $task->name = $request->get('name');
-        $task->duration = $request->get('duration');
-        $task->save();
-        return $task;
+        return $this->taskRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $task = Task::where('id', $id)
-                    ->first();
-        if(isset($request['sub_state_id'])) $task->sub_state_id = $request->get('sub_state_id');
-        if(isset($request['type_task_id'])) $task->type_task_id = $request->get('type_task_id');
-        if(isset($request['name'])) $task->name = $request->get('name');
-        if(isset($request['duration'])) $task->duration = $request->get('duration');
-        $task->updated_at = date('Y-m-d H:i:s');
-        $task->save();
-        return $task;
+        return $this->taskRepository->update($request, $id);
     }
 
     public function delete($id){
-        Task::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'Task deleted'
-        ];
+        return $this->taskRepository->delete($id);
     }
 
-    public function getTest(TaskRepository $taskRepository){
-        return $taskRepository->getTestRepository();
-    }
 }

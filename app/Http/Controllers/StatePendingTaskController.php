@@ -4,39 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\StatePendingTask;
+use App\Repositories\StatePendingTaskRepository;
 
 class StatePendingTaskController extends Controller
 {
+
+    public function __construct(StatePendingTaskRepository $statePendingTaskRepository)
+    {
+        $this->statePendingTaskRepository = $statePendingTaskRepository;
+    }
+
     public function getAll(){
         return StatePendingTask::all();
     }
 
     public function getById($id){
-        return StatePendingTask::where('id', $id)
-                    ->first();
+        return $this->statePendingTaskRepository->getById($id);
     }
 
     public function create(Request $request){
-        $state_pending_task = new StatePendingTask();
-        $state_pending_task->name = $request->get('name');
-        $state_pending_task->save();
-        return $state_pending_task;
+        return $this->statePendingTaskRepository->create($request);
     }
 
     public function update(Request $request, $id){
-        $state_pending_task = StatePendingTask::where('id', $id)
-                    ->first();
-        $state_pending_task->name = $request->get('name');
-        $state_pending_task->updated_at = date('Y-m-d H:i:s');
-        $state_pending_task->save();
-        return $state_pending_task;
+        return $this->statePendingTaskRepository->update($request, $id);
     }
 
     public function delete($id){
-        StatePendingTask::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'State pending task deleted'
-        ];
+        return $this->statePendingTaskRepository->delete($id);
     }
 }
