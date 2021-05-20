@@ -52,4 +52,9 @@ class DefleetVariableRepository {
         return $variables;
     }
 
+    public function getVariablesByCompany($company_id){
+        return DefleetVariable::where('company_id', $company_id)
+                            ->first();
+    }
+
 }

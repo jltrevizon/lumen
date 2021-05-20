@@ -8,12 +8,14 @@ use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CategoryRepository;
+use App\Repositories\DefleetVariableRepository;
 class VehicleRepository {
 
-    public function __construct(UserRepository $userRepository, CategoryRepository $categoryRepository)
+    public function __construct(UserRepository $userRepository, CategoryRepository $categoryRepository, DefleetVariableRepository $defleetVariableRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->defleetVariableRepository = $defleetVariableRepository;
     }
 
     public function getById($id){
@@ -204,9 +206,19 @@ class VehicleRepository {
     public function verifyPlate($request){
         $user = $this->userRepository->getById(Auth::id());
 
-        $vehicle = Vehicle::where('plate', $request->json()->get('plate'))
+        $vehicle = Vehicle::with(['campa.company'])
+                    ->where('plate', $request->json()->get('plate'))
                     ->where('campa_id', $user->campa_id)
                     ->first();
+        $variables_defleet = $this->defleetVariableRepository->getVariablesByCompany($vehicle['campa']['company_id']);
+        $date_first_plate = new DateTime($vehicle->first_plate);
+        $date = date("Y-m-d H:i:s");
+        $today = new DateTime($date);
+        $diff = $date_first_plate->diff($today);
+        $year = $diff->format('%Y');
+        if($vehicle->kms > $variables_defleet->kms || $year > $variables_defleet->years){
+            return response()->json(['message' => 'Vehículo para defletar']);
+        }
         if($vehicle){
             return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
         } else {
