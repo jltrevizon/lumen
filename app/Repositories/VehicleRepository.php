@@ -217,8 +217,10 @@ class VehicleRepository {
         $diff = $date_first_plate->diff($today);
         $year = $diff->format('%Y');
         // return $variables_defleet;
-        if($vehicle->kms > $variables_defleet->kms || $year > $variables_defleet->years){
-            return response()->json(['message' => 'Vehículo para defletar'], 200);
+        if($variables_defleet){
+            if(($vehicle->kms > $variables_defleet->kms || $year > $variables_defleet->years)){
+                return response()->json(['defleet' => true,'message' => 'Vehículo para defletar'], 200);
+            }
         }
         if($vehicle){
             return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
