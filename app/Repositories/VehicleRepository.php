@@ -9,9 +9,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CategoryRepository;
 use App\Repositories\DefleetVariableRepository;
+
 class VehicleRepository {
 
-    public function __construct(UserRepository $userRepository, CategoryRepository $categoryRepository, DefleetVariableRepository $defleetVariableRepository)
+    public function __construct(
+        UserRepository $userRepository,
+        CategoryRepository $categoryRepository,
+        DefleetVariableRepository $defleetVariableRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -216,9 +220,10 @@ class VehicleRepository {
         $today = new DateTime($date);
         $diff = $date_first_plate->diff($today);
         $year = $diff->format('%Y');
-        // return $variables_defleet;
         if($variables_defleet){
             if(($vehicle->kms > $variables_defleet->kms || $year > $variables_defleet->years)){
+                //Si el vehículo cumple con los kpis de defleet se cambia el estado a solicitado por defleet a espera de que lleven el vehículo a la zona pendiente de venta V.O.
+                $this->updateTradeState($vehicle->id, 4);
                 return response()->json(['defleet' => true,'message' => 'Vehículo para defletar'], 200);
             }
         }
