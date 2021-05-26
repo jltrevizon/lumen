@@ -143,4 +143,9 @@ class VehicleController extends Controller
         return $this->vehicleRepository->updateDocumentation($request, $id);
     }
 
+    public function filterVehicle(Request $request){
+        return $this->vehicleRepository->filterVehicle($request);
+    }
+
+
 }

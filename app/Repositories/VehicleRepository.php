@@ -28,6 +28,20 @@ class VehicleRepository {
                     ->first();
     }
 
+    public function filterVehicle($request){
+        return Vehicle::with(['state','campa','category'])
+                    ->where('campa_id','like','%' . $request->json()->get('campa_id') . '%')
+                    ->where('state_id','like','%' . $request->json()->get('state_id') . '%')
+                    ->where('ubication','like','%' . $request->json()->get('ubication') . '%')
+                    ->where('plate','like','%' . $request->json()->get('plate') . '%')
+                    ->where('branch','like','%' . $request->json()->get('branch') . '%')
+                    ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
+                    ->where('trade_state_id','like','%' . $request->json()->get('trade_state_id') . '%')
+                    ->offset($request->json()->get('offset'))
+                    ->limit($request->json()->get('limit'))
+                    ->get();
+    }
+
     public function getByCampaWithoutReserve($request){
         return Vehicle::with(['state','campa','category'])
                     ->whereHas('requests', function(Builder $builder) use ($request) {

@@ -274,6 +274,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicle-with-reservation-without-order/company', 'VehicleController@getVehiclesWithReservationWithoutOrderCompany');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->post('/vehicle-with-reservation-without-contract/company', 'VehicleController@getVehiclesWithReservationWithoutContractCompany');
+        $router->post('/vehicles/filter', 'VehicleController@filterVehicle');
 
         /**
          * Vehicle Picture
