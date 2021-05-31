@@ -35,7 +35,6 @@ class VehicleRepository {
                         ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where('plate','like','%' . $request->json()->get('plate') . '%')
                         ->where('branch','like','%' . $request->json()->get('branch') . '%')
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where(function ($query) use($request){
                             return $query->whereNull('trade_state_id')
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
@@ -50,7 +49,6 @@ class VehicleRepository {
                         ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where('plate','like','%' . $request->json()->get('plate') . '%')
                         ->where('branch','like','%' . $request->json()->get('branch') . '%')
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where(function ($query) use($request){
                             return $query->whereNull('trade_state_id')
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
@@ -70,7 +68,6 @@ class VehicleRepository {
                         ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where('plate','like','%' . $request->json()->get('plate') . '%')
                         ->where('branch','like','%' . $request->json()->get('branch') . '%')
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where(function ($query) use($request){
                             return $query->whereNull('trade_state_id')
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
@@ -87,7 +84,6 @@ class VehicleRepository {
                         ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where('plate','like','%' . $request->json()->get('plate') . '%')
                         ->where('branch','like','%' . $request->json()->get('branch') . '%')
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where(function ($query) use($request){
                             return $query->whereNull('trade_state_id')
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));

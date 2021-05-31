@@ -342,5 +342,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Type Reservations
          */
         $router->get('/type-reservations', 'TypeReservationController@getAll');
+
+        /**
+         * Reset password
+         */
+        $router->post('/password/send-code','MailController@sendCodePassword');
+        $router->post('/password/reset','MailController@passwordReset');
     });
 });
