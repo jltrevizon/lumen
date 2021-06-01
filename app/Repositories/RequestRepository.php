@@ -48,9 +48,11 @@ class RequestRepository {
                     if(count($tasks) > 0) {
                         //Si hay tareas pasamos el vehículo al estado pre-reservado
                         $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 2);
+                        $this->vehicleRepository->updateState($vehicle['vehicle_id'], 4);
                     } else {
                         //Si no hay tareas pasamos el vehículo al estado reservado
                         $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 1);
+                        $this->vehicleRepository->updateState($vehicle['vehicle_id'], 4);
                     }
                     //Creamos la reserva con active 1
                     $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->json()->get('reservation_time'), $request->json()->get('planned_reservation'), $request->json()->get('campa_id'), 1, $request->json()->get('type_reservation_id'));
