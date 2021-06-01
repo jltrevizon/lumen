@@ -22,8 +22,7 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
-$app->register(Illuminate\Mail\MailServiceProvider::class);
-$app->configure('mail');
+
 $app->withFacades();
 
 $app->withEloquent();
@@ -100,7 +99,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register('Nord\Lumen\Cors\CorsServiceProvider');
-$app->register(Illuminate\Mail\MailServiceProvider::class);
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
