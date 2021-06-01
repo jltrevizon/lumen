@@ -146,7 +146,7 @@ class VehicleRepository {
 
     public function getAllByCompany($request){
         if($request->json()->get('limit')){
-            $vehicles = Vehicle::with(['campa','state','category'])
+            $vehicles = Vehicle::with(['campa','state','category','trade_state'])
                 ->whereHas('campa', function (Builder $builder) use($request){
                     return $builder->where('company_id', $request->json()->get('company_id'));
                 })
@@ -183,7 +183,7 @@ class VehicleRepository {
 
     public function getAllByCampa($request){
         if($request->json()->get('limit')){
-            $vehicles = Vehicle::with(['campa','state','category'])
+            $vehicles = Vehicle::with(['campa','state','category','trade_state'])
                 ->where('campa_id', $request->json()->get('campa_id'))
                 ->where('documentation', true)
                 ->offset($request->json()->get('offset'))
