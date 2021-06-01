@@ -14,7 +14,7 @@ class MailController extends Controller
         return $sendCode->send();
     }
 
-    public function sendCodePassword(SendCode $sendCode, Request $request){
+    public function sendCodePassword(Request $request){
         $data = array('name'=>'Arunkumar');
         Mail::send('mail', $data, function($message) {
         $message->to('anelvin.mejia@grupomobius.com', 'Arunkumar')->subject('Test Mail from Selva');
