@@ -23,6 +23,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
 
+        /**
+         * Reset password
+         */
+        $router->post('/password/send-code','MailController@sendCodePassword');
+        $router->post('/password/reset','MailController@passwordReset');
+
     $router->group(['middleware' => ['auth']], function () use ($router) {
 
         /**
@@ -343,10 +349,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/type-reservations', 'TypeReservationController@getAll');
 
-        /**
-         * Reset password
-         */
-        $router->post('/password/send-code','MailController@sendCodePassword');
-        $router->post('/password/reset','MailController@passwordReset');
+
     });
 });
