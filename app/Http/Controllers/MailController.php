@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Mail\SendCode;
 use App\Models\User;
 use App\Models\PasswordResetCode;
+use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
@@ -14,15 +15,12 @@ class MailController extends Controller
     }
 
     public function sendCodePassword(SendCode $sendCode, Request $request){
-        $user = User::where('email', $request->json()->get('email'))
-                    ->first();
-        $code = $this->generateCode(6);
-        $sendCode->SendCodePassword($user->name, $code, $user->email);
-        $passwordResetCode = new PasswordResetCode();
-        $passwordResetCode->user_id = $user->id;
-        $passwordResetCode->code = $code;
-        $passwordResetCode->save();
-       // return $code;
+        $data = array('name'=>'Arunkumar');
+        Mail::send('mail', $data, function($message) {
+        $message->to('anelvin.mejia@grupomobius.com', 'Arunkumar')->subject('Test Mail from Selva');
+        $message->from('inout@mkdautomotive.com','Selvakumar');
+        });
+        echo 'Email Sent. Check your inbox.';
     }
 
     public function generateCode($length){
