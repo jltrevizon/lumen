@@ -9,6 +9,7 @@ use App\Repositories\TaskRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\PendingTaskCanceledRepository;
+use App\Repositories\AccessoryRepository;
 
 class PendingTaskRepository {
 
@@ -20,7 +21,8 @@ class PendingTaskRepository {
         IncidenceRepository $incidenceRepository,
         VehicleRepository $vehicleRepository,
         ReceptionRepository $receptionRepository,
-        PendingTaskCanceledRepository $pendingTaskCanceledRepository)
+        PendingTaskCanceledRepository $pendingTaskCanceledRepository,
+        AccessoryRepository $accessoryRepository)
     {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
@@ -30,6 +32,7 @@ class PendingTaskRepository {
         $this->vehicleRepository = $vehicleRepository;
         $this->receptionRepository = $receptionRepository;
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
+        $this->accessoryRepository = $accessoryRepository;
     }
 
     public function createPendingTaskFromReservation($vehicle_id, $request_id){
@@ -126,14 +129,15 @@ class PendingTaskRepository {
     public function update($request, $id){
         $pending_task = PendingTask::where('id', $id)
                             ->first();
-        if(isset($request['vehicle_id'])) $pending_task->vehicle_id = $request->get('vehicle_id');
-        if(isset($request['task_id'])) $pending_task->task_id = $request->get('task_id');
-        if(isset($request['state_pending_task_id'])) $pending_task->state_pending_task_id = $request->get('state_pending_task_id');
-        if(isset($request['group_task_id'])) $pending_task->group_task_id = $request->get('group_task_id');
-        if(isset($request['incidence_id'])) $pending_task->incidence_id = $request->get('incidence_id');
-        if(isset($request['duration'])) $pending_task->duration = $request->get('duration');
-        if(isset($request['order'])) $pending_task->order = $request->get('order');
-        if(isset($request['trade_state_id'])) $pending_task->trade_state_id = $request->get('trade_state_id');
+        if($request->json()->get('vehicle_id')) $pending_task->vehicle_id = $request->json()->get('vehicle_id');
+        if($request->json()->get('task_id')) $pending_task->task_id = $request->json()->get('task_id');
+        if($request->json()->get('state_pending_task_id')) $pending_task->state_pending_task_id = $request->json()->get('state_pending_task_id');
+        if($request->json()->get('group_task_id')) $pending_task->group_task_id = $request->json()->get('group_task_id');
+        if($request->json()->get('incidence_id')) $pending_task->incidence_id = $request->json()->get('incidence_id');
+        if($request->json()->get('duration')) $pending_task->duration = $request->json()->get('duration');
+        if($request->json()->get('order')) $pending_task->order = $request->json()->get('order');
+        if($request->json()->get('code_authorization')) $pending_task->code_authorization = $request->json()->get('code_authorization');
+        if($request->json()->get('trade_state_id')) $pending_task->trade_state_id = $request->json()->get('trade_state_id');
 
         $pending_task->updated_at = date('Y-m-d H:i:s');
         $pending_task->save();
@@ -187,7 +191,10 @@ class PendingTaskRepository {
         $pending_task->order = 100;
         $pending_task->save();
         $this->vehicleRepository->updateGeolocation($request);
-        $this->receptionRepository->create($request->json()->get('vehicle_id'), $request->json()->get('has_accessories'));
+        $reception = $this->receptionRepository->create($request->json()->get('vehicle_id'), $request->json()->get('has_accessories'));
+        if($request->json()->get('has_accessories')){
+            $this->accessoryRepository->create($reception->id, $request->json()->get('accessories'));
+        }
         return [
             'message' => 'OK'
         ];

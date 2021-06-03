@@ -16,6 +16,7 @@ class ReceptionRepository {
         $reception->vehicle_id = $vehicle_id;
         $reception->has_accessories = $has_accessories;
         $reception->save();
+        return $reception;
     }
 
 }
