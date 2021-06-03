@@ -12,7 +12,7 @@ class UserRepository {
     }
 
     public function getById($id){
-        return User::with(['campa'])
+        return User::with(['campas'])
                     ->where('id', $id)
                     ->first();
     }
@@ -73,22 +73,23 @@ class UserRepository {
     }
 
     public function getUsersByRole($request, $role_id){
-        return User::with(['campa'])
+        return User::with(['campas'])
                     ->where('role_id', $role_id)
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
     }
 
     public function getActiveUsers($request){
-        return User::with(['campa'])
+        return User::with(['campas'])
                     ->where('active', true)
                     ->where('campa_id', $request->json()->get('campa_id'))
                     ->get();
     }
 
     public function getUserByEmail($request){
-        return User::with(['campa'])
+        return User::with(['campas'])
                     ->where('email', $request->json()->get('email'))
                     ->first();
     }
+
 }

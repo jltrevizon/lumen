@@ -14,7 +14,7 @@ class QuestionRepository {
     }
 
     public function getAll(){
-        $user = User::with(['campa'])
+        $user = User::with(['campas'])
                     ->where('id', Auth::id())
                     ->first();
         return Question::where('company_id', $user->campa->id)
@@ -22,7 +22,7 @@ class QuestionRepository {
     }
 
     public function create($request){
-        $user = User::with(['campa'])
+        $user = User::with(['campas'])
                     ->where('id', Auth::id())
                     ->first();
         $question = new Question();

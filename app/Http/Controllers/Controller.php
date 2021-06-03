@@ -9,7 +9,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     protected function responseWithToken($token){
-        $user = User::with(['role','campa.company'])
+        $user = User::with(['role','campas.company'])
                     ->where('id', Auth::id())
                     ->first();
         return response()->json([

@@ -12,7 +12,7 @@ use App\Models\Vehicle;
 class Campa extends Model
 {
     public function users(){
-        return $this->hasMany(User::class, 'campa_id');
+        return $this->belongsToMany(User::class);
     }
 
     public function province(){
