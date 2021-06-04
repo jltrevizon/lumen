@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository {
@@ -68,21 +69,21 @@ class UserRepository {
     }
 
     public function getUsersByCampa($campa_id){
-        return User::where('campa_id', $campa_id)
+        return User::whereHas('campas', fn (Builder $builder) => $builder->where('campas.id', $campa_id))
                     ->get();
     }
 
     public function getUsersByRole($request, $role_id){
         return User::with(['campas'])
                     ->where('role_id', $role_id)
-                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->whereHas('campas', fn (Builder $builder) => $builder->where('campas.id', $request->json()->get('campa_id')))
                     ->get();
     }
 
     public function getActiveUsers($request){
         return User::with(['campas'])
                     ->where('active', true)
-                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->whereHas('campas', fn (Builder $builder) => $builder->where('campas.id', $request->json()->get('campa_id')))
                     ->get();
     }
 
