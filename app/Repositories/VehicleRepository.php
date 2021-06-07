@@ -30,7 +30,7 @@ class VehicleRepository {
 
     public function filterVehicle($request){
             $vehicles = Vehicle::with(['state','campa','category'])
-                        ->where('campa_id', $request->json()->get('campa_id'))
+                        ->whereIn('campa_id', $request->json()->get('campas'))
                         ->whereIn('state_id',$request->json()->get('states'))
                         ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where('plate','like','%' . $request->json()->get('plate') . '%')
@@ -39,12 +39,12 @@ class VehicleRepository {
                             return $query->whereNull('trade_state_id')
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
                         })
-                        ->whereIn('category_id', $request->json()->get('categories'))
+                       ->whereIn('category_id', $request->json()->get('categories'))
                         ->offset($request->json()->get('offset'))
                         ->limit($request->json()->get('limit'))
                         ->get();
             $total = Vehicle::with(['state','campa','category'])
-                        ->where('campa_id', $request->json()->get('campa_id'))
+                        ->whereIn('campa_id', $request->json()->get('campas'))
                         ->whereIn('state_id',$request->json()->get('states'))
                         ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where('plate','like','%' . $request->json()->get('plate') . '%')
@@ -80,6 +80,7 @@ class VehicleRepository {
                         ->whereHas('campa', function (Builder $builder) use($request) {
                             return $builder->where('company_id', $request->json()->get('company_id'));
                         })
+                        ->whereIn('campa_id', $request->json()->get('campas'))
                         ->whereIn('state_id',$request->json()->get('states'))
                         ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
                         ->where('plate','like','%' . $request->json()->get('plate') . '%')
