@@ -283,7 +283,7 @@ class VehicleRepository {
 
         $vehicle = Vehicle::with(['campa.company'])
                     ->where('plate', $request->json()->get('plate'))
-                    ->where('campa_id', $user->campa_id)
+                    //->where('campa_id', $user->campa_id)
                     ->first();
         $variables_defleet = $this->defleetVariableRepository->getVariablesByCompany($vehicle['campa']['company']['id']);
         $date_first_plate = new DateTime($vehicle->first_plate);
