@@ -15,7 +15,7 @@ class UserController extends Controller
     }
 
     public function getAll(){
-        return User::with(['campas'])
+        return User::with(['campas','company'])
                     ->get();
     }
 

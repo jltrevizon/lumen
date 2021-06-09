@@ -29,6 +29,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->belongsTo(Role::class, 'role_id');
     }
 
+    public function company(){
+        return $this->belongsTo(Company::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

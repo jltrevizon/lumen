@@ -30,30 +30,30 @@ class VehicleRepository {
 
     public function filterVehicle($request){
             $vehicles = Vehicle::with(['state','campa','category'])
-                        ->whereIn('campa_id', $request->json()->get('campas'))
-                        ->whereIn('state_id',$request->json()->get('states'))
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
-                        ->where('plate','like','%' . $request->json()->get('plate') . '%')
-                        ->where('branch','like','%' . $request->json()->get('branch') . '%')
+                        ->campasIds($request->json()->get('campas'))
+                        ->stateIds($request->json()->get('states'))
+                        ->vehicleModel($request->json()->get('vehicle_model'))
+                        ->plate($request->json()->get('plate'))
+                        ->branch($request->json()->get('branch'))
                         ->where(function ($query) use($request){
                             return $query->whereNull('trade_state_id')
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
                         })
-                       ->whereIn('category_id', $request->json()->get('categories'))
+                        ->categoriesIds($request->json()->get('categories'))
                         ->offset($request->json()->get('offset'))
                         ->limit($request->json()->get('limit'))
                         ->get();
             $total = Vehicle::with(['state','campa','category'])
-                        ->whereIn('campa_id', $request->json()->get('campas'))
-                        ->whereIn('state_id',$request->json()->get('states'))
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
-                        ->where('plate','like','%' . $request->json()->get('plate') . '%')
-                        ->where('branch','like','%' . $request->json()->get('branch') . '%')
+                        ->campasIds($request->json()->get('campas'))
+                        ->stateIds($request->json()->get('states'))
+                        ->vehicleModel($request->json()->get('vehicle_model'))
+                        ->plate($request->json()->get('plate'))
+                        ->branch($request->json()->get('branch'))
                         ->where(function ($query) use($request){
                             return $query->whereNull('trade_state_id')
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
                         })
-                        ->whereIn('category_id', $request->json()->get('categories'))
+                        ->categoriesIds($request->json()->get('categories'))
                         ->count();
         return response()->json(['vehicles' => $vehicles, 'total' => $total]);
     }

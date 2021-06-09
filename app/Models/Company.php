@@ -20,4 +20,8 @@ class Company extends Model
     public function customers(){
         return $this->hasMany(Customer::class, 'company_id');
     }
+
+    public function users(){
+        return $this->hasMany(User::class);
+    }
 }
