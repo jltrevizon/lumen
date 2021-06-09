@@ -29,7 +29,7 @@ class VehicleRepository {
     }
 
     public function filterVehicle($request){
-            $vehicles = Vehicle::with(['state','campa','category'])
+            $vehicles = Vehicle::with(['state','campa','category','trade_state'])
                         ->campasIds($request->json()->get('campas'))
                         ->stateIds($request->json()->get('states'))
                         ->vehicleModel($request->json()->get('vehicle_model'))
