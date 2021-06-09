@@ -151,7 +151,6 @@ class PendingTaskRepository {
         $incidence = $this->incidenceRepository->createIncidence($request);
         $pending_task = PendingTask::where('id', $request->json()->get('pending_task_id'))
                                 ->first();
-        $pending_task->incidence_id = $incidence->id;
         $pending_task->status_color = "Red";
         $pending_task->save();
         $this->incidencePendingTaskRepository->create($incidence->id, $pending_task->id);
@@ -320,7 +319,7 @@ class PendingTaskRepository {
     }
 
     public function getPendingTaskByState($request){
-        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidence'])
+        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidences'])
                 ->whereHas('vehicle.campa', function (Builder $builder) use($request){
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
@@ -329,9 +328,9 @@ class PendingTaskRepository {
     }
 
     public function getPendingTaskByStateCampa($request){
-        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidence'])
+        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidences'])
                 ->whereHas('vehicle.campa', function (Builder $builder) use($request){
-                        return $builder->where('id', $request->json()->get('campa_id'));
+                        return $builder->whereIn('id', $request->json()->get('campas'));
                     })
                 ->where('state_pending_task_id', $request->json()->get('state_pending_task_id'))
                 ->get();
