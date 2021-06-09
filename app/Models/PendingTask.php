@@ -27,7 +27,7 @@ class PendingTask extends Model
         return $this->belongsTo(GroupTask::class, 'group_task_id');
     }
 
-    public function incidence(){
-        return $this->belongsTo(Incidence::class, 'incidence_id');
+    public function incidences(){
+        return $this->belongsToMany(Incidence::class);
     }
 }
