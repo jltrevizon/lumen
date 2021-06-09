@@ -460,7 +460,7 @@ class VehicleRepository {
                         return $query->where('state_pending_task_id', '!=', 3)
                                     ->orWhereNull('state_pending_task_id');
                     }])
-                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->whereIn('campa_id', $request->json()->get('campas'))
                     ->where('trade_state_id', $request->json()->get('trade_state_id'))
                     ->get();
     }
@@ -502,7 +502,7 @@ class VehicleRepository {
                         return $builder->whereNull('order')
                                     ->where('active', true);
                     })
-                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->whereIn('campa_id', $request->json()->get('campas'))
                     ->get();
     }
 
@@ -532,7 +532,7 @@ class VehicleRepository {
                                     ->whereNull('contract')
                                     ->where('active', true);
                     })
-                    ->where('campa_id', $request->json()->get('campa_id'))
+                    ->whereIn('campa_id', $request->json()->get('campas'))
                     ->get();
     }
 
