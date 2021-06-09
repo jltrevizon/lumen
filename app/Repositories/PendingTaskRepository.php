@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\PendingTaskCanceledRepository;
 use App\Repositories\AccessoryRepository;
+use App\Repositories\IncidencePendingTaskRepository;
 
 class PendingTaskRepository {
 
@@ -22,7 +23,8 @@ class PendingTaskRepository {
         VehicleRepository $vehicleRepository,
         ReceptionRepository $receptionRepository,
         PendingTaskCanceledRepository $pendingTaskCanceledRepository,
-        AccessoryRepository $accessoryRepository)
+        AccessoryRepository $accessoryRepository,
+        IncidencePendingTaskRepository $incidencePendingTaskRepository)
     {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
@@ -33,6 +35,7 @@ class PendingTaskRepository {
         $this->receptionRepository = $receptionRepository;
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
         $this->accessoryRepository = $accessoryRepository;
+        $this->incidencePendingTaskRepository = $incidencePendingTaskRepository;
     }
 
     public function createPendingTaskFromReservation($vehicle_id, $request_id){
@@ -151,6 +154,7 @@ class PendingTaskRepository {
         $pending_task->incidence_id = $incidence->id;
         $pending_task->status_color = "Red";
         $pending_task->save();
+        $this->incidencePendingTaskRepository->create($incidence->id, $pending_task->id);
         return [
             'message' => 'Ok'
         ];
@@ -316,7 +320,7 @@ class PendingTaskRepository {
     }
 
     public function getPendingTaskByState($request){
-        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task'])
+        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidence'])
                 ->whereHas('vehicle.campa', function (Builder $builder) use($request){
                         return $builder->where('company_id', $request->json()->get('company_id'));
                     })
@@ -325,7 +329,7 @@ class PendingTaskRepository {
     }
 
     public function getPendingTaskByStateCampa($request){
-        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task'])
+        return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidence'])
                 ->whereHas('vehicle.campa', function (Builder $builder) use($request){
                         return $builder->where('id', $request->json()->get('campa_id'));
                     })

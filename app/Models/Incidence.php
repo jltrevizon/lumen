@@ -7,7 +7,7 @@ use App\Models\PendingTask;
 
 class Incidence extends Model
 {
-    public function pending_task(){
-        return $this->hasOne(PendingTask::class, 'incidence_id');
+    public function pending_tasks(){
+        return $this->belongsToMany(PendingTask::class);
     }
 }
