@@ -161,7 +161,7 @@ class PendingTaskRepository {
 
     public function resolvedIncidence($request){
         $this->incidenceRepository->resolved($request);
-        return PendingTask::with(['incidence'])
+        return PendingTask::with(['incidences'])
                         ->where('id', $request->json()->get('pending_task_id'))
                         ->first();
     }

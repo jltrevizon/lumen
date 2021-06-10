@@ -146,8 +146,4 @@ class VehicleController extends Controller
     public function filterVehicle(Request $request){
         return $this->vehicleRepository->filterVehicle($request);
     }
-
-    public function filterVehicleByCompany(Request $request){
-        return $this->vehicleRepository->filterVehicleByCompany($request);
-    }
 }

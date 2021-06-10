@@ -16,6 +16,27 @@ use App\Models\TradeState;
 
 class Vehicle extends Model
 {
+    protected $fillable = [
+        'remote_id',
+        "campa_id",
+        'category_id',
+        'state_id',
+        'ubication',
+        'palte',
+        'branch',
+        'vehicle_model',
+        'kms',
+        'priority',
+        'version',
+        'vin',
+        'first_plate',
+        'latitude',
+        'longitude',
+        'trade_state_id',
+        'documentation',
+        'ready_to_delivery'
+    ];
+
     public function category(){
         return $this->belongsTo(Category::class, 'category_id');
     }

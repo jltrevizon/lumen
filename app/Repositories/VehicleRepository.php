@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CategoryRepository;
 use App\Repositories\DefleetVariableRepository;
+use Illuminate\Http\JsonResponse;
+use PhpParser\Node\Stmt\TryCatch;
 
 class VehicleRepository {
 
@@ -29,7 +31,7 @@ class VehicleRepository {
     }
 
     public function filterVehicle($request){
-            $vehicles = Vehicle::with(['state','campa','category','trade_state'])
+            return Vehicle::with(['state','campa','category','trade_state'])
                         ->campasIds($request->json()->get('campas'))
                         ->stateIds($request->json()->get('states'))
                         ->vehicleModel($request->json()->get('vehicle_model'))
@@ -40,59 +42,7 @@ class VehicleRepository {
                                         ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
                         })
                         ->categoriesIds($request->json()->get('categories'))
-                        ->offset($request->json()->get('offset'))
-                        ->limit($request->json()->get('limit'))
-                        ->get();
-            $total = Vehicle::with(['state','campa','category'])
-                        ->campasIds($request->json()->get('campas'))
-                        ->stateIds($request->json()->get('states'))
-                        ->vehicleModel($request->json()->get('vehicle_model'))
-                        ->plate($request->json()->get('plate'))
-                        ->branch($request->json()->get('branch'))
-                        ->where(function ($query) use($request){
-                            return $query->whereNull('trade_state_id')
-                                        ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
-                        })
-                        ->categoriesIds($request->json()->get('categories'))
-                        ->count();
-        return response()->json(['vehicles' => $vehicles, 'total' => $total]);
-    }
-
-    public function filterVehicleByCompany($request){
-            $vehicles = Vehicle::with(['state','campa','category','campa'])
-                        ->whereHas('campa', function (Builder $builder) use($request) {
-                            return $builder->where('company_id', $request->json()->get('company_id'));
-                        })
-                        ->whereIn('campa_id', $request->json()->get('campas'))
-                        ->whereIn('state_id',$request->json()->get('states'))
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
-                        ->where('plate','like','%' . $request->json()->get('plate') . '%')
-                        ->where('branch','like','%' . $request->json()->get('branch') . '%')
-                        ->where(function ($query) use($request){
-                            return $query->whereNull('trade_state_id')
-                                        ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
-                        })
-                        ->whereIn('category_id', $request->json()->get('categories'))
-                        ->offset($request->json()->get('offset'))
-                        ->limit($request->json()->get('limit'))
-                        ->get();
-            $total = Vehicle::with(['state','campa','category','campa'])
-                        ->whereHas('campa', function (Builder $builder) use($request) {
-                            return $builder->where('company_id', $request->json()->get('company_id'));
-                        })
-                        ->whereIn('campa_id', $request->json()->get('campas'))
-                        ->whereIn('state_id',$request->json()->get('states'))
-                        ->where('vehicle_model','like','%' . $request->json()->get('vehicle_model') . '%')
-                        ->where('plate','like','%' . $request->json()->get('plate') . '%')
-                        ->where('branch','like','%' . $request->json()->get('branch') . '%')
-                        ->where(function ($query) use($request){
-                            return $query->whereNull('trade_state_id')
-                                        ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
-                        })
-                        ->whereIn('category_id', $request->json()->get('categories'))
-                        ->count();
-
-        return response()->json(['vehicles' => $vehicles, 'total' => $total]);
+                        ->paginate($request->input('limit'));
     }
 
     public function getByCampaWithoutReserve($request){
@@ -236,24 +186,16 @@ class VehicleRepository {
         return $vehicle;
     }
 
-    public function update($request, $id){
-        $vehicle = Vehicle::where('id', $id)
-                    ->first();
-        if($request->json()->get('remote_id')) $vehicle->remote_id = $request->json()->get('remote_id');
-        if($request->json()->get('campa_id')) $vehicle->campa_id = $request->json()->get('campa_id');
-        if($request->json()->get('category_id')) $vehicle->category_id = $request->json()->get('category_id');
-        if($request->json()->get('state_id')) $vehicle->state_id = $request->json()->get('state_id');
-        if($request->json()->get('ubication')) $vehicle->ubication = $request->json()->get('ubication');
-        if($request->json()->get('plate')) $vehicle->plate = $request->json()->get('plate');
-        if($request->json()->get('kms')) $vehicle->kms = $request->json()->get('kms');
-        if($request->json()->get('branch')) $vehicle->branch = $request->json()->get('branch');
-        if($request->json()->get('vehicle_model')) $vehicle->vehicle_model = $request->json()->get('vehicle_model');
-        if($request->json()->get('version')) $vehicle->version = $request->json()->get('version');
-        if($request->json()->get('vin')) $vehicle->vin = $request->json()->get('vin');
-        if($request->json()->get('first_plate')) $vehicle->first_plate = $request->json()->get('first_plate');
-        $vehicle->updated_at = date('Y-m-d H:i:s');
-        $vehicle->save();
-        return $vehicle;
+    public function update($request, $id): JsonResponse
+    {
+        try {
+            $vehicle = Vehicle::findOrFail($id);
+            $vehicle->update($request->all());
+
+            return response()->json([ 'vehicle' => $vehicle ], 200);
+        } catch (\Exception $e) {
+            return response()->json([ 'message' => $e ], 409);
+        }
     }
 
     public function updateDocumentation($request, $id){
