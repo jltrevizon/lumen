@@ -284,9 +284,11 @@ class VehicleRepository {
                         }])
                         ->whereHas('reservations', function(Builder $builder) use($request){
                             return $builder->where(function($query){
-                                return $query->whereNull('order')
-                                            ->orWhereNotNull('order');
-                                        })
+                                return $query->where(function($query){
+                                    return $query->whereNull('order')
+                                                ->orWhereNotNull('order');
+                                        });
+                                    })
                                         ->where('active', true)
                                         ->whereNull('pickup_by_customer')
                                         ->whereNull('transport_id');
