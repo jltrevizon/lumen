@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Incidence;
+use Exception;
 
 class IncidenceRepository {
 
@@ -12,47 +13,71 @@ class IncidenceRepository {
     }
 
     public function getById($id){
-        return Incidence::where('id', $id)
-                    ->first();
+        try {
+            return Incidence::where('id', $id)
+                        ->first();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function create($request){
-        $incidence = new Incidence();
-        $incidence->description = $request->get('description');
-        $incidence->resolved = false;
-        $incidence->save();
-        return $incidence;
+        try {
+            $incidence = new Incidence();
+            $incidence->description = $request->get('description');
+            $incidence->resolved = false;
+            $incidence->save();
+            return $incidence;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function createIncidence($request){
-        $incidence = new Incidence();
-        $incidence->description = $request->json()->get('description');
-        $incidence->resolved = false;
-        $incidence->save();
-        return $incidence;
+        try {
+            $incidence = new Incidence();
+            $incidence->description = $request->json()->get('description');
+            $incidence->resolved = false;
+            $incidence->save();
+            return $incidence;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function resolved($request){
-        $incidence = Incidence::where('id', $request->json()->get('incidence_id'))
-                            ->first();
-        $incidence->resolved = true;
-        $incidence->save();
+        try {
+            $incidence = Incidence::where('id', $request->json()->get('incidence_id'))
+                                ->first();
+            $incidence->resolved = true;
+            $incidence->save();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function update($request, $id){
-        $incidence = Incidence::where('id', $id)
-                        ->first();
-        if(isset($request['description'])) $incidence->description = $request->get('description');
-        if(isset($request['resolved'])) $incidence->resolved = $request->get('resolved');
-        $incidence->updated_at = date('Y-m-d H:i:s');
-        $incidence->save();
-        return $incidence;
+        try {
+            $incidence = Incidence::where('id', $id)
+                            ->first();
+            if(isset($request['description'])) $incidence->description = $request->get('description');
+            if(isset($request['resolved'])) $incidence->resolved = $request->get('resolved');
+            $incidence->updated_at = date('Y-m-d H:i:s');
+            $incidence->save();
+            return $incidence;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function delete($id){
-        Incidence::where('id', $id)
-            ->delete();
+        try {
+            Incidence::where('id', $id)
+                ->delete();
 
-        return [ 'message' => 'Incidence deleted' ];
+            return [ 'message' => 'Incidence deleted' ];
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }

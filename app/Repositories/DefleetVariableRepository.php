@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\DefleetVariable;
 use App\Repositories\UserRepository;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class DefleetVariableRepository {
@@ -14,47 +15,63 @@ class DefleetVariableRepository {
     }
 
     public function getVariables(){
-        $user = $this->userRepository->getById(Auth::id());
-        return DefleetVariable::where('company_id', $user['campa']['company_id'])
-                    ->first();
+        try {
+            $user = $this->userRepository->getById(Auth::id());
+            return DefleetVariable::where('company_id', $user['campa']['company_id'])
+                        ->first();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function createVariables($request){
-        $user = $this->userRepository->getById(Auth::id());
-        $variables = DefleetVariable::where('company_id', $user['campa']['company_id'])
-                                    ->first();
-        if($variables){
-            return [
-                'message' => 'Ya existen variables de defleet para esta empresa'
-            ];
-        }
+        try {
+            $user = $this->userRepository->getById(Auth::id());
+            $variables = DefleetVariable::where('company_id', $user['campa']['company_id'])
+                                        ->first();
+            if($variables){
+                return [
+                    'message' => 'Ya existen variables de defleet para esta empresa'
+                ];
+            }
 
-        $variables = new DefleetVariable();
-        $variables->company_id = $user['campa']['company_id'];
-        $variables->kms = $request->json()->get('kms');
-        $variables->years = $request->json()->get('years');
-        $variables->save();
-        return $variables;
+            $variables = new DefleetVariable();
+            $variables->company_id = $user['campa']['company_id'];
+            $variables->kms = $request->json()->get('kms');
+            $variables->years = $request->json()->get('years');
+            $variables->save();
+            return $variables;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function updateVariables($request){
-        $user = $this->userRepository->getById(Auth::id());
-        $variables = DefleetVariable::where('company_id', $user['campa']['company_id'])
-                                    ->first();
-        if(!$variables){
-            return [
-                'message' => 'No hay registros que actualizar'
-            ];
+        try {
+            $user = $this->userRepository->getById(Auth::id());
+            $variables = DefleetVariable::where('company_id', $user['campa']['company_id'])
+                                        ->first();
+            if(!$variables){
+                return [
+                    'message' => 'No hay registros que actualizar'
+                ];
+            }
+            if($request->json()->get('kms')) $variables->kms = $request->json()->get('kms');
+            if($request->json()->get('years')) $variables->years = $request->json()->get('years');
+            $variables->save();
+            return $variables;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
         }
-        if($request->json()->get('kms')) $variables->kms = $request->json()->get('kms');
-        if($request->json()->get('years')) $variables->years = $request->json()->get('years');
-        $variables->save();
-        return $variables;
     }
 
     public function getVariablesByCompany($company_id){
-        return DefleetVariable::where('company_id', $company_id)
-                            ->first();
+        try {
+            return DefleetVariable::where('company_id', $company_id)
+                                ->first();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
 }
