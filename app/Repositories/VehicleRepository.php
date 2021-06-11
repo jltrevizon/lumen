@@ -36,7 +36,7 @@ class VehicleRepository {
 
     public function filterVehicle($request): JsonResponse {
         try {
-            return Vehicle::with(['state','campa','category','trade_state'])
+            $vehicles = Vehicle::with(['state','campa','category','trade_state'])
                         ->campasIds($request->input('campas'))
                         ->stateIds($request->input('states'))
                         ->vehicleModel($request->input('vehicle_model'))
@@ -48,6 +48,7 @@ class VehicleRepository {
                         })
                         ->categoriesIds($request->input('categories'))
                         ->paginate($request->input('limit'));
+            return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
