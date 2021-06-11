@@ -278,17 +278,18 @@ class VehicleRepository {
     public function getVehiclesWithReservationWithoutOrderCampa($request): JsonResponse {
         try{
             $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
-                            return $query->whereNull('order')
+                            return $query->where(function($query) {
+                                return $query->whereNull('order')
+                                            ->orWhereNotNull('order');
+                                })
                                         ->where('active', true);
 
                         }])
                         ->whereHas('reservations', function(Builder $builder) use($request){
                             return $builder->where(function($query){
-                                return $query->where(function($query){
-                                    return $query->whereNull('order')
-                                                ->orWhereNotNull('order');
-                                        });
-                                    })
+                                return $query->whereNull('order')
+                                            ->orWhereNotNull('order');
+                                        })
                                         ->where('active', true)
                                         ->whereNull('pickup_by_customer')
                                         ->whereNull('transport_id');
