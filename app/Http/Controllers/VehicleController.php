@@ -27,14 +27,6 @@ class VehicleController extends Controller
         return $this->vehicleRepository->getById($id);
     }
 
-    public function getByCampaWithoutReserve(Request $request){
-        return $this->vehicleRepository->getByCampaWithoutReserve($request);
-    }
-
-    public function getByCompany(Request $request){
-        return $this->vehicleRepository->getByCompany($request);
-    }
-
     public function create(Request $request){
         return $this->vehicleRepository->create($request);
     }
@@ -59,60 +51,8 @@ class VehicleController extends Controller
         return $this->vehicleRepository->updateGeolocation($request);
     }
 
-    public function vehiclesDefleeted(){
-        return $this->vehicleRepository->vehiclesDefleeted();
-    }
-
-    public function vehiclesReserved(){
-        return $this->vehicleRepository->vehiclesReserved();
-    }
-
-    public function getAllByCompany(Request $request){
-        return $this->vehicleRepository->getAllByCompany($request);
-    }
-
-    public function getAllByCampa(Request $request){
-        return $this->vehicleRepository->getAllByCampa($request);
-    }
-
     public function createFromExcel(Request $request){
         return $this->vehicleRepository->createFromExcel($request);
-    }
-
-    public function getVehiclesAvailableReserveByCampa(Request $request){
-        return $this->vehicleRepository->getVehiclesAvailableReserveByCampa($request);
-    }
-
-    public function getVehiclesAvailableReserveByCompany(Request $request){
-        return $this->vehicleRepository->getVehiclesAvailableReserveByCompany($request);
-    }
-
-    public function VehiclesReserveByCompany(Request $request){
-        return $this->vehicleRepository->VehiclesReserveByCompany($request);
-    }
-
-    public function vehiclesReservedByCampa(Request $request){
-        return $this->vehicleRepository->vehiclesReservedByCampa($request);
-    }
-
-    public function vehiclesReservedByCompany(Request $request){
-        return $this->vehicleRepository->vehiclesReservedByCompany($request);
-    }
-
-    public function vehiclesByStateCampa(Request $request){
-        return $this->vehicleRepository->vehiclesByStateCampa($request);
-    }
-
-    public function vehiclesByStateCompany(Request $request){
-        return $this->vehicleRepository->vehiclesByStateCompany($request);
-    }
-
-    public function vehiclesByTradeStateCampa(Request $request){
-        return $this->vehicleRepository->vehiclesByTradeStateCampa($request);
-    }
-
-    public function vehiclesByTradeStateCompany(Request $request){
-        return $this->vehicleRepository->vehiclesByTradeStateCompany($request);
     }
 
     public function getVehiclesReadyToDeliveryCampa(Request $request){
@@ -127,20 +67,12 @@ class VehicleController extends Controller
         return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request);
     }
 
-    public function getVehiclesWithReservationWithoutOrderCompany(Request $request){
-        return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCompany($request);
-    }
-
     public function getVehiclesWithReservationWithoutContractCampa(Request $request){
         return $this->vehicleRepository->getVehiclesWithReservationWithoutContractCampa($request);
     }
 
     public function getVehiclesWithReservationWithoutContractCompany(Request $request){
         return $this->vehicleRepository->getVehiclesWithReservationWithoutContractCompany($request);
-    }
-
-    public function updateDocumentation(Request $request, $id){
-        return $this->vehicleRepository->updateDocumentation($request, $id);
     }
 
     public function filterVehicle(Request $request){

@@ -253,34 +253,18 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Vehicles
          */
         $router->get('/vehicle/getall', 'VehicleController@getall');
-        $router->post('/vehicles/by-company', 'VehicleController@getByCompany');
-        $router->post('/vehicles/all-by-company', 'VehicleController@getAllByCompany');
         $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
-        $router->post('/vehicles/all-by-campa', 'VehicleController@getAllByCampa');
         $router->post('/vehicles/create-from-excel', 'VehicleController@createFromExcel');
         $router->post('/vehicles', 'VehicleController@create');
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
-        $router->put('/vehicles/update-documentation/{id}', 'VehicleController@updateDocumentation');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
         $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
-        $router->get('/vehicles/defleeted', 'VehicleController@vehiclesDefleeted');
-        $router->get('/vehicles/reserved', 'VehicleController@vehiclesReserved');
-        $router->post('/vehicles/available/reserve/by-campa', 'VehicleController@getVehiclesAvailableReserveByCampa');
-        $router->post('/vehicles/available/reserve/by-company', 'VehicleController@getVehiclesAvailableReserveByCompany');
-        $router->post('/vehicles/request/reserve/by-campa', 'VehicleController@vehiclesRequestReserveByCampa');
-        $router->post('/vehicles/request/reserve/by-company', 'VehicleController@vehiclesRequestReserveByCompany');
-        $router->post('/vehicles/by-state-campa', 'VehicleController@vehiclesByStateCampa');
-        $router->post('/vehicles/by-state-company', 'VehicleController@vehiclesByStateCompany');
-        $router->post('/vehicles/by-trade-state/campa', 'VehicleController@vehiclesByTradeStateCampa');
-        $router->post('/vehicles/by-trade-state/company', 'VehicleController@vehiclesByTradeStateCompany');
         $router->post('/vehicles/ready-to-delivery/campa', 'VehicleController@getVehiclesReadyToDeliveryCampa');
         $router->post('/vehicles/ready-to-delivery/company', 'VehicleController@getVehiclesReadyToDeliveryCompany');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
-        $router->post('/vehicle-with-reservation-without-order/company', 'VehicleController@getVehiclesWithReservationWithoutOrderCompany');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
-        $router->post('/vehicle-with-reservation-without-contract/company', 'VehicleController@getVehiclesWithReservationWithoutContractCompany');
         $router->post('/vehicles/filter', 'VehicleController@filterVehicle');
 
         /**

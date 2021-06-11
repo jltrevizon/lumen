@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CategoryRepository;
 use App\Repositories\DefleetVariableRepository;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use PhpParser\Node\Stmt\TryCatch;
 
@@ -25,141 +26,63 @@ class VehicleRepository {
     }
 
     public function getById($id){
-        return Vehicle::with(['campa'])
-                    ->where('id', $id)
-                    ->first();
+        try{
+            return Vehicle::with(['campa'])
+                        ->findOrFail($id);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e]);
+        }
     }
 
-    public function filterVehicle($request){
+    public function filterVehicle($request): JsonResponse {
+        try {
             return Vehicle::with(['state','campa','category','trade_state'])
-                        ->campasIds($request->json()->get('campas'))
-                        ->stateIds($request->json()->get('states'))
-                        ->vehicleModel($request->json()->get('vehicle_model'))
-                        ->plate($request->json()->get('plate'))
-                        ->branch($request->json()->get('branch'))
+                        ->campasIds($request->input('campas'))
+                        ->stateIds($request->input('states'))
+                        ->vehicleModel($request->input('vehicle_model'))
+                        ->plate($request->input('plate'))
+                        ->branch($request->input('branch'))
                         ->where(function ($query) use($request){
                             return $query->whereNull('trade_state_id')
-                                        ->orWhereIn('trade_state_id', $request->json()->get('trade_states'));
+                                        ->orWhereIn('trade_state_id', $request->input('trade_states'));
                         })
-                        ->categoriesIds($request->json()->get('categories'))
+                        ->categoriesIds($request->input('categories'))
                         ->paginate($request->input('limit'));
-    }
-
-    public function getByCampaWithoutReserve($request){
-        return Vehicle::with(['state','campa','category'])
-                    ->whereHas('requests', function(Builder $builder) use ($request) {
-                        return $builder->where('state_request_id', 3);
-                    })
-                    ->orWhereDoesntHave('requests')
-                    ->where('campa_id', $request->json()->get('campa_id'))
-                    ->get();
-    }
-
-    public function createFromExcel($request){
-        $vehicles = $request->json()->get('vehicles');
-        $array_vehicles = [];
-        foreach($vehicles as $vehicle){
-            $new_vehicle = new Vehicle();
-            if($vehicle['remote_id']) $new_vehicle->remote_id = $vehicle['remote_id'];
-            $new_vehicle->campa_id = $vehicle['campa_id'];
-            $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-            $new_vehicle->category_id = $category->id;
-            $new_vehicle->state_id = $vehicle['state_id'];
-            $new_vehicle->ubication = $vehicle['ubication'];
-            $new_vehicle->plate = $vehicle['plate'];
-            $new_vehicle->branch = $vehicle['branch'];
-            $new_vehicle->trade_state_id = 1;
-            $new_vehicle->vehicle_model = $vehicle['vehicle_model'];
-            if($vehicle['kms']) $new_vehicle->kms = $vehicle['kms'];
-            $new_vehicle->priority = $vehicle['priority'];
-            if($vehicle['version']) $new_vehicle->version = $vehicle['version'];
-            if($vehicle['vin']) $new_vehicle->vin = $vehicle['vin'];
-            $new_vehicle->first_plate = $vehicle['first_plate'];
-            if($vehicle['latitude']) $new_vehicle->latitude = $vehicle['latitude'];
-            if($vehicle['longitude']) $new_vehicle->longitude = $vehicle['longitude'];
-            $new_vehicle->save();
-            array_push($array_vehicles, $new_vehicle);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
         }
-        return $array_vehicles;
     }
 
-    public function getByCompany($request){
-        return Vehicle::with(['campa','state','category'])
-                ->whereHas('requests', function(Builder $builder) use ($request) {
-                    return $builder->where('state_request_id', 3);
-                })
-                ->orWhereDoesntHave('requests')
-                ->whereHas('campa', function(Builder $builder) use ($request) {
-                    return $builder->where('company_id', $request->json()->get('company_id'));
-                })
-                ->get();
-    }
-
-    public function getAllByCompany($request){
-        if($request->json()->get('limit')){
-            $vehicles = Vehicle::with(['campa','state','category','trade_state'])
-                ->whereHas('campa', function (Builder $builder) use($request){
-                    return $builder->where('company_id', $request->json()->get('company_id'));
-                })
-                ->where('documentation', true)
-                ->offset($request->json()->get('offset'))
-                ->limit($request->json()->get('limit'))
-                ->get();
-            $total_vehicles = Vehicle::with(['campa','state','category'])
-                ->whereHas('campa', function (Builder $builder) use($request){
-                    return $builder->where('company_id', $request->json()->get('company_id'));
-                })
-                ->count();
-            return [
-                'vehicles' => $vehicles,
-                'total' => $total_vehicles
-            ];
+    public function createFromExcel($request): JsonResponse {
+        try {
+            $vehicles = $request->input('vehicles');
+            $array_vehicles = [];
+            foreach($vehicles as $vehicle){
+                $new_vehicle = new Vehicle();
+                if($vehicle['remote_id'] ?? null) $new_vehicle->remote_id = $vehicle['remote_id'];
+                $new_vehicle->campa_id = $vehicle['campa_id'];
+                $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
+                $new_vehicle->category_id = $category->id;
+                $new_vehicle->state_id = $vehicle['state_id'];
+                $new_vehicle->ubication = $vehicle['ubication'];
+                $new_vehicle->plate = $vehicle['plate'];
+                $new_vehicle->branch = $vehicle['branch'];
+                $new_vehicle->trade_state_id = 1;
+                $new_vehicle->vehicle_model = $vehicle['vehicle_model'];
+                if($vehicle['kms'] ?? null) $new_vehicle->kms = $vehicle['kms'];
+                $new_vehicle->priority = $vehicle['priority'];
+                if($vehicle['version'] ?? null) $new_vehicle->version = $vehicle['version'];
+                if($vehicle['vin'] ?? null) $new_vehicle->vin = $vehicle['vin'];
+                $new_vehicle->first_plate = $vehicle['first_plate'];
+                if($vehicle['latitude'] ?? null) $new_vehicle->latitude = $vehicle['latitude'];
+                if($vehicle['longitude'] ?? null) $new_vehicle->longitude = $vehicle['longitude'];
+                $new_vehicle->save();
+                array_push($array_vehicles, $new_vehicle);
+            }
+            return response()->json(['vehicles' => $array_vehicles], 201);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
         }
-        $vehicles = Vehicle::with(['campa','state','category'])
-                ->whereHas('campa', function (Builder $builder) use($request){
-                    return $builder->where('company_id', $request->json()->get('company_id'));
-                })
-                ->where('documentation', true)
-                ->get();
-            $total_vehicles = Vehicle::with(['campa','state','category'])
-                ->whereHas('campa', function (Builder $builder) use($request){
-                    return $builder->where('company_id', $request->json()->get('company_id'));
-                })
-                ->count();
-            return [
-                'vehicles' => $vehicles,
-                'total' => $total_vehicles
-            ];
-    }
-
-    public function getAllByCampa($request){
-        if($request->json()->get('limit')){
-            $vehicles = Vehicle::with(['campa','state','category','trade_state'])
-                ->where('campa_id', $request->json()->get('campa_id'))
-                ->where('documentation', true)
-                ->offset($request->json()->get('offset'))
-                ->limit($request->json()->get('limit'))
-                ->get();
-            $total_vehicles = Vehicle::with(['campa','state','category'])
-                ->where('campa_id', $request->json()->get('campa_id'))
-                ->count();
-            return [
-                'vehicles' => $vehicles,
-                'total' => $total_vehicles
-            ];
-        }
-
-        $vehicles = Vehicle::with(['campa','state','category'])
-                ->where('campa_id', $request->json()->get('campa_id'))
-                ->where('documentation', true)
-                ->get();
-            $total_vehicles = Vehicle::with(['campa','state','category'])
-                ->where('campa_id', $request->json()->get('campa_id'))
-                ->count();
-            return [
-                'vehicles' => $vehicles,
-                'total' => $total_vehicles
-            ];
     }
 
     public function getByPlate($request){
@@ -167,23 +90,27 @@ class VehicleRepository {
                     ->first();
     }
 
-    public function create($request){
-        $vehicle = new Vehicle();
-        if($request->json()->get('remote_id')) $vehicle->remote_id = $request->json()->get('remote_id');
-        $vehicle->campa_id = $request->json()->get('campa_id');
-        $vehicle->category_id = $request->json()->get('category_id');
-        if($request->json()->get('state_id')) $vehicle->state_id = $request->json()->get('state_id');
-        if($request->json()->get('kms')) $vehicle->kms = $request->json()->get('kms');
-        $vehicle->ubication = $request->json()->get('ubication');
-        $vehicle->plate = $request->json()->get('plate');
-        $vehicle->branch = $request->json()->get('branch');
-        $vehicle->trade_state_id = 1;
-        $vehicle->vehicle_model = $request->json()->get('vehicle_model');
-        if($request->json()->get('version')) $vehicle->version = $request->json()->get('version');
-        if($request->json()->get('vin')) $vehicle->vin = $request->json()->get('vin');
-        $vehicle->first_plate = $request->json()->get('first_plate');
-        $vehicle->save();
-        return $vehicle;
+    public function create($request): JsonResponse {
+        try {
+            $vehicle = new Vehicle();
+            if($request->input('remote_id')) $vehicle->remote_id = $request->input('remote_id');
+            $vehicle->campa_id = $request->input('campa_id');
+            $vehicle->category_id = $request->input('category_id');
+            if($request->input('state_id')) $vehicle->state_id = $request->input('state_id');
+            if($request->input('kms')) $vehicle->kms = $request->input('kms');
+            $vehicle->ubication = $request->input('ubication');
+            $vehicle->plate = $request->input('plate');
+            $vehicle->branch = $request->input('branch');
+            $vehicle->trade_state_id = 1;
+            $vehicle->vehicle_model = $request->input('vehicle_model');
+            if($request->input('version')) $vehicle->version = $request->input('version');
+            if($request->input('vin')) $vehicle->vin = $request->input('vin');
+            $vehicle->first_plate = $request->input('first_plate');
+            $vehicle->save();
+            return $vehicle;
+        } catch(Exception $e){
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function update($request, $id): JsonResponse
@@ -198,301 +125,174 @@ class VehicleRepository {
         }
     }
 
-    public function updateDocumentation($request, $id){
-        $vehicle = Vehicle::where('id', $id)
-                    ->first();
-        $vehicle->documentation = $request->json()->get('documentation');
-        $vehicle->save();
-        return $vehicle;
-    }
-
     public function updateState($vehicle_id, $state_id){
-        $vehicle = Vehicle::where('id', $vehicle_id)
-                        ->first();
+        $vehicle = Vehicle::findOrFail($vehicle_id);
         $vehicle->state_id = $state_id;
         $vehicle->save();
     }
 
     public function updateTradeState($vehicle_id, $trade_state_id){
-        $vehicle = Vehicle::where('id', $vehicle_id)
-                        ->first();
+        $vehicle = Vehicle::findOrFail($vehicle_id);
         $vehicle->trade_state_id = $trade_state_id;
         $vehicle->save();
     }
 
     public function verifyPlate($request){
-        $user = $this->userRepository->getById(Auth::id());
+        try {
+            $user = $this->userRepository->getById(Auth::id());
 
-        $vehicle = Vehicle::with(['campa.company'])
-                    ->where('plate', $request->json()->get('plate'))
-                    //->where('campa_id', $user->campa_id)
-                    ->first();
-        $variables_defleet = $this->defleetVariableRepository->getVariablesByCompany($vehicle['campa']['company']['id']);
-        $date_first_plate = new DateTime($vehicle->first_plate);
-        $date = date("Y-m-d H:i:s");
-        $today = new DateTime($date);
-        $diff = $date_first_plate->diff($today);
-        $year = $diff->format('%Y');
-        if($variables_defleet){
-            if(($vehicle->kms > $variables_defleet->kms || $year > $variables_defleet->years)){
-                //Si el vehículo cumple con los kpis de defleet se cambia el estado a solicitado por defleet a espera de que lleven el vehículo a la zona pendiente de venta V.O.
-                $this->updateTradeState($vehicle->id, 4);
-                return response()->json(['defleet' => true,'message' => 'Vehículo para defletar'], 200);
+            $vehicle = Vehicle::with(['campa.company'])
+                        ->where('plate', $request->input('plate'))
+                        //->where('campa_id', $user->campa_id)
+                        ->first();
+            $variables_defleet = $this->defleetVariableRepository->getVariablesByCompany($vehicle['campa']['company']['id']);
+            $date_first_plate = new DateTime($vehicle->first_plate);
+            $date = date("Y-m-d H:i:s");
+            $today = new DateTime($date);
+            $diff = $date_first_plate->diff($today);
+            $year = $diff->format('%Y');
+            if($variables_defleet){
+                if(($vehicle->kms > $variables_defleet->kms || $year > $variables_defleet->years)){
+                    //Si el vehículo cumple con los kpis de defleet se cambia el estado a solicitado por defleet a espera de que lleven el vehículo a la zona pendiente de venta V.O.
+                    $this->updateTradeState($vehicle->id, 4);
+                    return response()->json(['defleet' => true,'message' => 'Vehículo para defletar'], 200);
+                }
             }
-        }
-        if($vehicle){
-            return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
-        } else {
-            return response()->json(['registered' => false], 200);
-        }
-    }
-
-    public function vehicleDefleet($request){
-        $variables = DefleetVariable::first();
-        $date = date("Y-m-d");
-        $date1 = new DateTime($date);
-        $vehicles = Vehicle::with(['campa','category','state'])
-                        ->whereHas('requests', function(Builder $builder) use ($request) {
-                            return $builder->where('state_request_id', 3);
-                        })
-                        ->orWhereDoesntHave('requests')
-                        ->where('campa_id', $request->json()->get('campa_id'))
-                        ->get();
-        $array_vehicles = [];
-        foreach($vehicles as $vehicle){
-            $date2 = new DateTime($vehicle['first_plate']);
-            $diff = $date1->diff($date2);
-            $age = $diff->y;
-            if($age > $variables->years || $vehicle['kms'] > $variables->kms){
-                array_push($array_vehicles, $vehicle);
+            if($vehicle){
+                return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
+            } else {
+                return response()->json(['registered' => false], 200);
             }
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
         }
-        return $array_vehicles;
     }
 
-    public function delete($id){
-        Vehicle::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'Vehicle deleted'
-        ];
+    public function vehicleDefleet($request): JsonResponse {
+        try {
+            $variables = DefleetVariable::first();
+            $date = date("Y-m-d");
+            $date1 = new DateTime($date);
+            $vehicles = Vehicle::with(['campa','category','state'])
+                            ->whereHas('requests', function(Builder $builder) use ($request) {
+                                return $builder->where('state_request_id', 3);
+                            })
+                            ->orWhereDoesntHave('requests')
+                            ->where('campa_id', $request->input('campa_id'))
+                            ->get();
+            $array_vehicles = [];
+            foreach($vehicles as $vehicle){
+                $date2 = new DateTime($vehicle['first_plate']);
+                $diff = $date1->diff($date2);
+                $age = $diff->y;
+                if($age > $variables->years || $vehicle['kms'] > $variables->kms){
+                    array_push($array_vehicles, $vehicle);
+                }
+            }
+            return $array_vehicles;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
-    public function updateGeolocation($request){
-        $vehicle = Vehicle::where('id', $request->json()->get('vehicle_id'))
-                    ->first();
-        $vehicle->latitude = $request->json()->get('latitude');
-        $vehicle->longitude = $request->json()->get('longitude');
-        $vehicle->save();
-    }
-
-    public function vehiclesDefleeted(){
-        $user = $this->userRepository->getById(Auth::id());
-        return Vehicle::with(['state'])
-                    ->where('state_id', 3)
-                    ->where('campa_id', $user->campa_id)
-                    ->get();
-    }
-
-    public function VehiclesReserveByCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state', ])
-                    ->whereHas('campa', function (Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->where('trade_state_id', 6)
-                    ->get();
-    }
-
-    public function vehiclesReserved(){
-        $user = $this->userRepository->getById(Auth::id());
-        return Vehicle::with(['state'])
-                    ->where('state_id', 2)
-                    ->where('campa_id', $user->campa_id)
-                    ->get();
+    public function delete($id): JsonResponse {
+        try {
+            Vehicle::where('id', $id)
+                ->delete();
+            return [
+                'message' => 'Vehicle deleted'
+            ];
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function vehiclesDefleetByCampa(){
-        $user = $this->userRepository->getById(Auth::id());
-        $variables = DefleetVariable::first();
-        $date = date("Y-m-d");
-        $date1 = new DateTime($date);
-        $vehicles = Vehicle::with(['campa','category','state'])
-                        ->whereHas('requests', function(Builder $builder) {
-                            return $builder->where('state_request_id', 3);
-                        })
-                        ->orWhereDoesntHave('requests')
-                        ->where('campa_id', $user->campa_id)
-                        ->get();
-        $array_vehicles = [];
-        foreach($vehicles as $vehicle){
-            $date2 = new DateTime($vehicle['first_plate']);
-            $diff = $date1->diff($date2);
-            $age = $diff->y;
-            if($age > $variables->years || $vehicle['kms'] > $variables->kms){
-                array_push($array_vehicles, $vehicle);
+        try {
+            $user = $this->userRepository->getById(Auth::id());
+            $variables = DefleetVariable::first();
+            $date = date("Y-m-d");
+            $date1 = new DateTime($date);
+            $vehicles = Vehicle::with(['campa','category','state'])
+                            ->whereHas('requests', function(Builder $builder) {
+                                return $builder->where('state_request_id', 3);
+                            })
+                            ->orWhereDoesntHave('requests')
+                            ->where('campa_id', $user->campa_id)
+                            ->get();
+            $array_vehicles = [];
+            foreach($vehicles as $vehicle){
+                $date2 = new DateTime($vehicle['first_plate']);
+                $diff = $date1->diff($date2);
+                $age = $diff->y;
+                if($age > $variables->years || $vehicle['kms'] > $variables->kms){
+                    array_push($array_vehicles, $vehicle);
+                }
             }
+            return $array_vehicles;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
         }
-        return $array_vehicles;
-    }
-
-    public function getVehiclesAvailableReserveByCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','pending_tasks' => function ($query) {
-                        return $query->where('state_pending_task_id', '!=', 3)
-                                    ->orWhere('state_pending_task_id', null);
-                    }])
-                    ->where('campa_id', $request->json()->get('campa_id'))
-                    ->where('trade_state_id', 1)
-                    ->get();
-    }
-
-    public function getVehiclesAvailableReserveByCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','pending_tasks' => function ($query) {
-                        return $query->where('state_pending_task_id', '!=', 3)
-                                    ->orWhere('state_pending_task_id', null);
-                    }])
-                    ->whereHas('campa', function (Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->where('trade_state_id', 1)
-                    ->get();
-    }
-
-    public function vehiclesReservedByCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','reservations', 'requests.customer'])
-                    ->where('campa_id', $request->json()->get('campa_id'))
-                    ->where('trade_state_id', 2)
-                    ->get();
-    }
-
-    public function vehiclesReservedByCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','reservations', 'requests.customer'])
-                    ->whereHas('campa', function(Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->where('trade_state_id', 2)
-                    ->get();
-    }
-
-    public function vehiclesByStateCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','pending_tasks' => function ($query) {
-                        return $query->where('state_pending_task_id', '!=', 3)
-                                    ->orWhere('state_pending_task_id', null);
-                    }])
-                    ->where('campa_id', $request->json()->get('campa_id'))
-                    ->where('state_id', $request->json()->get('state_id'))
-                    ->whereNull('trade_state_id')
-                    ->get();
-    }
-
-    public function vehiclesByStateCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','pending_tasks' => function ($query) {
-                        return $query->where('state_pending_task_id', '!=', 3)
-                                    ->orWhere('state_pending_task_id', null);
-                    }])
-                    ->whereHas('campa', function(Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->where('state_id', $request->json()->get('state_id'))
-                    ->whereNull('trade_state_id')
-                    ->get();
-    }
-
-    public function vehiclesByTradeStateCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','pending_tasks' => function($query){
-                        return $query->where('state_pending_task_id', '!=', 3)
-                                    ->orWhereNull('state_pending_task_id');
-                    }])
-                    ->whereIn('campa_id', $request->json()->get('campas'))
-                    ->where('trade_state_id', $request->json()->get('trade_state_id'))
-                    ->get();
-    }
-
-    public function vehiclesByTradeStateCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','pending_tasks' => function($query){
-                        return $query->where('state_pending_task_id', '!=', 3)
-                                    ->orWhereNull('state_pending_task_id');
-                    }])
-                    ->whereHas('campa', function(Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->where('trade_state_id', $request->json()->get('trade_state_id'))
-                    ->get();
     }
 
     public function getVehiclesReadyToDeliveryCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
-                    ->where('campa_id', $request->json()->get('campa_id'))
-                    ->where('ready_to_delivery', true)
-                    ->get();
+        try {
+            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
+                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->where('ready_to_delivery', true)
+                        ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function getVehiclesReadyToDeliveryCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
-                    ->whereHas('campa', function(Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->where('ready_to_delivery', true)
-                    ->get();
+        try {
+            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
+                        ->whereHas('campa', function(Builder $builder) use($request){
+                            return $builder->where('company_id', $request->json()->get('company_id'));
+                        })
+                        ->where('ready_to_delivery', true)
+                        ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function getVehiclesWithReservationWithoutOrderCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
-                        return $query->whereNull('order')
-                                    ->where('active', true);
-                    }])
-                    ->whereHas('reservations', function(Builder $builder) use($request){
-                        return $builder->whereNull('order')
-                                    ->where('active', true);
-                    })
-                    ->whereIn('campa_id', $request->json()->get('campas'))
-                    ->get();
-    }
-
-    public function getVehiclesWithReservationWithoutOrderCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
-                        return $query->whereNull('order')
-                                    ->where('active', true);
-                    }])
-                    ->whereHas('reservations', function(Builder $builder) use($request){
-                        return $builder->whereNull('order')
-                                    ->where('active', true);
-                    })
-                    ->whereHas('campa', function(Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->get();
+        try{
+            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+                            return $query->whereNull('order')
+                                        ->where('active', true);
+                        }])
+                        ->whereHas('reservations', function(Builder $builder) use($request){
+                            return $builder->whereNull('order')
+                                        ->where('active', true);
+                        })
+                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function getVehiclesWithReservationWithoutContractCampa($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
-                        return $query->whereNotNull('order')
-                                    ->whereNull('contract')
-                                    ->where('active', true);
-                    }])
-                    ->whereHas('reservations', function(Builder $builder) use($request){
-                        return $builder->whereNotNull('order')
-                                    ->whereNull('contract')
-                                    ->where('active', true);
-                    })
-                    ->whereIn('campa_id', $request->json()->get('campas'))
-                    ->get();
-    }
-
-    public function getVehiclesWithReservationWithoutContractCompany($request){
-        return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
-                        return $query->whereNotNull('order')
-                                    ->whereNull('contract')
-                                    ->where('active', true);
-                    }])
-                    ->whereHas('reservations', function(Builder $builder) use($request){
-                        return $builder->whereNotNull('order')
-                                    ->whereNull('contract')
-                                    ->where('active', true);
-                    })
-                    ->whereHas('campa', function(Builder $builder) use($request){
-                        return $builder->where('company_id', $request->json()->get('company_id'));
-                    })
-                    ->get();
+        try {
+            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+                            return $query->whereNotNull('order')
+                                        ->whereNull('contract')
+                                        ->where('active', true);
+                        }])
+                        ->whereHas('reservations', function(Builder $builder) use($request){
+                            return $builder->whereNotNull('order')
+                                        ->whereNull('contract')
+                                        ->where('active', true);
+                        })
+                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
 

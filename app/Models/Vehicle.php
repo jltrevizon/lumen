@@ -22,7 +22,7 @@ class Vehicle extends Model
         'category_id',
         'state_id',
         'ubication',
-        'palte',
+        'plate',
         'branch',
         'vehicle_model',
         'kms',
