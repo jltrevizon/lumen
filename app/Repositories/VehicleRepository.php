@@ -307,12 +307,20 @@ class VehicleRepository {
             $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->whereNotNull('order')
                                         ->whereNull('contract')
-                                        ->where('active', true);
+                                        ->where('active', true)
+                                        ->where(function($query) {
+                                            return $query->whereNotNull('pickup_by_customer')
+                                                        ->orWhereNotNull('transport_id');
+                                        });
                         }])
                         ->whereHas('reservations', function(Builder $builder) use($request){
                             return $builder->whereNotNull('order')
                                         ->whereNull('contract')
-                                        ->where('active', true);
+                                        ->where('active', true)
+                                        ->where(function($query) {
+                                            return $query->whereNotNull('pickup_by_customer')
+                                                        ->orWhereNotNull('transport_id');
+                                        });
                         })
                         ->whereIn('campa_id', $request->json()->get('campas'))
                         ->get();
