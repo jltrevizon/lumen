@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\State;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 
 class StateRepository {
@@ -13,31 +14,47 @@ class StateRepository {
     }
 
     public function getById($id){
-        return State::where('id', $id)
-                    ->first();
+        try {
+            return State::where('id', $id)
+                        ->first();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function create($request){
-        $state = new State();
-        $state->name = $request->get('name');
-        $state->save();
-        return $state;
+        try {
+            $state = new State();
+            $state->name = $request->get('name');
+            $state->save();
+            return $state;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function update($request, $id){
-        $state = State::where('id', $id)
-                    ->first();
-        $state->name = $request->get('name');
-        $state->updated_at = date('Y-m-d H:i:s');
-        $state->save();
-        return $state;
+        try {
+            $state = State::where('id', $id)
+                        ->first();
+            $state->name = $request->get('name');
+            $state->updated_at = date('Y-m-d H:i:s');
+            $state->save();
+            return $state;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function delete($id){
-        State::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'State deleted'
-        ];
+        try {
+            State::where('id', $id)
+                ->delete();
+            return [
+                'message' => 'State deleted'
+            ];
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }

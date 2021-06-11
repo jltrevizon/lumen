@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ReservationTime;
+use Exception;
 
 class ReservationTimeRepository {
 
@@ -12,32 +13,44 @@ class ReservationTimeRepository {
     }
 
     public function getByCompany($request){
-        return ReservationTime::with(['company'])
-                            ->where('company_id', $request->json()->get('company_id'))
-                            ->first();
+        try {
+            return ReservationTime::with(['company'])
+                                ->where('company_id', $request->json()->get('company_id'))
+                                ->first();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function create($request){
-        $exists_reservation_time = ReservationTime::where('company_id', $request->json()->get('company_id'))
-                                                ->first();
-        if(!$exists_reservation_time){
-            $reservation_time = new ReservationTime();
-            $reservation_time->company_id = $request->json()->get('company_id');
-            $reservation_time->hours = $request->json()->get('hours');
-            $reservation_time->save();
-            return $reservation_time;
-        }
+        try {
+            $exists_reservation_time = ReservationTime::where('company_id', $request->json()->get('company_id'))
+                                                    ->first();
+            if(!$exists_reservation_time){
+                $reservation_time = new ReservationTime();
+                $reservation_time->company_id = $request->json()->get('company_id');
+                $reservation_time->hours = $request->json()->get('hours');
+                $reservation_time->save();
+                return $reservation_time;
+            }
 
-        return [
-            'message' => 'Ya existe un tiempo de reserva para esta empresa'
-        ];
+            return [
+                'message' => 'Ya existe un tiempo de reserva para esta empresa'
+            ];
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function update($request){
-        $reservation_time = ReservationTime::where('company_id', $request->json()->get('company_id'))
-                                        ->first();
-        $reservation_time->hours = $request->json()->get('hours');
-        $reservation_time->save();
-        return $reservation_time;
+        try {
+            $reservation_time = ReservationTime::where('company_id', $request->json()->get('company_id'))
+                                            ->first();
+            $reservation_time->hours = $request->json()->get('hours');
+            $reservation_time->save();
+            return $reservation_time;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }

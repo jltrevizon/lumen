@@ -279,7 +279,11 @@ class VehicleRepository {
         try{
             $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->whereNull('order')
-                                        ->where('active', true);
+                                        ->where('active', true)
+                                        ->where(function($query) {
+                                            return $query->whereNull('pickup_by_customer')
+                                                        ->whereNull('transport_id');
+                                        });
                         }])
                         ->whereHas('reservations', function(Builder $builder) use($request){
                             return $builder->whereNull('order')
