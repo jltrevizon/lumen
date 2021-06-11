@@ -27,10 +27,11 @@ class VehicleRepository {
 
     public function getById($id){
         try{
-            return Vehicle::with(['campa'])
+            $vehicle = Vehicle::with(['campa'])
                         ->findOrFail($id);
+            return response()->json(['vehicle' => $vehicle], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => $e]);
+            return response()->json(['message' => $e], 409);
         }
     }
 
@@ -86,9 +87,14 @@ class VehicleRepository {
         }
     }
 
-    public function getByPlate($request){
-        return Vehicle::where('plate', $request->json()->get('plate'))
-                    ->first();
+    public function getByPlate($request): JsonResponse {
+        try {
+            $vehicle = Vehicle::where('plate', $request->json()->get('plate'))
+                       ->first();
+            return response()->json(['vehicle' => $vehicle], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function create($request): JsonResponse {
@@ -108,7 +114,7 @@ class VehicleRepository {
             if($request->input('vin')) $vehicle->vin = $request->input('vin');
             $vehicle->first_plate = $request->input('first_plate');
             $vehicle->save();
-            return $vehicle;
+            return response()->json(['vehicle' => $vehicle], 200);
         } catch(Exception $e){
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -119,26 +125,35 @@ class VehicleRepository {
         try {
             $vehicle = Vehicle::findOrFail($id);
             $vehicle->update($request->all());
-
             return response()->json([ 'vehicle' => $vehicle ], 200);
         } catch (\Exception $e) {
             return response()->json([ 'message' => $e ], 409);
         }
     }
 
-    public function updateState($vehicle_id, $state_id){
-        $vehicle = Vehicle::findOrFail($vehicle_id);
-        $vehicle->state_id = $state_id;
-        $vehicle->save();
+    public function updateState($vehicle_id, $state_id): JsonResponse {
+        try {
+            $vehicle = Vehicle::findOrFail($vehicle_id);
+            $vehicle->state_id = $state_id;
+            $vehicle->save();
+            return response()->json(['vehicle' => $vehicle], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
-    public function updateTradeState($vehicle_id, $trade_state_id){
-        $vehicle = Vehicle::findOrFail($vehicle_id);
-        $vehicle->trade_state_id = $trade_state_id;
-        $vehicle->save();
+    public function updateTradeState($vehicle_id, $trade_state_id): JsonResponse {
+        try {
+            $vehicle = Vehicle::findOrFail($vehicle_id);
+            $vehicle->trade_state_id = $trade_state_id;
+            $vehicle->save();
+            return response()->json(['vehicle' => $vehicle], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
-    public function verifyPlate($request){
+    public function verifyPlate($request): JsonResponse {
         try {
             $user = $this->userRepository->getById(Auth::id());
 
@@ -190,7 +205,7 @@ class VehicleRepository {
                     array_push($array_vehicles, $vehicle);
                 }
             }
-            return $array_vehicles;
+            return response()->json(['vehicles ' => $array_vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -200,15 +215,13 @@ class VehicleRepository {
         try {
             Vehicle::where('id', $id)
                 ->delete();
-            return [
-                'message' => 'Vehicle deleted'
-            ];
+            return response()->json(['message' => 'Vehicle deleted'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }
 
-    public function vehiclesDefleetByCampa(){
+    public function vehiclesDefleetByCampa(): JsonResponse {
         try {
             $user = $this->userRepository->getById(Auth::id());
             $variables = DefleetVariable::first();
@@ -230,31 +243,33 @@ class VehicleRepository {
                     array_push($array_vehicles, $vehicle);
                 }
             }
-            return $array_vehicles;
+            return response()->json(['vehicles ' => $array_vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }
 
-    public function getVehiclesReadyToDeliveryCampa($request){
+    public function getVehiclesReadyToDeliveryCampa($request): JsonResponse {
         try {
-            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
+            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
                         ->whereIn('campa_id', $request->json()->get('campas'))
                         ->where('ready_to_delivery', true)
                         ->get();
+            return response()->json(['vehicles ' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }
 
-    public function getVehiclesReadyToDeliveryCompany($request){
+    public function getVehiclesReadyToDeliveryCompany($request): JsonResponse {
         try {
-            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
+            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
                         ->whereHas('campa', function(Builder $builder) use($request){
                             return $builder->where('company_id', $request->json()->get('company_id'));
                         })
                         ->where('ready_to_delivery', true)
                         ->get();
+            return response()->json(['vehicles ' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -262,7 +277,7 @@ class VehicleRepository {
 
     public function getVehiclesWithReservationWithoutOrderCampa($request){
         try{
-            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->whereNull('order')
                                         ->where('active', true);
                         }])
@@ -272,6 +287,7 @@ class VehicleRepository {
                         })
                         ->whereIn('campa_id', $request->json()->get('campas'))
                         ->get();
+            return response()->json(['vehicles ' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -279,7 +295,7 @@ class VehicleRepository {
 
     public function getVehiclesWithReservationWithoutContractCampa($request){
         try {
-            return Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->whereNotNull('order')
                                         ->whereNull('contract')
                                         ->where('active', true);
@@ -291,6 +307,7 @@ class VehicleRepository {
                         })
                         ->whereIn('campa_id', $request->json()->get('campas'))
                         ->get();
+            return response()->json(['vehicles ' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
