@@ -37,7 +37,7 @@ class VehicleRepository {
 
     public function filterVehicle($request): JsonResponse {
         try {
-            $vehicles = Vehicle::with(['state','campa','category','trade_state'])
+            $vehicles = Vehicle::with(['state','campa','category','trade_state','requests','reservations'])
                         ->campasIds($request->input('campas'))
                         ->stateIds($request->input('states'))
                         ->vehicleModel($request->input('vehicle_model'))
