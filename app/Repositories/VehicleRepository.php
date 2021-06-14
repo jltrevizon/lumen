@@ -27,9 +27,8 @@ class VehicleRepository {
 
     public function getById($id){
         try{
-            $vehicle = Vehicle::with(['campa'])
+            return Vehicle::with(['campa'])
                         ->findOrFail($id);
-            return response()->json(['vehicle' => $vehicle], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e], 409);
         }
