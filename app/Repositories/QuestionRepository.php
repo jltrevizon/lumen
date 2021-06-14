@@ -32,7 +32,7 @@ class QuestionRepository {
                         ->where('id', Auth::id())
                         ->first();
             $question = new Question();
-            $question->company_id = $user->campa->company_id;
+            $question->company_id = 5;
             $question->question = $request->input('question');
             $question->description = $request->input('description');
             $question->save();
