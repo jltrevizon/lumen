@@ -9,8 +9,7 @@ class ProvinceRepository {
 
     public function getById($id){
         try {
-            return Province::where('id', $id)
-                            ->first();
+            return response()->json(['povince' => Province::findOrFail($id)]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -18,7 +17,7 @@ class ProvinceRepository {
 
     public function provinceByRegion($request){
         try {
-            return Province::where('region_id', $request->json()->get('region_id'))
+            return Province::where('region_id', $request->input('region_id'))
                         ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
@@ -28,9 +27,9 @@ class ProvinceRepository {
     public function create($request){
         try {
             $province = new Province();
-            $province->region_id = $request->json()->get('region_id');
-            $province->province_code = $request->json()->get('province_code');
-            $province->name = $request->json()->get('name');
+            $province->region_id = $request->input('region_id');
+            $province->province_code = $request->input('province_code');
+            $province->name = $request->input('name');
             $province->save();
             return $province;
         } catch (Exception $e) {
@@ -40,14 +39,9 @@ class ProvinceRepository {
 
     public function update($request, $id){
         try {
-            $province = Province::where('id', $id)
-                                ->first();
-            if($request->json()->get('name')) $province->name = $request->json()->get('name');
-            if($request->json()->get('region_id')) $province->region_id = $request->json()->get('region_id');
-            if($request->json()->get('province_code')) $province->province_code = $request->json()->get('province_code');
-            $province->updated_at = date('Y-m-d H:i:s');
-            $province->save();
-            return $province;
+            $province = Province::findOrFail($id);
+            $province->update($request->all());
+            return response()->json(['province' => $province], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

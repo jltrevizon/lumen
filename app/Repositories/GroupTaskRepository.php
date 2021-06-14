@@ -25,7 +25,7 @@ class GroupTaskRepository {
     public function create($request){
         try {
             $group_task = new GroupTask();
-            $group_task->vehicle_id = $request->json()->get('vehicle_id');
+            $group_task->vehicle_id = $request->input('vehicle_id');
             $group_task->save();
             return $group_task;
         } catch (Exception $e) {
@@ -35,12 +35,9 @@ class GroupTaskRepository {
 
     public function update($request, $id){
         try {
-            $group_task = GroupTask::where('id', $id)
-                            ->first();
-            $group_task->vehicle_id = $request->json()->get('vehicle_id');
-            $group_task->updated_at = date('Y-m-d H:i:s');
-            $group_task->save();
-            return $group_task;
+            $group_task = GroupTask::findOrFail($id);
+            $group_task->update($request->all());
+            return response()->json(['group_task' => $group_task], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

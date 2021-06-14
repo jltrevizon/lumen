@@ -9,6 +9,13 @@ use App\Models\Customer;
 
 class Province extends Model
 {
+
+    protected $fillable = [
+        'region_id',
+        'province_code',
+        'name'
+    ];
+
     public function region(){
         return $this->belongsTo(Region::class, 'region_id');
     }

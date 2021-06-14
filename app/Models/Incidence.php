@@ -7,6 +7,12 @@ use App\Models\PendingTask;
 
 class Incidence extends Model
 {
+
+    protected $fillable = [
+        'description',
+        'resolved'
+    ];
+
     public function pending_tasks(){
         return $this->belongsToMany(PendingTask::class);
     }

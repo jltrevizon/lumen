@@ -11,6 +11,21 @@ use App\Models\Incidence;
 
 class PendingTask extends Model
 {
+
+    protected $fillable = [
+        'vehicle_id',
+        'task_id',
+        'state_pending_task_id',
+        'group_task_id',
+        'duration',
+        'order',
+        'code_authorization',
+        'status_color',
+        'datetime_pending',
+        'datetime_start',
+        'datetime_finish'
+    ];
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }

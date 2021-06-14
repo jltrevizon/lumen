@@ -37,8 +37,8 @@ class DefleetVariableRepository {
 
             $variables = new DefleetVariable();
             $variables->company_id = $user['campa']['company_id'];
-            $variables->kms = $request->json()->get('kms');
-            $variables->years = $request->json()->get('years');
+            $variables->kms = $request->input('kms');
+            $variables->years = $request->input('years');
             $variables->save();
             return $variables;
         } catch (Exception $e) {
@@ -56,10 +56,8 @@ class DefleetVariableRepository {
                     'message' => 'No hay registros que actualizar'
                 ];
             }
-            if($request->json()->get('kms')) $variables->kms = $request->json()->get('kms');
-            if($request->json()->get('years')) $variables->years = $request->json()->get('years');
-            $variables->save();
-            return $variables;
+            $variables->update($request->all());
+            return response()->json(['variables' => $variables], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

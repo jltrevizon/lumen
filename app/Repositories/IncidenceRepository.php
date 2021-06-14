@@ -36,7 +36,7 @@ class IncidenceRepository {
     public function createIncidence($request){
         try {
             $incidence = new Incidence();
-            $incidence->description = $request->json()->get('description');
+            $incidence->description = $request->input('description');
             $incidence->resolved = false;
             $incidence->save();
             return $incidence;
@@ -47,7 +47,7 @@ class IncidenceRepository {
 
     public function resolved($request){
         try {
-            $incidence = Incidence::where('id', $request->json()->get('incidence_id'))
+            $incidence = Incidence::where('id', $request->input('incidence_id'))
                                 ->first();
             $incidence->resolved = true;
             $incidence->save();
@@ -58,13 +58,9 @@ class IncidenceRepository {
 
     public function update($request, $id){
         try {
-            $incidence = Incidence::where('id', $id)
-                            ->first();
-            if(isset($request['description'])) $incidence->description = $request->get('description');
-            if(isset($request['resolved'])) $incidence->resolved = $request->get('resolved');
-            $incidence->updated_at = date('Y-m-d H:i:s');
-            $incidence->save();
-            return $incidence;
+            $incidence = Incidence::findOrFail($id);
+            $incidence->update($request->all());
+            return response()->json(['incidence' => $incidence], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
