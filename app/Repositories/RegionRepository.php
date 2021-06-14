@@ -27,7 +27,7 @@ class RegionRepository {
     public function create($request){
         try {
             $region = new Region();
-            $region->name = $request->get('name');
+            $region->name = $request->input('name');
             $region->save();
             return $region;
         } catch (Exception $e) {
@@ -37,12 +37,9 @@ class RegionRepository {
 
     public function update($request, $id){
         try {
-            $region = Region::where('id', $id)
-                                ->first();
-            $region->name = $request->get('name');
-            $region->updated_at = date('Y-m-d H:i:s');
-            $region->save();
-            return $region;
+            $region = Region::findOrFail($id);
+            $region->update($request->all());
+            return response()->json(['region' => $region], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

@@ -14,8 +14,8 @@ class QuestionAnswerRepository {
 
     public function create($request){
         try {
-            $questionnaire = $this->questionnaireRepository->create($request->json()->get('vehicle_id'));
-            $questions = $request->json()->get('questions');
+            $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
+            $questions = $request->input('questions');
             foreach($questions as $question){
                 $questionAnswer = new QuestionAnswer();
                 $questionAnswer->questionnaire_id = $questionnaire;

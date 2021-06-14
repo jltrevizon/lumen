@@ -11,6 +11,16 @@ use App\Models\Customer;
 
 class Request extends Model
 {
+
+    protected $fillable = [
+        'customer_id',
+        'vehicle_id',
+        'state_request_id',
+        'type_request_id',
+        'datetime_request',
+        'datetime_decline'
+    ];
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }

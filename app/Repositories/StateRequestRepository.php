@@ -14,8 +14,7 @@ class StateRequestRepository {
 
     public function getById($id){
         try {
-            return StateRequest::where('id', $id)
-                        ->first();
+            return response()->json(['state_request' => StateRequest::findOrFail($id)], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -24,7 +23,7 @@ class StateRequestRepository {
     public function create($request){
         try {
             $state_request = new StateRequest();
-            $state_request->name = $request->json()->get('name');
+            $state_request->name = $request->input('name');
             $state_request->save();
             return $state_request;
         } catch (Exception $e) {
@@ -34,12 +33,9 @@ class StateRequestRepository {
 
     public function update($request, $id){
         try {
-            $state_request = StateRequest::where('id', $id)
-                        ->first();
-            $state_request->name = $request->json()->get('name');
-            $state_request->updated_at = date('Y-m-d H:i:s');
-            $state_request->save();
-            return $state_request;
+            $state_request = StateRequest::findOrFail($id);
+            $state_request->update($request->all());
+            return response()->json(['state_request' => $state_request], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

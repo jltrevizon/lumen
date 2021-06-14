@@ -24,7 +24,7 @@ class RoleRepository {
     public function create($request){
         try {
             $role = new Role();
-            $role->description = $request->get('description');
+            $role->description = $request->input('description');
             $role->save();
             return $role;
         } catch (Exception $e) {
@@ -34,12 +34,9 @@ class RoleRepository {
 
     public function update($request, $id){
         try {
-            $role = Role::where('id', $id)
-                        ->first();
-            $role->description = $request->get('description');
-            $role->updated_at = date('Y-m-d H:i:s');
-            $role->save();
-            return $role;
+            $role = Role::findOrFail($id);
+            $role->update($request->all());
+            return response()->json(['role' => $role], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

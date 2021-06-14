@@ -33,8 +33,8 @@ class QuestionRepository {
                         ->first();
             $question = new Question();
             $question->company_id = $user->campa->company_id;
-            $question->question = $request->json()->get('question');
-            $question->description = $request->json()->get('description');
+            $question->question = $request->input('question');
+            $question->description = $request->input('description');
             $question->save();
             return $question;
         } catch (Exception $e) {
