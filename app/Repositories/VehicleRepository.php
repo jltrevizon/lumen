@@ -131,6 +131,17 @@ class VehicleRepository {
         }
     }
 
+    public function updateBack($request): JsonResponse
+    {
+        try {
+            $vehicle = Vehicle::findOrFail($id);
+            $vehicle->update($request->all());
+            return response()->json([ 'vehicle' => $vehicle ], 200);
+        } catch (\Exception $e) {
+            return response()->json([ 'message' => $e ], 409);
+        }
+    }
+
     public function updateState($vehicle_id, $state_id): JsonResponse {
         try {
             $vehicle = Vehicle::findOrFail($vehicle_id);
