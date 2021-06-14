@@ -106,7 +106,7 @@ class PendingTaskRepository {
             if($user->role_id == 4){
                 return PendingTask::with(['task','state_pending_task','group_task','vehicle','incidences'])
                                 ->whereHas('vehicle.campa', function(Builder $builder) use($user){
-                                    return $builder->whereIn('id', $user->campas->modelKeys());
+                                    return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
                                 })
                                 ->where(function ($query) {
                                     return $query->where('state_pending_task_id', 1)
