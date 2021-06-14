@@ -88,7 +88,7 @@ class PendingTaskRepository {
                                     ->first();
             $vehicle_pictures = VehiclePicture::where('vehicle_id', $task->vehicle_id)
                                         ->first();
-            $pending_task = PendingTask::with(['vehicle','task','state_pending_task','incidence'])
+            $pending_task = PendingTask::with(['vehicle','task','state_pending_task','incidences'])
                                         ->where('id', $id)
                                         ->first();
             return [
@@ -266,7 +266,7 @@ class PendingTaskRepository {
 
     public function startPendingTask($request){
         try {
-            $pending_task = PendingTask::with(['incidence'])
+            $pending_task = PendingTask::with(['incidences'])
                                     ->where('id', $request->input('pending_task_id'))
                                     ->first();
 
