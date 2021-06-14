@@ -91,6 +91,7 @@ class UserRepository {
 
     public function getUsersByRole($request, $role_id){
         try {
+            return $role_id;
             return User::with(['campas','company'])
                         ->where('role_id', $role_id)
                         ->whereHas('campas', fn (Builder $builder) => $builder->where('campas.id', $request->input('campa_id')))
