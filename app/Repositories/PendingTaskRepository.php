@@ -209,7 +209,7 @@ class PendingTaskRepository {
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->order = 100;
             $pending_task->save();
-            $this->vehicleRepository->update($request);
+            $this->vehicleRepository->updateBack($request);
             $reception = $this->receptionRepository->create($request->input('vehicle_id'), $request->input('has_accessories'));
             if($request->input('has_accessories')){
                 $this->accessoryRepository->create($reception->id, $request->input('accessories'));
