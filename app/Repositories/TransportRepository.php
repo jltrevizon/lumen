@@ -14,8 +14,7 @@ class TransportRepository {
 
     public function getById($id){
         try {
-            return Transport::where('id', $id)
-                        ->first();
+            return response()->json(['transport' => Transport::findOrFail($id)], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -24,7 +23,7 @@ class TransportRepository {
     public function create($request){
         try {
             $transport = new Transport();
-            $transport->name = $request->json()->get('name');
+            $transport->name = $request->input('name');
             $transport->save();
             return $transport;
         } catch (Exception $e) {
@@ -34,12 +33,9 @@ class TransportRepository {
 
     public function update($request, $id){
         try {
-            $transport = Transport::where('id', $id)
-                        ->first();
-            if($request->json()->get('name')) $transport->name = $request->json()->get('name');
-            $transport->updated_at = date('Y-m-d H:i:s');
-            $transport->save();
-            return $transport;
+            $transport = Transport::findOrFail($id);
+            $transport->update($request->all());
+            return response()->json(['transport' => $transport], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

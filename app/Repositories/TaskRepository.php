@@ -8,9 +8,9 @@ class TaskRepository {
 
     public function getById($id){
         try {
-            return Task::with(['sub_state.state'])
-                        ->where('id', $id)
-                        ->first();
+            $task = Task::with(['sub_state.state'])
+                        ->findOrFail($id);
+            return response()->json(['task' => $task], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -19,10 +19,10 @@ class TaskRepository {
     public function create($request){
         try {
             $task = new Task();
-            $task->sub_state_id = $request->json()->get('sub_state_id');
-            $task->type_task_id = $request->json()->get('type_task_id');
-            $task->name = $request->json()->get('name');
-            $task->duration = $request->json()->get('duration');
+            $task->sub_state_id = $request->input('sub_state_id');
+            $task->type_task_id = $request->input('type_task_id');
+            $task->name = $request->input('name');
+            $task->duration = $request->input('duration');
             $task->save();
             return $task;
         } catch (Exception $e) {
@@ -32,15 +32,9 @@ class TaskRepository {
 
     public function update($request, $id){
         try {
-            $task = Task::where('id', $id)
-                        ->first();
-            if($request->json()->get('sub_state_id')) $task->sub_state_id = $request->get('sub_state_id');
-            if($request->json()->get('type_task_id')) $task->type_task_id = $request->get('type_task_id');
-            if($request->json()->get('name')) $task->name = $request->get('name');
-            if($request->json()->get('name')) $task->duration = $request->get('duration');
-            $task->updated_at = date('Y-m-d H:i:s');
-            $task->save();
-            return $task;
+            $task = Task::findOrFail($id);
+            $task->update($request->all());
+            return response()->json(['task' => $task], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

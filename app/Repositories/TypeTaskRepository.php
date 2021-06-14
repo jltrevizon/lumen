@@ -14,8 +14,7 @@ class TypeTaskRepository {
 
     public function getById($id){
         try {
-            return TypeTask::where('id', $id)
-                        ->first();
+            return response()->json(['type_task' => TypeTask::findOrFail($id)], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -24,7 +23,7 @@ class TypeTaskRepository {
     public function create($request){
         try {
             $type_task = new TypeTask();
-            $type_task->name = $request->get('name');
+            $type_task->name = $request->input('name');
             $type_task->save();
             return $type_task;
         } catch (Exception $e) {
@@ -34,12 +33,9 @@ class TypeTaskRepository {
 
     public function update($request, $id){
         try {
-            $type_task = TypeTask::where('id', $id)
-                        ->first();
-            if(isset($request['name'])) $type_task->name = $request->get('name');
-            $type_task->updated_at = date('Y-m-d H:i:s');
-            $type_task->save();
-            return $type_task;
+            $type_task = TypeTask::findOrFail($id);
+            $type_task->update($request->all());
+            return response()->json(['type_task' => $type_task], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
