@@ -108,6 +108,10 @@ class PendingTaskRepository {
                                 ->whereHas('vehicle', function(Builder $builder) use($user){
                                     return $builder->where('campa_id', 4);
                                 })
+                                ->where(function ($query) {
+                                    return $query->where('state_pending_task_id', 1)
+                                            ->orWhere('state_pending_task_id', 2);
+                                })
                                 ->get();
             }
             if($user->role_id == 5){
