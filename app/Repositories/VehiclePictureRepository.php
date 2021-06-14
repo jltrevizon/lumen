@@ -19,7 +19,7 @@ class VehiclePictureRepository {
             $user = $this->userRepository->getById(Auth::id());
             $vehicle_picture->vehicle_id = $request->input('vehicle_id');
             $vehicle_picture->user_id = Auth::id();
-            $vehicle_picture->campa_id = $user->campa_id;
+            $vehicle_picture->campa_id = 4;
             $vehicle_picture->url = $request->input('url');
             $vehicle_picture->latitude = $request->input('latitude');
             $vehicle_picture->longitude = $request->input('longitude');
