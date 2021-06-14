@@ -101,12 +101,12 @@ class PendingTaskRepository {
     }
 
     public function getPendingOrNextTask(){
+        $user = $this->userRepository->getById(Auth::id());
         try {
-            $user = $this->userRepository->getById(Auth::id());
             if($user->role_id == 4){
                 return PendingTask::with(['task','state_pending_task','group_task','vehicle','incidences'])
-                                ->whereHas('vehicle', function(Builder $builder) use($user){
-                                    return $builder->where('campa_id', 4);
+                                ->whereHas('vehicle.campa', function(Builder $builder) use($user){
+                                    return $builder->whereIn('id', $user->campas->modelKeys());
                                 })
                                 ->where(function ($query) {
                                     return $query->where('state_pending_task_id', 1)

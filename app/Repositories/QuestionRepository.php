@@ -28,11 +28,12 @@ class QuestionRepository {
 
     public function create($request){
         try {
-            $user = User::with(['campas'])
+            $user = User::with(['campas.company'])
                         ->where('id', Auth::id())
                         ->first();
+            $company = $user->campas->pluck('company');
             $question = new Question();
-            $question->company_id = 5;
+            $question->company_id = $company[0]['id'];
             $question->question = $request->input('question');
             $question->description = $request->input('description');
             $question->save();
