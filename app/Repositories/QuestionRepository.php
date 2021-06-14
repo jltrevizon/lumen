@@ -16,11 +16,12 @@ class QuestionRepository {
 
     public function getAll(){
         try {
-            $user = User::with(['campas'])
+            $user = User::with(['campas.company'])
                         ->where('id', Auth::id())
                         ->first();
-            return Question::where('company_id', $user->campa->id)
-                        ->get();
+            $company = $user->campas->pluck('company');
+
+            return Question::all();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
