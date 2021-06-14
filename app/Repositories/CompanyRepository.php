@@ -15,13 +15,13 @@ class CompanyRepository {
     public function create($request){
         try {
             $company = new Company();
-            $company->name = $request->json()->get('name');
-            if($request->json()->get('tradename')) $company->tradename = $request->json()->get('tradename');
-            if($request->json()->get('nif')) $company->nif = $request->json()->get('nif');
-            if($request->json()->get('address')) $company->address = $request->json()->get('address');
-            if($request->json()->get('location')) $company->location = $request->json()->get('location');
-            if($request->json()->get('phone')) $company->phone = $request->json()->get('phone');
-            if($request->json()->get('logo')) $company->logo = $request->json()->get('logo');
+            $company->name = $request->input('name');
+            if($request->input('tradename')) $company->tradename = $request->input('tradename');
+            if($request->input('nif')) $company->nif = $request->input('nif');
+            if($request->input('address')) $company->address = $request->input('address');
+            if($request->input('location')) $company->location = $request->input('location');
+            if($request->input('phone')) $company->phone = $request->input('phone');
+            if($request->input('logo')) $company->logo = $request->input('logo');
             $company->save();
             return $company;
         } catch (Exception $e) {
@@ -31,18 +31,9 @@ class CompanyRepository {
 
     public function update($request, $id){
         try {
-            $company = Company::where('id', $id)
-                            ->first();
-            if($request->json()->get('name')) $company->name = $request->json()->get('name');
-            if($request->json()->get('tradename')) $company->tradename = $request->json()->get('tradename');
-            if($request->json()->get('nif')) $company->nif = $request->json()->get('nif');
-            if($request->json()->get('address')) $company->address = $request->json()->get('address');
-            if($request->json()->get('location')) $company->location = $request->json()->get('location');
-            if($request->json()->get('phone')) $company->phone = $request->json()->get('phone');
-            if($request->json()->get('logo')) $company->logo = $request->json()->get('logo');
-            $company->updated_at = date('Y-m-d H:i:s');
-            $company->save();
-            return $company;
+            $company = Company::findOrFail($id);
+            $company->update($request->all());
+            return response()->json(['company' => $company], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

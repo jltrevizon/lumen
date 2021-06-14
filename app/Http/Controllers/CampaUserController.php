@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\DB;
 class CampaUserController extends Controller
 {
     public function create(Request $request){
-        $campas = $request->json()->get('campas');
+        $campas = $request->input('campas');
         foreach($campas as $campa){
             DB::table('campa_user')->insert([
                 'campa_id' => $campa,
-                'user_id' => $request->json()->get('user_id')
+                'user_id' => $request->input('user_id')
             ]);
         }
         return User::with(['campas'])
-                    ->where('id', $request->json()->get('user_id'))
+                    ->where('id', $request->input('user_id'))
                     ->first();
     }
 }

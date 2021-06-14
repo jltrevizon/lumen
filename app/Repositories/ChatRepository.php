@@ -19,8 +19,8 @@ class ChatRepository {
             $user = $this->userRepository->getById(Auth::id());
             $chat = new Chat();
             $chat->sent_user_app = false;
-            $chat->campa_id = $request->json()->get('campa_id');
-            $chat->message = $request->json()->get('message');
+            $chat->campa_id = $request->input('campa_id');
+            $chat->message = $request->input('message');
             $chat->save();
             return $chat;
         } catch (Exception $e) {
@@ -34,7 +34,7 @@ class ChatRepository {
             $chat = new Chat();
             $chat->sent_user_app = true;
             $chat->campa_id = $user->campa_id;
-            $chat->message = $request->json()->get('message');
+            $chat->message = $request->input('message');
             $chat->save();
             return $chat;
         } catch (Exception $e) {
@@ -44,7 +44,7 @@ class ChatRepository {
 
     public function getMessage($request){
         try {
-            return Chat::where('campa_id', $request->json()->get('campa_id'))
+            return Chat::where('campa_id', $request->input('campa_id'))
                     ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
@@ -63,7 +63,7 @@ class ChatRepository {
 
     public function readMessages($request){
         try {
-            foreach($request->json()->get('messages') as $message){
+            foreach($request->input('messages') as $message){
                 $chat = Chat::where('id', $message['id'])
                             ->first();
                 $chat->read = true;

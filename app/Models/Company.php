@@ -9,6 +9,17 @@ use App\Models\Customer;
 
 class Company extends Model
 {
+
+    protected $fillable = [
+        'name',
+        'tradename',
+        'nif',
+        'address',
+        'location',
+        'phone',
+        'logo'
+    ];
+
     public function campas(){
         return $this->hasMany(Campa::class, 'company_id');
     }

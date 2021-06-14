@@ -35,13 +35,9 @@ class CategoryRepository {
 
     public function update($request, $id){
         try {
-            $category = Category::where('id', $id)
-                                ->first();
-            if(isset($request['name'])) $category->name = $request->get('name');
-            if(isset($request['description'])) $category->description = $request->get('description');
-            $category->updated_at = date('Y-m-d H:i:s');
-            $category->save();
-            return $category;
+            $category = Category::findOrFail($id);
+            $category->update($request->all());
+            return response()->json(['category' => $category], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

@@ -15,12 +15,12 @@ class CustomerRepository {
     public function create($request){
         try {
             $customer = new Customer();
-            $customer->name = $request->json()->get('name');
-            if($request->json()->get('company_id')) $customer->company_id = $request->json()->get('company_id');
-            if($request->json()->get('province_id')) $customer->province_id = $request->json()->get('province_id');
-            if($request->json()->get('cif')) $customer->cif = $request->json()->get('cif');
-            if($request->json()->get('phone')) $customer->phone = $request->json()->get('phone');
-            if($request->json()->get('address')) $customer->address = $request->json()->get('address');
+            $customer->name = $request->input('name');
+            if($request->input('company_id')) $customer->company_id = $request->input('company_id');
+            if($request->input('province_id')) $customer->province_id = $request->input('province_id');
+            if($request->input('cif')) $customer->cif = $request->input('cif');
+            if($request->input('phone')) $customer->phone = $request->input('phone');
+            if($request->input('address')) $customer->address = $request->input('address');
             $customer->save();
             return $customer;
         } catch (Exception $e) {
@@ -30,16 +30,9 @@ class CustomerRepository {
 
     public function update($request, $id){
         try {
-            $customer = Customer::where('id', $id)
-                            ->first();
-            if($request->json()->get('company_id')) $customer->company_id = $request->json()->get('company_id');
-            if($request->json()->get('name')) $customer->name = $request->json()->get('name');
-            if($request->json()->get('cif')) $customer->cif = $request->json()->get('cif');
-            if($request->json()->get('phone')) $customer->phone = $request->json()->get('phone');
-            if($request->json()->get('address')) $customer->address = $request->json()->get('address');
-            $customer->updated_at = date('Y-m-d H:i:s');
-            $customer->save();
-            return $customer;
+            $customer = Customer::findOrFail($id);
+            $customer->update($request->all());
+            return response()->json(['customer' => $customer]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -47,7 +40,7 @@ class CustomerRepository {
 
     public function getUserByCompany($request){
         try {
-            return Customer::where('company_id', $request->json()->get('company_id'))
+            return Customer::where('company_id', $request->input('company_id'))
                         ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);

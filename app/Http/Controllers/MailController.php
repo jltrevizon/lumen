@@ -28,15 +28,15 @@ class MailController extends Controller
     }
 
     public function passwordReset(Request $request){
-        $user = User::where('email', $request->json()->get('email'))
+        $user = User::where('email', $request->input('email'))
                         ->first();
         $passwordResetCode = PasswordResetCode::where('user_id', $user->id)
                                         ->where('active', true)
                                         ->orderBy('created_at','desc')
                                         ->first();
         //return $passwordResetCode;
-        if($passwordResetCode && $passwordResetCode->code == $request->json()->get('code')){
-            $user->password = app('hash')->make($request->json()->get('password'));
+        if($passwordResetCode && $passwordResetCode->code == $request->input('code')){
+            $user->password = app('hash')->make($request->input('password'));
             $user->save();
             $passwordResetCode->active = false;
             $passwordResetCode->save();
