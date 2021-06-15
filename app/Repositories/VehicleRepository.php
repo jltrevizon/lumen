@@ -357,5 +357,19 @@ class VehicleRepository {
         }
     }
 
+    public function vehicleReserved(){
+        try {
+            $user = $this->userRepository->getById(Auth::id());
+            return Vehicle::with(['reservations' => fn ($query) => $query->where('active', true)])
+                        ->whereHas('reservations', fn (Builder $builder) => $builder->where('active', true))
+                        ->whereHas('campa', function (Builder $builder) use ($user){
+                            return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
+                        })
+                        ->get();
+        } catch(Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
+
 
 }

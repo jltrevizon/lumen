@@ -78,4 +78,8 @@ class VehicleController extends Controller
     public function filterVehicle(Request $request){
         return $this->vehicleRepository->filterVehicle($request);
     }
+
+    public function vehicleReserved(){
+        return $this->vehicleRepository->vehicleReserved();
+    }
 }
