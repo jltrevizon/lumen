@@ -103,11 +103,11 @@ class VehicleRepository {
         }
     }
 
-    public function getByPlate($request): JsonResponse {
+    public function getByPlate($request) {
         try {
             $vehicle = Vehicle::where('plate', $request->json()->get('plate'))
                        ->first();
-            return response()->json(['vehicle' => $vehicle], 200);
+            return $vehicle;
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

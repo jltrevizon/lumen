@@ -411,8 +411,8 @@ class PendingTaskRepository {
             $vehicle = $this->vehicleRepository->getByPlate($request);
             $group = $this->groupTaskRepository->getLastByVehicle($vehicle->id);
             return PendingTask::with(['vehicle','state_pending_task','task'])
-            ->where('group_task_id', $group->id)
-            ->get();
+                        ->where('group_task_id', $group->id)
+                        ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
