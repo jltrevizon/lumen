@@ -177,9 +177,10 @@ class PendingTaskRepository {
     public function resolvedIncidence($request){
         try {
             $this->incidenceRepository->resolved($request);
+            $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
+            $pending_task->status_color = 'Green';
             return PendingTask::with(['incidences'])
-                            ->where('id', $request->input('pending_task_id'))
-                            ->first();
+                            ->findOrFail($request->input('pending_task_id'));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
