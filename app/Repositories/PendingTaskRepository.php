@@ -179,6 +179,7 @@ class PendingTaskRepository {
             $this->incidenceRepository->resolved($request);
             $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
             $pending_task->status_color = 'Green';
+            $pending_task->save();
             return PendingTask::with(['incidences'])
                             ->findOrFail($request->input('pending_task_id'));
         } catch (Exception $e) {
