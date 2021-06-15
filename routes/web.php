@@ -136,7 +136,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending task
          */
         $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
-        $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
@@ -152,6 +151,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/by-plate', 'PendingTaskController@getPendingTaskByPlate');
         $router->post('/pending-tasks/by-vehicle', 'PendingTaskController@getPendingTasksByPlate');
         $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
+        $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         /**
          * Purchase operations
          */
@@ -262,11 +262,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
         $router->post('/vehicles/ready-to-delivery/campa', 'VehicleController@getVehiclesReadyToDeliveryCampa');
         $router->post('/vehicles/ready-to-delivery/company', 'VehicleController@getVehiclesReadyToDeliveryCompany');
-        $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->post('/vehicles/filter', 'VehicleController@filterVehicle');
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
+        $router->get('/vehicles/{id}', 'VehicleController@getById');
 
         /**
          * Vehicle Picture
