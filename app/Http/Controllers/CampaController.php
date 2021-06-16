@@ -35,7 +35,7 @@ class CampaController extends Controller
 
     public function getByCompany(Request $request){
         return Campa::with(['company'])
-                    ->where('company_id', $request->json()->get('company_id'))
+                    ->where('company_id', $request->input('company_id'))
                     ->get();
     }
 

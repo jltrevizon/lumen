@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ManualQuestionnaire;
+use Exception;
 
 class ManualQuestionnaireRepository {
 
@@ -12,10 +13,14 @@ class ManualQuestionnaireRepository {
     }
 
     public function create($request){
-        $manual_questionnaire = new ManualQuestionnaire();
-        $manual_questionnaire->vehicle_id = $request->json()->get('vehicle_id');
-        $manual_questionnaire->filled_in = $request->json()->get('filled_in');
-        $manual_questionnaire->save();
-        return $manual_questionnaire;
+        try {
+            $manual_questionnaire = new ManualQuestionnaire();
+            $manual_questionnaire->vehicle_id = $request->input('vehicle_id');
+            $manual_questionnaire->filled_in = $request->input('filled_in');
+            $manual_questionnaire->save();
+            return $manual_questionnaire;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }

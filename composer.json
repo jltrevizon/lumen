@@ -10,9 +10,11 @@
     "type": "project",
     "require": {
         "php": "^8.0",
+        "aws/aws-sdk-php": "^3.183",
         "darkaonline/swagger-lume": "8.*",
         "flipbox/lumen-generator": "^8.2",
         "fruitcake/laravel-cors": "^2.0",
+        "illuminate/mail": "^8.44",
         "laravel/lumen-framework": "^8.0",
         "laravelista/lumen-vendor-publish": "^8.0",
         "nordsoftware/lumen-cors": "^3.4",

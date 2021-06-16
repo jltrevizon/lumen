@@ -11,8 +11,18 @@ use App\Models\Vehicle;
 
 class Campa extends Model
 {
+
+    protected $filleable = [
+        'company_id',
+        'province_id',
+        'name',
+        'location',
+        'address',
+        'active',
+    ];
+
     public function users(){
-        return $this->hasMany(User::class, 'campa_id');
+        return $this->belongsToMany(User::class);
     }
 
     public function province(){

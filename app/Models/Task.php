@@ -10,6 +10,14 @@ use App\Models\PurchaseOperation;
 
 class Task extends Model
 {
+
+    protected $fillable = [
+        'sub_state_id',
+        'type_task_id',
+        'name',
+        'duration'
+    ];
+
     public function pending_tasks(){
         return $this->hasMany(PendingTask::class, 'task_id');
     }

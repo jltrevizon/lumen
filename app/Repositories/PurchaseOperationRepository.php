@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\PurchaseOperation;
+use Exception;
 
 class PurchaseOperationRepository {
 
@@ -12,35 +13,51 @@ class PurchaseOperationRepository {
     }
 
     public function getById($id){
-        return PurchaseOperation::where('id', $id)
-                        ->first();
+        try {
+            return PurchaseOperation::where('id', $id)
+                            ->first();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function create($request){
-        $purchase_operation = new PurchaseOperation();
-        $purchase_operation->task_id = $request->get('task_id');
-        $purchase_operation->name = $request->get('name');
-        $purchase_operation->price = $request->get('price');
-        $purchase_operation->save();
-        return $purchase_operation;
+        try {
+            $purchase_operation = new PurchaseOperation();
+            $purchase_operation->task_id = $request->get('task_id');
+            $purchase_operation->name = $request->get('name');
+            $purchase_operation->price = $request->get('price');
+            $purchase_operation->save();
+            return $purchase_operation;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function update($request, $id){
-        $purchase_operation = PurchaseOperation::where('id', $id)
-                            ->first();
-        if(isset($request['task_id'])) $purchase_operation->task_id = $request->get('task_id');
-        if(isset($request['name'])) $purchase_operation->name = $request->get('name');
-        if(isset($request['price'])) $purchase_operation->price = $request->get('price');
-        $purchase_operation->updated_at = date('Y-m-d H:i:s');
-        $purchase_operation->save();
-        return $purchase_operation;
+        try {
+            $purchase_operation = PurchaseOperation::where('id', $id)
+                                ->first();
+            if(isset($request['task_id'])) $purchase_operation->task_id = $request->get('task_id');
+            if(isset($request['name'])) $purchase_operation->name = $request->get('name');
+            if(isset($request['price'])) $purchase_operation->price = $request->get('price');
+            $purchase_operation->updated_at = date('Y-m-d H:i:s');
+            $purchase_operation->save();
+            return $purchase_operation;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function delete($id){
-        PurchaseOperation::where('id', $id)
-                ->delete();
-        return [
-            'message' => 'Purchase operation deleted'
-        ];
+        try {
+            PurchaseOperation::where('id', $id)
+                    ->delete();
+            return [
+                'message' => 'Purchase operation deleted'
+            ];
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }

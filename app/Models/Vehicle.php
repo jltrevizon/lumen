@@ -16,6 +16,27 @@ use App\Models\TradeState;
 
 class Vehicle extends Model
 {
+    protected $fillable = [
+        'remote_id',
+        "campa_id",
+        'category_id',
+        'state_id',
+        'ubication',
+        'plate',
+        'branch',
+        'vehicle_model',
+        'kms',
+        'priority',
+        'version',
+        'vin',
+        'first_plate',
+        'latitude',
+        'longitude',
+        'trade_state_id',
+        'documentation',
+        'ready_to_delivery'
+    ];
+
     public function category(){
         return $this->belongsTo(Category::class, 'category_id');
     }
@@ -54,5 +75,29 @@ class Vehicle extends Model
 
     public function trade_state(){
         return $this->belongsTo(TradeState::class, 'trade_state_id');
+    }
+
+    public function scopeCampasIds($query, $ids){
+        return $query->whereIn('campa_id', $ids);
+    }
+
+    public function scopeStateIds($query, $ids){
+        return $query->whereIn('state_id', $ids);
+    }
+
+    public function scopeVehicleModel($query, $vehicle_model){
+        return $query->where('vehicle_model', 'like',  "%$vehicle_model%");
+    }
+
+    public function scopePlate($query, $plate){
+        return $query->where('plate','like',"%$plate%");
+    }
+
+    public function scopeBranch($query, $branch){
+        return $query->where('branch','like',"%$branch%");
+    }
+
+    public function scopeCategoriesIds($query, $ids){
+        return $query->whereIn('category_id',$ids);
     }
 }

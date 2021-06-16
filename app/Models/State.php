@@ -8,6 +8,11 @@ use App\Models\SubState;
 
 class State extends Model
 {
+
+    protected $fillable = [
+        'name'
+    ];
+
     public function vehicles(){
         return $this->hasMany(Vehicle::class, 'state_id');
     }

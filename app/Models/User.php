@@ -17,16 +17,31 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     use Authenticatable, Authorizable, HasFactory;
 
+    protected $fillable = [
+        'role_id',
+        'name',
+        'surname',
+        'email',
+        'avatar',
+        'phone',
+        'first_login',
+        'active'
+    ];
+
     protected $hidden = [
         'password',
     ];
 
-    public function campa(){
-        return $this->belongsTo(Campa::class, 'campa_id');
+    public function campas(){
+        return $this->belongsToMany(Campa::class);
     }
 
     public function role(){
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function company(){
+        return $this->belongsTo(Company::class);
     }
 
     /**

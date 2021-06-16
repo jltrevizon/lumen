@@ -3,44 +3,59 @@
 namespace App\Repositories;
 
 use App\Models\Province;
+use Exception;
 
 class ProvinceRepository {
 
     public function getById($id){
-        return Province::where('id', $id)
-                        ->first();
+        try {
+            return response()->json(['povince' => Province::findOrFail($id)]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function provinceByRegion($request){
-        return Province::where('region_id', $request->json()->get('region_id'))
-                    ->get();
+        try {
+            return Province::where('region_id', $request->input('region_id'))
+                        ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function create($request){
-        $province = new Province();
-        $province->region_id = $request->json()->get('region_id');
-        $province->province_code = $request->json()->get('province_code');
-        $province->name = $request->json()->get('name');
-        $province->save();
-        return $province;
+        try {
+            $province = new Province();
+            $province->region_id = $request->input('region_id');
+            $province->province_code = $request->input('province_code');
+            $province->name = $request->input('name');
+            $province->save();
+            return $province;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function update($request, $id){
-        $province = Province::where('id', $id)
-                            ->first();
-        if($request->json()->get('name')) $province->name = $request->json()->get('name');
-        if($request->json()->get('region_id')) $province->region_id = $request->json()->get('region_id');
-        if($request->json()->get('province_code')) $province->province_code = $request->json()->get('province_code');
-        $province->updated_at = date('Y-m-d H:i:s');
-        $province->save();
-        return $province;
+        try {
+            $province = Province::findOrFail($id);
+            $province->update($request->all());
+            return response()->json(['province' => $province], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function delete($id){
-        Province::where('id', $id)
-                ->delete();
-        return [
-            'message' => 'Province deleted'
-        ];
+        try {
+            Province::where('id', $id)
+                    ->delete();
+            return [
+                'message' => 'Province deleted'
+            ];
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }

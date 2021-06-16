@@ -9,6 +9,17 @@ use App\Models\Customer;
 
 class Company extends Model
 {
+
+    protected $fillable = [
+        'name',
+        'tradename',
+        'nif',
+        'address',
+        'location',
+        'phone',
+        'logo'
+    ];
+
     public function campas(){
         return $this->hasMany(Campa::class, 'company_id');
     }
@@ -19,5 +30,9 @@ class Company extends Model
 
     public function customers(){
         return $this->hasMany(Customer::class, 'company_id');
+    }
+
+    public function users(){
+        return $this->hasMany(User::class);
     }
 }

@@ -9,6 +9,23 @@ use App\Models\Transport;
 
 class Reservation extends Model
 {
+
+    protected $fillable = [
+        'request_id',
+        'vehicle_id',
+        'reservation_time',
+        'dni',
+        'order',
+        'contract',
+        'planned_reservation',
+        'pickup_by_customer',
+        'transport_id',
+        'actual_date',
+        'campa_id',
+        'type_reservation_id',
+        'active'
+    ];
+
     public function request(){
         return $this->belongsTo(VehicleRequest::class, 'request_id');
     }

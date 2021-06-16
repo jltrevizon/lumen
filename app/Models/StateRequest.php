@@ -7,6 +7,11 @@ use App\Models\Request;
 
 class StateRequest extends Model
 {
+
+    protected $fillable = [
+        'name'
+    ];
+
     public function requests(){
         return $this->hasMany(Request::class, 'state_request_id');
     }

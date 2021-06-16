@@ -8,6 +8,12 @@ use App\Models\Task;
 
 class SubState extends Model
 {
+
+    protected $fillable = [
+        'state_id',
+        'name'
+    ];
+
     public function state(){
         return $this->belongsTo(State::class, 'state_id');
     }

@@ -21,7 +21,7 @@ class QuestionController extends Controller
     }
 
     public function create(Request $request){
-        return $this->questionRepository->create();
+        return $this->questionRepository->create($request);
     }
 
     public function delete($id){

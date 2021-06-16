@@ -7,6 +7,11 @@ use App\Models\PendingTask;
 
 class StatePendingTask extends Model
 {
+
+    protected $fillable = [
+        'name'
+    ];
+
     public function pending_tasks(){
         return $this->hasMany(PendingTask::class, 'state_pending_task_id');
     }

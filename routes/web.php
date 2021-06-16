@@ -23,6 +23,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
 
+        /**
+         * Reset password
+         */
+        $router->post('/password/send-code','MailController@sendCodePassword');
+        $router->post('/password/reset','MailController@passwordReset');
+
     $router->group(['middleware' => ['auth']], function () use ($router) {
 
         /**
@@ -38,6 +44,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/users/role/{role_id}', 'UserController@getUsersByRole');
         $router->post('/users/active', 'UserController@getActiveUsers');
         $router->post('/users/by-email', 'UserController@getUserByEmail');
+        $router->post('/users/assign-campa', 'CampaUserController@create');
 
         /**
          * Roles
@@ -129,7 +136,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending task
          */
         $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
-        $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
@@ -145,6 +151,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/by-plate', 'PendingTaskController@getPendingTaskByPlate');
         $router->post('/pending-tasks/by-vehicle', 'PendingTaskController@getPendingTasksByPlate');
         $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
+        $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         /**
          * Purchase operations
          */
@@ -246,34 +253,23 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Vehicles
          */
         $router->get('/vehicle/getall', 'VehicleController@getall');
-        $router->post('/vehicles/by-company', 'VehicleController@getByCompany');
-        $router->post('/vehicles/all-by-company', 'VehicleController@getAllByCompany');
         $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
-        $router->post('/vehicles/all-by-campa', 'VehicleController@getAllByCampa');
         $router->post('/vehicles/create-from-excel', 'VehicleController@createFromExcel');
         $router->post('/vehicles', 'VehicleController@create');
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
-        $router->put('/vehicles/update-documentation/{id}', 'VehicleController@updateDocumentation');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
         $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
-        $router->get('/vehicles/defleeted', 'VehicleController@vehiclesDefleeted');
-        $router->get('/vehicles/reserved', 'VehicleController@vehiclesReserved');
-        $router->post('/vehicles/available/reserve/by-campa', 'VehicleController@getVehiclesAvailableReserveByCampa');
-        $router->post('/vehicles/available/reserve/by-company', 'VehicleController@getVehiclesAvailableReserveByCompany');
-        $router->post('/vehicles/request/reserve/by-campa', 'VehicleController@vehiclesRequestReserveByCampa');
-        $router->post('/vehicles/request/reserve/by-company', 'VehicleController@vehiclesRequestReserveByCompany');
-        $router->post('/vehicles/by-state-campa', 'VehicleController@vehiclesByStateCampa');
-        $router->post('/vehicles/by-state-company', 'VehicleController@vehiclesByStateCompany');
-        $router->post('/vehicles/by-trade-state/campa', 'VehicleController@vehiclesByTradeStateCampa');
-        $router->post('/vehicles/by-trade-state/company', 'VehicleController@vehiclesByTradeStateCompany');
         $router->post('/vehicles/ready-to-delivery/campa', 'VehicleController@getVehiclesReadyToDeliveryCampa');
         $router->post('/vehicles/ready-to-delivery/company', 'VehicleController@getVehiclesReadyToDeliveryCompany');
-        $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
-        $router->post('/vehicle-with-reservation-without-order/company', 'VehicleController@getVehiclesWithReservationWithoutOrderCompany');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
-        $router->post('/vehicle-with-reservation-without-contract/company', 'VehicleController@getVehiclesWithReservationWithoutContractCompany');
+        $router->post('/vehicles/filter', 'VehicleController@filterVehicle');
+        $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
+        $router->post('/vehicles/totals', 'VehicleController@vehicleTotals');
+        $router->post('/vehicles/totals/substates', 'VehicleController@vehiclesTotalsSubstate');
+        $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
+        $router->get('/vehicles/{id}', 'VehicleController@getById');
 
         /**
          * Vehicle Picture
@@ -340,5 +336,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Type Reservations
          */
         $router->get('/type-reservations', 'TypeReservationController@getAll');
+
+
     });
 });

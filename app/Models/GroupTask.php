@@ -8,6 +8,11 @@ use App\Models\Vehicle;
 
 class GroupTask extends Model
 {
+
+    protected $fillable = [
+        'vehicle_id'
+    ];
+
     public function pending_tasks(){
         return $this->hasMany(PendingTask::class, 'group_task_id');
     }

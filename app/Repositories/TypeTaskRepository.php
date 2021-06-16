@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\TypeTask;
+use Exception;
 
 class TypeTaskRepository {
 
@@ -12,31 +13,43 @@ class TypeTaskRepository {
     }
 
     public function getById($id){
-        return TypeTask::where('id', $id)
-                    ->first();
+        try {
+            return response()->json(['type_task' => TypeTask::findOrFail($id)], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function create($request){
-        $type_task = new TypeTask();
-        $type_task->name = $request->get('name');
-        $type_task->save();
-        return $type_task;
+        try {
+            $type_task = new TypeTask();
+            $type_task->name = $request->input('name');
+            $type_task->save();
+            return $type_task;
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function update($request, $id){
-        $type_task = TypeTask::where('id', $id)
-                    ->first();
-        if(isset($request['name'])) $type_task->name = $request->get('name');
-        $type_task->updated_at = date('Y-m-d H:i:s');
-        $type_task->save();
-        return $type_task;
+        try {
+            $type_task = TypeTask::findOrFail($id);
+            $type_task->update($request->all());
+            return response()->json(['type_task' => $type_task], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function delete($id){
-        TypeTask::where('id', $id)
-            ->delete();
-        return [
-            'message' => 'Type task deleted'
-        ];
+        try {
+            TypeTask::where('id', $id)
+                ->delete();
+            return [
+                'message' => 'Type task deleted'
+            ];
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }
