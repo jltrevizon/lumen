@@ -166,6 +166,8 @@ class RequestRepository {
             }
             //Si no es una solicitud de reserva lo será de defleet
             $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 4);
+            //Ponemos el state del vehículo en Pendiente Venta V.O.
+            $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], 3);
             return [
                 'message' => 'Ok'
             ];
