@@ -196,7 +196,26 @@ class VehicleRepository {
                         ->first();
 
             if($vehicle){
-               /* $variables_defleet = $this->defleetVariableRepository->getVariablesByCompany($vehicle['campa']['company']['id']);
+                return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
+            } else {
+                return response()->json(['registered' => false], 200);
+            }
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
+
+    public function verifyPlateReception($request){
+        try {
+            $user = $this->userRepository->getById(Auth::id());
+
+            $vehicle = Vehicle::with(['campa.company'])
+                        ->where('plate', $request->input('plate'))
+                        //->where('campa_id', $user->campa_id)
+                        ->first();
+
+            if($vehicle){
+                $variables_defleet = $this->defleetVariableRepository->getVariablesByCompany($vehicle['campa']['company']['id']);
                 $date_first_plate = new DateTime($vehicle->first_plate);
                 $date = date("Y-m-d H:i:s");
                 $today = new DateTime($date);
@@ -208,7 +227,7 @@ class VehicleRepository {
                         $this->updateTradeState($vehicle->id, 4);
                         return response()->json(['defleet' => true,'message' => 'Vehículo para defletar'], 200);
                     }
-                }+*/
+                }
                 return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
             } else {
                 return response()->json(['registered' => false], 200);

@@ -94,4 +94,8 @@ class VehicleController extends Controller
     public function vehicleRequestDefleet(){
         return $this->vehicleRepository->vehicleRequestDefleet();
     }
+
+    public function verifyPlateReception(Request $request){
+        return $this->vehicleRepository->verifyPlateReception($request);
+    }
 }
