@@ -13,6 +13,14 @@ class StateRepository {
 
     }
 
+    public function getAll(){
+        try {
+            return State::all();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
+
     public function getById($id){
         try {
             return response()->json(['state' => State::findOrFail($id)], 200);
