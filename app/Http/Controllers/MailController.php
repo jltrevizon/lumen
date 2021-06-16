@@ -33,8 +33,8 @@ class MailController extends Controller
                         $passwordReset->code = $code;
                         $passwordReset->save();
                         if($user){
-                            return $user;
                             $this->sendCode->SendCodePassword($user->name, $code, $user->email);
+                            return $user;
                 return response()->json(['message' => 'Email enviado'], 200);
             } else {
                 return response()->json(['message' => 'El usuario no existe'], 200);
