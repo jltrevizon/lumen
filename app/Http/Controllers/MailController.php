@@ -29,6 +29,7 @@ class MailController extends Controller
             $passwordReset = new PasswordResetCode();
             $user = User::where('email', $request->input('email'))
                         ->first();
+                        return $user;
             $passwordReset->user_id = $user->id;
             $passwordReset->code = $code;
             $passwordReset->save();
