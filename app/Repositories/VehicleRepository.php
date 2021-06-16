@@ -409,6 +409,7 @@ class VehicleRepository {
             $user = $this->userRepository->getById(Auth::id());
             $vehicles = Vehicle::where('trade_state_id', 4)
                         ->whereIn('campa_id', $user->campas->pluck('id')->toArray())
+                        ->where('state_id', '<>', 3)
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
