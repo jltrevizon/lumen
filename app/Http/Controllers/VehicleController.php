@@ -90,4 +90,8 @@ class VehicleController extends Controller
     public function vehiclesTotalsSubstate(Request $request){
         return $this->vehicleRepository->vehiclesTotalsSubstate($request);
     }
+
+    public function vehicleRequestDefleet(){
+        return $this->vehicleRepository->vehicleRequestDefleet();
+    }
 }
