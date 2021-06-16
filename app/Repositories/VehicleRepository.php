@@ -188,7 +188,9 @@ class VehicleRepository {
         try {
             $user = $this->userRepository->getById(Auth::id());
 
-            $vehicle = Vehicle::with(['campa.company','requests'])
+            $vehicle = Vehicle::with(['campa.company','requests' => function ($query) {
+                            return $query->where('state_request_id', 1);
+                        }])
                         ->where('plate', $request->input('plate'))
                         //->where('campa_id', $user->campa_id)
                         ->first();
