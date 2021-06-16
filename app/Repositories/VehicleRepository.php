@@ -188,7 +188,7 @@ class VehicleRepository {
         try {
             $user = $this->userRepository->getById(Auth::id());
 
-            $vehicle = Vehicle::with(['campa.company','requests' => function ($query) {
+            $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request_id', 'requests' => function ($query) {
                             return $query->where('state_request_id', 1);
                         }])
                         ->where('plate', $request->input('plate'))
