@@ -26,13 +26,13 @@ class MailController extends Controller
         try {
 
             $code = $this->generateCode(6);
-            $passwordReset = new PasswordResetCode();
             $user = User::where('email', $request->input('email'))
                         ->first();
+            $passwordReset = new PasswordResetCode();
+                        $passwordReset->user_id = $user->id;
+                        $passwordReset->code = $code;
+                        $passwordReset->save();
                         return $user;
-            $passwordReset->user_id = $user->id;
-            $passwordReset->code = $code;
-            $passwordReset->save();
             if($user){
                 $this->sendCode->SendCodePassword($user->name, $code, $user->email);
                 return response()->json(['message' => 'Email enviado'], 200);
