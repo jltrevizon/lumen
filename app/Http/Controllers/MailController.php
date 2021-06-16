@@ -7,20 +7,40 @@ use App\Mail\SendCode;
 use App\Models\User;
 use App\Models\PasswordResetCode;
 use Illuminate\Support\Facades\Mail;
+use App\Repositories\UserRepository;
+use Exception;
 
 class MailController extends Controller
 {
+
+    public function __construct(SendCode $sendCode)
+    {
+        $this->sendCode = $sendCode;
+    }
+
     public function testCode(SendCode $sendCode){
-        return $sendCode->send();
+        //return $sendCode->send();
     }
 
     public function sendCodePassword(Request $request){
-        $data = array('name'=>'Arunkumar');
-        Mail::send('mail', $data, function($message) {
-        $message->to('anelvin.mejia@grupomobius.com', 'Arunkumar')->subject('Test Mail from Selva');
-        $message->from('inout@mkdautomotive.com','Selvakumar');
-        });
-        echo 'Email Sent. Check your inbox.';
+        try {
+
+            $code = $this->generateCode(6);
+            $passwordReset = new PasswordResetCode();
+            $user = User::where('email', $request->input('email'))
+                        ->first();
+            $passwordReset->user_id = $user->id;
+            $passwordReset->code = $code;
+            $passwordReset->save();
+            if($user){
+                $this->sendCode->SendCodePassword($user->name, $code, $user->email);
+                return response()->json(['message' => 'Email enviado'], 200);
+            } else {
+                return response()->json(['message' => 'El usuario no existe'], 200);
+            }
+        } catch(Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function generateCode($length){
