@@ -397,27 +397,11 @@ class VehicleRepository {
         }
     }
 
-    public function vehicleTotals($request){
+    public function vehicleTotalsState($request){
         try {
             return Vehicle::with(['state'])
                         ->whereIn('campa_id', $request->input('campas'))
                         ->select(DB::raw('state_id, COUNT(*) AS count'))
-                        ->groupBy('state_id')
-                        ->get();
-            return 'Hola';
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
-
-    public function vehiclesTotalsSubstate($request){
-        try {
-            return Vehicle::with(['state'])
-                        ->whereIn('campa_id', $request->input('campas'))
-                        ->whereHas('state.sub_states', function (Builder $builder){
-                            return $builder->select(DB::raw('id, COUNT(*) AS count'));
-                        })
-
                         ->groupBy('state_id')
                         ->get();
         } catch (Exception $e) {
