@@ -237,28 +237,30 @@ class VehicleRepository {
         }
     }
 
-    public function vehicleDefleet($request): JsonResponse {
+    public function vehicleDefleet($request) {
         try {
-            $variables = DefleetVariable::first();
+            $user = $this->userRepository->getById(Auth::id());
+
+            $variables = $this->defleetVariableRepository->getVariablesByCompany($user->company_id);
             $date = date("Y-m-d");
             $date1 = new DateTime($date);
+            $date_defleet = date("Y-m-d", strtotime($date . " - $variables->years years")) . ' 00:00:00';
+           // return $date_defleet;
             $vehicles = Vehicle::with(['campa','category','state'])
-                            ->whereHas('requests', function(Builder $builder) use ($request) {
-                                return $builder->where('state_request_id', 3);
+                            ->where(function($query) {
+                                return $query->whereHas('requests', function(Builder $builder) {
+                                    return $builder->where('state_request_id', 3);
+                                })
+                                ->orWhereDoesntHave('requests');
                             })
-                            ->orWhereDoesntHave('requests')
-                            ->where('campa_id', $request->input('campa_id'))
-                            ->get();
-            $array_vehicles = [];
-            foreach($vehicles as $vehicle){
-                $date2 = new DateTime($vehicle['first_plate']);
-                $diff = $date1->diff($date2);
-                $age = $diff->y;
-                if($age > $variables->years || $vehicle['kms'] > $variables->kms){
-                    array_push($array_vehicles, $vehicle);
-                }
-            }
-            return response()->json(['vehicles' => $array_vehicles], 200);
+                            ->where(function($query) use($date_defleet, $variables){
+                                return $query->where('first_plate','<',$date_defleet)
+                                            ->orWhere('kms','>',$variables->kms);
+                            })
+                            ->whereIn('campa_id', $request->input('campas'))
+                            ->paginate($request->input('limit'));
+
+            return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
