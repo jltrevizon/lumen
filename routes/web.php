@@ -45,6 +45,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/users/active', 'UserController@getActiveUsers');
         $router->post('/users/by-email', 'UserController@getUserByEmail');
         $router->post('/users/assign-campa', 'CampaUserController@create');
+        $router->post('/users/delete-campa', 'CampaUserController@delete');
 
         /**
          * Roles
@@ -257,6 +258,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/create-from-excel', 'VehicleController@createFromExcel');
         $router->post('/vehicles', 'VehicleController@create');
         $router->post('/vehicles/verify-plate', 'VehicleController@verifyPlate');
+        $router->post('/vehicles/verify-plate-reception', 'VehicleController@verifyPlateReception');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
         $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
@@ -266,8 +268,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->post('/vehicles/filter', 'VehicleController@filterVehicle');
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
-        $router->post('/vehicles/totals', 'VehicleController@vehicleTotals');
-        $router->post('/vehicles/totals/substates', 'VehicleController@vehiclesTotalsSubstate');
+        $router->post('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
 

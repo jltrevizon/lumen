@@ -31,6 +31,7 @@ class UserRepository {
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
             if($request->input('company_id')) $user->company_id = $request->input('company_id');
+            if($request->input('surname')) $user->surname = $request->input('surname');
             if($request->input('role_id')) $user->role_id = $request->input('role_id');
             if($request->input('avatar')) $user->avatar = $request->input('avatar');
             if($request->input('phone')) $user->phone = $request->input('phone');

@@ -17,7 +17,7 @@ class DefleetVariableRepository {
     public function getVariables(){
         try {
             $user = $this->userRepository->getById(Auth::id());
-            return DefleetVariable::where('company_id', $user['campa']['company_id'])
+            return DefleetVariable::where('company_id', $user['company_id'])
                         ->first();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);

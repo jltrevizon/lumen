@@ -188,6 +188,27 @@ class VehicleRepository {
         try {
             $user = $this->userRepository->getById(Auth::id());
 
+            $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request', 'requests' => function ($query) {
+                            return $query->where('state_request_id', 1);
+                        }])
+                        ->where('plate', $request->input('plate'))
+                        //->where('campa_id', $user->campa_id)
+                        ->first();
+
+            if($vehicle){
+                return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
+            } else {
+                return response()->json(['registered' => false], 200);
+            }
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
+
+    public function verifyPlateReception($request){
+        try {
+            $user = $this->userRepository->getById(Auth::id());
+
             $vehicle = Vehicle::with(['campa.company'])
                         ->where('plate', $request->input('plate'))
                         //->where('campa_id', $user->campa_id)
@@ -216,28 +237,30 @@ class VehicleRepository {
         }
     }
 
-    public function vehicleDefleet($request): JsonResponse {
+    public function vehicleDefleet($request) {
         try {
-            $variables = DefleetVariable::first();
+            $user = $this->userRepository->getById(Auth::id());
+
+            $variables = $this->defleetVariableRepository->getVariablesByCompany($user->company_id);
             $date = date("Y-m-d");
             $date1 = new DateTime($date);
+            $date_defleet = date("Y-m-d", strtotime($date . " - $variables->years years")) . ' 00:00:00';
+           // return $date_defleet;
             $vehicles = Vehicle::with(['campa','category','state'])
-                            ->whereHas('requests', function(Builder $builder) use ($request) {
-                                return $builder->where('state_request_id', 3);
+                            ->where(function($query) {
+                                return $query->whereHas('requests', function(Builder $builder) {
+                                    return $builder->where('state_request_id', 3);
+                                })
+                                ->orWhereDoesntHave('requests');
                             })
-                            ->orWhereDoesntHave('requests')
-                            ->where('campa_id', $request->input('campa_id'))
-                            ->get();
-            $array_vehicles = [];
-            foreach($vehicles as $vehicle){
-                $date2 = new DateTime($vehicle['first_plate']);
-                $diff = $date1->diff($date2);
-                $age = $diff->y;
-                if($age > $variables->years || $vehicle['kms'] > $variables->kms){
-                    array_push($array_vehicles, $vehicle);
-                }
-            }
-            return response()->json(['vehicles' => $array_vehicles], 200);
+                            ->where(function($query) use($date_defleet, $variables){
+                                return $query->where('first_plate','<',$date_defleet)
+                                            ->orWhere('kms','>',$variables->kms);
+                            })
+                            ->whereIn('campa_id', $request->input('campas'))
+                            ->paginate($request->input('limit'));
+
+            return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -376,27 +399,11 @@ class VehicleRepository {
         }
     }
 
-    public function vehicleTotals($request){
+    public function vehicleTotalsState($request){
         try {
             return Vehicle::with(['state'])
                         ->whereIn('campa_id', $request->input('campas'))
                         ->select(DB::raw('state_id, COUNT(*) AS count'))
-                        ->groupBy('state_id')
-                        ->get();
-            return 'Hola';
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
-
-    public function vehiclesTotalsSubstate($request){
-        try {
-            return Vehicle::with(['state'])
-                        ->whereIn('campa_id', $request->input('campas'))
-                        ->whereHas('state.sub_states', function (Builder $builder){
-                            return $builder->select(DB::raw('id, COUNT(*) AS count'));
-                        })
-
                         ->groupBy('state_id')
                         ->get();
         } catch (Exception $e) {
@@ -407,8 +414,14 @@ class VehicleRepository {
     public function vehicleRequestDefleet(){
         try {
             $user = $this->userRepository->getById(Auth::id());
-            $vehicles = Vehicle::where('trade_state_id', 4)
+            $vehicles = Vehicle::with(['requests'])
+                        ->whereHas('requests', function (Builder $builder) {
+                            return $builder->where('type_request_id', 1)
+                                        ->where('state_request_id', 1);
+                        })
+                        ->where('trade_state_id', 4)
                         ->whereIn('campa_id', $user->campas->pluck('id')->toArray())
+                        ->where('state_id', '<>', 3)
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {

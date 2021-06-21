@@ -29,7 +29,8 @@ class RoleSeeder extends Seeder
             ['description' => 'Gestor Campa'],
             ['description' => 'User App'],
             ['description' => 'Recepción'],
-            ['description' => 'Comercial']
+            ['description' => 'Comercial'],
+            ['description' => 'Invarat']
         ];
     }
 }
