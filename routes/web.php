@@ -45,6 +45,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/users/active', 'UserController@getActiveUsers');
         $router->post('/users/by-email', 'UserController@getUserByEmail');
         $router->post('/users/assign-campa', 'CampaUserController@create');
+        $router->post('/users/delete-campa', 'CampaUserController@delete');
 
         /**
          * Roles
