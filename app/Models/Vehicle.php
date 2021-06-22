@@ -77,6 +77,16 @@ class Vehicle extends Model
         return $this->belongsTo(TradeState::class, 'trade_state_id');
     }
 
+    public function questionnaires(){
+        return $this->hasMany(Questionnaire::class);
+    }
+
+    public function lastQuestionnaire(){
+        return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question'])->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
     public function scopeCampasIds($query, $ids){
         return $query->whereIn('campa_id', $ids);
     }
