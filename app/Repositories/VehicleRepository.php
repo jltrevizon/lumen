@@ -85,7 +85,7 @@ class VehicleRepository {
                 if($vehicle['campa_id'] ?? null) $new_vehicle->campa_id = $vehicle['campa_id'];
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
                 //return 'Hola';
-                $new_vehicle->category_id = $category['id'];
+                if($vehicle['id'] ?? null ) $new_vehicle->category_id = $category['id'];
                 $new_vehicle->state_id = $vehicle['state_id'];
                 $new_vehicle->ubication = $vehicle['ubication'];
                 $new_vehicle->plate = $vehicle['plate'];
