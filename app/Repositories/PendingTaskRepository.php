@@ -103,6 +103,7 @@ class PendingTaskRepository {
     public function getPendingOrNextTask(){
         $user = $this->userRepository->getById(Auth::id());
         try {
+            return $user->campas->pluck('id')->toArray();
             if($user->role_id == 4){
                 return PendingTask::with(['task','state_pending_task','group_task','vehicle','incidences'])
                                 ->whereHas('vehicle.campa', function(Builder $builder) use($user){
@@ -116,8 +117,8 @@ class PendingTaskRepository {
             }
             if($user->role_id == 5){
                 return PendingTask::with(['task','state_pending_task','group_task','vehicle','incidences'])
-                            ->whereHas('vehicle', function(Builder $builder) use($user){
-                                return $builder->whereIn('campa_id', $user->campa_id);
+                            ->whereHas('vehicle.campa', function(Builder $builder) use($user){
+                                return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
                             })
                             ->where(function ($query) {
                                 return $query->where('state_pending_task_id', 1)
