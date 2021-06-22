@@ -440,9 +440,9 @@ class VehicleRepository {
 
     public function unapprovedTask(){
         try {
-            $vehicles = Vehicle::with(['lastUnapprovedGroupTask'])
+            $vehicles = Vehicle::with(['lastUnapprovedGroupTask','campa','category'])
             ->whereHas('lastUnapprovedGroupTask')
-            ->get();
+            ->paginate(10);
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()], 409);

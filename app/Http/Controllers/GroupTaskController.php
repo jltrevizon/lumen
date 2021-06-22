@@ -20,7 +20,8 @@ class GroupTaskController extends Controller
     }
 
     public function getById($id){
-        return GroupTask::where('id', $id)
+        return GroupTask::with(['pending_tasks'])
+                    ->where('id', $id)
                     ->first();
     }
 
