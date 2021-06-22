@@ -190,6 +190,7 @@ class PendingTaskRepository {
     public function createFromArray($request){
         try {
             $groupTask = $this->groupTaskRepository->create($request);
+            return $groupTask;
             foreach($request->input('tasks') as $task){
                 $pending_task = new PendingTask();
                 $pending_task->vehicle_id = $request->input('vehicle_id');
