@@ -27,6 +27,7 @@ class GroupTaskRepository {
         try {
             $group_task = new GroupTask();
             $group_task->vehicle_id = $request->input('vehicle_id');
+            $group_task->approved = 0;
             $group_task->save();
             return $group_task;
         } catch (Exception $e) {
