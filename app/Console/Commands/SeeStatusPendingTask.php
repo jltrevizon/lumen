@@ -46,14 +46,16 @@ class SeeStatusPendingTask extends Command
             $diff = $this->diffHours($pending_task['datetime_start'], date("Y-m-d H:i:s"));
             $task = Task::where('id', $pending_task['task_id'])
                         ->first();
-            $update_pending_task = PendingTask::with(['incidence'])
+            $update_pending_task = PendingTask::with(['incidences' => function ($query) {
+                                                return $query->where('resolved', 0);
+                                            }])
                                             ->where('id', $pending_task['id'])
                                             ->first();
             if($diff > $task->duration){
                 $update_pending_task->status_color = 'Yellow';
                 $update_pending_task->save();
             }
-            if($update_pending_task['incidence'] != null && $update_pending_task['incidence']['resolved'] == 0){
+            if(count($update_pending_task['incidences']) > 0){
                 $update_pending_task->status_color = 'Red';
                 $update_pending_task->save();
             }
