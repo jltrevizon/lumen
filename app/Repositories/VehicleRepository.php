@@ -75,16 +75,17 @@ class VehicleRepository {
         }
     }
 
-    public function createFromExcel($request): JsonResponse {
+    public function createFromExcel($request) {
         try {
             $vehicles = $request->input('vehicles');
             $array_vehicles = [];
             foreach($vehicles as $vehicle){
                 $new_vehicle = new Vehicle();
                 if($vehicle['remote_id'] ?? null) $new_vehicle->remote_id = $vehicle['remote_id'];
-                $new_vehicle->campa_id = $vehicle['campa_id'];
+                if($vehicle['campa_id'] ?? null) $new_vehicle->campa_id = $vehicle['campa_id'];
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-                $new_vehicle->category_id = $category->id;
+                //return 'Hola';
+                $new_vehicle->category_id = $category['id'];
                 $new_vehicle->state_id = $vehicle['state_id'];
                 $new_vehicle->ubication = $vehicle['ubication'];
                 $new_vehicle->plate = $vehicle['plate'];
@@ -92,7 +93,7 @@ class VehicleRepository {
                 $new_vehicle->trade_state_id = 1;
                 $new_vehicle->vehicle_model = $vehicle['vehicle_model'];
                 if($vehicle['kms'] ?? null) $new_vehicle->kms = $vehicle['kms'];
-                $new_vehicle->priority = $vehicle['priority'];
+                if($vehicle['priority'] ?? null) $new_vehicle->priority = $vehicle['priority'];
                 if($vehicle['version'] ?? null) $new_vehicle->version = $vehicle['version'];
                 if($vehicle['vin'] ?? null) $new_vehicle->vin = $vehicle['vin'];
                 $new_vehicle->first_plate = $vehicle['first_plate'];
