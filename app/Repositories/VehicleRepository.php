@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CategoryRepository;
 use App\Repositories\DefleetVariableRepository;
+use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateRepository;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -21,12 +22,14 @@ class VehicleRepository {
         UserRepository $userRepository,
         CategoryRepository $categoryRepository,
         DefleetVariableRepository $defleetVariableRepository,
-        StateRepository $stateRepository)
+        StateRepository $stateRepository,
+        GroupTaskRepository $groupTaskRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
         $this->defleetVariableRepository = $defleetVariableRepository;
         $this->stateRepository = $stateRepository;
+        $this->groupTaskRepository = $groupTaskRepository;
     }
 
     public function getById($id){
@@ -431,6 +434,17 @@ class VehicleRepository {
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
+
+    public function unapprovedTask(){
+        try {
+            $vehicles = Vehicle::with(['lastUnapprovedGroupTask','campa','category'])
+            ->whereHas('lastUnapprovedGroupTask')
+            ->paginate(10);
+            return response()->json(['vehicles' => $vehicles], 200);
+        } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }

@@ -100,4 +100,12 @@ class Vehicle extends Model
     public function scopeCategoriesIds($query, $ids){
         return $query->whereIn('category_id',$ids);
     }
+
+    public function lastUnapprovedGroupTask(){
+        return $this->hasOne(GroupTask::class)->ofMany([
+            'id' => 'max'
+        ], function ($query) {
+            $query->where('approved', false);
+        });
+    }
 }

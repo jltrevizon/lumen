@@ -20,7 +20,8 @@ class GroupTaskController extends Controller
     }
 
     public function getById($id){
-        return GroupTask::where('id', $id)
+        return GroupTask::with(['pending_tasks'])
+                    ->where('id', $id)
                     ->first();
     }
 
@@ -29,7 +30,7 @@ class GroupTaskController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->groupTaskRepository->update($request);
+        return $this->groupTaskRepository->update($request, $id);
     }
 
     public function delete($id){

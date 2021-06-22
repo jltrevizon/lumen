@@ -10,7 +10,8 @@ class GroupTask extends Model
 {
 
     protected $fillable = [
-        'vehicle_id'
+        'vehicle_id',
+        'approved'
     ];
 
     public function pending_tasks(){
@@ -20,4 +21,5 @@ class GroupTask extends Model
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'group_task_id');
     }
+
 }

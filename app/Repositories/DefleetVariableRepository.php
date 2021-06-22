@@ -49,7 +49,7 @@ class DefleetVariableRepository {
     public function updateVariables($request){
         try {
             $user = $this->userRepository->getById(Auth::id());
-            $variables = DefleetVariable::where('company_id', $user['campa']['company_id'])
+            $variables = DefleetVariable::where('company_id', $user['company_id'])
                                         ->first();
             if(!$variables){
                 return [
