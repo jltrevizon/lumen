@@ -90,7 +90,7 @@ class VehicleRepository {
                 $new_vehicle->ubication = $vehicle['ubication'];
                 $new_vehicle->plate = $vehicle['plate'];
                 $new_vehicle->branch = $vehicle['branch'];
-                $new_vehicle->trade_state_id = 1;
+                $new_vehicle->trade_state_id = null;
                 $new_vehicle->vehicle_model = $vehicle['vehicle_model'];
                 if($vehicle['kms'] ?? null) $new_vehicle->kms = $vehicle['kms'];
                 if($vehicle['priority'] ?? null) $new_vehicle->priority = $vehicle['priority'];
