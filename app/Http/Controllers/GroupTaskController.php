@@ -29,7 +29,7 @@ class GroupTaskController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->groupTaskRepository->update($request);
+        return $this->groupTaskRepository->update($request, $id);
     }
 
     public function delete($id){

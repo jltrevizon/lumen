@@ -94,4 +94,7 @@ class VehicleController extends Controller
     public function verifyPlateReception(Request $request){
         return $this->vehicleRepository->verifyPlateReception($request);
     }
+    public function unapprovedTask(){
+        return $this->vehicleRepository->unapprovedTask();
+    }
 }
