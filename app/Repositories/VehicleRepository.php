@@ -340,7 +340,7 @@ class VehicleRepository {
                             ->orWhere(function ($query) {
                                 return $query->whereNotNull('order')
                                     ->whereNull('pickup_by_customer')
-                                    ->orWhereNull('transport_id');
+                                    ->whereNull('transport_id');
                             })
                             ->where('active', true);
                         }])
@@ -351,7 +351,7 @@ class VehicleRepository {
                             ->orWhere(function ($query) {
                                 return $query->whereNotNull('order')
                                     ->whereNull('pickup_by_customer')
-                                    ->orWhereNull('transport_id');
+                                    ->whereNull('transport_id');
                             })
                             ->where('active', true);
                         })
