@@ -341,7 +341,8 @@ class VehicleRepository {
                                 return $query->whereNotNull('order')
                                     ->whereNull('pickup_by_customer')
                                     ->orWhereNull('transport_id');
-                            });
+                            })
+                            ->where('active', true);
                         }])
                         ->whereHas('reservations', function(Builder $builder) use($request){
                             return $builder->where(function ($query) {
@@ -351,7 +352,8 @@ class VehicleRepository {
                                 return $query->whereNotNull('order')
                                     ->whereNull('pickup_by_customer')
                                     ->orWhereNull('transport_id');
-                            });
+                            })
+                            ->where('active', true);
                         })
                         ->whereIn('campa_id', $request->json()->get('campas'))
                         ->get();
