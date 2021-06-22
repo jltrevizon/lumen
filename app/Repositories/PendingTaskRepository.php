@@ -216,6 +216,9 @@ class PendingTaskRepository {
             $pending_task->order = 100;
             $pending_task->save();
             $this->vehicleRepository->updateBack($request);
+
+            $user = $this->userRepository->getById(Auth::id());
+            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]);
             $reception = $this->receptionRepository->create($request->input('vehicle_id'), $request->input('has_accessories'));
             if($request->input('has_accessories')){
                 $this->accessoryRepository->create($reception->id, $request->input('accessories'));
