@@ -166,6 +166,17 @@ class VehicleRepository {
         }
     }
 
+    public function updateCampa($vehicle_id, $campa){
+        try {
+            $vehicle = Vehicle::findOrFail($vehicle_id);
+            $vehicle->campa_id = $campa;
+            $vehicle->save();
+            return $vehicle;
+        } catch (Exception $e) {
+            return response()->json([ 'message' => $e ], 409);
+        }
+    }
+
     public function updateState($vehicle_id, $state_id): JsonResponse {
         try {
             $vehicle = Vehicle::findOrFail($vehicle_id);
