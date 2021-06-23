@@ -439,7 +439,7 @@ class VehicleRepository {
                             return $builder->where('type_request_id', 1)
                                         ->where('state_request_id', 1);
                         })
-                        ->where('trade_state_id', 4)
+                        //->where('trade_state_id', 4)
                         ->whereIn('campa_id', $user->campas->pluck('id')->toArray())
                         ->where('state_id', '<>', 3)
                         ->get();
