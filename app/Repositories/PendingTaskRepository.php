@@ -189,6 +189,7 @@ class PendingTaskRepository {
 
     public function createFromArray($request){
         try {
+
             $groupTask = $this->groupTaskRepository->create($request);
             foreach($request->input('tasks') as $task){
                 $pending_task = new PendingTask();
@@ -218,7 +219,7 @@ class PendingTaskRepository {
             $this->vehicleRepository->updateBack($request);
 
             $user = $this->userRepository->getById(Auth::id());
-            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]);
+            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
             $reception = $this->receptionRepository->create($request->input('vehicle_id'), $request->input('has_accessories'));
             if($request->input('has_accessories')){
                 $this->accessoryRepository->create($reception->id, $request->input('accessories'));
