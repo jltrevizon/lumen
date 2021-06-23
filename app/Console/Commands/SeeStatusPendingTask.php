@@ -51,14 +51,14 @@ class SeeStatusPendingTask extends Command
                                             }])
                                             ->where('id', $pending_task['id'])
                                             ->first();
+            $update_pending_task->status_color = 'Green';
             if($diff > $task->duration){
                 $update_pending_task->status_color = 'Yellow';
-                $update_pending_task->save();
             }
             if(count($update_pending_task['incidences']) > 0){
                 $update_pending_task->status_color = 'Red';
-                $update_pending_task->save();
             }
+            $update_pending_task->save();
         }
     }
 
