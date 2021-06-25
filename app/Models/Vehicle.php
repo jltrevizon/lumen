@@ -99,16 +99,12 @@ class Vehicle extends Model
         return $query->whereIn('state_id', $ids);
     }
 
-    public function scopeVehicleModel($query, $vehicle_model){
-        return $query->where('vehicle_model', 'like',  "%$vehicle_model%");
-    }
-
     public function scopePlate($query, $plate){
         return $query->where('plate','like',"%$plate%");
     }
 
-    public function scopeBranch($query, $branch){
-        return $query->where('branch','like',"%$branch%");
+    public function scopeBrandIds($query, $ids){
+        return $query->whereIn($ids);
     }
 
     public function scopeCategoriesIds($query, $ids){

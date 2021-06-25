@@ -53,9 +53,8 @@ class VehicleRepository {
                 $vehicles = Vehicle::with(['state','campa','category','trade_state','requests.customer','reservations'])
                             ->campasIds($request->input('campas'))
                             ->stateIds($request->input('states'))
-                            ->vehicleModel($request->input('vehicle_model'))
                             ->plate($request->input('plate'))
-                            ->branch($request->input('branch'))
+                            ->brandIds($request->input('brands'))
                             ->whereIn('trade_state_id', $request->input('trade_states'))
                             ->categoriesIds($request->input('categories'))
                             ->paginate($request->input('limit'));
@@ -68,9 +67,8 @@ class VehicleRepository {
                 $vehicles = Vehicle::with(['state','campa','category','trade_state','requests','reservations'])
                             ->campasIds($request->input('campas'))
                             ->stateIds($request->input('states'))
-                            ->vehicleModel($request->input('vehicle_model'))
                             ->plate($request->input('plate'))
-                            ->branch($request->input('branch'))
+                            ->brandIds($request->input('brands'))
                             ->where(function ($query) use($request){
                                 return $query->whereNull('trade_state_id')
                                             ->orWhereIn('trade_state_id', $request->input('trade_states'));

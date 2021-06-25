@@ -330,6 +330,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/read-messages', 'ChatController@readMessages');
 
         /**
+         * Brands
+         */
+        $router->get('/brands','BrandController@getAll');
+        $router->get('/brands/{id}','BrandController@getById');
+
+        /**
          * TradeState
          */
         $router->get('/trade-states', 'TradeStateController@getAll');
