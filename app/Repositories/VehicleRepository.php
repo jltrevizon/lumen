@@ -100,7 +100,6 @@ class VehicleRepository {
                 $new_vehicle->plate = $vehicle['plate'];
                 $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
                 $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
-                if($brand['id'] ?? null) $new_vehicle->brand_id = $brand['id'];
                 $new_vehicle->vehicle_model_id = $vehicle_model['id'];
                 $new_vehicle->trade_state_id = null;
                 if($vehicle['kms'] ?? null) $new_vehicle->kms = $vehicle['kms'];
