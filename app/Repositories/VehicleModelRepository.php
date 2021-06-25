@@ -13,7 +13,7 @@ class VehicleModelRepository {
 
     }
 
-    public function getByName($brand_id, $vehicle_name){
+    public function getByNameFromExcel($brand_id, $vehicle_name){
         try {
             $vehicle_model = VehicleModel::where('name', $vehicle_name)
                                     ->first();

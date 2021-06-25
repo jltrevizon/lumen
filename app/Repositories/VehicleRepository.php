@@ -98,8 +98,8 @@ class VehicleRepository {
                 $new_vehicle->state_id = $vehicle['state_id'];
                 $new_vehicle->ubication = $vehicle['ubication'];
                 $new_vehicle->plate = $vehicle['plate'];
-                $brand = $this->brandRepository->getByName($vehicle['brand']);
-                $vehicle_model = $this->vehicleModelRepository->getByName($brand['id'], $vehicle['vehicle_model']);
+                $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
+                $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
                 if($brand['id'] ?? null) $new_vehicle->brand_id = $brand['id'];
                 $new_vehicle->vehicle_model = $vehicle_model['id'];
                 $new_vehicle->trade_state_id = null;
