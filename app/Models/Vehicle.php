@@ -87,6 +87,10 @@ class Vehicle extends Model
         ]);
     }
 
+    public function vehicleModel(){
+        return $this->belongsTo(VehicleModel::class);
+    }
+
     public function scopeCampasIds($query, $ids){
         return $query->whereIn('campa_id', $ids);
     }

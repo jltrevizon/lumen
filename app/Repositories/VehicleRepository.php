@@ -11,6 +11,8 @@ use App\Repositories\CategoryRepository;
 use App\Repositories\DefleetVariableRepository;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateRepository;
+use App\Repositories\BrandRepository;
+use App\Repositories\VehicleModelRepository;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -23,13 +25,17 @@ class VehicleRepository {
         CategoryRepository $categoryRepository,
         DefleetVariableRepository $defleetVariableRepository,
         StateRepository $stateRepository,
-        GroupTaskRepository $groupTaskRepository)
+        GroupTaskRepository $groupTaskRepository,
+        BrandRepository $brandRepository,
+        VehicleModelRepository $vehicleModelRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
         $this->defleetVariableRepository = $defleetVariableRepository;
         $this->stateRepository = $stateRepository;
         $this->groupTaskRepository = $groupTaskRepository;
+        $this->brandRepository = $brandRepository;
+        $this->vehicleModelRepository = $vehicleModelRepository;
     }
 
     public function getById($id){
@@ -92,9 +98,11 @@ class VehicleRepository {
                 $new_vehicle->state_id = $vehicle['state_id'];
                 $new_vehicle->ubication = $vehicle['ubication'];
                 $new_vehicle->plate = $vehicle['plate'];
-                $new_vehicle->branch = $vehicle['branch'];
+                $brand = $this->brandRepository->getByName($vehicle['brand']);
+                $vehicle_model = $this->vehicleModelRepository->getByName($brand['id'], $vehicle['vehicle_model']);
+                if($brand['id'] ?? null) $new_vehicle->brand_id = $brand['id'];
+                $new_vehicle->vehicle_model = $vehicle_model['id'];
                 $new_vehicle->trade_state_id = null;
-                $new_vehicle->vehicle_model = $vehicle['vehicle_model'];
                 if($vehicle['kms'] ?? null) $new_vehicle->kms = $vehicle['kms'];
                 if($vehicle['priority'] ?? null) $new_vehicle->priority = $vehicle['priority'];
                 if($vehicle['version'] ?? null) $new_vehicle->version = $vehicle['version'];
