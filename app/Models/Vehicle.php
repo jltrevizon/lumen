@@ -13,6 +13,7 @@ use App\Models\VehiclePicture;
 use App\Models\Reservation;
 use App\Models\Reception;
 use App\Models\TradeState;
+use Illuminate\Database\Eloquent\Builder;
 
 class Vehicle extends Model
 {
@@ -24,7 +25,7 @@ class Vehicle extends Model
         'ubication',
         'plate',
         'branch',
-        'vehicle_model',
+        'vehicle_model_id',
         'kms',
         'priority',
         'version',
@@ -104,7 +105,9 @@ class Vehicle extends Model
     }
 
     public function scopeBrandIds($query, $ids){
-        return $query->whereIn($ids);
+        return $query->whereHas('vehicleModel', function (Builder $builder) use($ids) {
+            return $builder->whereIn('brand_id', $ids);
+        });
     }
 
     public function scopeCategoriesIds($query, $ids){
