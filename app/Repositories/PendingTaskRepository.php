@@ -337,7 +337,7 @@ class PendingTaskRepository {
 
     public function getPendingTaskByStateCampa($request){
         try {
-            return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidences'])
+            return PendingTask::with(['vehicle.campa','vehicle.subState.state','vehicle.category','task','incidences'])
                     ->whereHas('vehicle.campa', function (Builder $builder) use($request){
                             return $builder->whereIn('id', $request->input('campas'));
                         })
