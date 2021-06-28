@@ -426,10 +426,10 @@ class VehicleRepository {
 
     public function vehicleTotalsState($request){
         try {
-            return Vehicle::with(['state'])
+            return Vehicle::with(['sub_state.state'])
                         ->whereIn('campa_id', $request->input('campas'))
-                        ->select(DB::raw('state_id, COUNT(*) AS count'))
-                        ->groupBy('state_id')
+                        ->select(DB::raw('sub_state_id, COUNT(*) AS count'))
+                        ->groupBy('sub_state_id')
                         ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
