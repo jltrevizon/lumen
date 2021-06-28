@@ -46,8 +46,8 @@ class Vehicle extends Model
         return $this->belongsTo(Campa::class, 'campa_id');
     }
 
-    public function state(){
-        return $this->belongsTo(State::class, 'state_id');
+    public function subState(){
+        return $this->belongsTo(SubState::class);
     }
 
     public function requests(){
@@ -96,8 +96,8 @@ class Vehicle extends Model
         return $query->whereIn('campa_id', $ids);
     }
 
-    public function scopeStateIds($query, $ids){
-        return $query->whereIn('state_id', $ids);
+    public function scopeSubStateIds($query, $ids){
+        return $query->whereIn('sub_state_id', $ids);
     }
 
     public function scopePlate($query, $plate){

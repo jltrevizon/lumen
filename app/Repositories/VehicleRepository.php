@@ -50,9 +50,9 @@ class VehicleRepository {
     public function filterVehicle($request): JsonResponse {
         if(count($request->input('trade_states')) > 0){
             try {
-                $vehicles = Vehicle::with(['state','campa','category','trade_state','requests.customer','reservations','vehicleModel.brand'])
+                $vehicles = Vehicle::with(['subState','campa','category','trade_state','requests.customer','reservations','vehicleModel.brand'])
                             ->campasIds($request->input('campas'))
-                            ->stateIds($request->input('states'))
+                            ->subStateIds($request->input('sub_states'))
                             ->plate($request->input('plate'))
                             ->brandIds($request->input('brands'))
                             ->whereIn('trade_state_id', $request->input('trade_states'))
@@ -64,9 +64,9 @@ class VehicleRepository {
             }
         } else {
             try {
-                $vehicles = Vehicle::with(['state','campa','category','trade_state','requests','reservations'])
+                $vehicles = Vehicle::with(['subState','campa','category','trade_state','requests','reservations'])
                             ->campasIds($request->input('campas'))
-                            ->stateIds($request->input('states'))
+                            ->subStateIds($request->input('sub_states'))
                             ->plate($request->input('plate'))
                             ->brandIds($request->input('brands'))
                             ->where(function ($query) use($request){

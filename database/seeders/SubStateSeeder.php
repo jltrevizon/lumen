@@ -64,6 +64,10 @@ class SubStateSeeder extends Seeder
             [
                 'name' => 'Alquilado',
                 'state_id' => 5
+            ],
+            [
+                'name' => 'Check',
+                'state_id' => 6
             ]
         ];
     }
