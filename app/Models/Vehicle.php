@@ -101,7 +101,7 @@ class Vehicle extends Model
     }
 
     public function scopeStateIds($query, $ids){
-        return $query->whereHas('sub_state', function (Builder $builder) use ($ids) {
+        return $query->whereHas('subState', function (Builder $builder) use ($ids) {
             return $builder->whereIn('state_id', $ids);
         });
     }
