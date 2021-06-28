@@ -100,6 +100,12 @@ class Vehicle extends Model
         return $query->whereIn('sub_state_id', $ids);
     }
 
+    public function scopeStateIds($query, $ids){
+        return $query->whereHas('sub_state', function (Builder $builder) use ($ids) {
+            return $builder->whereIn('state_id', $ids);
+        });
+    }
+
     public function scopePlate($query, $plate){
         return $query->where('plate','like',"%$plate%");
     }

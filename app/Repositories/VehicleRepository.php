@@ -52,7 +52,7 @@ class VehicleRepository {
             try {
                 $vehicles = Vehicle::with(['subState','campa','category','trade_state','requests.customer','reservations','vehicleModel.brand'])
                             ->campasIds($request->input('campas'))
-                            ->subStateIds($request->input('sub_states'))
+                            ->stateIds($request->input('sub_states'))
                             ->plate($request->input('plate'))
                             ->brandIds($request->input('brands'))
                             ->whereIn('trade_state_id', $request->input('trade_states'))
@@ -66,7 +66,7 @@ class VehicleRepository {
             try {
                 $vehicles = Vehicle::with(['subState','campa','category','trade_state','requests','reservations'])
                             ->campasIds($request->input('campas'))
-                            ->subStateIds($request->input('sub_states'))
+                            ->stateIds($request->input('sub_states'))
                             ->plate($request->input('plate'))
                             ->brandIds($request->input('brands'))
                             ->where(function ($query) use($request){
