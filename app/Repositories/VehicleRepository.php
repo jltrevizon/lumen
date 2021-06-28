@@ -426,7 +426,7 @@ class VehicleRepository {
 
     public function vehicleTotalsState($request){
         try {
-            return Vehicle::with(['sub_state.state'])
+            return Vehicle::with(['subState.state'])
                         ->whereIn('campa_id', $request->input('campas'))
                         ->select(DB::raw('sub_state_id, COUNT(*) AS count'))
                         ->groupBy('sub_state_id')
