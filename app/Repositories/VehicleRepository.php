@@ -64,7 +64,7 @@ class VehicleRepository {
             }
         } else {
             try {
-                $vehicles = Vehicle::with(['subState','campa','category','trade_state','requests','reservations'])
+                $vehicles = Vehicle::with(['subState','campa','category','trade_state','requests.customer','reservations', 'vehicleModel.brand'])
                             ->campasIds($request->input('campas'))
                             ->stateIds($request->input('states'))
                             ->plate($request->input('plate'))
