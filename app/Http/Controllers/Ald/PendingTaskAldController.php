@@ -67,8 +67,9 @@ class PendingTaskAldController extends Controller
 
             $user = $this->userRepository->getById(Auth::id());
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-            $reception = $this->receptionRepository->create($request->input('vehicle_id'), $request->input('has_accessories'));
+            $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
             if($request->input('has_accessories')){
+                $this->receptionRepository->update($reception->id);
                 $this->accessoryRepository->create($reception->id, $request->input('accessories'));
             }
             return [

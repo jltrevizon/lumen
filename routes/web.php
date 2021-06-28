@@ -345,6 +345,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/type-reservations', 'TypeReservationController@getAll');
 
-
+        /**
+         * Receptions
+         */
+        $router->post('/reception', 'ReceptionController@create');
+        $router->get('/reception/{id}','ReceptionController@getById');
     });
 });
