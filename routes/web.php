@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
+
+use App\Http\Controllers\Ald\PendingTaskAldController;
 use Illuminate\Http\Request;
 
 /*
@@ -141,7 +143,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
-        $router->post('/pending-tasks/create-from-array', 'PendingTaskController@createFromArray');
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
         $router->post('/pending-tasks/cancel-pending-task', 'PendingTaskController@cancelPendingTask');
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
@@ -270,7 +271,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
         $router->post('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
-        $router->get('/vehicles/unapproved-task', 'VehicleController@unapprovedTask');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
 
         /**

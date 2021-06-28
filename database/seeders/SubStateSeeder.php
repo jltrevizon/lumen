@@ -61,6 +61,10 @@ class SubStateSeeder extends Seeder
                 'name' => 'Sin documentación',
                 'state_id' => 4,
             ],
+            [
+                'name' => 'Alquilado',
+                'state_id' => 5
+            ]
         ];
     }
 }
