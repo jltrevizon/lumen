@@ -39,7 +39,7 @@ class VehicleRepository {
     }
 
     public function getById($id){
-        try{
+        try {
             return Vehicle::with(['campa'])
                         ->findOrFail($id);
         } catch (Exception $e) {
@@ -48,38 +48,23 @@ class VehicleRepository {
     }
 
     public function filterVehicle($request): JsonResponse {
-        if(count($request->input('trade_states')) > 0){
-            try {
-                $vehicles = Vehicle::with(['subState.state','campa','category','trade_state','requests.customer','reservations','vehicleModel.brand'])
-                            ->campasIds($request->input('campas'))
-                            ->stateIds($request->input('states'))
-                            ->plate($request->input('plate'))
-                            ->brandIds($request->input('brands'))
-                            ->whereIn('trade_state_id', $request->input('trade_states'))
-                            ->categoriesIds($request->input('categories'))
-                            ->paginate($request->input('limit'));
-                return response()->json(['vehicles' => $vehicles], 200);
-            } catch (Exception $e) {
-                return response()->json(['message' => $e->getMessage()], 409);
-            }
-        } else {
-            try {
-                $vehicles = Vehicle::with(['subState.state','campa','category','trade_state','requests.customer','reservations', 'vehicleModel.brand'])
-                            ->campasIds($request->input('campas'))
-                            ->stateIds($request->input('states'))
-                            ->plate($request->input('plate'))
-                            ->brandIds($request->input('brands'))
-                            ->where(function ($query) use($request){
-                                return $query->whereNull('trade_state_id')
-                                            ->orWhereIn('trade_state_id', $request->input('trade_states'));
-                            })
-                            ->categoriesIds($request->input('categories'))
-                            ->paginate($request->input('limit'));
-                return response()->json(['vehicles' => $vehicles], 200);
-            } catch (Exception $e) {
-                return response()->json(['message' => $e->getMessage()], 409);
-            }
+        try {
+            $vehicles = Vehicle::with(['subState.state','campa','category','trade_state','requests.customer','reservations','vehicleModel.brand'])
+                        ->campasIds($request->input('campas'))
+                        ->stateIds($request->input('states'))
+                        ->plate($request->input('plate'))
+                        ->brandIds($request->input('brands'))
+                        ->where(function($query) use($request) {
+                            if(count($request->input('trade_states')) > 0) return $query->whereIn('trade_state_id', $request->input('trade_states'));
+                            else return $query->whereNull('trade_state_id');
+                        })
+                        ->categoriesIds($request->input('categories'))
+                        ->paginate($request->input('limit'));
+            return response()->json(['vehicles' => $vehicles], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
         }
+
     }
 
     public function createFromExcel($request) {

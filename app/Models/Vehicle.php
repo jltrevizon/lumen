@@ -24,7 +24,6 @@ class Vehicle extends Model
         'state_id',
         'ubication',
         'plate',
-        'branch',
         'vehicle_model_id',
         'kms',
         'priority',
