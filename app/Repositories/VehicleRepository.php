@@ -121,9 +121,9 @@ class VehicleRepository {
             if($request->input('kms')) $vehicle->kms = $request->input('kms');
             $vehicle->ubication = $request->input('ubication');
             $vehicle->plate = $request->input('plate');
-            $vehicle->branch = $request->input('branch');
+            $vehicle->brand_id = $request->input('brand_id');
             $vehicle->trade_state_id = 1;
-            $vehicle->vehicle_model = $request->input('vehicle_model');
+            $vehicle->vehicle_model_id = $request->input('vehicle_model_id');
             if($request->input('version')) $vehicle->version = $request->input('version');
             if($request->input('vin')) $vehicle->vin = $request->input('vin');
             $vehicle->first_plate = $request->input('first_plate');
