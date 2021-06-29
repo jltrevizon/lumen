@@ -117,7 +117,7 @@ class VehicleRepository {
             if($request->input('remote_id')) $vehicle->remote_id = $request->input('remote_id');
             $vehicle->campa_id = $request->input('campa_id');
             $vehicle->category_id = $request->input('category_id');
-            if($request->input('state_id')) $vehicle->state_id = $request->input('state_id');
+            if($request->input('sub_state_id')) $vehicle->sub_state_id = $request->input('sub_state_id');
             if($request->input('kms')) $vehicle->kms = $request->input('kms');
             $vehicle->ubication = $request->input('ubication');
             $vehicle->plate = $request->input('plate');
