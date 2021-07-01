@@ -137,7 +137,7 @@ class ReservationRepository {
 
     public function vehicleWithoutOrder($request){
         try {
-            return Reservation::with(['request.state_request','vehicle.category','vehicle.state'])
+            return Reservation::with(['request.state_request','vehicle.category','vehicle.subState.state'])
                             ->where('vehicle_id', $request->json()->get('vehicle_id'))
                             ->where('order', null)
                             ->whereHas('request', function (Builder $builder) {
@@ -152,7 +152,7 @@ class ReservationRepository {
 
     public function vehicleWithoutContract($request){
         try {
-            return Reservation::with(['request.state_request','vehicle.category','vehicle.state'])
+            return Reservation::with(['request.state_request','vehicle.category','vehicle.subState.state'])
                             ->where('vehicle_id', $request->json()->get('vehicle_id'))
                             ->where('contract', null)
                             ->whereHas('request', function (Builder $builder) {
