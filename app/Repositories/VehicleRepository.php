@@ -250,7 +250,7 @@ class VehicleRepository {
             $date1 = new DateTime($date);
             $date_defleet = date("Y-m-d", strtotime($date . " - $variables->years years")) . ' 00:00:00';
            // return $date_defleet;
-            $vehicles = Vehicle::with(['campa','category','state'])
+            $vehicles = Vehicle::with(['campa','category','subState.state'])
                             ->where(function($query) {
                                 return $query->whereHas('requests', function(Builder $builder) {
                                     return $builder->where('state_request_id', 3);
