@@ -40,7 +40,7 @@ class VehicleRepository {
 
     public function getById($id){
         try {
-            return Vehicle::with(['campa'])
+            return Vehicle::with(['campa','vehicleModel.brand'])
                         ->findOrFail($id);
         } catch (Exception $e) {
             return response()->json(['message' => $e], 409);
