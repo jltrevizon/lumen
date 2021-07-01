@@ -336,7 +336,7 @@ class VehicleRepository {
 
     public function getVehiclesWithReservationWithoutOrderCampa($request): JsonResponse {
         try{
-            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+            $vehicles = Vehicle::with(['category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->where(function ($query) {
                                 return $query->whereNull('order');
                             })
@@ -368,7 +368,7 @@ class VehicleRepository {
 
     public function getVehiclesWithReservationWithoutContractCampa($request): JsonResponse {
         try {
-            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+            $vehicles = Vehicle::with(['category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->whereNotNull('order')
                                         ->whereNull('contract')
                                         ->where('active', true)
