@@ -21,8 +21,8 @@ class VehicleController extends Controller
     }
 
     public function getAll(){
-        return 'Hola';
         $user = User::findOrFail(Auth::id());
+        return $user;
         $campas = Campa::where('company_id', $user->company_id)
                         ->get();
         return Vehicle::with(['campa'])
