@@ -16,9 +16,7 @@ class UserRepository {
     public function getById($id){
         try {
             return User::with(['campas'])
-                        ->where('id', $id)
-                        ->first();
-
+                        ->findOrFail($id);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

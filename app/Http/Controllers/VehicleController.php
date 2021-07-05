@@ -19,7 +19,9 @@ class VehicleController extends Controller
     {
         $this->vehicleRepository = $vehicleRepository;
     }
+
     public function getAll(){
+        return 'Hola';
         $user = User::findOrFail(Auth::id());
         $campas = Campa::where('company_id', $user->company_id)
                         ->get();
