@@ -29,7 +29,7 @@ class VehicleController extends Controller
             //return $campas->pluck('id')->toArray();
             return Vehicle::with(['campa'])
                         ->whereIn('campa_id', $campas->pluck('id')->toArray())
-                        ->limit(1)
+                        ->limit(5000)
                         ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
