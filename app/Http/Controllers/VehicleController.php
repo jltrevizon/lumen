@@ -26,7 +26,7 @@ class VehicleController extends Controller
             $user = User::findOrFail(Auth::id());
             $campas = Campa::where('company_id', $user->company_id)
                             ->get();
-            return $campas->pluck('id')->toArray();
+            //return $campas->pluck('id')->toArray();
             return Vehicle::with(['campa'])
                         ->whereIn('campa_id', $campas->pluck('id')->toArray())
                         ->where('id', '<', 2000)
