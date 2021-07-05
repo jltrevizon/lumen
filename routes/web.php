@@ -254,7 +254,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Vehicles
          */
-        $router->get('/vehicle/getall', 'VehicleController@getall');
+        $router->get('/vehicles', 'VehicleController@getAll');
         $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
         $router->post('/vehicles/create-from-excel', 'VehicleController@createFromExcel');
         $router->post('/vehicles', 'VehicleController@create');

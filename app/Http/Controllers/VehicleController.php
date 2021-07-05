@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campa;
 use App\Models\DefleetVariable;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,11 @@ class VehicleController extends Controller
         $this->vehicleRepository = $vehicleRepository;
     }
     public function getAll(){
+        $user = User::findOrFail(Auth::id());
+        $campas = Campa::where('company_id', $user->company_id)
+                        ->get();
         return Vehicle::with(['campa'])
+                    ->whereIn('campa_id', $campas->pluck('id')->toArray())
                     ->get();
     }
 
