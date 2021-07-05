@@ -27,7 +27,7 @@ class VehicleController extends Controller
             $campas = Campa::where('company_id', $user->company_id)
                             ->get();
             //return $campas->pluck('id')->toArray();
-            return Vehicle::with(['campa'])
+            return Vehicle::with(['campa','vehicleModel.brand'])
                         ->whereIn('campa_id', $campas->pluck('id')->toArray())
                         ->paginate(5000);
         } catch (Exception $e) {
