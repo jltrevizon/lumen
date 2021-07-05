@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Repositories\VehicleRepository;
 use DateTime;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,13 +22,17 @@ class VehicleController extends Controller
     }
 
     public function getAll(){
-        $user = User::findOrFail(Auth::id());
-        $campas = Campa::where('company_id', $user->company_id)
+        try {
+            $user = User::findOrFail(Auth::id());
+            $campas = Campa::where('company_id', $user->company_id)
+                            ->get();
+            //return $campas;
+            return Vehicle::with(['campa'])
+                        ->whereIn('campa_id', $campas->pluck('id')->toArray())
                         ->get();
-        return $campas;
-        return Vehicle::with(['campa'])
-                    ->whereIn('campa_id', $campas->pluck('id')->toArray())
-                    ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function getById($id){
