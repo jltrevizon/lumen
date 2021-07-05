@@ -54,14 +54,8 @@ class PendingTaskAldController extends Controller
                 $pending_task->order = $task['task_order'];
                 $pending_task->save();
             }
-            $pending_task = new PendingTask();
-            $pending_task->vehicle_id = $request->input('vehicle_id');
-            $taskDescription = $this->taskRepository->getById(1);
-            $pending_task->group_task_id = $groupTask->id;
-            $pending_task->task_id = $taskDescription->id;
-            $pending_task->duration = $taskDescription['duration'];
-            $pending_task->order = 100;
-            $pending_task->save();
+            $this->createTaskWashed($request->input('vehicle_id'), $groupTask);
+            $this->createTaskUbication($request->input('vehicle_id'), $groupTask);
             $this->vehicleRepository->updateBack($request);
 
             $user = $this->userRepository->getById(Auth::id());
@@ -77,5 +71,27 @@ class PendingTaskAldController extends Controller
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
+    }
+
+    public function createTaskWashed($vehicle_id, $group_task){
+        $pending_task = new PendingTask();
+        $pending_task->vehicle_id = $vehicle_id;
+        $taskDescription = $this->taskRepository->getById(28);
+        $pending_task->group_task_id = $group_task->id;
+        $pending_task->task_id = $taskDescription->id;
+        $pending_task->duration = $taskDescription['duration'];
+        $pending_task->order = 99;
+        $pending_task->save();
+    }
+
+    public function createTaskUbication($vehicle_id, $group_task){
+        $pending_task = new PendingTask();
+        $pending_task->vehicle_id = $vehicle_id;
+        $taskDescription = $this->taskRepository->getById(1);
+        $pending_task->group_task_id = $group_task->id;
+        $pending_task->task_id = $taskDescription->id;
+        $pending_task->duration = $taskDescription['duration'];
+        $pending_task->order = 100;
+        $pending_task->save();
     }
 }
