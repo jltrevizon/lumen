@@ -22,9 +22,9 @@ class VehicleController extends Controller
 
     public function getAll(){
         $user = User::findOrFail(Auth::id());
-        return $user;
         $campas = Campa::where('company_id', $user->company_id)
                         ->get();
+        return $campas;
         return Vehicle::with(['campa'])
                     ->whereIn('campa_id', $campas->pluck('id')->toArray())
                     ->get();
