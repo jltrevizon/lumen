@@ -36,7 +36,6 @@ class PendingTaskAldController extends Controller
 
     public function createFromArray(Request $request){
         try {
-            return $request;
             $groupTask = $this->groupTaskRepository->create($request);
             foreach($request->input('tasks') as $task){
                 $pending_task = new PendingTask();
