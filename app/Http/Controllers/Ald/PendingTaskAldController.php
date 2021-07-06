@@ -54,7 +54,7 @@ class PendingTaskAldController extends Controller
                 $pending_task->order = $task['task_order'];
                 $pending_task->save();
             }
-            //return $groupTask;
+            return $groupTask;
             $this->createTaskWashed($request->input('vehicle_id'), $groupTask);
             $this->createTaskUbication($request->input('vehicle_id'), $groupTask);
             $this->vehicleRepository->updateBack($request);
