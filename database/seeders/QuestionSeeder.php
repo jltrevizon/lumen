@@ -248,7 +248,47 @@ class QuestionSeeder extends Seeder
             ],
             [
                 'company_id' => 2,
-                'question' => 'Estado general de carrocería'
+                'question' => 'Comprobación estado de la caja de carga y protección de paneles de madera'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Comprobación estado del extintor, triángulos y chaleco reflectante'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Comprobación de accesorios (Enganche, Cabrestante, Estanterías y rejilla separadora)'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Comprobación de herramientas (Gato, manivelas, etc.)'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Comprobación de documentación cotejada (Ficha técnica, Permiso de circulación y Póliza de seguro'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Carpeta corporativa con manual de conductor y parte amistoso de accidente'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Manual de instrucciones del fabricante y libro de garantía'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Limpieza exterior'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Aspirado interior'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Limpieza de asientos'
+            ],
+            [
+                'company_id' => 2,
+                'question' => 'Limpieza tapicería'
             ],
         ];
     }
