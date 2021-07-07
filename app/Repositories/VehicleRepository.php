@@ -423,7 +423,7 @@ class VehicleRepository {
     public function vehicleRequestDefleet(){
         try {
             $user = $this->userRepository->getById(Auth::id());
-            $vehicles = Vehicle::with(['requests'])
+            $vehicles = Vehicle::with(['requests','vehicleModel.brand'])
                         ->whereHas('requests', function (Builder $builder) {
                             return $builder->where('type_request_id', 1)
                                         ->where('state_request_id', 1);
