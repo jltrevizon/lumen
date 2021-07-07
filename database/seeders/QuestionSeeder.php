@@ -17,7 +17,7 @@ class QuestionSeeder extends Seeder
         $questions = $this->data();
         foreach($questions as $question){
             Question::create([
-                'company_id' => 1,
+                'company_id' => $question['company_id'],
                 'question' => $question['question'],
                 'description' => $question['description']
             ]);
