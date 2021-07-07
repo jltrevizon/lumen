@@ -37,6 +37,14 @@ class CompanySeeder extends Seeder
                 'nif' => '58463147H',
                 'location' => 'Majadahonda',
                 'phone' => 917097000
+            ],
+            [
+                'name' => 'Focus Invarat',
+                'tradename' => 'Focus Invarat',
+                'address' => 'Av. de la Industria, Nº 4, 28108 Alcobendas, Madrid',
+                'nif' => 'B86068954',
+                'location' => 'Alcobendas',
+                'phone' => 917372929
             ]
         ];
     }

@@ -169,7 +169,7 @@ class VehicleRepository {
     public function updateState($vehicle_id, $state_id): JsonResponse {
         try {
             $vehicle = Vehicle::findOrFail($vehicle_id);
-            $vehicle->state_id = $state_id;
+            $vehicle->sub_state_id = $state_id;
             $vehicle->save();
             return response()->json(['vehicle' => $vehicle], 200);
         } catch (Exception $e) {
