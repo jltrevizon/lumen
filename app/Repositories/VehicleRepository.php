@@ -430,7 +430,9 @@ class VehicleRepository {
                         })
                         ->where('trade_state_id', 4)
                         ->whereIn('campa_id', $user->campas->pluck('id')->toArray())
-                        ->where('state_id', '<>', 3)
+                        ->whereHas('subState.state',function($query){
+                            return $query->where('id', '<>', 3);
+                        })
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
