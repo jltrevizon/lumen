@@ -17,6 +17,7 @@ class StateSeeder extends Seeder
         $states = $this->data();
         foreach($states as $state){
             State::create([
+                'company_id' => $state['company_id'],
                 'name' => $state['name']
             ]);
         }
