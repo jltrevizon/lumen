@@ -16,12 +16,13 @@ class QuestionRepository {
 
     public function getAll(){
         try {
-            $user = User::with(['campas.company'])
+            $user = User::with(['company'])
                         ->where('id', Auth::id())
                         ->first();
-            $company = $user->campas->pluck('company');
-
-            return Question::all();
+            $questions = Question::where('company_id', $user->company_id)
+                        ->get();
+            if(count($questions) > 0) return $questions;
+            else return Question::where('company_id', 1)->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -29,12 +30,10 @@ class QuestionRepository {
 
     public function create($request){
         try {
-            $user = User::with(['campas.company'])
-                        ->where('id', Auth::id())
+            $user = User::where('id', Auth::id())
                         ->first();
-            $company = $user->campas->pluck('company');
             $question = new Question();
-            $question->company_id = $company[0]['id'];
+            $question->company_id = $user->company_id;
             $question->question = $request->input('question');
             $question->description = $request->input('description');
             $question->save();

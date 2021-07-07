@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campa;
 use App\Models\DefleetVariable;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Repositories\VehicleRepository;
 use DateTime;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,9 +20,19 @@ class VehicleController extends Controller
     {
         $this->vehicleRepository = $vehicleRepository;
     }
+
     public function getAll(){
-        return Vehicle::with(['campa'])
-                    ->get();
+        try {
+            $user = User::findOrFail(Auth::id());
+            $campas = Campa::where('company_id', $user->company_id)
+                            ->get();
+            //return $campas->pluck('id')->toArray();
+            return Vehicle::with(['campa','vehicleModel.brand'])
+                        ->whereIn('campa_id', $campas->pluck('id')->toArray())
+                        ->paginate(5000);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function getById($id){

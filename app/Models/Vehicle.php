@@ -13,6 +13,7 @@ use App\Models\VehiclePicture;
 use App\Models\Reservation;
 use App\Models\Reception;
 use App\Models\TradeState;
+use Illuminate\Database\Eloquent\Builder;
 
 class Vehicle extends Model
 {
@@ -20,11 +21,10 @@ class Vehicle extends Model
         'remote_id',
         "campa_id",
         'category_id',
-        'state_id',
+        'sub_state_id',
         'ubication',
         'plate',
-        'branch',
-        'vehicle_model',
+        'vehicle_model_id',
         'kms',
         'priority',
         'version',
@@ -45,8 +45,8 @@ class Vehicle extends Model
         return $this->belongsTo(Campa::class, 'campa_id');
     }
 
-    public function state(){
-        return $this->belongsTo(State::class, 'state_id');
+    public function subState(){
+        return $this->belongsTo(SubState::class);
     }
 
     public function requests(){
@@ -87,24 +87,32 @@ class Vehicle extends Model
         ]);
     }
 
+    public function vehicleModel(){
+        return $this->belongsTo(VehicleModel::class);
+    }
+
     public function scopeCampasIds($query, $ids){
         return $query->whereIn('campa_id', $ids);
     }
 
-    public function scopeStateIds($query, $ids){
-        return $query->whereIn('state_id', $ids);
+    public function scopeSubStateIds($query, $ids){
+        return $query->whereIn('sub_state_id', $ids);
     }
 
-    public function scopeVehicleModel($query, $vehicle_model){
-        return $query->where('vehicle_model', 'like',  "%$vehicle_model%");
+    public function scopeStateIds($query, $ids){
+        return $query->whereHas('subState', function (Builder $builder) use ($ids) {
+            return $builder->whereIn('state_id', $ids);
+        });
     }
 
     public function scopePlate($query, $plate){
         return $query->where('plate','like',"%$plate%");
     }
 
-    public function scopeBranch($query, $branch){
-        return $query->where('branch','like',"%$branch%");
+    public function scopeBrandIds($query, $ids){
+        return $query->whereHas('vehicleModel', function (Builder $builder) use($ids) {
+            return $builder->whereIn('brand_id', $ids);
+        });
     }
 
     public function scopeCategoriesIds($query, $ids){

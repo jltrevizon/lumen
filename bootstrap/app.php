@@ -119,6 +119,8 @@ $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
+    require __DIR__.'/../routes/ald.php';
+    require __DIR__.'/../routes/invarat.php';
 });
 
 return $app;

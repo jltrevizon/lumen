@@ -1,6 +1,8 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
+
+use App\Http\Controllers\Ald\PendingTaskAldController;
 use Illuminate\Http\Request;
 
 /*
@@ -15,7 +17,7 @@ use Illuminate\Http\Request;
 */
 
 $router->get('/', function () use ($router) {
-    return '<h2>API CarFlex</h2>';
+    return view('home');
 });
 
 
@@ -141,7 +143,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
-        $router->post('/pending-tasks/create-from-array', 'PendingTaskController@createFromArray');
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
         $router->post('/pending-tasks/cancel-pending-task', 'PendingTaskController@cancelPendingTask');
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
@@ -253,7 +254,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Vehicles
          */
-        $router->get('/vehicle/getall', 'VehicleController@getall');
+        $router->get('/vehicles', 'VehicleController@getAll');
         $router->post('/vehicles/by-campa', 'VehicleController@getByCampaWithoutReserve');
         $router->post('/vehicles/create-from-excel', 'VehicleController@createFromExcel');
         $router->post('/vehicles', 'VehicleController@create');
@@ -270,7 +271,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
         $router->post('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
-        $router->get('/vehicles/unapproved-task', 'VehicleController@unapprovedTask');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
 
         /**
@@ -330,6 +330,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/read-messages', 'ChatController@readMessages');
 
         /**
+         * Brands
+         */
+        $router->get('/brands','BrandController@getAll');
+        $router->get('/brands/{id}','BrandController@getById');
+
+        /**
          * TradeState
          */
         $router->get('/trade-states', 'TradeStateController@getAll');
@@ -339,6 +345,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/type-reservations', 'TypeReservationController@getAll');
 
-
+        /**
+         * Receptions
+         */
+        $router->post('/reception', 'ReceptionController@create');
+        $router->get('/reception/{id}','ReceptionController@getById');
     });
 });

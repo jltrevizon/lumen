@@ -53,6 +53,7 @@ class SeeStatusPendingTask extends Command
                                             ->first();
             $update_pending_task->status_color = 'Green';
             if($diff > $task->duration){
+                $this->info('ES MAYOR');
                 $update_pending_task->status_color = 'Yellow';
             }
             if(count($update_pending_task['incidences']) > 0){
@@ -66,6 +67,7 @@ class SeeStatusPendingTask extends Command
         $new_date1 = new DateTime($date1);
         $new_date2 = new DateTime($date2);
         $diff = $new_date1->diff($new_date2);
-        return $diff->format('%H');
+        $hours = $diff->h + ($diff->days * 24);
+        return $hours;
     }
 }

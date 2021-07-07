@@ -88,7 +88,7 @@ class PendingTaskRepository {
                                     ->first();
             $vehicle_pictures = VehiclePicture::where('vehicle_id', $task->vehicle_id)
                                         ->first();
-            $pending_task = PendingTask::with(['vehicle','task','state_pending_task','incidences'])
+            $pending_task = PendingTask::with(['vehicle.vehicleModel.brand','task','state_pending_task','incidences'])
                                         ->where('id', $id)
                                         ->first();
             return [
@@ -104,7 +104,7 @@ class PendingTaskRepository {
         $user = $this->userRepository->getById(Auth::id());
         try {
             if($user->role_id == 4){
-                return PendingTask::with(['task','state_pending_task','group_task','vehicle','incidences'])
+                return PendingTask::with(['task','state_pending_task','group_task','vehicle.vehicleModel.brand','incidences'])
                                 ->whereHas('vehicle.campa', function(Builder $builder) use($user){
                                     return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
                                 })
@@ -115,7 +115,7 @@ class PendingTaskRepository {
                                 ->get();
             }
             if($user->role_id == 5){
-                return PendingTask::with(['task','state_pending_task','group_task','vehicle','incidences'])
+                return PendingTask::with(['task','state_pending_task','group_task','vehicle.vehicleModel.brand','incidences'])
                             ->whereHas('vehicle.campa', function(Builder $builder) use($user){
                                 return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
                             })
@@ -187,51 +187,6 @@ class PendingTaskRepository {
         }
     }
 
-    public function createFromArray($request){
-        try {
-
-            $groupTask = $this->groupTaskRepository->create($request);
-            foreach($request->input('tasks') as $task){
-                $pending_task = new PendingTask();
-                $pending_task->vehicle_id = $request->input('vehicle_id');
-                $taskDescription = $this->taskRepository->getById($task['task_id']);
-                $pending_task->task_id = $task['task_id'];
-                if($task['task_order'] == 1){
-                    $pending_task->state_pending_task_id = 1;
-                    $pending_task->datetime_pending = date('Y-m-d H:i:s');
-                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
-                    //El estado comercial del vehículo pasa a No disponible
-                    //$this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 5);
-                }
-                $pending_task->group_task_id = $groupTask->id;
-                $pending_task->duration = $taskDescription['duration'];
-                $pending_task->order = $task['task_order'];
-                $pending_task->save();
-            }
-            $pending_task = new PendingTask();
-            $pending_task->vehicle_id = $request->input('vehicle_id');
-            $taskDescription = $this->taskRepository->getById(1);
-            $pending_task->group_task_id = $groupTask->id;
-            $pending_task->task_id = $taskDescription->id;
-            $pending_task->duration = $taskDescription['duration'];
-            $pending_task->order = 100;
-            $pending_task->save();
-            $this->vehicleRepository->updateBack($request);
-
-            $user = $this->userRepository->getById(Auth::id());
-            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-            $reception = $this->receptionRepository->create($request->input('vehicle_id'), $request->input('has_accessories'));
-            if($request->input('has_accessories')){
-                $this->accessoryRepository->create($reception->id, $request->input('accessories'));
-            }
-            return [
-                'message' => 'OK'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
-
     public function delete($id){
         try {
             PendingTask::where('id', $id)
@@ -283,7 +238,7 @@ class PendingTaskRepository {
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->save();
                 $detail_task = $this->taskRepository->getById($pending_task['task_id']);
-                $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_state']['state']['id']);
+                $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
                 return $this->getPendingOrNextTask();
             } else {
                 return [
@@ -382,7 +337,7 @@ class PendingTaskRepository {
 
     public function getPendingTaskByStateCampa($request){
         try {
-            return PendingTask::with(['vehicle.campa','vehicle.state','vehicle.category','task','incidences'])
+            return PendingTask::with(['vehicle.campa','vehicle.subState.state','vehicle.category','task','incidences','vehicle.vehicleModel.brand'])
                     ->whereHas('vehicle.campa', function (Builder $builder) use($request){
                             return $builder->whereIn('id', $request->input('campas'));
                         })
