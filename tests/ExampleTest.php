@@ -11,20 +11,9 @@ class ExampleTest extends TestCase
      * @test
      * @return void
      */
-    public function it_let_a_user_login()
+    public function should_receive_a_200_in_home_status()
     {
-        // setup
-        // $user = User::factory()
-        //     ->create([
-        //         'password' => '123'
-        //     ]);
-
-        // action
-        $this->get('/')
-            ->equalTo('API');
-        //$this->assertEquals
-
-        // assertion
-
+        $response = $this->call('GET','/');
+        $this->assertEquals(200, $response->status());
     }
 }
