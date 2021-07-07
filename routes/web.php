@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 */
 
 $router->get('/', function () use ($router) {
-    return '<h2>API CarFlex</h2>';
+    return view('home');
 });
 
 
