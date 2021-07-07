@@ -21,7 +21,7 @@ class Vehicle extends Model
         'remote_id',
         "campa_id",
         'category_id',
-        'state_id',
+        'sub_state_id',
         'ubication',
         'plate',
         'vehicle_model_id',
