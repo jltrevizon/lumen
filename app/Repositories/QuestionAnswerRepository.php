@@ -7,9 +7,14 @@ use Exception;
 
 class QuestionAnswerRepository {
 
-    public function __construct(QuestionnaireRepository $questionnaireRepository)
+    public function __construct(
+        QuestionnaireRepository $questionnaireRepository,
+        ReceptionRepository $receptionRepository,
+        AccessoryRepository $accessoryRepository)
     {
         $this->questionnaireRepository = $questionnaireRepository;
+        $this->receptionRepository = $receptionRepository;
+        $this->accessoryRepository = $accessoryRepository;
     }
 
     public function create($request){
@@ -23,6 +28,12 @@ class QuestionAnswerRepository {
                 $questionAnswer->response = $question['response'];
                 $questionAnswer->description = $question['description'];
                 $questionAnswer->save();
+            }
+            $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
+
+            if($request->input('has_accessories')){
+                $this->receptionRepository->update($reception['id']);
+                $this->accessoryRepository->create($reception['id'], $request->input('accessories'));
             }
             return [
                 'message' => 'Ok'
