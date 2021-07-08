@@ -11,7 +11,7 @@ class ExampleTest extends TestCase
      * @test
      * @return void
      */
-    public function should_receive_a_200_in_home_status()
+    public function it_tests_should_receive_a_200_in_home_status()
     {
         $response = $this->call('GET','/');
         $this->assertEquals(200, $response->status());

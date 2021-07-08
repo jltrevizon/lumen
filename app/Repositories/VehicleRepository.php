@@ -76,9 +76,7 @@ class VehicleRepository {
                 if($vehicle['remote_id'] ?? null) $new_vehicle->remote_id = $vehicle['remote_id'];
                 if($vehicle['campa_id'] ?? null) $new_vehicle->campa_id = $vehicle['campa_id'];
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-                //return 'Hola';
                 if($category['id'] ?? null ) $new_vehicle->category_id = $category['id'];
-                $new_vehicle->state_id = $vehicle['state_id'];
                 $new_vehicle->ubication = $vehicle['ubication'];
                 $new_vehicle->plate = $vehicle['plate'];
                 $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
