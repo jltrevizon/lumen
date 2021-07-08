@@ -3,6 +3,7 @@
 namespace App\Repositories;
 use App\Models\GroupTask;
 use App\Models\PendingTask;
+use App\Models\Vehicle;
 use Exception;
 
 class GroupTaskRepository {
@@ -69,6 +70,10 @@ class GroupTaskRepository {
 
     public function approvedGroupTaskToAvailable($request){
         try {
+            $vehicle = Vehicle::where('id', $request->input('group_task_id'))
+                                ->first();
+            $vehicle->sub_state_id = 1;
+            $vehicle->save();
             PendingTask::where('group_task_id', $request->input('group_task_id'))
                         ->delete();
             $group_task = GroupTask::findOrFail($request->input('group_task_id'));
