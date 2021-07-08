@@ -123,7 +123,8 @@ class Vehicle extends Model
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'
         ], function ($query) {
-            $query->where('approved', false);
+            $query->where('approved', false)
+                ->where('approved_available', false);
         });
     }
 }
