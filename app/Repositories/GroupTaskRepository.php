@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 use App\Models\GroupTask;
+use App\Models\PendingTask;
+use App\Models\Vehicle;
 use Exception;
 
 class GroupTaskRepository {
@@ -60,7 +62,23 @@ class GroupTaskRepository {
             $group_task = GroupTask::findOrFail($request->input('group_task_id'));
             $group_task->approve = 1;
             $group_task->save();
-            return response()->json(['message' => 'Solicitud aprobada!']);
+            return response()->json(['message' => 'Solicitud aprobada!'], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
+
+    public function approvedGroupTaskToAvailable($request){
+        try {
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+            $vehicle->sub_state_id = 1;
+            $vehicle->save();
+            PendingTask::where('group_task_id', $request->input('group_task_id'))
+                        ->delete();
+            $group_task = GroupTask::findOrFail($request->input('group_task_id'));
+            $group_task->approved_available = 1;
+            $group_task->save();
+            return response()->json(['message' => 'Solicitud aprobada!'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

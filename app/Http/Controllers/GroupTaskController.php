@@ -39,4 +39,9 @@ class GroupTaskController extends Controller
 
         return [ 'message' => 'Group task deleted' ];
     }
+
+    public function approvedGroupTaskToAvailable(Request $request){
+        return $this->groupTaskRepository->approvedGroupTaskToAvailable($request);
+    }
+
 }

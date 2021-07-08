@@ -30,7 +30,7 @@ class RoleSeeder extends Seeder
             ['description' => 'User App'],
             ['description' => 'Recepción'],
             ['description' => 'Comercial'],
-            ['description' => 'Invarat']
+            ['description' => 'Control']
         ];
     }
 }
