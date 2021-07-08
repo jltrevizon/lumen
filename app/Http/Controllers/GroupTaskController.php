@@ -44,4 +44,8 @@ class GroupTaskController extends Controller
         return $this->groupTaskRepository->approvedGroupTaskToAvailable($request);
     }
 
+    public function declineGroupTask(Request $request){
+        return $this->groupTaskRepository->declineGroupTask($request);
+    }
+
 }

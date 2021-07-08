@@ -83,4 +83,19 @@ class GroupTaskRepository {
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }
+
+    public function declineGroupTask($request){
+        try {
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+            $vehicle->sub_state_id = null;
+            $vehicle->save();
+            PendingTask::where('group_task_id', $request->input('group_task_id'))
+                        ->delete();
+            GroupTask::findOrFail($request->input('group_task_id'))
+                        ->delete();
+            return response()->json(['message' => 'Solicitud declinada!'], 200);
+        } catch(Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
 }
