@@ -70,7 +70,7 @@ class GroupTaskRepository {
 
     public function approvedGroupTaskToAvailable($request){
         try {
-            $vehicle = Vehicle::findOrFail('id', $request->input('vehicle_id'));
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             $vehicle->sub_state_id = 1;
             $vehicle->save();
             PendingTask::where('group_task_id', $request->input('group_task_id'))
