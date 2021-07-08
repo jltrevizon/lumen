@@ -102,11 +102,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Group Tasks
          */
         $router->get('/grouptasks/getall', 'GroupTaskController@getall');
+        $router->post('/grouptasks/approved-available', 'GroupTaskController@approvedGroupTaskToAvailable');
         $router->get('/grouptasks/{id}', 'GroupTaskController@getById');
         $router->post('/grouptasks', 'GroupTaskController@create');
         $router->put('/grouptasks/update/{id}', 'GroupTaskController@update');
         $router->delete('/grouptasks/delete/{id}', 'GroupTaskController@delete');
-        $router->post('/grouptasks/approved-available', 'GroupTaskController@approvedGroupTaskToAvailable');
+
 
         /**
          * Incidences

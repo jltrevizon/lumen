@@ -377,13 +377,4 @@ class PendingTaskRepository {
         }
     }
 
-    public function deleteByGroupTask($group_task_id){
-        try {
-            PendingTask::where('group_task_id', $group_task_id)
-                        ->delete();
-            return response()->json(['message' => 'Tareas eliminadas'], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
 }

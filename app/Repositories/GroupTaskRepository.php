@@ -2,14 +2,14 @@
 
 namespace App\Repositories;
 use App\Models\GroupTask;
+use App\Models\PendingTask;
 use Exception;
-use App\Repositories\PendingTaskRepository;
 
 class GroupTaskRepository {
 
-    public function __construct(PendingTaskRepository $pendingTaskRepository)
+    public function __construct()
     {
-        $this->pendingTaskRepository = $pendingTaskRepository;
+
     }
 
     public function createWithVehicleId($vehicle_id){
@@ -69,7 +69,8 @@ class GroupTaskRepository {
 
     public function approvedGroupTaskToAvailable($request){
         try {
-            $this->pendingTaskRepository->deleteByGroupTask($request->input('group_task_id'));
+            PendingTask::where('group_task_id', $request->input('group_task_id'))
+                        ->delete();
             $group_task = GroupTask::findOrFail($request->input('group_task_id'));
             $group_task->approved_available = 1;
             $group_task->save();

@@ -43,4 +43,5 @@ class GroupTaskController extends Controller
     public function approvedGroupTaskToAvailable(Request $request){
         return $this->groupTaskRepository->approvedGroupTaskToAvailable($request);
     }
+
 }

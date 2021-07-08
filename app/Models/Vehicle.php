@@ -124,7 +124,7 @@ class Vehicle extends Model
             'id' => 'max'
         ], function ($query) {
             $query->where('approved', false)
-                ->where('approved_available', false);
+                 ->where('approved_available', false);
         });
     }
 }
