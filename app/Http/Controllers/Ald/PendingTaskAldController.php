@@ -54,7 +54,7 @@ class PendingTaskAldController extends Controller
                 $pending_task->order = $task['task_order'];
                 $pending_task->save();
             }
-            $this->createTaskWashed($request->input('vehicle_id'), $groupTask);
+            $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
             $this->createTaskUbication($request->input('vehicle_id'), $groupTask);
             //return $groupTask;
             $this->vehicleRepository->updateBack($request);
@@ -76,10 +76,14 @@ class PendingTaskAldController extends Controller
         }
     }
 
-    public function createTaskWashed($vehicle_id, $group_task){
+    public function createTaskWashed($vehicle_id, $group_task, $tasks){
         $pending_task = new PendingTask();
         $pending_task->vehicle_id = $vehicle_id;
         $taskDescription = $this->taskRepository->getById(28);
+        if(count($tasks) < 1){
+            $pending_task->state_pending_task_id = 1;
+            $pending_task->datetime_pending = date("Y-m-d H:i:s");
+        }
         $pending_task->group_task_id = $group_task->id;
         $pending_task->task_id = $taskDescription['id'];
         $pending_task->duration = $taskDescription['duration'];
