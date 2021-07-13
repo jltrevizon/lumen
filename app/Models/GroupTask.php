@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class GroupTask extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'vehicle_id',

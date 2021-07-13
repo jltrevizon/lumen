@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Province;
 use App\Models\Request;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends Model
 {
+
+    use HasFactory;
+
     public function province(){
         return $this->belongsTo(Province::class, 'province_id');
     }
