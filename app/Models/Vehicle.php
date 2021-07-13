@@ -14,9 +14,13 @@ use App\Models\Reservation;
 use App\Models\Reception;
 use App\Models\TradeState;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Vehicle extends Model
 {
+
+    use HasFactory;
+
     protected $fillable = [
         'remote_id',
         "campa_id",

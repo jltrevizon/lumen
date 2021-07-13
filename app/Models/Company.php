@@ -38,4 +38,16 @@ class Company extends Model
     public function users(){
         return $this->hasMany(User::class);
     }
+
+    public function questions(){
+        return $this->hasMany(Question::class);
+    }
+
+    public function defleetVariable(){
+        return $this->hasOne(DefleetVariable::class);
+    }
+
+    public function states(){
+        return $this->hasMany(State::class);
+    }
 }

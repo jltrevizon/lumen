@@ -7,10 +7,12 @@ use App\Models\User;
 use App\Models\Province;
 use App\Models\Company;
 use App\Models\Vehicle;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Campa extends Model
 {
+
+    use HasFactory;
 
     protected $filleable = [
         'company_id',

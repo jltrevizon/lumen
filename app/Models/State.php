@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use App\Models\SubState;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class State extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'name'
