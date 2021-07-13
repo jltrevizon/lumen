@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Campa;
 use App\Models\ReservationTime;
 use App\Models\Customer;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Company extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'name',
