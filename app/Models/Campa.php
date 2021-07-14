@@ -38,4 +38,8 @@ class Campa extends Model
     public function vehicles(){
         return $this->hasMany(Vehicle::class, 'campa_id');
     }
+
+    public function reservations(){
+        return $this->hasMany(Reservation::class);
+    }
 }
