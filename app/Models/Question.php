@@ -19,4 +19,8 @@ class Question extends Model
     public function company(){
         return $this->belongsTo(Company::class);
     }
+
+    public function question_answer(){
+        return $this->hasMany(QuestionAnswer::class);
+    }
 }
