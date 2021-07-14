@@ -13,4 +13,12 @@ class Reception extends Model
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
+
+    public function accessories(){
+        return $this->hasMany(Accessory::class);
+    }
+
+    public function vehicle_pictures(){
+        return $this->hasMany(VehiclePicture::class);
+    }
 }
