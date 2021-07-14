@@ -4,9 +4,10 @@ namespace Database\Factories;
 
 use App\Model;
 use App\Models\PendingTask;
+use App\Models\PendingTaskCanceled;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PendingTaskCanceled extends Factory
+class PendingTaskCanceledFactory extends Factory
 {
     protected $model = PendingTaskCanceled::class;
 
