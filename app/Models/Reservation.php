@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Request as VehicleRequest;
 use App\Models\Vehicle;
 use App\Models\Transport;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Reservation extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'request_id',
