@@ -4,11 +4,13 @@ use App\Models\Company;
 use App\Models\GroupTask;
 use App\Models\Incidence;
 use App\Models\PendingTask;
+use App\Models\PendingTaskCanceled;
 use App\Models\StatePendingTask;
 use App\Models\Task;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -55,5 +57,12 @@ class PendingtaskTest extends TestCase
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->pendingTask->incidences());
         $this->assertInstanceOf(Incidence::class, $this->pendingTask->incidences()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_pending_task_canceled()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->pendingTask->pending_task_canceled());
+        $this->assertInstanceOf(PendingTaskCanceled::class, $this->pendingTask->pending_task_canceled()->getModel());
     }
 }

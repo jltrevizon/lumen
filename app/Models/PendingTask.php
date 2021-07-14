@@ -48,4 +48,8 @@ class PendingTask extends Model
     public function incidences(){
         return $this->belongsToMany(Incidence::class);
     }
+
+    public function pending_task_canceled(){
+        return $this->hasMany(PendingTaskCanceled::class);
+    }
 }
