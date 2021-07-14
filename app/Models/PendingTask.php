@@ -8,9 +8,12 @@ use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\GroupTask;
 use App\Models\Incidence;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PendingTask extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'vehicle_id',

@@ -7,9 +7,12 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\TypeTask;
 use App\Models\PurchaseOperation;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'sub_state_id',
