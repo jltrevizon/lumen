@@ -10,8 +10,12 @@ class Questionnaire extends Model
 
     use HasFactory;
 
+    protected $fillable = [
+        'vehicle_id'
+    ];
+
     public function vehicle(){
-        return $this->belongsTo(Questionnaire::class);
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function questionAnswers(){
