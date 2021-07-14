@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Model;
+use App\Models\PasswordResetCode;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PasswordResetCode extends Factory
+class PasswordResetCodeFactory extends Factory
 {
     protected $model = PasswordResetCode::class;
 

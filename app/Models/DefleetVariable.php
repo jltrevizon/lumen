@@ -16,4 +16,8 @@ class DefleetVariable extends Model
         'years'
     ];
 
+    public function company(){
+        return $this->belongsTo(Company::class);
+    }
+
 }
