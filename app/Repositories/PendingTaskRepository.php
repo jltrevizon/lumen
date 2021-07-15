@@ -267,8 +267,7 @@ class PendingTaskRepository {
 
     public function finishPendingTask($request){
         try {
-            $pending_task = PendingTask::where('id', $request->input('pending_task_id'))
-                                    ->first();
+            $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
             $vehicle = $this->vehicleRepository->getById($pending_task['vehicle_id']);
             if($pending_task->state_pending_task_id == 2){
                 $pending_task->state_pending_task_id = 3;
@@ -285,11 +284,9 @@ class PendingTaskRepository {
                     $pending_task_next->save();
                     return $this->getPendingOrNextTask();
                 } else {
-                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
-                    // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
                     if($vehicle->trade_state_id == 2){
-                        // Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)
-                        $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 1);
+                        $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 1); // Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)
                         $vehicle->ready_to_delivery = true;
                         $vehicle->save();
                     }
@@ -304,11 +301,9 @@ class PendingTaskRepository {
                     $pending_task->datetime_start = date('Y-m-d H:i:s');
                     $pending_task->datetime_finish = date('Y-m-d H:i:s');
                     $pending_task->save();
-                    //Cuando el vehículo se ubica cambia el estado a disponible
-                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
+                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1); //Cuando el vehículo se ubica cambia el estado a disponible
                     if($vehicle->trade_state_id == 2){
-                        //Si el vehículo ha sido pre-reservado pasa a reservado (sin tareas pendientes)
-                        $this->vehicleRepository->updateTradeState($vehicle->id, 1);
+                        $this->vehicleRepository->updateTradeState($vehicle->id, 1); //Si el vehículo ha sido pre-reservado pasa a reservado (sin tareas pendientes)
                     }
                     return [
                         'message' => 'Tareas terminadas'
