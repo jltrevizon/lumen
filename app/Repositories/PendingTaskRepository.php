@@ -112,6 +112,7 @@ class PendingTaskRepository {
                                     return $query->where('state_pending_task_id', 1)
                                             ->orWhere('state_pending_task_id', 2);
                                 })
+                                ->where('approved', true)
                                 ->get();
             }
             if($user->role_id == 5){
@@ -275,6 +276,7 @@ class PendingTaskRepository {
                 $pending_task->save();
                 $pending_task_next = PendingTask::where('group_task_id', $pending_task->group_task_id)
                                         ->where('order','>',$pending_task->order)
+                                        ->where('approved', true)
                                         ->orderBy('order', 'asc')
                                         ->first();
                 if($pending_task_next){
@@ -284,9 +286,9 @@ class PendingTaskRepository {
                     return $this->getPendingOrNextTask();
                 } else {
                     $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
-                    //Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                    // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
                     if($vehicle->trade_state_id == 2){
-                        //Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)
+                        // Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)
                         $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 1);
                         $vehicle->ready_to_delivery = true;
                         $vehicle->save();

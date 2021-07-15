@@ -22,6 +22,7 @@ class PendingTask extends Model
         'group_task_id',
         'duration',
         'order',
+        'approved',
         'code_authorization',
         'status_color',
         'datetime_pending',
