@@ -104,7 +104,7 @@ class PendingTaskAldController extends Controller
     public function updatePendingTask(Request $request){
         try {
             $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
-                                ->where('task_id', $request->input('vehicle_id'))
+                                ->where('task_id', $request->input('task_id'))
                                 ->orderBy('id', 'DESC')
                                 ->first();
             $pending_task->approved = $request->input('approved');
