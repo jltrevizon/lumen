@@ -368,6 +368,7 @@ class PendingTaskRepository {
             $group = $this->groupTaskRepository->getLastByVehicle($vehicle->id);
             return PendingTask::with(['vehicle','state_pending_task','task'])
                         ->where('group_task_id', $group->id)
+                        ->where('approved', true)
                         ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
