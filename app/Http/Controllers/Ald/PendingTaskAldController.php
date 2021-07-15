@@ -57,11 +57,9 @@ class PendingTaskAldController extends Controller
             }
             $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
             $this->createTaskUbication($request->input('vehicle_id'), $groupTask);
-            //return $groupTask;
             $this->vehicleRepository->updateBack($request);
 
             $user = $this->userRepository->getById(Auth::id());
-           //return $user;
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
             $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
 
@@ -101,5 +99,19 @@ class PendingTaskAldController extends Controller
         $pending_task->duration = $taskDescription['duration'];
         $pending_task->order = 100;
         $pending_task->save();
+    }
+
+    public function updatePendingTask(Request $request){
+        try {
+            $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
+                                ->where('task_id', $request->input('vehicle_id'))
+                                ->orderBy('id', 'DESC')
+                                ->first();
+            $pending_task->approved = $request->input('approved');
+            $pending_task->save();
+            return response()->json(['pending_task' => $pending_task], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
     }
 }

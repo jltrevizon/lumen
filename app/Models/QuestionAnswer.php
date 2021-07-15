@@ -11,6 +11,7 @@ class QuestionAnswer extends Model
     use HasFactory;
 
     protected $fillable = [
+        "task_id",
         "questionnaire_id",
         "question_id",
         "response",
@@ -23,5 +24,9 @@ class QuestionAnswer extends Model
 
     public function question(){
         return $this->belongsTo(Question::class);
+    }
+
+    public function task(){
+        return $this->belongsTo(Task::class);
     }
 }

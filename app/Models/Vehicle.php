@@ -86,7 +86,7 @@ class Vehicle extends Model
     }
 
     public function lastQuestionnaire(){
-        return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question'])->ofMany([
+        return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
             'id' => 'max'
         ]);
     }
