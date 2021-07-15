@@ -42,6 +42,7 @@ class PendingTaskAldController extends Controller
                 $pending_task->vehicle_id = $request->input('vehicle_id');
                 $taskDescription = $this->taskRepository->getById($task['task_id']);
                 $pending_task->task_id = $task['task_id'];
+                $pending_task->approved = $task['approved'];
                 if($task['task_order'] == 1){
                     $pending_task->state_pending_task_id = 1;
                     $pending_task->datetime_pending = date('Y-m-d H:i:s');
