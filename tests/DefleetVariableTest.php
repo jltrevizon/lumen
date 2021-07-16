@@ -9,6 +9,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class DefleetVariableTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private DefleetVariable $defleetVariable;
 
     protected function setUp(): void

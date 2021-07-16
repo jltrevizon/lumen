@@ -8,6 +8,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class RegionTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Region $region;
 
     protected function setUp(): void

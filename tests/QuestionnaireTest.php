@@ -10,6 +10,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class QuestionnaireTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Questionnaire $questionnaire;
 
     protected function setUp(): void

@@ -8,6 +8,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class PasswordResetCodeTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private PasswordResetCode $passwordResetCode;
 
     protected function setUp(): void

@@ -14,6 +14,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CompanyTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Company $company;
 
     protected function setUp(): void

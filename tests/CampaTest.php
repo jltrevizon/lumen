@@ -14,6 +14,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CampaTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Campa $campa;
 
     protected function setUp(): void

@@ -10,6 +10,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class GroupTaskTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private GroupTask $groupTask;
 
     protected function setUp(): void

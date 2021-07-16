@@ -9,6 +9,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class BrandTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Brand $brand;
 
     protected function setUp(): void

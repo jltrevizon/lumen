@@ -16,6 +16,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class PendingtaskTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private PendingTask $pendingTask;
 
     protected function setUp(): void

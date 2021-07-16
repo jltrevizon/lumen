@@ -8,6 +8,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class PendingTaskCanceledTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
    private PendingTaskCanceled $pendingTaskCanceled;
 
    protected function setUp(): void

@@ -11,6 +11,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CustomerTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Customer $customer;
 
     protected function setUp(): void

@@ -13,6 +13,8 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class RequestTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private Request $request;
 
     protected function setUp(): void

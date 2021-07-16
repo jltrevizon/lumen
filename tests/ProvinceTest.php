@@ -11,6 +11,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ProvinceTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Province $province;
 
     protected function setUp(): void

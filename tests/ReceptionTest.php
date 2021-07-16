@@ -11,6 +11,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ReceptionTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Reception $reception;
 
     protected function setUp(): void

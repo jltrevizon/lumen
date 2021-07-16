@@ -33,5 +33,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TypeTaskSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(VehicleSeeder::class);
+        $this->call(TypeUserAppSeeder::class);
     }
 }

@@ -8,6 +8,8 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class AccessoryTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private Accessory $accessory;
 
     protected function setUp(): void

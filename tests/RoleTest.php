@@ -8,6 +8,8 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class RoleTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private Role $role;
 
     protected function setUp(): void

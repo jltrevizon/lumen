@@ -8,6 +8,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class IncidenceTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Incidence $incidence;
 
     protected function setUp(): void

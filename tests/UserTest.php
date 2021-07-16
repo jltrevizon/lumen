@@ -9,6 +9,8 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class UserTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private User $user;
 
     protected function setUp(): void
