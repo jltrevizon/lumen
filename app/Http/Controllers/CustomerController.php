@@ -24,6 +24,11 @@ class CustomerController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'name' => 'required|string'
+        ]);
+
         return $this->customerRepository->create($request);
     }
 
@@ -32,6 +37,11 @@ class CustomerController extends Controller
     }
 
     public function getUserByCompany(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer'
+        ]);
+
         return $this->customerRepository->getUserByCompany($request);
     }
 

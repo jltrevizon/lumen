@@ -14,14 +14,7 @@ class CompanyRepository {
 
     public function create($request){
         try {
-            $company = new Company();
-            $company->name = $request->input('name');
-            if($request->input('tradename')) $company->tradename = $request->input('tradename');
-            if($request->input('nif')) $company->nif = $request->input('nif');
-            if($request->input('address')) $company->address = $request->input('address');
-            if($request->input('location')) $company->location = $request->input('location');
-            if($request->input('phone')) $company->phone = $request->input('phone');
-            if($request->input('logo')) $company->logo = $request->input('logo');
+            $company = Company::create($request->all());
             $company->save();
             return $company;
         } catch (Exception $e) {
