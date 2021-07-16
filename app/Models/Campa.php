@@ -14,7 +14,7 @@ class Campa extends Model
 
     use HasFactory;
 
-    protected $filleable = [
+    protected $fillable = [
         'company_id',
         'province_id',
         'name',
