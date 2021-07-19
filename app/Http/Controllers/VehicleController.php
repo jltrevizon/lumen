@@ -129,7 +129,6 @@ class VehicleController extends Controller
         $this->validate($request, [
             'campas' => 'required',
             'states' => 'required',
-            'plate' => 'required',
             'brands' => 'required',
             'categories' => 'required',
             'limit' => 'required'
