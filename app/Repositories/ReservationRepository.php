@@ -60,7 +60,7 @@ class ReservationRepository {
         try {
             return Reservation::with(['vehicle.state','vehicle.category','request.type_request','request.state_request'])
                                 ->whereHas('vehicle.campa', function (Builder $builder) use($request){
-                                    return $builder->where('company_id', $request->json()->get('company_id'));
+                                    return $builder->where('company_id', $request->input('company_id'));
                                 })
                                 ->get();
         } catch (Exception $e) {
@@ -72,7 +72,7 @@ class ReservationRepository {
         try {
             return Reservation::with(['vehicle.state','vehicle.category','request.type_request','request.state_request'])
                                 ->whereHas('vehicle', function (Builder $builder) use($request){
-                                    return $builder->where('campa_id', $request->json()->get('campa_id'));
+                                    return $builder->where('campa_id', $request->input('campa_id'));
                                 })
                                 ->get();
         } catch (Exception $e) {
@@ -82,16 +82,9 @@ class ReservationRepository {
 
     public function update($request){
         try {
-            $reservation = Reservation::where('id', $request->json()->get('reservation_id'))
+            $reservation = Reservation::findOrFail($request->input('reservation_id'))
                                     ->first();
-            if($request->json()->get('dni')) $reservation->dni = $request->json()->get('dni');
-            if($request->json()->get('order')) $reservation->order = $request->json()->get('order');
-            if($request->json()->get('contract')) $reservation->contract = $request->json()->get('contract');
-            if($request->json()->get('actual_date')) $reservation->actual_date = $request->json()->get('actual_date');
-            if($request->json()->get('contract')) $reservation->active = 0;
-            if($request->json()->get('pickup_by_customer') == false || $request->json()->get('pickup_by_customer') == true) $reservation->pickup_by_customer = $request->json()->get('pickup_by_customer');
-            if($request->json()->get('transport_id') == false || $request->json()->get('transport_id') != false) $reservation->transport_id = $request->json()->get('transport_id');
-            $reservation->save();
+            $reservation->update($request->all());
             if($reservation->order != null && $reservation->contract != null){
                 $task_reservation = $this->taskReservationRepository->getByRequest($reservation->request_id);
                 if($reservation->type_reservation_id == 2){
@@ -108,7 +101,7 @@ class ReservationRepository {
                 }
             }
             return Reservation::with(['transport'])
-                            ->where('id', $request->json()->get('reservation_id'))
+                            ->where('id', $request->input('reservation_id'))
                             ->first();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
@@ -117,7 +110,7 @@ class ReservationRepository {
 
     public function getReservationsByVehicle($request){
         try {
-            return Reservation::where('vehicle_id', $request->json()->get('vehicle_id'))
+            return Reservation::where('vehicle_id', $request->input('vehicle_id'))
                                 ->where('contract', null)
                                 ->orderBy('id', 'desc')
                                 ->first();
@@ -128,7 +121,7 @@ class ReservationRepository {
 
     public function deleteReservation($request){
         try {
-            Reservation::where('request_id', $request->json()->get('request_id'))
+            Reservation::where('request_id', $request->input('request_id'))
                     ->delete();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
@@ -138,7 +131,7 @@ class ReservationRepository {
     public function vehicleWithoutOrder($request){
         try {
             return Reservation::with(['request.state_request','vehicle.category','vehicle.subState.state'])
-                            ->where('vehicle_id', $request->json()->get('vehicle_id'))
+                            ->where('vehicle_id', $request->input('vehicle_id'))
                             ->where('order', null)
                             ->whereHas('request', function (Builder $builder) {
                                 return $builder->where('state_request_id', 1);
@@ -153,7 +146,7 @@ class ReservationRepository {
     public function vehicleWithoutContract($request){
         try {
             return Reservation::with(['request.state_request','vehicle.category','vehicle.subState.state'])
-                            ->where('vehicle_id', $request->json()->get('vehicle_id'))
+                            ->where('vehicle_id', $request->input('vehicle_id'))
                             ->where('contract', null)
                             ->whereHas('request', function (Builder $builder) {
                                 return $builder->where('state_request_id', 2);

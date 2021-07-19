@@ -14,8 +14,7 @@ class RoleRepository {
 
     public function getById($id){
         try {
-            return Role::where('id', $id)
-                        ->first();
+            return Role::findOrFail($id);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -23,8 +22,7 @@ class RoleRepository {
 
     public function create($request){
         try {
-            $role = new Role();
-            $role->description = $request->input('description');
+            $role = Role::create($request->all());
             $role->save();
             return $role;
         } catch (Exception $e) {
