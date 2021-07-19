@@ -123,15 +123,7 @@ class PendingTaskRepository {
 
     public function create($request){
         try {
-            $pending_task = new PendingTask();
-            $pending_task->vehicle_id = $request->get('vehicle_id');
-            $pending_task->task_id = $request->get('task_id');
-            if(isset($request['state_pending_task_id'])) $pending_task->state_pending_task_id = $request->get('state_pending_task_id');
-            if(isset($request['incidence_id'])) $pending_task->incidence_id = $request->get('incidence_id');
-            $pending_task->group_task_id = $request->get('group_task_id');
-            $pending_task->duration = $request->get('duration');
-            $pending_task->order = $request->get('order');
-            $pending_task->save();
+            $pending_task = PendingTask::create($request->all());
             return $pending_task;
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);

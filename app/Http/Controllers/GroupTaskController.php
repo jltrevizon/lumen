@@ -26,6 +26,11 @@ class GroupTaskController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer'
+        ]);
+
         return $this->groupTaskRepository->create($request);
     }
 
