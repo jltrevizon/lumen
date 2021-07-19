@@ -77,8 +77,7 @@ class RequestRepository {
 
     public function getById($id){
         try {
-            return RequestVehicle::where('id', $id)
-                            ->first();
+            return RequestVehicle::findOrFail($id);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
