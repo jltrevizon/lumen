@@ -18,6 +18,12 @@ class QuestionAnswerController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer',
+            'questions' => 'required'
+        ]);
+
         return $this->questionAnswerRepository->create($request);
     }
 }

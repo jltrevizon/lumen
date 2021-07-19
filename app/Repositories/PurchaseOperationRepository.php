@@ -23,10 +23,7 @@ class PurchaseOperationRepository {
 
     public function create($request){
         try {
-            $purchase_operation = new PurchaseOperation();
-            $purchase_operation->task_id = $request->get('task_id');
-            $purchase_operation->name = $request->get('name');
-            $purchase_operation->price = $request->get('price');
+            $purchase_operation = PurchaseOperation::create($request->all());
             $purchase_operation->save();
             return $purchase_operation;
         } catch (Exception $e) {
@@ -36,13 +33,8 @@ class PurchaseOperationRepository {
 
     public function update($request, $id){
         try {
-            $purchase_operation = PurchaseOperation::where('id', $id)
-                                ->first();
-            if(isset($request['task_id'])) $purchase_operation->task_id = $request->get('task_id');
-            if(isset($request['name'])) $purchase_operation->name = $request->get('name');
-            if(isset($request['price'])) $purchase_operation->price = $request->get('price');
-            $purchase_operation->updated_at = date('Y-m-d H:i:s');
-            $purchase_operation->save();
+            $purchase_operation = PurchaseOperation::findOrFail($id);
+            $purchase_operation->update($request->all());
             return $purchase_operation;
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
