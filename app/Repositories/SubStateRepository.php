@@ -22,9 +22,7 @@ class SubStateRepository {
 
     public function create($request){
         try {
-            $sub_state = new SubState();
-            $sub_state->state_id = $request->input('state_id');
-            $sub_state->name = $request->input('name');
+            $sub_state = SubState::create($request->all());
             $sub_state->save();
             return $sub_state;
         } catch (Exception $e) {

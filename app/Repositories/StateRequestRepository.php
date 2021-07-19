@@ -22,8 +22,7 @@ class StateRequestRepository {
 
     public function create($request){
         try {
-            $state_request = new StateRequest();
-            $state_request->name = $request->input('name');
+            $state_request = StateRequest::create($request->all());
             $state_request->save();
             return $state_request;
         } catch (Exception $e) {

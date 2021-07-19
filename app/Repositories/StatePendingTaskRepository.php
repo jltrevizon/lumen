@@ -23,8 +23,7 @@ class StatePendingTaskRepository {
 
     public function create($request){
         try {
-            $state_pending_task = new StatePendingTask();
-            $state_pending_task->name = $request->input('name');
+            $state_pending_task = StatePendingTask::create($request->all());
             $state_pending_task->save();
             return $state_pending_task;
         } catch (Exception $e) {
