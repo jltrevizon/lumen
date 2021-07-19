@@ -186,7 +186,7 @@ class VehicleRepository {
             })
             ->get();
             if(count($vehicleDefleet) > 0){
-                return response()->json(['message' => 'Vehículo defletado o con solicitud de defleet!'], 200);
+                return response()->json(['defleet' => true], 200);
             }
 
             $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request', 'requests' => function ($query) {
