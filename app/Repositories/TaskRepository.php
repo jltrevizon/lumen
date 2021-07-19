@@ -18,11 +18,7 @@ class TaskRepository {
 
     public function create($request){
         try {
-            $task = new Task();
-            $task->sub_state_id = $request->input('sub_state_id');
-            $task->type_task_id = $request->input('type_task_id');
-            $task->name = $request->input('name');
-            $task->duration = $request->input('duration');
+            $task = Task::create($request->all());
             $task->save();
             return $task;
         } catch (Exception $e) {

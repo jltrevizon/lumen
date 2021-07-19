@@ -24,10 +24,23 @@ class UserController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string'
+        ]);
+
         return $this->userRepository->create($request);
     }
 
     public function createUserWithoutPassword(Request $request){
+
+        $this->validate($request, [
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users'
+        ]);
+
         return $this->userRepository->createUserWithoutPassword($request);
     }
 
@@ -48,10 +61,20 @@ class UserController extends Controller
     }
 
     public function getActiveUsers(Request $request){
+
+        $this->validate($request, [
+            'campa_id' => 'required|integer'
+        ]);
+
         return $this->userRepository->getActiveUsers($request);
     }
 
     public function getUserByEmail(Request $request){
+
+        $this->validate($request, [
+            'email' => 'required|string'
+        ]);
+
         return $this->userRepository->getUserByEmail($request);
     }
 }

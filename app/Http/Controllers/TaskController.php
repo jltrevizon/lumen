@@ -24,6 +24,14 @@ class TaskController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'sub_state_id' => 'required|integer',
+            'type_task_id' => 'required|integer',
+            'name' => 'required|string',
+            'duration' => 'required|integer',
+        ]);
+
         return $this->taskRepository->create($request);
     }
 

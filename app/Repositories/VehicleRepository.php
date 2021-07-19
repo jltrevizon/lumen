@@ -111,19 +111,7 @@ class VehicleRepository {
 
     public function create($request): JsonResponse {
         try {
-            $vehicle = new Vehicle();
-            if($request->input('remote_id')) $vehicle->remote_id = $request->input('remote_id');
-            $vehicle->campa_id = $request->input('campa_id');
-            $vehicle->category_id = $request->input('category_id');
-            if($request->input('sub_state_id')) $vehicle->sub_state_id = $request->input('sub_state_id');
-            if($request->input('kms')) $vehicle->kms = $request->input('kms');
-            $vehicle->ubication = $request->input('ubication');
-            $vehicle->plate = $request->input('plate');
-            if($request->input('trade_state_id')) $vehicle->trade_state_id = $request->input('trade_state_id');
-            $vehicle->vehicle_model_id = $request->input('vehicle_model_id');
-            if($request->input('version')) $vehicle->version = $request->input('version');
-            if($request->input('vin')) $vehicle->vin = $request->input('vin');
-            $vehicle->first_plate = $request->input('first_plate');
+            $vehicle = Vehicle::create($request->all());
             $vehicle->save();
             return response()->json(['vehicle' => $vehicle], 200);
         } catch(Exception $e){
@@ -309,7 +297,7 @@ class VehicleRepository {
     public function getVehiclesReadyToDeliveryCampa($request): JsonResponse {
         try {
             $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
-                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->whereIn('campa_id', $request->input('campas'))
                         ->where('ready_to_delivery', true)
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
@@ -322,7 +310,7 @@ class VehicleRepository {
         try {
             $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
                         ->whereHas('campa', function(Builder $builder) use($request){
-                            return $builder->where('company_id', $request->json()->get('company_id'));
+                            return $builder->where('company_id', $request->input('company_id'));
                         })
                         ->where('ready_to_delivery', true)
                         ->get();
@@ -356,7 +344,7 @@ class VehicleRepository {
                             })
                             ->where('active', true);
                         })
-                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->whereIn('campa_id', $request->input('campas'))
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
@@ -384,7 +372,7 @@ class VehicleRepository {
                                                         ->orWhereNotNull('transport_id');
                                         });
                         })
-                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->whereIn('campa_id', $request->input('campas'))
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
