@@ -26,10 +26,7 @@ class ProvinceRepository {
 
     public function create($request){
         try {
-            $province = new Province();
-            $province->region_id = $request->input('region_id');
-            $province->province_code = $request->input('province_code');
-            $province->name = $request->input('name');
+            $province = Province::create($request->all());
             $province->save();
             return $province;
         } catch (Exception $e) {

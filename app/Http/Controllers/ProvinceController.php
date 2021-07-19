@@ -23,10 +23,22 @@ class ProvinceController extends Controller
     }
 
     public function provinceByRegion(Request $request){
+
+        $this->validate($request, [
+            'region_id' => 'required|integer'
+        ]);
+
         return $this->provinceRepository->provinceByRegion($request);
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'region_id' => 'required|integer',
+            'province_code' => 'required|string',
+            'name' => 'required|string'
+        ]);
+
         return $this->provinceRepository->create($request);
     }
 
