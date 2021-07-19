@@ -177,14 +177,14 @@ class VehicleRepository {
     public function verifyPlate($request): JsonResponse {
         try {
             $user = $this->userRepository->getById(Auth::id());
-            $vehicleDefleet = Vehicle::whereHas('requests', function (Builder $builder) {
+            $vehicleDefleet = Vehicle::where('plate', $request->input('plate'))
+            ->whereHas('requests', function (Builder $builder) {
                 return $builder->where('type_request_id', 1)
                             ->where(function($query) {
                                 return $query->where('state_request_id', 1)
                                             ->orWhere('state_request_id', 2);
                             });
             })
-            ->where('plate', $request->input('plate'))
             ->first();
             if($vehicleDefleet){
                 return response()->json(['defleet' => true, 'vehicle' => $vehicleDefleet], 200);
