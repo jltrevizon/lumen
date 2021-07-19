@@ -184,9 +184,9 @@ class VehicleRepository {
                                             ->orWhere('state_request_id', 2);
                             });
             })
-            ->get();
-            if(count($vehicleDefleet) > 0){
-                return response()->json(['defleet' => true], 200);
+            ->first();
+            if($vehicleDefleet){
+                return response()->json(['defleet' => true, 'vehicle' => $vehicleDefleet], 200);
             }
 
             $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request', 'requests' => function ($query) {
