@@ -184,6 +184,7 @@ class VehicleRepository {
                                             ->orWhere('state_request_id', 2);
                             });
             })
+            ->where('plate', $request->input('plate'))
             ->first();
             if($vehicleDefleet){
                 return response()->json(['defleet' => true, 'vehicle' => $vehicleDefleet], 200);
