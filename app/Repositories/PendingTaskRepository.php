@@ -103,30 +103,19 @@ class PendingTaskRepository {
     public function getPendingOrNextTask(){
         $user = $this->userRepository->getById(Auth::id());
         try {
-            if($user->role_id == 4){
-                return PendingTask::with(['task','state_pending_task','group_task','vehicle.vehicleModel.brand','incidences'])
-                                ->whereHas('vehicle.campa', function(Builder $builder) use($user){
-                                    return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
-                                })
-                                ->where(function ($query) {
-                                    return $query->where('state_pending_task_id', 1)
-                                            ->orWhere('state_pending_task_id', 2);
-                                })
-                                ->where('approved', true)
-                                ->get();
-            }
-            if($user->role_id == 5){
-                return PendingTask::with(['task','state_pending_task','group_task','vehicle.vehicleModel.brand','incidences'])
+            return PendingTask::with(['task','state_pending_task','group_task','vehicle.vehicleModel.brand','incidences'])
                             ->whereHas('vehicle.campa', function(Builder $builder) use($user){
                                 return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
                             })
                             ->where(function ($query) {
                                 return $query->where('state_pending_task_id', 1)
-                                        ->orWhere('state_pending_task_id', 2);
+                                ->orWhere('state_pending_task_id', 2);
                             })
-                            ->where('task_id', 1)
+                            ->whereHas('task.sub_state.type_users_app', function ($query) use($user) {
+                                return $query->where('type_user_app_id', $user['type_user_app_id']);
+                            })
+                            ->where('approved', true)
                             ->get();
-            }
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

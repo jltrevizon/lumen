@@ -24,4 +24,8 @@ class SubState extends Model
     public function tasks(){
         return $this->hasMany(Task::class, 'sub_state_id');
     }
+
+    public function type_users_app(){
+        return $this->belongsToMany(TypeUserApp::class);
+    }
 }

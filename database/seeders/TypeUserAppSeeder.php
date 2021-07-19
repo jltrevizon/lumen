@@ -30,11 +30,12 @@ class TypeUserAppSeeder extends Seeder
                 'description' => 'Puede ver todo lo que pasa y mover prioridades de las tareas'
             ],
             [
-                'name' => 'Operatio Campa',
+                'name' => 'Operario Campa',
                 'description' => 'Entrada del vehículo, check list, ubicar vehículo en campa y entrega de vehículos'
             ],
             [
                 'name' => 'Taller mecánica',
+                'description' => null
             ],
             [
                 'name' => 'Taller chapa',
