@@ -121,7 +121,7 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->getVehiclesWithReservationWithoutContractCampa($request);
+        return $this->vehicleRepository->getVehiclesWithReservatiopcanWithoutContractCampa($request);
     }
 
     public function filterVehicle(Request $request){
@@ -164,5 +164,17 @@ class VehicleController extends Controller
     }
     public function unapprovedTask(){
         return $this->vehicleRepository->unapprovedTask();
+    }
+
+    public function vehicleByState(Request $request){
+
+        $this->validate($request, [
+            'states' => 'required',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date',
+            'campas' => 'required'
+        ]);
+
+        return $this->vehicleRepository->vehiclesByState($request);
     }
 }

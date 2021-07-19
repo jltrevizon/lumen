@@ -177,6 +177,17 @@ class VehicleRepository {
     public function verifyPlate($request): JsonResponse {
         try {
             $user = $this->userRepository->getById(Auth::id());
+            $vehicleDefleet = Vehicle::whereHas('requests', function (Builder $builder) {
+                return $builder->where('type_request_id', 1)
+                            ->where(function($query) {
+                                return $query->where('state_request_id', 1)
+                                            ->orWhere('state_request_id', 2);
+                            });
+            })
+            ->get();
+            if(count($vehicleDefleet) > 0){
+                return response()->json(['message' => 'Vehículo defletado o con solicitud de defleet!'], 200);
+            }
 
             $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request', 'requests' => function ($query) {
                             return $query->where('state_request_id', 1);
@@ -426,5 +437,22 @@ class VehicleRepository {
         }
     }
 
+    public function vehiclesByState($request){
+        try {
+            return Vehicle::with(['vehicleModel.brand','category','campa','subState.state','trade_state'])
+                        ->whereHas('subState.state', function (Builder $builder) use($request) {
+                            return $builder->whereIn('id', $request->input('states'));
+                        })
+                        ->whereHas('requests', function (Builder $builder) use($request) {
+                            return $builder->where('type_request_id', 1)
+                                        ->where('datetime_approved', '>=', $request->input('date_start') . ' 00:00:00')
+                                        ->where('datetime_approved','<=', $request->input('date_end') . ' 23:59:59');
+                        })
+                        ->whereIn('campa_id', $request->input('campas'))
+                        ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
 
 }
