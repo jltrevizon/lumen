@@ -23,6 +23,13 @@ class PurchaseOperationController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'task_id' => 'required|integer',
+            'name' => 'required|string',
+            'price' => 'required'
+        ]);
+
         return $this->purchaseOperationRepository->create($request);
     }
 

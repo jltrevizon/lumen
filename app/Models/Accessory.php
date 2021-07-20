@@ -9,4 +9,8 @@ class Accessory extends Model
 {
     use HasFactory;
 
+    public function reception(){
+        return $this->belongsTo(Reception::class);
+    }
+
 }

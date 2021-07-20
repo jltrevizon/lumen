@@ -24,6 +24,11 @@ class RoleController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'description' => 'required|string'
+        ]);
+
         return $this->roleRepository->create($request);
     }
 

@@ -22,8 +22,7 @@ class TypeTaskRepository {
 
     public function create($request){
         try {
-            $type_task = new TypeTask();
-            $type_task->name = $request->input('name');
+            $type_task = TypeTask::create($request->all());
             $type_task->save();
             return $type_task;
         } catch (Exception $e) {

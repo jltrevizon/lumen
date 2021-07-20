@@ -21,6 +21,12 @@ class QuestionController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'question' => 'required|string',
+            'description' => 'required|string'
+        ]);
+
         return $this->questionRepository->create($request);
     }
 

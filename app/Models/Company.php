@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Campa;
 use App\Models\ReservationTime;
 use App\Models\Customer;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Company extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -34,5 +37,17 @@ class Company extends Model
 
     public function users(){
         return $this->hasMany(User::class);
+    }
+
+    public function questions(){
+        return $this->hasMany(Question::class);
+    }
+
+    public function defleetVariable(){
+        return $this->hasOne(DefleetVariable::class);
+    }
+
+    public function states(){
+        return $this->hasMany(State::class);
     }
 }

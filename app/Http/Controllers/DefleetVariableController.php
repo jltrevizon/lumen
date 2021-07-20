@@ -20,6 +20,12 @@ class DefleetVariableController extends Controller
     }
 
     public function createVariables(Request $request){
+
+        $this->validate($request, [
+            'kms' => 'required|integer',
+            'years' => 'required|integer'
+        ]);
+
         return $this->defleetVariablesRepository->createVariables($request);
     }
 

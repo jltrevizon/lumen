@@ -23,6 +23,12 @@ class RequestController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'vehicles' => 'required',
+
+        ]);
+
         return $this->requestRepository->create($request);
     }
 
@@ -31,22 +37,48 @@ class RequestController extends Controller
     }
 
     public function vehiclesRequestedDefleet(Request $request){
+
+        $this->validate($request, [
+            'campa_id' => 'required|integer'
+        ]);
+
         return $this->requestRepository->vehiclesRequestedDefleet($request);
     }
 
     public function vehiclesRequestedReserve(Request $request){
+
+        $this->validate($request, [
+            'campa_id' => 'required|integer'
+        ]);
+
         return $this->requestRepository->vehiclesRequestedReserve($request);
     }
 
     public function confirmedRequest(Request $request){
+
+        $this->validate($request, [
+            'request_id' => 'required|integer'
+        ]);
+
         return $this->requestRepository->confirmedRequest($request);
     }
 
     public function getConfirmedRequest(Request $request){
+
+        $this->validate($request, [
+            'type_request_id' => 'required|integer',
+            'campa_id' => 'required|integer'
+        ]);
+
         return $this->requestRepository->getConfirmedRequest($request);
     }
 
     public function declineRequest(Request $request){
+
+        $this->validate($request, [
+            'request_id' => 'required|integer'
+        ]);
+
         return $this->requestRepository->declineRequest($request);
     }
 

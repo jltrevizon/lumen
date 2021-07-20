@@ -14,13 +14,7 @@ class CustomerRepository {
 
     public function create($request){
         try {
-            $customer = new Customer();
-            $customer->name = $request->input('name');
-            if($request->input('company_id')) $customer->company_id = $request->input('company_id');
-            if($request->input('province_id')) $customer->province_id = $request->input('province_id');
-            if($request->input('cif')) $customer->cif = $request->input('cif');
-            if($request->input('phone')) $customer->phone = $request->input('phone');
-            if($request->input('address')) $customer->address = $request->input('address');
+            $customer = Customer::create($request->all());
             $customer->save();
             return $customer;
         } catch (Exception $e) {

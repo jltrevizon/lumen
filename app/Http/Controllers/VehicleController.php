@@ -40,6 +40,15 @@ class VehicleController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'campa_id' => 'required|integer',
+            'category_id' => 'required|integer',
+            'plate' => 'required|string',
+            'vehicle_model_id' => 'required|integer',
+            'first_plate' => 'required|date',
+        ]);
+
         return $this->vehicleRepository->create($request);
     }
 
@@ -48,10 +57,21 @@ class VehicleController extends Controller
     }
 
     public function verifyPlate(Request $request){
+
+        $this->validate($request, [
+            'plate' => 'required|string',
+        ]);
+
         return $this->vehicleRepository->verifyPlate($request);
     }
 
     public function vehicleDefleet(Request $request){
+
+        $this->validate($request, [
+            'campas' => 'required',
+            'limit' => 'required|integer'
+        ]);
+
         return $this->vehicleRepository->vehicleDefleet($request);
     }
 
@@ -59,35 +79,61 @@ class VehicleController extends Controller
         return $this->vehicleRepository->delete($id);
     }
 
-    public function updateGeolocation($request){
-        return $this->vehicleRepository->updateGeolocation($request);
-    }
-
     public function createFromExcel(Request $request){
+
+        $this->validate($request, [
+            'vehicles' => 'required'
+        ]);
+
         return $this->vehicleRepository->createFromExcel($request);
     }
 
     public function getVehiclesReadyToDeliveryCampa(Request $request){
+
+        $this->validate($request, [
+            'campa_id' => 'required|integer'
+        ]);
+
         return $this->vehicleRepository->getVehiclesReadyToDeliveryCampa($request);
     }
 
     public function getVehiclesReadyToDeliveryCompany(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer'
+        ]);
+
         return $this->vehicleRepository->getVehiclesReadyToDeliveryCompany($request);
     }
 
     public function getVehiclesWithReservationWithoutOrderCampa(Request $request){
+
+        $this->validate($request, [
+            'campas' => 'required'
+        ]);
+
         return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request);
     }
 
     public function getVehiclesWithReservationWithoutContractCampa(Request $request){
-        return $this->vehicleRepository->getVehiclesWithReservationWithoutContractCampa($request);
-    }
 
-    public function getVehiclesWithReservationWithoutContractCompany(Request $request){
-        return $this->vehicleRepository->getVehiclesWithReservationWithoutContractCompany($request);
+        $this->validate($request, [
+            'campas' => 'required'
+        ]);
+
+        return $this->vehicleRepository->getVehiclesWithReservatiopcanWithoutContractCampa($request);
     }
 
     public function filterVehicle(Request $request){
+
+        $this->validate($request, [
+            'campas' => 'required',
+            'states' => 'required',
+            'brands' => 'required',
+            'categories' => 'required',
+            'limit' => 'required'
+        ]);
+
         return $this->vehicleRepository->filterVehicle($request);
     }
 
@@ -96,6 +142,11 @@ class VehicleController extends Controller
     }
 
     public function vehicleTotalsState(Request $request){
+
+        $this->validate($request, [
+            'campas' => 'required'
+        ]);
+
         return $this->vehicleRepository->vehicleTotalsState($request);
     }
 
@@ -104,9 +155,26 @@ class VehicleController extends Controller
     }
 
     public function verifyPlateReception(Request $request){
+
+        $this->validate($request, [
+            'plate' => 'required|string',
+        ]);
+
         return $this->vehicleRepository->verifyPlateReception($request);
     }
     public function unapprovedTask(){
         return $this->vehicleRepository->unapprovedTask();
+    }
+
+    public function vehicleByState(Request $request){
+
+        $this->validate($request, [
+            'states' => 'required',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date',
+            'campas' => 'required'
+        ]);
+
+        return $this->vehicleRepository->vehiclesByState($request);
     }
 }

@@ -23,6 +23,11 @@ class StatePendingTaskController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'name' => 'required|string'
+        ]);
+
         return $this->statePendingTaskRepository->create($request);
     }
 

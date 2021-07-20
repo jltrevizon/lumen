@@ -23,9 +23,7 @@ class CategoryRepository {
 
     public function create($request){
         try {
-            $category = new Category();
-            $category->name = $request->get('name');
-            if(isset($request['description'])) $category->description = $request->get('description');
+            $category = Category::create($request->all());
             $category->save();
             return $category;
         } catch (Exception $e) {

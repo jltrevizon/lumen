@@ -13,7 +13,7 @@ class AccessoryFactory extends Factory
     public function definition(): array
     {
     	return [
-            'reception_id' => Reception::factory()->count(1)->create()->id,
+            'reception_id' => Reception::factory()->create()->id,
     	    'name' => $this->faker->name,
             'description' => $this->faker->text
     	];

@@ -13,10 +13,20 @@ class ReservationController extends Controller
     }
 
     public function getReservationActive(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer'
+        ]);
+
         return $this->reservationRepository->getReservationActive($request);
     }
 
     public function getReservationActiveByCampa(Request $request){
+
+        $this->validate($request, [
+            'campa_id' => 'required|integer'
+        ]);
+
         return $this->reservationRepository->getReservationActiveByCampa($request);
     }
 
@@ -25,14 +35,29 @@ class ReservationController extends Controller
     }
 
     public function getReservationsByVehicle(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer'
+        ]);
+
         return $this->reservationRepository->getReservationsByVehicle($request);
     }
 
     public function vehicleWithoutOrder(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer'
+        ]);
+
         return $this->reservationRepository->vehicleWithoutOrder($request);
     }
 
     public function vehicleWithoutContract(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer'
+        ]);
+
         return $this->reservationRepository->vehicleWithoutContract($request);
     }
 

@@ -26,8 +26,7 @@ class RegionRepository {
 
     public function create($request){
         try {
-            $region = new Region();
-            $region->name = $request->input('name');
+            $region = Region::create($request->all());
             $region->save();
             return $region;
         } catch (Exception $e) {

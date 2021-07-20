@@ -7,12 +7,14 @@ use App\Models\User;
 use App\Models\Province;
 use App\Models\Company;
 use App\Models\Vehicle;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Campa extends Model
 {
 
-    protected $filleable = [
+    use HasFactory;
+
+    protected $fillable = [
         'company_id',
         'province_id',
         'name',
@@ -35,5 +37,9 @@ class Campa extends Model
 
     public function vehicles(){
         return $this->hasMany(Vehicle::class, 'campa_id');
+    }
+
+    public function reservations(){
+        return $this->hasMany(Reservation::class);
     }
 }

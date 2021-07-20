@@ -2,15 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DefleetVariable extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'company_id',
         'kms',
         'years'
     ];
+
+    public function company(){
+        return $this->belongsTo(Company::class);
+    }
 
 }

@@ -13,10 +13,21 @@ class ReservationTimeController extends Controller
     }
 
     public function getByCompany(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer'
+        ]);
+
         return $this->reservationTimeRepository->getByCompany($request);
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer',
+            'hours' => 'required|integer'
+        ]);
+
         return $this->reservationTimeRepository->create($request);
     }
 

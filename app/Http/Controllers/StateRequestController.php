@@ -23,6 +23,11 @@ class StateRequestController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'name' => 'required|string'
+        ]);
+
         return $this->stateRequestRepository->create($request);
     }
 

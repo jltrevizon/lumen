@@ -8,9 +8,12 @@ use App\Models\StateRequest;
 use App\Models\TypeRequest;
 use App\Models\Reservation;
 use App\Models\Customer;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Request extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'customer_id',

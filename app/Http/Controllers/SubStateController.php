@@ -24,6 +24,12 @@ class SubStateController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'state_id' => 'required|integer',
+            'name' => 'required|string'
+        ]);
+
         return $this->subStateRepository->create($request);
     }
 

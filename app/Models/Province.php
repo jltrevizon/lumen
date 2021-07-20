@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Region;
 use App\Models\Campa;
 use App\Models\Customer;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Province extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'region_id',

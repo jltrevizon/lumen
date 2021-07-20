@@ -13,6 +13,11 @@ class ReceptionController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer'
+        ]);
+
         return $this->receptionRepository->create($request);
     }
 

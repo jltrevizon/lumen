@@ -31,8 +31,7 @@ class StateRepository {
 
     public function create($request){
         try {
-            $state = new State();
-            $state->name = $request->input('name');
+            $state = State::create($request->all());
             $state->save();
             return $state;
         } catch (Exception $e) {

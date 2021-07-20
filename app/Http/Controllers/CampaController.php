@@ -26,20 +26,43 @@ class CampaController extends Controller
     }
 
     public function getCampasByRegion(Request $request){
+
+        $this->validate($request, [
+            'region_id' => 'required|integer',
+            'company_id' => 'required|integer'
+        ]);
+
         return $this->campaRepository->getCampasByRegion($request);
     }
 
     public function getCampasByProvince(Request $request){
+
+        $this->validate($request, [
+            'province_id' => 'required|integer',
+            'company_id' => 'required|integer'
+        ]);
+
         return $this->campaRepository->getCampasByProvince($request);
     }
 
     public function getByCompany(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer'
+        ]);
+
         return Campa::with(['company'])
                     ->where('company_id', $request->input('company_id'))
                     ->get();
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer',
+            'name' => 'required|string'
+        ]);
+
         return $this->campaRepository->create($request);
     }
 

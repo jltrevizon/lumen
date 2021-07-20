@@ -8,7 +8,7 @@ class TaskRepository {
 
     public function getById($id){
         try {
-            return Task::with(['sub_state.state'])
+            return Task::with(['sub_state.state','sub_state.type_users_app'])
                         ->findOrFail($id);
             //return response()->json(['task' => $task], 200);
         } catch (Exception $e) {
@@ -18,11 +18,7 @@ class TaskRepository {
 
     public function create($request){
         try {
-            $task = new Task();
-            $task->sub_state_id = $request->input('sub_state_id');
-            $task->type_task_id = $request->input('type_task_id');
-            $task->name = $request->input('name');
-            $task->duration = $request->input('duration');
+            $task = Task::create($request->all());
             $task->save();
             return $task;
         } catch (Exception $e) {

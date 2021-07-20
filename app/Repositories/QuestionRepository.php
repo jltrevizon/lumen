@@ -17,8 +17,7 @@ class QuestionRepository {
     public function getAll(){
         try {
             $user = User::with(['company'])
-                        ->where('id', Auth::id())
-                        ->first();
+                        ->findOrFail(Auth::id());
             $questions = Question::where('company_id', $user->company_id)
                         ->get();
             if(count($questions) > 0) return $questions;

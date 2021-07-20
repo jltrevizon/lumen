@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\State;
 use App\Models\Task;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SubState extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'state_id',
@@ -20,5 +23,9 @@ class SubState extends Model
 
     public function tasks(){
         return $this->hasMany(Task::class, 'sub_state_id');
+    }
+
+    public function type_users_app(){
+        return $this->belongsToMany(TypeUserApp::class);
     }
 }

@@ -24,15 +24,7 @@ class UserRepository {
 
     public function create($request){
         try {
-            $user = new User();
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
-            $user->password = Hash::make($request->input('password'));
-            if($request->input('company_id')) $user->company_id = $request->input('company_id');
-            if($request->input('surname')) $user->surname = $request->input('surname');
-            if($request->input('role_id')) $user->role_id = $request->input('role_id');
-            if($request->input('avatar')) $user->avatar = $request->input('avatar');
-            if($request->input('phone')) $user->phone = $request->input('phone');
+            $user = User::create($request->all());
             $user->save();
             return $user;
         } catch (Exception $e) {
@@ -42,14 +34,7 @@ class UserRepository {
 
     public function createUserWithoutPassword($request){
         try {
-            $user = new User();
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
-            if($request->input('company_id')) $user->company_id = $request->input('company_id');
-            if($request->input('password')) $user->password = Hash::make($request->input('password'));
-            if($request->input('role_id')) $user->role_id = $request->input('role_id');
-            if($request->input('avatar')) $user->avatar = $request->input('avatar');
-            if($request->input('phone')) $user->phone = $request->input('phone');
+            $user = User::create($request->all());
             $user->save();
             return $user;
         } catch (Exception $e) {

@@ -16,11 +16,11 @@ class CampaRepository {
     public function getCampasByRegion($request){
         try {
             return Campa::with(['province.region'])
-                        ->whereHas('province', function (Builder $builder) use($request){
-                            return $builder->where('region_id', $request->input('region_id'));
-                        })
-                        ->where('company_id', $request->input('company_id'))
-                        ->get();
+                    ->whereHas('province', function (Builder $builder) use($request){
+                        return $builder->where('region_id', $request->input('region_id'));
+                    })
+                    ->where('company_id', $request->input('company_id'))
+                    ->get();
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -39,13 +39,7 @@ class CampaRepository {
 
     public function create($request){
         try {
-            $campa = new Campa();
-            $campa->company_id = $request->input('company_id');
-            if($request->input('province_id')) $campa->province_id = $request->input('province_id');
-            $campa->name = $request->input('name');
-            if($request->input('location')) $campa->location = $request->input('location');
-            if($request->input('address')) $campa->address = $request->input('address');
-            $campa->save();
+            $campa = Campa::create($request->all());
             return $campa;
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);

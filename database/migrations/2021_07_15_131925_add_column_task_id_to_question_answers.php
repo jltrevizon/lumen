@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class AddColumnTaskIdToQuestionAnswers extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('question_answers', function (Blueprint $table) {
+            $table->foreignId('task_id')->nullable()->after('id')->constrained();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('question_answers', function (Blueprint $table) {
+            $table->dropForeign('question_answers_task_id_foreign');
+            $table->dropColumn('task_id');
+        });
+    }
+}

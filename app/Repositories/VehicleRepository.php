@@ -111,19 +111,7 @@ class VehicleRepository {
 
     public function create($request): JsonResponse {
         try {
-            $vehicle = new Vehicle();
-            if($request->input('remote_id')) $vehicle->remote_id = $request->input('remote_id');
-            $vehicle->campa_id = $request->input('campa_id');
-            $vehicle->category_id = $request->input('category_id');
-            if($request->input('sub_state_id')) $vehicle->sub_state_id = $request->input('sub_state_id');
-            if($request->input('kms')) $vehicle->kms = $request->input('kms');
-            $vehicle->ubication = $request->input('ubication');
-            $vehicle->plate = $request->input('plate');
-            if($request->input('trade_state_id')) $vehicle->trade_state_id = $request->input('trade_state_id');
-            $vehicle->vehicle_model_id = $request->input('vehicle_model_id');
-            if($request->input('version')) $vehicle->version = $request->input('version');
-            if($request->input('vin')) $vehicle->vin = $request->input('vin');
-            $vehicle->first_plate = $request->input('first_plate');
+            $vehicle = Vehicle::create($request->all());
             $vehicle->save();
             return response()->json(['vehicle' => $vehicle], 200);
         } catch(Exception $e){
@@ -189,6 +177,18 @@ class VehicleRepository {
     public function verifyPlate($request): JsonResponse {
         try {
             $user = $this->userRepository->getById(Auth::id());
+            $vehicleDefleet = Vehicle::where('plate', $request->input('plate'))
+            ->whereHas('requests', function (Builder $builder) {
+                return $builder->where('type_request_id', 1)
+                            ->where(function($query) {
+                                return $query->where('state_request_id', 1)
+                                            ->orWhere('state_request_id', 2);
+                            });
+            })
+            ->first();
+            if($vehicleDefleet){
+                return response()->json(['defleet' => true, 'vehicle' => $vehicleDefleet], 200);
+            }
 
             $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request', 'requests' => function ($query) {
                             return $query->where('state_request_id', 1);
@@ -309,7 +309,7 @@ class VehicleRepository {
     public function getVehiclesReadyToDeliveryCampa($request): JsonResponse {
         try {
             $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
-                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->whereIn('campa_id', $request->input('campas'))
                         ->where('ready_to_delivery', true)
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
@@ -322,7 +322,7 @@ class VehicleRepository {
         try {
             $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
                         ->whereHas('campa', function(Builder $builder) use($request){
-                            return $builder->where('company_id', $request->json()->get('company_id'));
+                            return $builder->where('company_id', $request->input('company_id'));
                         })
                         ->where('ready_to_delivery', true)
                         ->get();
@@ -334,7 +334,7 @@ class VehicleRepository {
 
     public function getVehiclesWithReservationWithoutOrderCampa($request): JsonResponse {
         try{
-            $vehicles = Vehicle::with(['category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+            $vehicles = Vehicle::with(['vehicleModel.brand','category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->where(function ($query) {
                                 return $query->whereNull('order');
                             })
@@ -356,7 +356,7 @@ class VehicleRepository {
                             })
                             ->where('active', true);
                         })
-                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->whereIn('campa_id', $request->input('campas'))
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
@@ -366,7 +366,7 @@ class VehicleRepository {
 
     public function getVehiclesWithReservationWithoutContractCampa($request): JsonResponse {
         try {
-            $vehicles = Vehicle::with(['category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
+            $vehicles = Vehicle::with(['vehicleModel.brand','category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
                             return $query->whereNotNull('order')
                                         ->whereNull('contract')
                                         ->where('active', true)
@@ -384,7 +384,7 @@ class VehicleRepository {
                                                         ->orWhereNotNull('transport_id');
                                         });
                         })
-                        ->whereIn('campa_id', $request->json()->get('campas'))
+                        ->whereIn('campa_id', $request->input('campas'))
                         ->get();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
@@ -438,5 +438,22 @@ class VehicleRepository {
         }
     }
 
+    public function vehiclesByState($request){
+        try {
+            return Vehicle::with(['vehicleModel.brand','category','campa','subState.state','trade_state'])
+                        ->whereHas('subState.state', function (Builder $builder) use($request) {
+                            return $builder->whereIn('id', $request->input('states'));
+                        })
+                        ->whereHas('requests', function (Builder $builder) use($request) {
+                            return $builder->where('type_request_id', 1)
+                                        ->where('datetime_approved', '>=', $request->input('date_start') . ' 00:00:00')
+                                        ->where('datetime_approved','<=', $request->input('date_end') . ' 23:59:59');
+                        })
+                        ->whereIn('campa_id', $request->input('campas'))
+                        ->get();
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
 
 }

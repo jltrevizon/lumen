@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 class CampaUserController extends Controller
 {
     public function create(Request $request){
+
+        $this->validate($request, [
+            'campas' => 'required'
+        ]);
+
         $campas = $request->input('campas');
         foreach($campas as $campa){
             DB::table('campa_user')->insert([
@@ -24,6 +29,9 @@ class CampaUserController extends Controller
 
     public function delete(Request $request){
         try {
+            $this->validate($request, [
+                'campas' => 'required'
+            ]);
             $campas = $request->input('campas');
             foreach($campas as $campa){
                 DB::table('campa_user')

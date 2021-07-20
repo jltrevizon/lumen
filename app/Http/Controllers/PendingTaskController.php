@@ -38,6 +38,15 @@ class PendingTaskController extends Controller
     }
 
     public function create(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer',
+            'task_id' => 'required|integer',
+            'group_task_id' => 'required|integer',
+            'duration' => 'required',
+            'order' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->create($request);
     }
 
@@ -46,10 +55,20 @@ class PendingTaskController extends Controller
     }
 
     public function createIncidence(Request $request){
+
+        $this->validate($request, [
+            'pending_task_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->createIncidence($request);
     }
 
     public function resolvedIncidence(Request $request){
+
+        $this->validate($request, [
+            'pending_task_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->resolvedIncidence($request);
     }
 
@@ -62,26 +81,58 @@ class PendingTaskController extends Controller
     }
 
     public function startPendingTask(Request $request){
+
+        $this->validate($request, [
+            'pending_task_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->startPendingTask($request);
     }
 
     public function cancelPendingTask(Request $request){
+
+        $this->validate($request, [
+            'pending_task_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->cancelPendingTask($request);
     }
 
     public function finishPendingTask(Request $request){
+
+        $this->validate($request, [
+            'pending_task_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->finishPendingTask($request);
     }
 
     public function getPendingTaskByState(Request $request){
+
+        $this->validate($request, [
+            'company_id' => 'required|integer',
+            'state_pending_task_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->getPendingTaskByState($request);
     }
 
     public function getPendingTaskByStateCampa(Request $request){
+
+        $this->validate($request, [
+            'campas' => 'required',
+            'state_pending_task_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->getPendingTaskByStateCampa($request);
     }
 
     public function getPendingTaskByPlate(Request $request){
+
+        $this->validate($request, [
+            'plate' => 'required|string'
+        ]);
+
         return $this->pendingTaskRepository->getPendingTaskByPlate($request);
     }
 
@@ -90,6 +141,12 @@ class PendingTaskController extends Controller
     }
 
     public function orderPendingTask(Request $request){
+
+        $this->validate($request, [
+            'pending_tasks' => 'required',
+            'vehicle_id' => 'required|integer'
+        ]);
+
         return $this->pendingTaskRepository->orderPendingTask($request);
     }
 

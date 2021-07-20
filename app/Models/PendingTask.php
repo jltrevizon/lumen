@@ -8,9 +8,12 @@ use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\GroupTask;
 use App\Models\Incidence;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PendingTask extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'vehicle_id',
@@ -19,6 +22,7 @@ class PendingTask extends Model
         'group_task_id',
         'duration',
         'order',
+        'approved',
         'code_authorization',
         'status_color',
         'datetime_pending',
@@ -44,5 +48,9 @@ class PendingTask extends Model
 
     public function incidences(){
         return $this->belongsToMany(Incidence::class);
+    }
+
+    public function pending_task_canceled(){
+        return $this->hasMany(PendingTaskCanceled::class);
     }
 }

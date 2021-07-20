@@ -22,8 +22,7 @@ class TransportRepository {
 
     public function create($request){
         try {
-            $transport = new Transport();
-            $transport->name = $request->input('name');
+            $transport = Transport::create($request->all());
             $transport->save();
             return $transport;
         } catch (Exception $e) {
