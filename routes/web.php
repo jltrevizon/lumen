@@ -354,5 +354,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->post('/reception', 'ReceptionController@create');
         $router->get('/reception/{id}','ReceptionController@getById');
+
+        /**
+         * Type User App
+         */
+        $router->get('/type-user-app', 'TypeUserAppController@index');
     });
 });
