@@ -22,21 +22,21 @@ class VehiclePicturesTest extends TestCase
     }
 
     /** @test */
-    public function it_belongs_vehicle()
+    public function it_belongs_to_vehicle()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehiclePicture->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->vehiclePicture->vehicle()->getModel());
     }
 
     /** @test */
-    public function it_belongs_user()
+    public function it_belongs_to_user()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehiclePicture->user());
         $this->assertInstanceOf(User::class, $this->vehiclePicture->user()->getModel());
     }
 
     /** @test */
-    public function it_belongs_reception()
+    public function it_belongs_to_reception()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehiclePicture->reception());
         $this->assertInstanceOf(Reception::class, $this->vehiclePicture->reception()->getModel());
