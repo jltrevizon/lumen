@@ -11,7 +11,25 @@ class VehiclePicture extends Model
 
     use HasFactory;
 
+    protected $fillable = [
+        'vehicle_id',
+        'user_id',
+        'reception_id',
+        'url',
+        'latitude',
+        'longitude',
+        'active'
+    ];
+
     public function vehicle(){
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsTo(Vehicle::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function reception(){
+        return $this->belongsTo(Reception::class);
     }
 }
