@@ -20,6 +20,7 @@
         "laravelista/lumen-vendor-publish": "^8.0",
         "nordsoftware/lumen-cors": "^3.4",
         "palanik/lumen-cors": "dev-master",
+        "tucker-eric/eloquentfilter": "^3.0",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {

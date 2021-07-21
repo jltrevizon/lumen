@@ -15,11 +15,12 @@ use App\Models\Reception;
 use App\Models\TradeState;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use EloquentFilter\Filterable;
 
 class Vehicle extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'remote_id',
@@ -109,8 +110,12 @@ class Vehicle extends Model
         });
     }
 
-    public function scopePlate($query, $plate){
-        return $query->where('plate','like',"%$plate%");
+    public function scopeByPlate($query, $plate){
+        return $query->where('plate','like',"%" . $plate . "%");
+    }
+
+    public function scopeByTradeStateIds($query, $ids){
+        return $query->whereIn('trade_state_id', $ids);
     }
 
     public function scopeBrandIds($query, $ids){
@@ -119,8 +124,16 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeVehicleModelIds($query, $ids){
+        return $query->whereIn('vehicle_model_id', $ids);
+    }
+
     public function scopeCategoriesIds($query, $ids){
         return $query->whereIn('category_id',$ids);
+    }
+
+    public function scopeByUbication($query, $ubication){
+        return $query->where('ubication','LIKE', "%$ubication%");
     }
 
     public function lastUnapprovedGroupTask(){

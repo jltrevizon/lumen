@@ -126,14 +126,6 @@ class VehicleController extends Controller
 
     public function filterVehicle(Request $request){
 
-        $this->validate($request, [
-            'campas' => 'required',
-            'states' => 'required',
-            'brands' => 'required',
-            'categories' => 'required',
-            'limit' => 'required'
-        ]);
-
         return $this->vehicleRepository->filterVehicle($request);
     }
 

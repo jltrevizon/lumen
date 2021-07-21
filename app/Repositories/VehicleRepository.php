@@ -50,16 +50,8 @@ class VehicleRepository {
     public function filterVehicle($request): JsonResponse {
         try {
             $vehicles = Vehicle::with(['subState.state','campa','category','trade_state','requests.customer','reservations','vehicleModel.brand'])
-                        ->campasIds($request->input('campas'))
-                        ->stateIds($request->input('states'))
-                        ->plate($request->input('plate'))
-                        ->brandIds($request->input('brands'))
-                        ->where(function($query) use($request) {
-                            if(count($request->input('trade_states')) > 0) return $query->whereIn('trade_state_id', $request->input('trade_states'));
-                            else return $query->whereNull('trade_state_id');
-                        })
-                        ->categoriesIds($request->input('categories'))
-                        ->paginate($request->input('limit'));
+                        ->filter($request->all())
+                        ->paginate();
             return response()->json(['vehicles' => $vehicles], 200);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
