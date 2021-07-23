@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\TryCatch;
 use Symfony\Component\Console\Input\Input;
 
-class VehicleRepository {
+class VehicleRepository extends Repository {
 
     public function __construct(
         UserRepository $userRepository,
@@ -32,7 +32,7 @@ class VehicleRepository {
         GroupTaskRepository $groupTaskRepository,
         BrandRepository $brandRepository,
         VehicleModelRepository $vehicleModelRepository,
-        EloquentFunctions $eloquentFunctions)
+        CampaRepository $campaRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -41,40 +41,40 @@ class VehicleRepository {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->brandRepository = $brandRepository;
         $this->vehicleModelRepository = $vehicleModelRepository;
-        $this->eloquentFunctions = $eloquentFunctions;
+        $this->campaRepository = $campaRepository;
+    }
+
+    public function getAll($request){
+        $user = $this->userRepository->getById(Auth::id());
+        $campas = $this->campaRepository->getCampasByCompany($user->company_id);
+        return Vehicle::with($this->getWiths($request->with))
+                    ->whereIn('campa_id', $campas->pluck('id')->toArray())
+                    ->paginate();
     }
 
     public function getById($request, $id){
-        try {
-            return Vehicle::with($this->eloquentFunctions->getWiths($request->with))
-                        ->findOrFail($id);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e], 409);
-        }
+        return Vehicle::with($this->getWiths($request->with))
+                    ->findOrFail($id);
     }
 
     public function filterVehicle($request) {
-        return Vehicle::with($this->eloquentFunctions->getWiths($request->with))
+        return Vehicle::with($this->getWiths($request->with))
                     ->filter($request->all())
                     ->paginate();
     }
 
     public function createFromExcel($request) {
-        try {
-            $vehicles = $request->input('vehicles');
-            foreach($vehicles as $vehicle){
-                $new_vehicle = Vehicle::create($vehicle);
-                $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-                $category['id'] ? null : $new_vehicle->category_id = $category['id'];
-                $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
-                $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
-                $new_vehicle->vehicle_model_id = $vehicle_model['id'];
-                $new_vehicle->save();
-            }
-            return response()->json(['vehicles' => 'Vehicles created'], 201);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
+        $vehicles = $request->input('vehicles');
+        foreach($vehicles as $vehicle){
+            $new_vehicle = Vehicle::create($vehicle);
+            $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
+            $category['id'] ? null : $new_vehicle->category_id = $category['id'];
+            $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
+            $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
+            $new_vehicle->vehicle_model_id = $vehicle_model['id'];
+            $new_vehicle->save();
         }
+        return 'Vehicles created!';
     }
 
     public function getByPlate($request) {
@@ -88,13 +88,9 @@ class VehicleRepository {
     }
 
     public function create($request): JsonResponse {
-        try {
-            $vehicle = Vehicle::create($request->all());
-            $vehicle->save();
-            return response()->json(['vehicle' => $vehicle], 200);
-        } catch(Exception $e){
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $vehicle = Vehicle::create($request->all());
+        $vehicle->save();
+        return response()->json(['vehicle' => $vehicle], 200);
     }
 
     public function update($request, $id): JsonResponse
@@ -218,32 +214,15 @@ class VehicleRepository {
     }
 
     public function vehicleDefleet($request) {
-        try {
             $user = $this->userRepository->getById(Auth::id());
-
             $variables = $this->defleetVariableRepository->getVariablesByCompany($user->company_id);
             $date = date("Y-m-d");
-            $date1 = new DateTime($date);
             $date_defleet = date("Y-m-d", strtotime($date . " - $variables->years years")) . ' 00:00:00';
-           // return $date_defleet;
-            $vehicles = Vehicle::with(['campa','category','subState.state'])
-                            ->where(function($query) {
-                                return $query->whereHas('requests', function(Builder $builder) {
-                                    return $builder->where('state_request_id', 3);
-                                })
-                                ->orWhereDoesntHave('requests');
-                            })
-                            ->where(function($query) use($date_defleet, $variables){
-                                return $query->where('first_plate','<',$date_defleet)
-                                            ->orWhere('kms','>',$variables->kms);
-                            })
-                            ->whereIn('campa_id', $request->input('campas'))
-                            ->paginate($request->input('limit'));
-
-            return response()->json(['vehicles' => $vehicles], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+            return Vehicle::with($this->getWiths($request->with))
+                            ->noActiveOrPendingRequest()
+                            ->byParameterDefleet($date_defleet, $variables->kms)
+                            ->filter($request->all())
+                            ->paginate();
     }
 
     public function delete($id): JsonResponse {

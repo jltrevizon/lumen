@@ -13,6 +13,11 @@ class CampaRepository {
 
     }
 
+    public function getCampasByCompany($companyId){
+        return Campa::where('company_id', $companyId)
+                    ->get();
+    }
+
     public function getCampasByRegion($request){
         try {
             return Campa::with(['province.region'])

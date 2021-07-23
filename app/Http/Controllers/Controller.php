@@ -30,4 +30,12 @@ class Controller extends BaseController
             return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function createDataResponse($data, $code = Response::HTTP_CREATED){
+        try {
+            return response()->json($data, $code);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }

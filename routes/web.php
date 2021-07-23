@@ -265,7 +265,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/verify-plate-reception', 'VehicleController@verifyPlateReception');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
-        $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
+        $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
         $router->post('/vehicles/ready-to-delivery/campa', 'VehicleController@getVehiclesReadyToDeliveryCampa');
         $router->post('/vehicles/ready-to-delivery/company', 'VehicleController@getVehiclesReadyToDeliveryCompany');
         $router->post('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');

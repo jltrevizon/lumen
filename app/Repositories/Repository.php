@@ -1,8 +1,8 @@
 <?php
 
-namespace App\EloquentFunctions;
+namespace App\Repositories;
 
-class EloquentFunctions {
+class Repository {
 
     public function getWiths($elements){
         return collect($elements ?? [])->toArray();

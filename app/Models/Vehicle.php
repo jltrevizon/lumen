@@ -152,4 +152,16 @@ class Vehicle extends Model
                  ->where('approved_available', false);
         });
     }
+
+    public function scopeNoActiveOrPendingRequest($query){
+        return $query->whereHas('requests', function(Builder $builder) {
+            return $builder->where('state_request_id', 3);
+        })
+        ->orWhereDoesntHave('requests');
+    }
+
+    public function scopeByParameterDefleet($query, $dateDefleet, $kms){
+        return $query->where('first_plate','<', $dateDefleet)
+                    ->orWhere('kms','>', $kms);
+    }
 }
