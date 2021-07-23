@@ -47,9 +47,10 @@ class VehicleRepository extends Repository {
     public function getAll($request){
         $user = $this->userRepository->getById(Auth::id());
         $campas = $this->campaRepository->getCampasByCompany($user->company_id);
-        return Vehicle::with($this->getWiths($request->with))
+        $vehicles = Vehicle::with($this->getWiths($request->with))
                     ->whereIn('campa_id', $campas->pluck('id')->toArray())
                     ->paginate();
+        return [ 'vehicles' => $vehicles ];
     }
 
     public function getById($request, $id){
@@ -58,9 +59,10 @@ class VehicleRepository extends Repository {
     }
 
     public function filterVehicle($request) {
-        return Vehicle::with($this->getWiths($request->with))
+        $vehicles = Vehicle::with($this->getWiths($request->with))
                     ->filter($request->all())
                     ->paginate();
+        return [ 'vehicles' => $vehicles ];
     }
 
     public function createFromExcel($request) {
@@ -74,7 +76,7 @@ class VehicleRepository extends Repository {
             $new_vehicle->vehicle_model_id = $vehicle_model['id'];
             $new_vehicle->save();
         }
-        return 'Vehicles created!';
+        return ['message' => 'Vehicles created!'];
     }
 
     public function getByPlate($request) {
@@ -95,13 +97,8 @@ class VehicleRepository extends Repository {
 
     public function update($request, $id): JsonResponse
     {
-        try {
-            $vehicle = Vehicle::findOrFail($id);
-            $vehicle->update($request->all());
-            return response()->json([ 'vehicle' => $vehicle ], 200);
-        } catch (\Exception $e) {
-            return response()->json([ 'message' => $e ], 409);
-        }
+        $vehicle = Vehicle::findOrFail($id);
+        return $vehicle->update($request->all());
     }
 
     public function updateBack($request): JsonResponse
@@ -148,46 +145,32 @@ class VehicleRepository extends Repository {
         }
     }
 
-    public function verifyPlate($request): JsonResponse {
-        try {
-            $user = $this->userRepository->getById(Auth::id());
-            $vehicleDefleet = Vehicle::where('plate', $request->input('plate'))
-            ->whereHas('requests', function (Builder $builder) {
-                return $builder->where('type_request_id', 1)
-                            ->where(function($query) {
-                                return $query->where('state_request_id', 1)
-                                            ->orWhere('state_request_id', 2);
-                            });
-            })
+    public function verifyPlate($request) {
+        $vehicleDefleet = Vehicle::byPlate($request->input('plate'))
+            ->byPendingRequestDefleet()
             ->first();
-            if($vehicleDefleet){
-                return response()->json(['defleet' => true, 'vehicle' => $vehicleDefleet], 200);
-            }
+        if($vehicleDefleet){
+            return ['defleet' => true, 'vehicle' => $vehicleDefleet];
+        }
 
-            $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request', 'requests' => function ($query) {
-                            return $query->where('state_request_id', 1);
-                        }])
-                        ->where('plate', $request->input('plate'))
-                        //->where('campa_id', $user->campa_id)
-                        ->first();
+        $vehicle = Vehicle::with(['campa.company','requests.state_request','requests.type_request', 'requests' => function ($query) {
+                        return $query->where('state_request_id', 1);
+                    }])
+                    ->where('plate', $request->input('plate'))
+                    ->first();
 
-            if($vehicle){
-                return response()->json(['vehicle' => $vehicle, 'registered' => true], 200);
-            } else {
-                return response()->json(['registered' => false], 200);
-            }
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
+        if($vehicle){
+            return ['vehicle' => $vehicle, 'registered' => true];
+        } else {
+            return ['registered' => false];
         }
     }
 
     public function verifyPlateReception($request){
         try {
-            $user = $this->userRepository->getById(Auth::id());
 
             $vehicle = Vehicle::with(['campa.company'])
                         ->where('plate', $request->input('plate'))
-                        //->where('campa_id', $user->campa_id)
                         ->first();
 
             if($vehicle){
@@ -219,10 +202,10 @@ class VehicleRepository extends Repository {
             $date = date("Y-m-d");
             $date_defleet = date("Y-m-d", strtotime($date . " - $variables->years years")) . ' 00:00:00';
             return Vehicle::with($this->getWiths($request->with))
-                            ->noActiveOrPendingRequest()
-                            ->byParameterDefleet($date_defleet, $variables->kms)
-                            ->filter($request->all())
-                            ->paginate();
+                    ->noActiveOrPendingRequest()
+                    ->byParameterDefleet($date_defleet, $variables->kms)
+                    ->filter($request->all())
+                    ->paginate();
     }
 
     public function delete($id): JsonResponse {

@@ -11,6 +11,10 @@ class StateRequest extends Model
 
     use HasFactory;
 
+    const REQUESTED = 1;
+    const APPROVED = 2;
+    const DECLINED = 3;
+
     protected $fillable = [
         'name'
     ];

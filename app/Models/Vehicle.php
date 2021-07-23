@@ -155,7 +155,7 @@ class Vehicle extends Model
 
     public function scopeNoActiveOrPendingRequest($query){
         return $query->whereHas('requests', function(Builder $builder) {
-            return $builder->where('state_request_id', 3);
+            return $builder->where('state_request_id', StateRequest::DECLINED);
         })
         ->orWhereDoesntHave('requests');
     }
@@ -163,5 +163,15 @@ class Vehicle extends Model
     public function scopeByParameterDefleet($query, $dateDefleet, $kms){
         return $query->where('first_plate','<', $dateDefleet)
                     ->orWhere('kms','>', $kms);
+    }
+
+    public function scopeByPendingRequestDefleet($query){
+        return $query->whereHas('requests', function(Builder $builder){
+            return $builder->where('type_request_id', TypeRequest::DEFLEET)
+                ->where(function($query) {
+                    return $query->where('state_request_id', StateRequest::REQUESTED)
+                        ->orWhere('state_request_id', StateRequest::APPROVED);
+                });
+        });
     }
 }

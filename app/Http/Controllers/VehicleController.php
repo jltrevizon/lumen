@@ -26,7 +26,7 @@ class VehicleController extends Controller
 
     public function getAll(Request $request){
 
-        return $this->getDataResponse(['vehicles' => $this->vehicleRepository->getAll($request)], HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->vehicleRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
 
     }
 
@@ -48,7 +48,7 @@ class VehicleController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->vehicleRepository->update($request, $id);
+        return $this->updateDataResponse(['vehicle' => $this->vehicleRepository->update($request, $id)], HttpFoundationResponse::HTTP_OK);
     }
 
     public function verifyPlate(Request $request){
@@ -57,7 +57,7 @@ class VehicleController extends Controller
             'plate' => 'required|string',
         ]);
 
-        return $this->vehicleRepository->verifyPlate($request);
+        return $this->getDataResponse($this->vehicleRepository->verifyPlate($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleDefleet(Request $request){
@@ -75,7 +75,7 @@ class VehicleController extends Controller
             'vehicles' => 'required'
         ]);
 
-        return $this->createDataResponse(['message' => $this->vehicleRepository->createFromExcel($request)], HttpFoundationResponse::HTTP_CREATED);
+        return $this->createDataResponse($this->vehicleRepository->createFromExcel($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function getVehiclesReadyToDeliveryCampa(Request $request){
@@ -115,7 +115,7 @@ class VehicleController extends Controller
     }
 
     public function filterVehicle(Request $request){
-        return $this->getDataResponse(['vehicles' => $this->vehicleRepository->filterVehicle($request)], HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->vehicleRepository->filterVehicle($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleReserved(){

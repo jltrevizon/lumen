@@ -11,6 +11,9 @@ class TypeRequest extends Model
 
     use HasFactory;
 
+    const DEFLEET = 1;
+    const RESERVATION = 2;
+
     public function requests(){
         return $this->hasMany(Request::class, 'type_request_id');
     }
