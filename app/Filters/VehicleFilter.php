@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use App\Filters\Base\BaseFilter\BaseFilter;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -52,4 +53,10 @@ class VehicleFilter extends ModelFilter
     {
         return $this->byUbication($ids);
     }
+
+    public function readyDelivery($value)
+    {
+        return $this->byReadyDelivery($value);
+    }
+
 }

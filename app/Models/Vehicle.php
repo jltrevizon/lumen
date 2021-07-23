@@ -92,6 +92,10 @@ class Vehicle extends Model
         ]);
     }
 
+    public function scopeByCampaId($id){
+        return $this->where('campa_id', $id);
+    }
+
     public function vehicleModel(){
         return $this->belongsTo(VehicleModel::class);
     }
@@ -134,6 +138,10 @@ class Vehicle extends Model
 
     public function scopeByUbication($query, $ubication){
         return $query->where('ubication','LIKE', "%$ubication%");
+    }
+
+    public function scopeByReadyDelivery($query, $value){
+        return $query->where('ready_to_delivery', $value);
     }
 
     public function lastUnapprovedGroupTask(){

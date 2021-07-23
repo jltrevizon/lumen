@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use App\AditionalModels\AditionalModels;
+use App\AditionalModels\AditionalsModels;
+use App\EloquentFunctions\EloquentFunctions;
 use App\Models\DefleetVariable;
 use App\Models\Vehicle;
 use DateTime;
@@ -17,6 +20,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\TryCatch;
+use Symfony\Component\Console\Input\Input;
 
 class VehicleRepository {
 
@@ -27,7 +31,8 @@ class VehicleRepository {
         StateRepository $stateRepository,
         GroupTaskRepository $groupTaskRepository,
         BrandRepository $brandRepository,
-        VehicleModelRepository $vehicleModelRepository)
+        VehicleModelRepository $vehicleModelRepository,
+        EloquentFunctions $eloquentFunctions)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -36,56 +41,37 @@ class VehicleRepository {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->brandRepository = $brandRepository;
         $this->vehicleModelRepository = $vehicleModelRepository;
+        $this->eloquentFunctions = $eloquentFunctions;
     }
 
-    public function getById($id){
+    public function getById($request, $id){
         try {
-            return Vehicle::with(['campa','vehicleModel.brand'])
+            return Vehicle::with($this->eloquentFunctions->getWiths($request->with))
                         ->findOrFail($id);
         } catch (Exception $e) {
             return response()->json(['message' => $e], 409);
         }
     }
 
-    public function filterVehicle($request): JsonResponse {
-        try {
-            $vehicles = Vehicle::with(['subState.state','campa','category','trade_state','requests.customer','reservations','vehicleModel.brand'])
-                        ->filter($request->all())
-                        ->paginate();
-            return response()->json(['vehicles' => $vehicles], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-
+    public function filterVehicle($request) {
+        return Vehicle::with($this->eloquentFunctions->getWiths($request->with))
+                    ->filter($request->all())
+                    ->paginate();
     }
 
     public function createFromExcel($request) {
         try {
             $vehicles = $request->input('vehicles');
-            $array_vehicles = [];
             foreach($vehicles as $vehicle){
-                $new_vehicle = new Vehicle();
-                if($vehicle['remote_id'] ?? null) $new_vehicle->remote_id = $vehicle['remote_id'];
-                if($vehicle['campa_id'] ?? null) $new_vehicle->campa_id = $vehicle['campa_id'];
+                $new_vehicle = Vehicle::create($vehicle);
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-                if($category['id'] ?? null ) $new_vehicle->category_id = $category['id'];
-                $new_vehicle->ubication = $vehicle['ubication'];
-                $new_vehicle->plate = $vehicle['plate'];
+                $category['id'] ? null : $new_vehicle->category_id = $category['id'];
                 $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
                 $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
                 $new_vehicle->vehicle_model_id = $vehicle_model['id'];
-                $new_vehicle->trade_state_id = null;
-                if($vehicle['kms'] ?? null) $new_vehicle->kms = $vehicle['kms'];
-                if($vehicle['priority'] ?? null) $new_vehicle->priority = $vehicle['priority'];
-                if($vehicle['version'] ?? null) $new_vehicle->version = $vehicle['version'];
-                if($vehicle['vin'] ?? null) $new_vehicle->vin = $vehicle['vin'];
-                $new_vehicle->first_plate = $vehicle['first_plate'];
-                if($vehicle['latitude'] ?? null) $new_vehicle->latitude = $vehicle['latitude'];
-                if($vehicle['longitude'] ?? null) $new_vehicle->longitude = $vehicle['longitude'];
                 $new_vehicle->save();
-                array_push($array_vehicles, $new_vehicle);
             }
-            return response()->json(['vehicles' => $array_vehicles], 201);
+            return response()->json(['vehicles' => 'Vehicles created'], 201);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

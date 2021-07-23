@@ -10,8 +10,11 @@ use App\Models\Vehicle;
 use App\Repositories\VehicleRepository;
 use DateTime;
 use Exception;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response as FacadesResponse;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class VehicleController extends Controller
 {
@@ -26,7 +29,6 @@ class VehicleController extends Controller
             $user = User::findOrFail(Auth::id());
             $campas = Campa::where('company_id', $user->company_id)
                             ->get();
-            //return $campas->pluck('id')->toArray();
             return Vehicle::with(['campa','vehicleModel.brand'])
                         ->whereIn('campa_id', $campas->pluck('id')->toArray())
                         ->paginate(5000);
@@ -35,8 +37,8 @@ class VehicleController extends Controller
         }
     }
 
-    public function getById($id){
-        return $this->vehicleRepository->getById($id);
+    public function getById(Request $request, $id){
+        return $this->vehicleRepository->getById($request, $id);
     }
 
     public function create(Request $request){
@@ -125,8 +127,7 @@ class VehicleController extends Controller
     }
 
     public function filterVehicle(Request $request){
-
-        return $this->vehicleRepository->filterVehicle($request);
+        return $this->getDataResponse(['vehicles' => $this->vehicleRepository->filterVehicle($request)], HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleReserved(){

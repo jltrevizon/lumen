@@ -106,4 +106,28 @@ class VehicleTest extends TestCase
         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->vehicleModel());
         $this->assertInstanceOf(VehicleModel::class, $this->vehicle->vehicleModel()->getModel());
     }
+
+    /** @test */
+    public function it_by_campa()
+    {
+        $campa1 = Campa::factory()->create(['id' => 1]);
+        $campa2 = Campa::factory()->create(['id' => 2]);
+
+        $vehicle1 = Vehicle::factory()->create([
+            'campa_id' => $campa1->id
+        ]);
+        $vehicle2 = Vehicle::factory()->create([
+            'campa_id' => $campa1->id
+        ]);
+        $vehicle3 = Vehicle::factory()->create([
+            'campa_id' => $campa1->id
+        ]);
+        $vehicle4 = Vehicle::factory()->create([
+            'campa_id' => $campa2->id
+        ]);
+
+        $vehicle = Vehicle::byCampaId($campa2->id);
+
+        $this->assertEquals($vehicle, $vehicle4);
+    }
 }
