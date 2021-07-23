@@ -31,7 +31,9 @@ class VehicleController extends Controller
     }
 
     public function getById(Request $request, $id){
+
         return $this->getDataResponse($this->vehicleRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
+
     }
 
     public function create(Request $request){
@@ -66,7 +68,9 @@ class VehicleController extends Controller
     }
 
     public function delete($id){
-        return $this->vehicleRepository->delete($id);
+
+        return $this->deleteDataResponse($this->vehicleRepository->delete($id), HttpFoundationResponse::HTTP_OK);
+
     }
 
     public function createFromExcel(Request $request){
@@ -78,31 +82,13 @@ class VehicleController extends Controller
         return $this->createDataResponse($this->vehicleRepository->createFromExcel($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
-    public function getVehiclesReadyToDeliveryCampa(Request $request){
-
-        $this->validate($request, [
-            'campa_id' => 'required|integer'
-        ]);
-
-        return $this->vehicleRepository->getVehiclesReadyToDeliveryCampa($request);
-    }
-
-    public function getVehiclesReadyToDeliveryCompany(Request $request){
-
-        $this->validate($request, [
-            'company_id' => 'required|integer'
-        ]);
-
-        return $this->vehicleRepository->getVehiclesReadyToDeliveryCompany($request);
-    }
-
     public function getVehiclesWithReservationWithoutOrderCampa(Request $request){
 
         $this->validate($request, [
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request);
+        return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getVehiclesWithReservationWithoutContractCampa(Request $request){
@@ -111,7 +97,7 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->getVehiclesWithReservatiopcanWithoutContractCampa($request);
+        return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservatiopcanWithoutContractCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function filterVehicle(Request $request){

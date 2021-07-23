@@ -174,4 +174,52 @@ class Vehicle extends Model
                 });
         });
     }
+
+    public function withoutOrderWithoutDelivery($query){
+        return $query->where(function ($query) {
+            return $query->whereNull('order');
+        })
+        ->orWhere(function ($query) {
+            return $query->whereNotNull('order')
+                ->whereNull('pickup_by_customer')
+                ->whereNull('transport_id');
+        })
+        ->where('active', true);
+    }
+
+    public function scopeThathasReservationWithoutOrderWithoutDelivery($query){
+        return $query->whereHas('reservations', function (Builder $builder) {
+            return $builder->where(function ($query) {
+                return $query->whereNull('order');
+            })
+            ->orWhere(function ($query) {
+                return $query->whereNotNull('order')
+                    ->whereNull('pickup_by_customer')
+                    ->whereNull('transport_id');
+            })
+            ->where('active', true);
+        });
+    }
+
+    public function withOrderWithoutContract($query){
+        return $query->whereNotNull('order')
+            ->whereNull('contract')
+            ->where('active', true)
+            ->where(function($query) {
+                return $query->whereNotNull('pickup_by_customer')
+                            ->orWhereNotNull('transport_id');
+            });
+    }
+
+    public function scopeWithOrderWithoutContract($query){
+        return $query->whereHas('reservations', function(Builder $builder) {
+            return $builder->whereNotNull('order')
+                ->whereNull('contract')
+                ->where('active', true)
+                ->where(function($query) {
+                    return $query->whereNotNull('pickup_by_customer')
+                                ->orWhereNotNull('transport_id');
+                });
+        });
+    }
 }

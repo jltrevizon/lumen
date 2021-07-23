@@ -208,14 +208,10 @@ class VehicleRepository extends Repository {
                     ->paginate();
     }
 
-    public function delete($id): JsonResponse {
-        try {
-            Vehicle::where('id', $id)
-                ->delete();
-            return response()->json(['message' => 'Vehicle deleted'], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function delete($id) {
+        Vehicle::where('id', $id)
+            ->delete();
+        return ['message' => 'Vehicle deleted'];
     }
 
     public function vehiclesDefleetByCampa(): JsonResponse {
@@ -246,90 +242,20 @@ class VehicleRepository extends Repository {
         }
     }
 
-    public function getVehiclesReadyToDeliveryCampa($request): JsonResponse {
-        try {
-            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
-                        ->whereIn('campa_id', $request->input('campas'))
-                        ->where('ready_to_delivery', true)
-                        ->get();
-            return response()->json(['vehicles' => $vehicles], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function getVehiclesWithReservationWithoutOrderCampa($request) {
+        $vehicles = Vehicle::with($this->getWiths($request->with))
+            ->thathasReservationWithoutOrderWithoutDelivery()
+            ->filter($request->all())
+            ->get();
+        return ['vehicles' => $vehicles];
     }
 
-    public function getVehiclesReadyToDeliveryCompany($request): JsonResponse {
-        try {
-            $vehicles = Vehicle::with(['category','campa','state','trade_state','requests.customer','reservations'])
-                        ->whereHas('campa', function(Builder $builder) use($request){
-                            return $builder->where('company_id', $request->input('company_id'));
-                        })
-                        ->where('ready_to_delivery', true)
-                        ->get();
-            return response()->json(['vehicles' => $vehicles], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
-
-    public function getVehiclesWithReservationWithoutOrderCampa($request): JsonResponse {
-        try{
-            $vehicles = Vehicle::with(['vehicleModel.brand','category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
-                            return $query->where(function ($query) {
-                                return $query->whereNull('order');
-                            })
-                            ->orWhere(function ($query) {
-                                return $query->whereNotNull('order')
-                                    ->whereNull('pickup_by_customer')
-                                    ->whereNull('transport_id');
-                            })
-                            ->where('active', true);
-                        }])
-                        ->whereHas('reservations', function(Builder $builder) use($request){
-                            return $builder->where(function ($query) {
-                                return $query->whereNull('order');
-                            })
-                            ->orWhere(function ($query) {
-                                return $query->whereNotNull('order')
-                                    ->whereNull('pickup_by_customer')
-                                    ->whereNull('transport_id');
-                            })
-                            ->where('active', true);
-                        })
-                        ->whereIn('campa_id', $request->input('campas'))
-                        ->get();
-            return response()->json(['vehicles' => $vehicles], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
-
-    public function getVehiclesWithReservationWithoutContractCampa($request): JsonResponse {
-        try {
-            $vehicles = Vehicle::with(['vehicleModel.brand','category','campa','subState.state','trade_state','requests.customer','reservations.transport','reservations' => function($query){
-                            return $query->whereNotNull('order')
-                                        ->whereNull('contract')
-                                        ->where('active', true)
-                                        ->where(function($query) {
-                                            return $query->whereNotNull('pickup_by_customer')
-                                                        ->orWhereNotNull('transport_id');
-                                        });
-                        }])
-                        ->whereHas('reservations', function(Builder $builder) use($request){
-                            return $builder->whereNotNull('order')
-                                        ->whereNull('contract')
-                                        ->where('active', true)
-                                        ->where(function($query) {
-                                            return $query->whereNotNull('pickup_by_customer')
-                                                        ->orWhereNotNull('transport_id');
-                                        });
-                        })
-                        ->whereIn('campa_id', $request->input('campas'))
-                        ->get();
-            return response()->json(['vehicles' => $vehicles], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function getVehiclesWithReservationWithoutContractCampa($request) {
+        $vehicles = Vehicle::with($this->getWiths($request->with))
+                    ->withOrderWithoutContract()
+                    ->filter($request->all())
+                    ->get();
+        return ['vehicles' => $vehicles];
     }
 
     public function vehicleReserved(){

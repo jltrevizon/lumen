@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +25,7 @@ class Controller extends BaseController
         ], Response::HTTP_OK);
     }
 
-    public function getDataResponse($data, $code = Response::HTTP_OK){
+    public function getDataResponse($data, $code = Response::HTTP_OK): JsonResponse {
         try {
             return response()->json($data, $code);
         } catch (Exception $e) {
@@ -31,7 +33,7 @@ class Controller extends BaseController
         }
     }
 
-    public function createDataResponse($data, $code = Response::HTTP_CREATED){
+    public function createDataResponse($data, $code = Response::HTTP_CREATED): JsonResponse {
         try {
             return response()->json($data, $code);
         } catch (Exception $e) {
@@ -39,7 +41,15 @@ class Controller extends BaseController
         }
     }
 
-    public function updateDataResponse($data, $code){
+    public function updateDataResponse($data, $code): JsonResponse {
+        try {
+            return response()->json($data, $code);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function deleteDataResponse($data, $code): JsonResponse {
         try {
             return response()->json($data, $code);
         } catch (Exception $e) {
