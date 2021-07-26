@@ -3,45 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\CampaUserRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class CampaUserController extends Controller
 {
+
+    public function __construct(CampaUserRepository $campaUserRepository)
+    {
+        $this->campaUserRepository = $campaUserRepository;
+    }
+
     public function create(Request $request){
 
         $this->validate($request, [
             'campas' => 'required'
         ]);
 
-        $campas = $request->input('campas');
-        foreach($campas as $campa){
-            DB::table('campa_user')->insert([
-                'campa_id' => $campa,
-                'user_id' => $request->input('user_id')
-            ]);
-        }
-        return User::with(['campas'])
-                    ->where('id', $request->input('user_id'))
-                    ->first();
+        return $this->createDataResponse($this->campaUserRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function delete(Request $request){
-        try {
-            $this->validate($request, [
-                'campas' => 'required'
-            ]);
-            $campas = $request->input('campas');
-            foreach($campas as $campa){
-                DB::table('campa_user')
-                ->where('user_id',$request->input('user_id'))
-                ->where('campa_id', $campa)
-                ->delete();
-            }
-            return response()->json(['message' => 'campas deleted'], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $this->validate($request, [
+            'campas' => 'required'
+        ]);
+
+        return $this->deleteDataResponse($this->campaUserRepository->delete($request), HttpFoundationResponse::HTTP_OK);
     }
 }
