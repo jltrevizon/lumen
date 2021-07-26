@@ -11,6 +11,11 @@ class TradeState extends Model
 
     use HasFactory;
 
+    const RESERVED = 1;
+    const PRE_RESERVED = 2;
+    const RESERVED_PRE_DELIVERY = 3;
+    const REQUEST_DEFLEET = 4;
+
     public function vehicles(){
         return $this->hasMany(Vehicle::class, 'trade_state_id');
     }

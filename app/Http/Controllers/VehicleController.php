@@ -105,7 +105,7 @@ class VehicleController extends Controller
     }
 
     public function vehicleReserved(){
-        return $this->vehicleRepository->vehicleReserved();
+        return $this->getDataResponse($this->vehicleRepository->vehicleReserved(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleTotalsState(Request $request){
@@ -114,11 +114,11 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->vehicleTotalsState($request);
+        return $this->getDataResponse($this->vehicleRepository->vehicleTotalsState($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function vehicleRequestDefleet(){
-        return $this->vehicleRepository->vehicleRequestDefleet();
+    public function vehicleRequestDefleet(Request $request){
+        return $this->getDataResponse($this->vehicleRepository->vehicleRequestDefleet($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function verifyPlateReception(Request $request){

@@ -6,6 +6,7 @@ use App\AditionalModels\AditionalModels;
 use App\AditionalModels\AditionalsModels;
 use App\EloquentFunctions\EloquentFunctions;
 use App\Models\DefleetVariable;
+use App\Models\TradeState;
 use App\Models\Vehicle;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
@@ -259,49 +260,32 @@ class VehicleRepository extends Repository {
     }
 
     public function vehicleReserved(){
-        try {
-            $user = $this->userRepository->getById(Auth::id());
-            return Vehicle::with(['reservations' => fn ($query) => $query->where('active', true)])
-                        ->whereHas('reservations', fn (Builder $builder) => $builder->where('active', true))
-                        ->whereHas('campa', function (Builder $builder) use ($user){
-                            return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
-                        })
-                        ->get();
-        } catch(Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $user = $this->userRepository->getById(Auth::id());
+        return Vehicle::with(['reservations' => fn ($query) => $query->where('active', true)])
+            ->whereHas('reservations', fn (Builder $builder) => $builder->where('active', true))
+            ->whereHas('campa', function (Builder $builder) use ($user){
+                return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
+            })
+            ->get();
     }
 
     public function vehicleTotalsState($request){
-        try {
-            return Vehicle::with(['subState.state'])
-                        ->whereIn('campa_id', $request->input('campas'))
-                        ->select(DB::raw('sub_state_id, COUNT(*) AS count'))
-                        ->groupBy('sub_state_id')
-                        ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return Vehicle::with(['subState.state'])
+            ->whereIn('campa_id', $request->input('campas'))
+            ->select(DB::raw('sub_state_id, COUNT(*) AS count'))
+            ->groupBy('sub_state_id')
+            ->get();
     }
 
-    public function vehicleRequestDefleet(){
-        try {
-            $user = $this->userRepository->getById(Auth::id());
-            $vehicles = Vehicle::with(['requests','vehicleModel.brand'])
-                        ->whereHas('requests', function (Builder $builder) {
-                            return $builder->where('type_request_id', 1)
-                                        ->where('state_request_id', 1);
-                        })
-                        ->where('trade_state_id', 4)
-                        ->whereIn('campa_id', $user->campas->pluck('id')->toArray())
-                        ->whereHas('subState.state',function($query){
-                            return $query->where('id', '<>', 3);
-                        })
-                        ->get();
-            return response()->json(['vehicles' => $vehicles], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function vehicleRequestDefleet($request){
+        $user = $this->userRepository->getById(Auth::id());
+        $vehicles = Vehicle::with($this->getWiths($request->with))
+            ->withRequestDefleetActive()
+            ->where('trade_state_id', TradeState::REQUEST_DEFLEET)
+            ->whereIn('campa_id', $user->campas->pluck('id')->toArray())
+            ->differentDefleeted()
+            ->get();
+        return ['vehicles' => $vehicles];
     }
 
     public function vehiclesByState($request){

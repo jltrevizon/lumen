@@ -222,4 +222,15 @@ class Vehicle extends Model
                 });
         });
     }
+
+    public function scopeWithRequestDefleetActive($query){
+        return $query->whereHas('requests', function (Builder $builder) {
+            return $builder->where('type_request_id', TypeRequest::DEFLEET)
+                    ->where('state_request_id', StateRequest::REQUESTED);
+        });
+    }
+
+    public function scopeDifferentDefleeted($query){
+        return $query->whereHas('subState.state', fn (Builder $builder) => $builder->where('id','<>', State::PENDING_SALE_VO));
+    }
 }
