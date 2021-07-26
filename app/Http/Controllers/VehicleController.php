@@ -27,13 +27,11 @@ class VehicleController extends Controller
     public function getAll(Request $request){
 
         return $this->getDataResponse($this->vehicleRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
-
     }
 
     public function getById(Request $request, $id){
 
         return $this->getDataResponse($this->vehicleRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
-
     }
 
     public function create(Request $request){
@@ -70,7 +68,6 @@ class VehicleController extends Controller
     public function delete($id){
 
         return $this->deleteDataResponse($this->vehicleRepository->delete($id), HttpFoundationResponse::HTTP_OK);
-
     }
 
     public function createFromExcel(Request $request){
