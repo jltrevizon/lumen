@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DefleetVariable;
 use Illuminate\Http\Request;
 use App\Repositories\DefleetVariableRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class DefleetVariableController extends Controller
 {
@@ -15,8 +16,8 @@ class DefleetVariableController extends Controller
     }
 
     public function getVariables(){
-        return $this->defleetVariablesRepository->getVariables();
 
+        return $this->getDataResponse($this->defleetVariablesRepository->getVariables(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function createVariables(Request $request){
@@ -26,10 +27,10 @@ class DefleetVariableController extends Controller
             'years' => 'required|integer'
         ]);
 
-        return $this->defleetVariablesRepository->createVariables($request);
+        return $this->createDataResponse($this->defleetVariablesRepository->createVariables($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function updateVariables(Request $request){
-        return $this->defleetVariablesRepository->updateVariables($request);
+        return $this->updateDataResponse($this->defleetVariablesRepository->updateVariables($request), HttpFoundationResponse::HTTP_OK);
     }
 }
