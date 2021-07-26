@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Repositories\CustomerRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class CustomerController extends Controller
 {
@@ -15,12 +16,11 @@ class CustomerController extends Controller
     }
 
     public function getAll(){
-        return Customer::all();
+        return $this->getDataResponse($this->customerRepository->getAll(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return Customer::where('id', $id)
-                    ->first();
+        return $this->getDataResponse($this->customerRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -29,11 +29,11 @@ class CustomerController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->customerRepository->create($request);
+        return $this->getDataResponse($this->customerRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->customerRepository->update($request, $id);
+        return $this->updateDataResponse($this->customerRepository->update($request, $id), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function getUserByCompany(Request $request){
@@ -42,7 +42,7 @@ class CustomerController extends Controller
             'company_id' => 'required|integer'
         ]);
 
-        return $this->customerRepository->getUserByCompany($request);
+        return $this->getDataResponse($this->customerRepository->getUserByCompany($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){

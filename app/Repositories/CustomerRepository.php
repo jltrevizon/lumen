@@ -12,32 +12,28 @@ class CustomerRepository {
 
     }
 
+    public function getAll(){
+        return Customer::all();
+    }
+
+    public function getById($id){
+        return Customer::findOrFail($id);
+    }
+
     public function create($request){
-        try {
-            $customer = Customer::create($request->all());
-            $customer->save();
-            return $customer;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $customer = Customer::create($request->all());
+        $customer->save();
+        return $customer;
     }
 
     public function update($request, $id){
-        try {
-            $customer = Customer::findOrFail($id);
-            $customer->update($request->all());
-            return response()->json(['customer' => $customer]);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $customer = Customer::findOrFail($id);
+        $customer->update($request->all());
+        return ['customer' => $customer];
     }
 
     public function getUserByCompany($request){
-        try {
-            return Customer::where('company_id', $request->input('company_id'))
-                        ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return Customer::byCompany($request->input('company_id'))
+                    ->get();
     }
 }
