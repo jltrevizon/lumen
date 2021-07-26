@@ -78,7 +78,7 @@ class Vehicle extends Model
         return $this->hasMany(Reception::class, 'vehicle_id');
     }
 
-    public function trade_state(){
+    public function tradeState(){
         return $this->belongsTo(TradeState::class, 'trade_state_id');
     }
 
