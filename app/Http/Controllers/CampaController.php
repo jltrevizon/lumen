@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Campa;
 use App\Repositories\CampaRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class CampaController extends Controller
 {
@@ -14,15 +15,12 @@ class CampaController extends Controller
         $this->campaRepository = $campaRepository;
     }
 
-    public function getAll(){
-        return Campa::with(['province', 'company'])
-                    ->get();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->campaRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return Campa::with(['province','company'])
-                    ->where('id', $id)
-                    ->first();
+    public function getById(Request $request, $id){
+        return $this->getDataResponse($this->campaRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getCampasByRegion(Request $request){
@@ -32,7 +30,7 @@ class CampaController extends Controller
             'company_id' => 'required|integer'
         ]);
 
-        return $this->campaRepository->getCampasByRegion($request);
+        return $this->getDataResponse($this->campaRepository->getCampasByRegion($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getCampasByProvince(Request $request){
@@ -42,7 +40,7 @@ class CampaController extends Controller
             'company_id' => 'required|integer'
         ]);
 
-        return $this->campaRepository->getCampasByProvince($request);
+        return $this->getDataResponse($this->campaRepository->getCampasByProvince($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getByCompany(Request $request){
@@ -51,9 +49,7 @@ class CampaController extends Controller
             'company_id' => 'required|integer'
         ]);
 
-        return Campa::with(['company'])
-                    ->where('company_id', $request->input('company_id'))
-                    ->get();
+        return $this->getDataResponse($this->campaRepository->getByCompany($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -63,11 +59,11 @@ class CampaController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->campaRepository->create($request);
+        return $this->createDataResponse($this->campaRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id){
-        return $this->campaRepository->update($request, $id);
+        return $this->updateDataResponse($this->campaRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){

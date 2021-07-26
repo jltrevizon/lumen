@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Province;
 use App\Models\Company;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Campa extends Model
@@ -41,5 +42,19 @@ class Campa extends Model
 
     public function reservations(){
         return $this->hasMany(Reservation::class);
+    }
+
+    public function scopeByCompany($query, $companyId){
+        return $query->where('company_id', $companyId);
+    }
+
+    public function scopeByProvince($query, $provinceId){
+        return $query->where('province_id', $provinceId);
+    }
+
+    public function scopeByRegion($query, $regionId){
+        return $query->whereHas('province', function (Builder $builder) use($regionId){
+            return $builder->where('region_id', $regionId);
+        });
     }
 }
