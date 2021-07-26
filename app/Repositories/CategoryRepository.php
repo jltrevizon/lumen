@@ -12,32 +12,28 @@ class CategoryRepository {
 
     }
 
+    public function getAll(){
+        return Category::all();
+    }
+
+    public function getById($id){
+        return Category::findOrFail($id);
+    }
+
     public function searchCategoryByName($name){
-        try {
-            return Category::where('name', $name)
-                        ->first();
-        } catch (Exception $e){
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return Category::where('name', $name)
+                ->first();
     }
 
     public function create($request){
-        try {
-            $category = Category::create($request->all());
-            $category->save();
-            return $category;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $category = Category::create($request->all());
+        $category->save();
+        return $category;
     }
 
     public function update($request, $id){
-        try {
-            $category = Category::findOrFail($id);
-            $category->update($request->all());
-            return response()->json(['category' => $category], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+        return ['category' => $category];
     }
 }
