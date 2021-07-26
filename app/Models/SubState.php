@@ -12,6 +12,18 @@ class SubState extends Model
 
     use HasFactory;
 
+    const CAMPA = 1;
+    const PENDIENTE_LAVADO = 2;
+    const MECANICA = 3;
+    const CHAPA = 4;
+    const TRANSFORMACION = 5;
+    const ITV = 6;
+    const LIMPIEZA = 7;
+    const SOLICITUD_DEFLEET = 8;
+    const SIN_DOCUMENTACION = 9;
+    const ALQUILADO = 10;
+    const CHECK = 11;
+
     protected $fillable = [
         'state_id',
         'name'

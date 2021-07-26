@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\GroupTask;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use App\Repositories\GroupTaskRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class GroupTaskController extends Controller
 {
@@ -16,13 +17,11 @@ class GroupTaskController extends Controller
     }
 
     public function getAll(){
-        return GroupTask::all();
+        return $this->getDataResponse($this->groupTaskRepository->getAll(), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return GroupTask::with(['pending_tasks'])
-                    ->where('id', $id)
-                    ->first();
+    public function getById(Request $request, $id){
+        return $this->getDataResponse($this->groupTaskRespository->getById($request, $id));
     }
 
     public function create(Request $request){
@@ -31,11 +30,11 @@ class GroupTaskController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
 
-        return $this->groupTaskRepository->create($request);
+        return $this->createDataResponse($this->groupTaskRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id){
-        return $this->groupTaskRepository->update($request, $id);
+        return $this->updateDataResponse($this->groupTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
@@ -46,11 +45,11 @@ class GroupTaskController extends Controller
     }
 
     public function approvedGroupTaskToAvailable(Request $request){
-        return $this->groupTaskRepository->approvedGroupTaskToAvailable($request);
+        return $this->updateDataResponse($this->groupTaskRepository->approvedGroupTaskToAvailable($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function declineGroupTask(Request $request){
-        return $this->groupTaskRepository->declineGroupTask($request);
+        return $this->updateDataResponse($this->groupTaskRepository->declineGroupTask($request), HttpFoundationResponse::HTTP_OK);
     }
 
 }
