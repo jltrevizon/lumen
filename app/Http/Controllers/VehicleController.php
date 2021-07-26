@@ -142,6 +142,6 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->vehiclesByState($request);
+        return $this->getDataResponse($this->vehicleRepository->vehiclesByState($request), HttpFoundationResponse::HTTP_OK);
     }
 }

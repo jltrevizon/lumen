@@ -16,6 +16,8 @@ use App\Models\TradeState;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Auth;
 
 class Vehicle extends Model
 {
@@ -90,6 +92,12 @@ class Vehicle extends Model
         return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
             'id' => 'max'
         ]);
+    }
+
+    public function scopeByCampasOfUser($query){
+        $userRepository = new UserRepository();
+        $user = $userRepository->getById(Auth::id());
+        return $query->whereIn('campa_id', $user->campas->pluck('id')->toArray());
     }
 
     public function scopeByCampaId($id){
@@ -187,6 +195,11 @@ class Vehicle extends Model
         ->where('active', true);
     }
 
+    public function withRequestActive(){
+        return $this->hasMany(Request::class)
+        ->where('state_request_id', StateRequest::REQUESTED);
+    }
+
     public function scopeThathasReservationWithoutOrderWithoutDelivery($query){
         return $query->whereHas('reservations', function (Builder $builder) {
             return $builder->where(function ($query) {
@@ -232,5 +245,13 @@ class Vehicle extends Model
 
     public function scopeDifferentDefleeted($query){
         return $query->whereHas('subState.state', fn (Builder $builder) => $builder->where('id','<>', State::PENDING_SALE_VO));
+    }
+
+    public function scopeDefleetBetweenDateApproved(Builder $builder, $dateStart, $dateEnd){
+        return $builder->whereHas('requests', function($query) use($dateStart, $dateEnd){
+            return $query->where('type_request_id', TypeRequest::DEFLEET)
+                ->whereDate('datetime_approved', '>=', $dateStart)
+                ->whereDate('datetime_approved', '<=', $dateEnd);
+        });
     }
 }
