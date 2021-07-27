@@ -109,9 +109,9 @@ class VehicleRepository extends Repository {
         return $vehicle;
     }
 
-    public function updateState($vehicle_id, $state_id): JsonResponse {
+    public function updateSubState($vehicle_id, $sub_state_id): JsonResponse {
         $vehicle = Vehicle::findOrFail($vehicle_id);
-        $vehicle->sub_state_id = $state_id;
+        $vehicle->sub_state_id = $sub_state_id;
         $vehicle->save();
         return response()->json(['vehicle' => $vehicle]);
     }

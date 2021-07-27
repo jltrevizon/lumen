@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 use App\Models\PendingTask;
+use App\Models\Task;
 use App\Models\VehiclePicture;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskReservationRepository;
@@ -13,7 +14,7 @@ use App\Repositories\AccessoryRepository;
 use App\Repositories\IncidencePendingTaskRepository;
 use Exception;
 
-class PendingTaskRepository {
+class PendingTaskRepository extends Repository {
 
     public function __construct(
         GroupTaskRepository $groupTaskRepository,
@@ -39,86 +40,72 @@ class PendingTaskRepository {
         $this->incidencePendingTaskRepository = $incidencePendingTaskRepository;
     }
 
+    public function getAll($request){
+        return PendingTask::with($this->getWiths($request->with))
+                    ->get();
+    }
+
     public function createPendingTaskFromReservation($vehicle_id, $request_id){
-        try {
-            $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicle_id);
-            $has_pending_task = PendingTask::where('vehicle_id', $vehicle_id)
-                                        ->where('state_pending_task_id', '<', 3)
-                                        ->get();
-            if(count($has_pending_task) > 0){
-                return [
-                    'message' => 'El vehículo tiene tareas pendientes o en curso'
-                ];
-            }
-            $tasks = $this->taskReservationRepository->getByRequest($request_id);
+        $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicle_id);
+        $has_pending_task = PendingTask::where('vehicle_id', $vehicle_id)
+                                    ->where('state_pending_task_id', '<', 3)
+                                    ->get();
+        if(count($has_pending_task) > 0) return [ 'message' => 'El vehículo tiene tareas pendientes o en curso' ];
+        $tasks = $this->taskReservationRepository->getByRequest($request_id);
+        $this->createTasks($tasks, $groupTask->id);
+        $this->createUbication($vehicle_id, $groupTask->id);
+        return [ 'message' => 'OK' ];
+    }
 
-            foreach($tasks as $task){
-                $pending_task = new PendingTask();
-                $pending_task->vehicle_id = $task['vehicle_id'];
-                $taskDescription = $this->taskRepository->getById($task['task_id']);
-                $pending_task->task_id = $task['task_id'];
-                if($task['order'] == 1){
-                    $pending_task->state_pending_task_id = 1;
-                    $pending_task->datetime_pending = date('Y-m-d H:i:s');
-                }
-                $pending_task->group_task_id = $groupTask->id;
-                $pending_task->duration = $taskDescription['duration'];
-                $pending_task->order = $task['order'];
-                $pending_task->save();
-            }
+    private function createTasks($tasks, $groupTaskId){
+        foreach($tasks as $task){
             $pending_task = new PendingTask();
-            $pending_task->vehicle_id = $vehicle_id;
-            $taskDescription = $this->taskRepository->getById(1);
-            $pending_task->group_task_id = $groupTask->id;
-            $pending_task->task_id = $taskDescription->id;
+            $pending_task->vehicle_id = $task['vehicle_id'];
+            $taskDescription = $this->taskRepository->getById($task['task_id']);
+            $pending_task->task_id = $task['task_id'];
+            if($task['order'] == 1){
+                $pending_task->state_pending_task_id = 1;
+                $pending_task->datetime_pending = date('Y-m-d H:i:s');
+            }
+            $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
-            $pending_task->order = 100;
+            $pending_task->order = $task['order'];
             $pending_task->save();
-            return [
-                'message' => 'OK'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
         }
     }
 
-    public function getById($id){
-        try {
-            $task = PendingTask::where('id', $id)
-                                    ->first();
-            $vehicle_pictures = VehiclePicture::where('vehicle_id', $task->vehicle_id)
-                                        ->first();
-            $pending_task = PendingTask::with(['vehicle.vehicleModel.brand','task','state_pending_task','incidences'])
-                                        ->where('id', $id)
-                                        ->first();
-            return [
-                'task' => $pending_task,
-                'picture' => $vehicle_pictures
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    private function createUbication($vehicleId, $groupTaskId){
+        $pending_task = new PendingTask();
+        $pending_task->vehicle_id = $vehicleId;
+        $taskDescription = $this->taskRepository->getById(Task::UBICATION);
+        $pending_task->group_task_id = $groupTaskId;
+        $pending_task->task_id = $taskDescription->id;
+        $pending_task->duration = $taskDescription['duration'];
+        $pending_task->order = 100;
+        $pending_task->save();
     }
 
-    public function getPendingOrNextTask(){
+    public function getById($request, $id){
+        $pending_task = PendingTask::with($this->getWiths($request->with))
+                            ->findOrFail($id);
+        return [ 'pending_task' => $pending_task ];
+    }
+
+    public function getPendingOrNextTask($request){
         $user = $this->userRepository->getById(Auth::id());
-        try {
-            return PendingTask::with(['task','state_pending_task','group_task','vehicle.vehicleModel.brand','incidences'])
-                            ->whereHas('vehicle.campa', function(Builder $builder) use($user){
-                                return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
-                            })
-                            ->where(function ($query) {
-                                return $query->where('state_pending_task_id', 1)
-                                ->orWhere('state_pending_task_id', 2);
-                            })
-                            ->whereHas('task.sub_state.type_users_app', function ($query) use($user) {
-                                return $query->where('type_user_app_id', $user['type_user_app_id']);
-                            })
-                            ->where('approved', true)
-                            ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return PendingTask::with($this->getWiths($request->with))
+                ->whereHas('vehicle.campa', function(Builder $builder) use($user){
+                    return $builder->whereIn('id', $user->campas->pluck('id')->toArray());
+                })
+                ->where(function ($query) {
+                    return $query->where('state_pending_task_id', 1)
+                    ->orWhere('state_pending_task_id', 2);
+                })
+                ->whereHas('task.sub_state.type_users_app', function ($query) use($user) {
+                    return $query->where('type_user_app_id', $user['type_user_app_id']);
+                })
+                ->where('approved', true)
+                ->get();
     }
 
     public function create($request){
@@ -221,7 +208,7 @@ class PendingTaskRepository {
                 $pending_task->save();
                 $detail_task = $this->taskRepository->getById($pending_task['task_id']);
                 $this->vehicleRepository->updateState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
-                return $this->getPendingOrNextTask();
+                return $this->getPendingOrNextTask($request);
             } else {
                 return [
                     'message' => 'La tarea no está en estado pendiente'
@@ -240,7 +227,7 @@ class PendingTaskRepository {
             $pending_task->datetime_start = null;
             $pending_task->save();
             $this->pendingTaskCanceledRepository->create($request);
-            return $this->getPendingOrNextTask();
+            return $this->getPendingOrNextTask($request);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -263,7 +250,7 @@ class PendingTaskRepository {
                     $pending_task_next->state_pending_task_id = 1;
                     $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
                     $pending_task_next->save();
-                    return $this->getPendingOrNextTask();
+                    return $this->getPendingOrNextTask($request);
                 } else {
                     $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
                     if($vehicle->trade_state_id == 2){

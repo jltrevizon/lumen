@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Request as RequestVehicle;
 use App\Repositories\RequestRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class RequestController extends Controller
 {
@@ -26,10 +27,9 @@ class RequestController extends Controller
 
         $this->validate($request, [
             'vehicles' => 'required',
-
         ]);
 
-        return $this->requestRepository->create($request);
+        return $this->createDataResponse($this->requestRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
@@ -60,7 +60,7 @@ class RequestController extends Controller
             'request_id' => 'required|integer'
         ]);
 
-        return $this->requestRepository->confirmedRequest($request);
+        return $this->createDataResponse($this->requestRepository->confirmedRequest($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function getConfirmedRequest(Request $request){

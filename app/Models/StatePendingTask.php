@@ -11,6 +11,10 @@ class StatePendingTask extends Model
 
     use HasFactory;
 
+    const PENDING = 1;
+    const IN_PROGRESS = 2;
+    const FINISHED = 3;
+
     protected $fillable = [
         'name'
     ];

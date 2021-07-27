@@ -7,6 +7,7 @@ use App\Models\PendingTask;
 use App\Http\Controllers\GroupTaskController;
 use App\Http\Controllers\TaskController;
 use App\Repositories\PendingTaskRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class PendingTaskController extends Controller
 {
@@ -25,16 +26,16 @@ class PendingTaskController extends Controller
         $this->pendingTaskRepository = $pendingTaskRepository;
     }
 
-    public function getAll(){
-        return PendingTask::all();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->pendingTaskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return $this->pendingTaskRepository->getById($id);
+    public function getById(Request $request, $id){
+        return $this->getDataResponse($this->pendingTaskRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getPendingOrNextTask(){
-        return $this->pendingTaskRepository->getPendingOrNextTask();
+    public function getPendingOrNextTask(Request $request){
+        return $this->getDataResponse($this->pendingTaskRepository->getPendingOrNextTask($request));
     }
 
     public function create(Request $request){

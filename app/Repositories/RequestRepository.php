@@ -2,6 +2,11 @@
 
 namespace App\Repositories;
 use App\Models\Request as RequestVehicle;
+use App\Models\State;
+use App\Models\StateRequest;
+use App\Models\TradeState;
+use App\Models\TypeRequest;
+use App\Models\TypeReservation;
 use App\Repositories\TaskReservationRepository;
 use Illuminate\Database\Eloquent\Builder;
 use App\Repositories\PendingTaskRepository;
@@ -25,55 +30,46 @@ class RequestRepository {
     }
 
     public function create($request){
-        try {
-            $array_request = [];
-            $vehicles = $request->input('vehicles');
-            $request_active = false;
-            foreach($vehicles as $vehicle){
-                $request_vehicle = new RequestVehicle();
-                $vehicle_request_active = RequestVehicle::where('vehicle_id', $vehicle['vehicle_id'])
-                                                ->where('state_request_id', 1)
-                                                ->get();
-                if(count($vehicle_request_active) > 0){
-                    $request_active = true;
-                } else {
-                    $request_vehicle->vehicle_id = $vehicle['vehicle_id'];
-                    $request_vehicle->state_request_id = 1;
-                    $request_vehicle->customer_id = $request->input('customer_id');
-                    $request_vehicle->type_request_id = $vehicle['type_request_id'];
-                    $request_vehicle->datetime_request = date('Y-m-d H:i:s');
-                    $request_vehicle->save();
-                    if($vehicle['type_request_id'] == 2){
-                        $this->taskReservationRepository->create($request_vehicle->id, $request->input('tasks'), $vehicle['vehicle_id']);
-                        //Estado comercial cambia a pre-reservado (Es reservado pero con tareas pendientes)
-                        $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
-                        if(count($tasks) > 0) {
-                            //Si hay tareas pasamos el vehículo al estado pre-reservado
-                            $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 2);
-                            $this->vehicleRepository->updateState($vehicle['vehicle_id'], 4);
-                        } else {
-                            //Si no hay tareas pasamos el vehículo al estado reservado
-                            $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], 1);
-                            $this->vehicleRepository->updateState($vehicle['vehicle_id'], 4);
-                        }
-                        //Creamos la reserva con active 1
-                        $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->input('reservation_time'), $request->input('planned_reservation'), $request->input('campa_id'), 1, $request->input('type_reservation_id'));
+        $array_request = [];
+        $vehicles = $request->input('vehicles');
+        $request_active = false;
+        foreach($vehicles as $vehicle){
+            $request_vehicle = new RequestVehicle();
+            $vehicle_request_active = RequestVehicle::where('vehicle_id', $vehicle['vehicle_id'])
+                                            ->where('state_request_id', StateRequest::REQUESTED)
+                                            ->get();
+            if(count($vehicle_request_active) > 0){
+                $request_active = true;
+            } else {
+                $request_vehicle->vehicle_id = $vehicle['vehicle_id'];
+                $request_vehicle->state_request_id = StateRequest::REQUESTED;
+                $request_vehicle->customer_id = $request->input('customer_id');
+                $request_vehicle->type_request_id = $vehicle['type_request_id'];
+                $request_vehicle->datetime_request = date('Y-m-d H:i:s');
+                $request_vehicle->save();
+                if($vehicle['type_request_id'] == TypeRequest::RESERVATION){
+                    $this->taskReservationRepository->create($request_vehicle->id, $request->input('tasks'), $vehicle['vehicle_id']);
+                    $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
+                    if(count($tasks) > 0) {
+                        $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::PRE_RESERVED);
+                        $this->vehicleRepository->updateState($vehicle['vehicle_id'], State::NOT_AVAILABLE);
+                    } else {
+                        $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::RESERVED);
+                        $this->vehicleRepository->updateState($vehicle['vehicle_id'], State::NOT_AVAILABLE);
                     }
-                    array_push($array_request, $request_vehicle);
+                    $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->input('reservation_time'), $request->input('planned_reservation'), $request->input('campa_id'), 1, $request->input('type_reservation_id'));
                 }
+                array_push($array_request, $request_vehicle);
             }
-            if($request_active == true){
-                return [
-                    'message' => 'Existen vehículos que tienen una solicitud activa',
-                    'requests' => $array_request
-                ];
-            }
-            return $array_request;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
         }
+        if($request_active == true){
+            return [
+                'message' => 'Existen vehículos que tienen una solicitud activa',
+                'requests' => $array_request
+            ];
+        }
+        return $array_request;
     }
-
 
     public function getById($id){
         try {
@@ -135,44 +131,28 @@ class RequestRepository {
     }
 
     public function confirmedRequest($request){
-        try {
-            $request_vehicle = RequestVehicle::where('id', $request->input('request_id'))
-                                        ->first();
-            $request_vehicle->state_request_id = 2;
-            $request_vehicle->datetime_approved = date('Y-m-d H:i:s');
-            $request_vehicle->save();
-            if($request_vehicle['type_request_id'] == 2){
-                //Buscamos reservation
-                $reservation = $this->reservationRepository->getByRequestId($request_vehicle['id']);
-                if($reservation['type_reservation_id'] == 1){
-                    $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
-                if(count($tasks) > 0) {
-                    //Si hay tareas pasamos el vehículo al estado pre-reservado
-                    $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 2);
-                } else {
-                    //Si no hay tareas pasamos el vehículo al estado reservado
-                    $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 1);
-                }
-                } else {
-                    //Cambio de estado comercial a reservado pre-entrega
-                    $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 3);
-
-                }
-                //Marcamos la reserva como ejecutada con el active 1
-                $this->reservationRepository->changeStateReservation($request_vehicle['id'], 1);
-                //Se crean las tareas solicitadas al momento de la reserva
-                return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
+        $request_vehicle = RequestVehicle::findOrFail($request->input('request_id'));
+        $request_vehicle->state_request_id = StateRequest::APPROVED;
+        $request_vehicle->datetime_approved = date('Y-m-d H:i:s');
+        $request_vehicle->save();
+        if($request_vehicle['type_request_id'] == TypeRequest::RESERVATION){
+            $reservation = $this->reservationRepository->getByRequestId($request_vehicle['id']);
+            if($reservation['type_reservation_id'] == TypeReservation::NORMAL){
+                $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
+            if(count($tasks) > 0) {
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::PRE_RESERVED);
+            } else {
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::RESERVED);
             }
-            //Si no es una solicitud de reserva lo será de defleet
-            $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 4);
-            //Ponemos el state del vehículo en Pendiente Venta V.O.
-            $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], 3);
-            return [
-                'message' => 'Ok'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
+            } else {
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::RESERVED_PRE_DELIVERY);
+            }
+            $this->reservationRepository->changeStateReservation($request_vehicle['id'], true);
+            return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
+        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::REQUEST_DEFLEET);
+        $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], State::PENDING_SALE_VO);
+        return [ 'message' => 'Ok' ];
     }
 
     public function getConfirmedRequest($request){

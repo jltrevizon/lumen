@@ -42,7 +42,7 @@ class PendingTask extends Model
         return $this->belongsTo(StatePendingTask::class, 'state_pending_task_id');
     }
 
-    public function group_task(){
+    public function groupTask(){
         return $this->belongsTo(GroupTask::class, 'group_task_id');
     }
 
@@ -53,4 +53,5 @@ class PendingTask extends Model
     public function pending_task_canceled(){
         return $this->hasMany(PendingTaskCanceled::class);
     }
+
 }

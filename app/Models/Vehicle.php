@@ -68,7 +68,7 @@ class Vehicle extends Model
         return $this->hasMany(GroupTask::class, 'vehicle_id');
     }
 
-    public function vehicle_pictures(){
+    public function vehiclePictures(){
         return $this->hasMany(VehiclePicture::class, 'vehicle_id');
     }
 
