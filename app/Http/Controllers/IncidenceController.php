@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Incidence;
 use App\Repositories\IncidenceRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class IncidenceController extends Controller
 {
@@ -15,31 +16,30 @@ class IncidenceController extends Controller
     }
 
     public function getAll(){
-        return Incidence::all();
+        return $this->getDataResponse($this->incidenceRepository->getAll(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return Incidence::where('id', $id)
-                    ->first();
+        return $this->getDataResponse($this->incidenceRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
-        return $this->incidenceRepository->create($request);
+        return $this->createDataResponse($this->incidenceRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
-    public function createIncidence($request){
-        return $this->incidenceRepository->createIncidence($request);
+    public function createIncidence(Request $request){
+        return $this->createDataResponse($this->incidenceRepository->createIncidence($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function resolved($request){
-        return $this->incidenceRepository->resolved($request);
+        return $this->updateDataResponse($this->incidenceRepository->resolved($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id){
-        return $this->incidenceRepository->update($request, $id);
+        return $this->updateDataResponse($this->incidenceRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->incidenceRepository->delete($id);
+        return $this->deleteDataResponse($this->incidenceRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }
