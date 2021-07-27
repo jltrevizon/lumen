@@ -151,7 +151,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
         $router->post('/pending-tasks/incidence', 'PendingTaskController@createIncidence');
         $router->post('/pending-tasks/resolved', 'PendingTaskController@resolvedIncidence');
-        $router->post('/pending-tasks/by-state', 'PendingTaskController@getPendingTaskByState');
         $router->post('/pending-tasks/by-state/by-campa', 'PendingTaskController@getPendingTaskByStateCampa');
         $router->post('/pending-tasks/by-plate', 'PendingTaskController@getPendingTaskByPlate');
         $router->post('/pending-tasks/by-vehicle', 'PendingTaskController@getPendingTasksByPlate');

@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\GroupTask;
 use App\Models\Incidence;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PendingTask extends Model
@@ -52,6 +53,29 @@ class PendingTask extends Model
 
     public function pending_task_canceled(){
         return $this->hasMany(PendingTaskCanceled::class);
+    }
+
+    public function scopeByCampas($query, $ids){
+        return $query->whereHas('vehicle.campa', function (Builder $builder) use($ids){
+            return $builder->whereIn('id', $ids);
+        });
+    }
+
+    public function scopePendingOrInProgress($query){
+        return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+    }
+
+    public function scopeCanSeeHomework($query, $userTypeId){
+        return $query->whereHas('task.sub_state.type_users_app', function ($query) use($userTypeId) {
+            return $query->where('type_user_app_id', $userTypeId);
+        });
+    }
+
+    public function scopeByPlate($query, $plate){
+        return $query->whereHas('vehicle', function (Builder $builder) use($plate) {
+            return $builder->where('plate', $plate);
+        });
     }
 
 }
