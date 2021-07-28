@@ -42,4 +42,10 @@ class QuestionAnswerRepository {
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }
+
+    public function update($request, $id){
+        $questionAnswer = QuestionAnswer::findOrFail($id);
+        $questionAnswer->update($request->al());
+        return ['question_answer' => $questionAnswer];
+    }
 }

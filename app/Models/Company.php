@@ -13,6 +13,9 @@ class Company extends Model
 
     use HasFactory;
 
+    const ALD = 1;
+    const INVARAT = 2;
+
     protected $fillable = [
         'name',
         'tradename',

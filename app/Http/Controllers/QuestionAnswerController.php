@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\QuestionnaireController;
 use App\Models\QuestionAnswer;
 use App\Repositories\QuestionAnswerRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class QuestionAnswerController extends Controller
 {
@@ -25,5 +26,9 @@ class QuestionAnswerController extends Controller
         ]);
 
         return $this->questionAnswerRepository->create($request);
+    }
+
+    public function update(Request $request, $id){
+        return $this->updateDataResponse($this->questionAnswerRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 }
