@@ -94,7 +94,7 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservatiopcanWithoutContractCampa($request), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutContractCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function filterVehicle(Request $request){

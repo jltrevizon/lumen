@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TypeTask extends Model
 {
 
+    const ACCESSORY = 1;
+    const SPECIAL = 2;
+
     use HasFactory;
 
     protected $fillable = [
