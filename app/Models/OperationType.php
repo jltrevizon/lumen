@@ -14,4 +14,8 @@ class OperationType extends Model
         'name'
     ];
 
+    public function operations(){
+        return $this->hasMany(Operation::class);
+    }
+
 }

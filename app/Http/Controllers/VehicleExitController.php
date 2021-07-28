@@ -22,6 +22,13 @@ class VehicleExitController extends Controller
     }
 
     public function create(Request $request){
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer',
+            'pending_task_id' => 'required|integer',
+            'delivery_by' => 'required|string',
+            'delivery_to' => 'required|string',
+            'name_place' => 'required|string'
+        ]);
         return $this->createDataResponse($this->vehicleExitRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 

@@ -367,5 +367,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicle-exits', 'VehicleExitController@create');
         $router->put('/vehicle-exits/{id}', 'VehicleExitController@update');
 
+        /**
+         * Operations
+         */
+        $router->get('/operations', 'OperationController@getAll');
+        $router->get('/operations/{id}', 'OperationController@getById');
+        $router->post('/operations', 'OperationController@create');
+        $router->put('/operations/{id}', 'OperationController@update');
     });
 });
