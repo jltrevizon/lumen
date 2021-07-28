@@ -45,7 +45,7 @@ class QuestionAnswerRepository {
 
     public function update($request, $id){
         $questionAnswer = QuestionAnswer::findOrFail($id);
-        $questionAnswer->update($request->al());
+        $questionAnswer->update($request->all());
         return ['question_answer' => $questionAnswer];
     }
 }
