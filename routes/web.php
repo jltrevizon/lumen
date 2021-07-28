@@ -358,5 +358,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Type User App
          */
         $router->get('/type-user-app', 'TypeUserAppController@index');
+
+        /**
+         * Vehicle exits
+         */
+        $router->get('/vehicle-exits', 'VehicleExitController@getAll');
+        $router->get('/vehicle-exits/{id}', 'VehicleExitController@getById');
+        $router->post('/vehicle-exits', 'VehicleExitController@create');
+        $router->put('/vehicle-exits/{id}', 'VehicleExitController@update');
+
     });
 });

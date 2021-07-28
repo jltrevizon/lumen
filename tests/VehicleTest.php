@@ -10,6 +10,7 @@ use App\Models\Reservation;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
+use App\Models\VehicleExit;
 use App\Models\VehicleModel;
 use App\Models\VehiclePicture;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -75,8 +76,8 @@ class VehicleTest extends TestCase
       /** @test */
     public function it_has_many_vehicle_pictures()
     {
-        $this->assertInstanceOf(HasMany::class, $this->vehicle->vehicle_pictures());
-        $this->assertInstanceOf(VehiclePicture::class, $this->vehicle->vehicle_pictures()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->vehiclePictures());
+        $this->assertInstanceOf(VehiclePicture::class, $this->vehicle->vehiclePictures()->getModel());
     }
 
      /** @test */
@@ -89,8 +90,8 @@ class VehicleTest extends TestCase
       /** @test */
     public function it_belongs_to_trade_state()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->vehicle->trade_state());
-        $this->assertInstanceOf(TradeState::class, $this->vehicle->trade_state()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->vehicle->tradeState());
+        $this->assertInstanceOf(TradeState::class, $this->vehicle->tradeState()->getModel());
     }
 
     /** @test */
@@ -108,26 +109,9 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
-    public function it_by_campa()
+    public function it_has_many_vehicle_exit()
     {
-        $campa1 = Campa::factory()->create(['id' => 1]);
-        $campa2 = Campa::factory()->create(['id' => 2]);
-
-        $vehicle1 = Vehicle::factory()->create([
-            'campa_id' => $campa1->id
-        ]);
-        $vehicle2 = Vehicle::factory()->create([
-            'campa_id' => $campa1->id
-        ]);
-        $vehicle3 = Vehicle::factory()->create([
-            'campa_id' => $campa1->id
-        ]);
-        $vehicle4 = Vehicle::factory()->create([
-            'campa_id' => $campa2->id
-        ]);
-
-        $vehicle = Vehicle::byCampaId($campa2->id);
-
-        $this->assertEquals($vehicle, $vehicle4);
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->vehicleExits());
+        $this->assertInstanceOf(VehicleExit::class, $this->vehicle->vehicleExits()->getModel());
     }
 }

@@ -8,9 +8,11 @@ use App\Models\PendingTaskCanceled;
 use App\Models\StatePendingTask;
 use App\Models\Task;
 use App\Models\Vehicle;
+use App\Models\VehicleExit;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -51,8 +53,8 @@ class PendingtaskTest extends TestCase
     /** @test */
     public function it_belongs_to_group_task()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->group_task());
-        $this->assertInstanceOf(GroupTask::class, $this->pendingTask->group_task()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->groupTask());
+        $this->assertInstanceOf(GroupTask::class, $this->pendingTask->groupTask()->getModel());
     }
 
     /** @test */
@@ -67,5 +69,12 @@ class PendingtaskTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->pendingTask->pending_task_canceled());
         $this->assertInstanceOf(PendingTaskCanceled::class, $this->pendingTask->pending_task_canceled()->getModel());
+    }
+
+    /** @test */
+    public function it_has_one_vehicle_exit()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->pendingTask->vehicleExit());
+        $this->assertInstanceOf(VehicleExit::class, $this->pendingTask->vehicleExit()->getModel());
     }
 }

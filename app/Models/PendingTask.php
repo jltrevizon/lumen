@@ -55,6 +55,10 @@ class PendingTask extends Model
         return $this->hasMany(PendingTaskCanceled::class);
     }
 
+    public function vehicleExit(){
+        return $this->hasOne(VehicleExit::class);
+    }
+
     public function scopeByCampas($query, $ids){
         return $query->whereHas('vehicle.campa', function (Builder $builder) use($ids){
             return $builder->whereIn('id', $ids);
