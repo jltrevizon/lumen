@@ -305,7 +305,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Questions answer
          */
         $router->post('/question-answers', 'QuestionAnswerController@create');
-        $router->put('/question-answers', 'QuestionAnswerController@update');
+        $router->put('/question-answers/{id}', 'QuestionAnswerController@update');
 
         /**
          * Manual Questionnaire
