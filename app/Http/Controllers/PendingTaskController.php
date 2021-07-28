@@ -137,4 +137,8 @@ class PendingTaskController extends Controller
         return $this->pendingTaskRepository->orderPendingTask($request);
     }
 
+    public function addPendingTask(Request $request){
+        return $this->createDataResponse($this->pendingTaskRepository->addPendingTask($request), HttpFoundationResponse::HTTP_CREATED);
+    }
+
 }

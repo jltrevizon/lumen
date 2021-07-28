@@ -11,9 +11,8 @@ class TaskRepository extends Repository {
                     ->get();
     }
 
-    public function getById($request, $id){
-        return Task::with($this->getWiths($request->with))
-                    ->findOrFail($id);
+    public function getById($id){
+        return Task::findOrFail($id);
     }
 
     public function create($request){

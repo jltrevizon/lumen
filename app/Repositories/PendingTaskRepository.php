@@ -258,4 +258,16 @@ class PendingTaskRepository extends Repository {
                 ->get();
     }
 
+    public function addPendingTask($request){
+        $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))
+                        ->get();
+        $task = $this->taskRepository->getById($request->input('task_id'));
+        $pendingTask = PendingTask::create($request->all());
+        $pendingTask->duration = $task['duration'];
+        $pendingTask->order = count($pendingTasks) - 1;
+        $pendingTask->save();
+
+        return ['pending_task' => $pendingTask];
+    }
+
 }
