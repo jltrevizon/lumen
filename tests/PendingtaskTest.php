@@ -3,6 +3,7 @@
 use App\Models\Company;
 use App\Models\GroupTask;
 use App\Models\Incidence;
+use App\Models\Operation;
 use App\Models\PendingTask;
 use App\Models\PendingTaskCanceled;
 use App\Models\StatePendingTask;
@@ -76,5 +77,12 @@ class PendingtaskTest extends TestCase
     {
         $this->assertInstanceOf(HasOne::class, $this->pendingTask->vehicleExit());
         $this->assertInstanceOf(VehicleExit::class, $this->pendingTask->vehicleExit()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_operations()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->pendingTask->operations());
+        $this->assertInstanceOf(Operation::class, $this->pendingTask->operations()->getModel());
     }
 }

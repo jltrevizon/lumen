@@ -3,6 +3,7 @@
 use App\Models\Campa;
 use App\Models\Category;
 use App\Models\GroupTask;
+use App\Models\Operation;
 use App\Models\PendingTask;
 use App\Models\Questionnaire;
 use App\Models\Request;
@@ -113,5 +114,12 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->vehicleExits());
         $this->assertInstanceOf(VehicleExit::class, $this->vehicle->vehicleExits()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_operations()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->operations());
+        $this->assertInstanceOf(Operation::class, $this->vehicle->operations()->getModel());
     }
 }

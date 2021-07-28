@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Operation extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'vehicle_id',
@@ -22,7 +25,7 @@ class Operation extends Model
         return $this->belongsTo(PendingTask::class);
     }
 
-    public function operatioType(){
+    public function operationType(){
         return $this->belongsTo(OperationType::class);
     }
 }
