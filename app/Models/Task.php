@@ -23,19 +23,19 @@ class Task extends Model
         'duration'
     ];
 
-    public function pending_tasks(){
+    public function pendingTasks(){
         return $this->hasMany(PendingTask::class, 'task_id');
     }
 
-    public function sub_state(){
+    public function subState(){
         return $this->belongsTo(SubState::class, 'sub_state_id');
     }
 
-    public function type_task(){
+    public function typeTask(){
         return $this->belongsTo(TypeTask::class, 'type_task_id');
     }
 
-    public function purchase_operations(){
+    public function purchaseOperations(){
         return $this->hasMany(PurchaseOperation::class, 'task_id');
     }
 }
