@@ -4,47 +4,33 @@ namespace App\Repositories;
 use App\Models\Task;
 use Exception;
 
-class TaskRepository {
+class TaskRepository extends Repository {
 
-    public function getById($id){
-        try {
-            return Task::with(['sub_state.state','sub_state.type_users_app'])
-                        ->findOrFail($id);
-            //return response()->json(['task' => $task], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function getAll($request){
+        return Task::with($this->getWiths($request->with))
+                    ->get();
+    }
+
+    public function getById($request, $id){
+        return Task::with($this->getWiths($request->with))
+                    ->findOrFail($id);
     }
 
     public function create($request){
-        try {
-            $task = Task::create($request->all());
-            $task->save();
-            return $task;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $task = Task::create($request->all());
+        $task->save();
+        return $task;
     }
 
     public function update($request, $id){
-        try {
-            $task = Task::findOrFail($id);
-            $task->update($request->all());
-            return response()->json(['task' => $task], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $task = Task::findOrFail($id);
+        $task->update($request->all());
+        return ['task' => $task];
     }
 
     public function delete($id){
-        try {
-            Task::where('id', $id)
-                ->delete();
-            return [
-                'message' => 'Task deleted'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        Task::where('id', $id)
+            ->delete();
+        return [ 'message' => 'Task deleted' ];
     }
 }

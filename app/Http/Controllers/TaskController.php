@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Repositories\TaskRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class TaskController extends Controller
 {
@@ -14,13 +15,12 @@ class TaskController extends Controller
         $this->taskRepository = $taskRepository;
     }
 
-    public function getAll(){
-        return Task::with(['sub_state.state','type_task'])
-                    ->get();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->taskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return $this->taskRepository->getById($id);
+    public function getById(Request $request, $id){
+        return $this->getDataResponse($this->taskRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -32,15 +32,15 @@ class TaskController extends Controller
             'duration' => 'required|integer',
         ]);
 
-        return $this->taskRepository->create($request);
+        return $this->createDataResponse($this->taskRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id){
-        return $this->taskRepository->update($request, $id);
+        return $this->updateDataResponse($this->taskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->taskRepository->delete($id);
+        return $this->deleteDataResponse($this->taskRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
 }
