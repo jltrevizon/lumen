@@ -60,11 +60,11 @@ class Vehicle extends Model
         return $this->hasMany(Request::class, 'vehicle_id');
     }
 
-    public function pending_tasks(){
+    public function pendingTasks(){
         return $this->hasMany(PendingTask::class, 'vehicle_id');
     }
 
-    public function group_tasks(){
+    public function groupTasks(){
         return $this->hasMany(GroupTask::class, 'vehicle_id');
     }
 
