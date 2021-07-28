@@ -83,19 +83,19 @@ class VehicleRepository extends Repository {
                        ->first();
     }
 
-    public function create($request): JsonResponse {
+    public function create($request) {
         $vehicle = Vehicle::create($request->all());
         $vehicle->save();
         return response()->json(['vehicle' => $vehicle], 200);
     }
 
-    public function update($request, $id): JsonResponse
+    public function update($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
         return $vehicle->update($request->all());
     }
 
-    public function updateBack($request): JsonResponse
+    public function updateBack($request)
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         $vehicle->update($request->all());
@@ -109,14 +109,14 @@ class VehicleRepository extends Repository {
         return $vehicle;
     }
 
-    public function updateSubState($vehicle_id, $sub_state_id): JsonResponse {
+    public function updateSubState($vehicle_id, $sub_state_id) {
         $vehicle = Vehicle::findOrFail($vehicle_id);
         $vehicle->sub_state_id = $sub_state_id;
         $vehicle->save();
         return response()->json(['vehicle' => $vehicle]);
     }
 
-    public function updateTradeState($vehicle_id, $trade_state_id): JsonResponse {
+    public function updateTradeState($vehicle_id, $trade_state_id) {
         $vehicle = Vehicle::findOrFail($vehicle_id);
         $vehicle->trade_state_id = $trade_state_id;
         $vehicle->save();
@@ -143,7 +143,7 @@ class VehicleRepository extends Repository {
         }
     }
 
-    public function verifyPlateReception($request){
+public function verifyPlateReception($request){
 
         $vehicle = Vehicle::with($this->getWiths($request->with))
                     ->where('plate', $request->input('plate'))
