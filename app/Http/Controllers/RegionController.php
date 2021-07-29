@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Region;
 use App\Repositories\RegionRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class RegionController extends Controller
 {
@@ -15,11 +16,11 @@ class RegionController extends Controller
     }
 
     public function getAll(){
-        return Region::all();
+        return $this->getDataResponse(Region::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->regionRepository->getById($id);
+        return $this->getDataResponse($this->regionRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -28,14 +29,14 @@ class RegionController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->regionRepository->create($request);
+        return $this->createDataResponse($this->regionRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->regionRepository->update($request, $id);
+        return $this->updateDataResponse($this->regionRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->regionRepository->delete($id);
+        return $this->deleteDataResponse($this->regionRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }

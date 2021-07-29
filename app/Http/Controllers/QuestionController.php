@@ -28,7 +28,7 @@ class QuestionController extends Controller
             'description' => 'required|string'
         ]);
 
-        return $this->createDataResponse($this->questionRepository->create($request), HttpFoundationResponse::HTTP_OK);
+        return $this->createDataResponse($this->questionRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function delete($id){

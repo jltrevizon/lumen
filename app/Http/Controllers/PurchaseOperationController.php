@@ -31,7 +31,7 @@ class PurchaseOperationController extends Controller
             'price' => 'required'
         ]);
 
-        return $this->createDataResponse($this->purchaseOperationRepository->create($request), HttpFoundationResponse::HTTP_OK);
+        return $this->createDataResponse($this->purchaseOperationRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){

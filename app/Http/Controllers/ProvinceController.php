@@ -40,7 +40,7 @@ class ProvinceController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->createDataResponse($this->provinceRepository->create($request), HttpFoundationResponse::HTTP_OK);
+        return $this->createDataResponse($this->provinceRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){

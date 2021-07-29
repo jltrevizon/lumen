@@ -15,12 +15,11 @@ class RequestController extends Controller
     }
 
     public function getAll(){
-        return RequestVehicle::all();
+        return $this->getDataResponse(RequestVehicle::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return RequestVehicle::where('id', $id)
-                        ->first();
+        return $this->getDataResponse(RequestVehicle::findOrFail($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -33,7 +32,7 @@ class RequestController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->requestRepository->create($request, $id);
+        return $this->updateDataResponse($this->requestRepository->create($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehiclesRequestedDefleet(Request $request){
@@ -42,7 +41,7 @@ class RequestController extends Controller
             'campa_id' => 'required|integer'
         ]);
 
-        return $this->requestRepository->vehiclesRequestedDefleet($request);
+        return $this->getDataResponse($this->requestRepository->vehiclesRequestedDefleet($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehiclesRequestedReserve(Request $request){
@@ -51,7 +50,7 @@ class RequestController extends Controller
             'campa_id' => 'required|integer'
         ]);
 
-        return $this->requestRepository->vehiclesRequestedReserve($request);
+        return $this->getDataResponse($this->requestRepository->vehiclesRequestedReserve($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function confirmedRequest(Request $request){
@@ -70,7 +69,7 @@ class RequestController extends Controller
             'campa_id' => 'required|integer'
         ]);
 
-        return $this->requestRepository->getConfirmedRequest($request);
+        return $this->getDataResponse($this->requestRepository->getConfirmedRequest($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function declineRequest(Request $request){
@@ -79,7 +78,7 @@ class RequestController extends Controller
             'request_id' => 'required|integer'
         ]);
 
-        return $this->requestRepository->declineRequest($request);
+        return $this->updateDataResponse($this->requestRepository->declineRequest($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
@@ -88,11 +87,11 @@ class RequestController extends Controller
         return [ 'message' => 'Request deleted' ];
     }
 
-    public function getRequestDefleetApp(){
-        return $this->requestRepository->getRequestDefleetApp();
+    public function getRequestDefleetApp(Request $request){
+        return $this->getDataResponse($this->requestRepository->getRequestDefleetApp($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getRequestReserveApp(){
-        return $this->requestRepository->getRequestReserveApp();
+        return $this->getDataResponse($this->requestRepository->getRequestReserveApp(), HttpFoundationResponse::HTTP_OK);
     }
 }

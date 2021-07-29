@@ -13,7 +13,7 @@ use App\Repositories\PendingTaskRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
-class RequestRepository {
+class RequestRepository extends Repository {
 
     public function __construct(
         TaskReservationRepository $taskReservationRepository,
@@ -72,62 +72,40 @@ class RequestRepository {
     }
 
     public function getById($id){
-        try {
-            return RequestVehicle::findOrFail($id);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return RequestVehicle::findOrFail($id);
     }
 
 
     public function update($request, $id){
-        try {
-            $request_vehicle = RequestVehicle::findOrFail($id);
-            $request_vehicle->update($request->all());
-            if($request->input('type_request_id') == 2){
-                $this->reservationRepository->create($request_vehicle['id'], $request_vehicle['vehicle_id'], $request->input('reservation_time'), $request->input('planned_reservation'), $request->input('campa_id'));
-                $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
-                if(count($tasks) > 0) {
-                    //Si hay tareas pasamos el vehículo al estado pre-reservado
-                    $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 2);
-                } else {
-                    //Si no hay tareas pasamos el vehículo al estado reservado
-                    $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], 1);
-                }
+        $request_vehicle = RequestVehicle::findOrFail($id);
+        $request_vehicle->update($request->all());
+        if($request->input('type_request_id') == TypeRequest::RESERVATION){
+            $this->reservationRepository->create($request_vehicle['id'], $request_vehicle['vehicle_id'], $request->input('reservation_time'), $request->input('planned_reservation'), $request->input('campa_id'));
+            $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
+            if(count($tasks) > 0) {
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::PRE_RESERVED);
+            } else {
+                $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::RESERVED);
             }
-            return $request_vehicle;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
         }
+        return $request_vehicle;
     }
 
 
     public function vehiclesRequestedDefleet($request){
-        try {
-            return RequestVehicle::with(['vehicle.state','vehicle.category','vehicle.campa','state_request','type_request'])
-                                ->whereHas('vehicle', function(Builder $builder) use ($request){
-                                    return $builder->where('campa_id', $request->input('campa_id'));
-                                })
-                                ->where('type_request_id', 1)
-                                ->where('state_request_id', 1)
-                                ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return RequestVehicle::with($this->getWiths($request->with))
+                    ->byVehicleInCampa($request->input('campa_id'))
+                    ->where('type_request_id', TypeRequest::DEFLEET)
+                    ->where('state_request_id', StateRequest::REQUESTED)
+                    ->get();
     }
 
     public function vehiclesRequestedReserve($request){
-        try {
-            return RequestVehicle::with(['vehicle.state','vehicle.category','vehicle.campa','state_request','type_request', 'customer','reservation'])
-                                ->whereHas('vehicle', function(Builder $builder) use ($request){
-                                    return $builder->where('campa_id', $request->input('campa_id'));
-                                })
-                                ->where('type_request_id', 2)
-                                ->where('state_request_id', 1)
-                                ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return RequestVehicle::with($this->getWiths($request->with))
+                    ->byVehicleInCampa($request->input('campa_id'))
+                    ->where('type_request_id', TypeRequest::RESERVATION)
+                    ->where('state_request_id', StateRequest::REQUESTED)
+                    ->get();
     }
 
     public function confirmedRequest($request){
@@ -156,65 +134,39 @@ class RequestRepository {
     }
 
     public function getConfirmedRequest($request){
-        try {
-            return RequestVehicle::with(['type_request','state_request','vehicle.state','vehicle.campa','vehicle.category'])
-                                ->whereHas('vehicle', function (Builder $builder) use($request){
-                                    return $builder->where('campa_id', $request->input('campa_id'));
-                                })
-                                ->where('type_request_id', $request->input('type_request_id'))
-                                ->where('state_request_id', 2)
-                                ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return RequestVehicle::with($this->getWiths($request->with))
+                    ->byVehicleInCampa($request->input('campa_id'))
+                    ->where('type_request_id', $request->input('type_request_id'))
+                    ->where('state_request_id', StateRequest::APPROVED)
+                    ->get();
     }
 
     public function declineRequest($request){
-        try {
-            $request_vehicle = RequestVehicle::where('id', $request->input('request_id'))
-                                        ->first();
-            //Ponemos el vehículo disponible
-            $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], null);
-            $request_vehicle->state_request_id = 3;
-            $request_vehicle->save();
-            //Eliminamos reservation
-            $this->reservationRepository->deleteReservation($request);
-            return RequestVehicle::with(['state_request'])
-                            ->where('id', $request->input('request_id'))
-                            ->first();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $request_vehicle = RequestVehicle::findOrFail($request->input('request_id'));
+        $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], null);
+        $request_vehicle->state_request_id = StateRequest::DECLINED;
+        $request_vehicle->save();
+        $this->reservationRepository->deleteReservation($request);
+        return RequestVehicle::with($this->getWiths($request->with))
+                    ->findOrFail($request->input('request_id'));
     }
 
-    public function getRequestDefleetApp(){
-        try {
-            $user = $this->userRepository->getById(Auth::id());
-            return RequestVehicle::with(['vehicle.category','type_request'])
-                                ->whereHas('vehicle', function (Builder $builder) use($user){
-                                    return $builder->where('campa_id', $user->campa_id);
-                                })
-                                ->where('type_request_id', 1)
-                                ->where('state_request_id', 1)
-                                ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function getRequestDefleetApp($request){
+        $user = $this->userRepository->getById(Auth::id());
+        return RequestVehicle::with($this->getWiths($request->with))
+                    ->byVehicleInCampa($user->campas->pluck('id')->toArray())
+                    ->where('type_request_id', TypeRequest::DEFLEET)
+                    ->where('state_request_id', StateRequest::REQUESTED)
+                    ->get();
     }
 
     public function getRequestReserveApp(){
-        try {
-            $user = $this->userRepository->getById(Auth::id());
-            return RequestVehicle::with(['vehicle.category','type_request'])
-                                ->whereHas('vehicle', function (Builder $builder) use($user){
-                                    return $builder->where('campa_id', $user->campa_id);
-                                })
-                                ->where('type_request_id', 2)
-                                ->where('state_request_id', 1)
-                                ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $user = $this->userRepository->getById(Auth::id());
+        return RequestVehicle::with(['vehicle.category','type_request'])
+                    ->byVehicleInCampa($user->campas->pluck('id')->toArray())
+                    ->where('type_request_id', TypeRequest::RESERVATION)
+                    ->where('state_request_id', StateRequest::REQUESTED)
+                    ->get();
     }
 
 }

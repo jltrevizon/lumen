@@ -16,43 +16,24 @@ class RegionRepository {
     }
 
     public function getById($id){
-        try {
-            return Region::where('id', $id)
-                            ->first();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+            return Region::findOrFail($id);
     }
 
     public function create($request){
-        try {
-            $region = Region::create($request->all());
-            $region->save();
-            return $region;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $region = Region::create($request->all());
+        $region->save();
+        return $region;
     }
 
     public function update($request, $id){
-        try {
-            $region = Region::findOrFail($id);
-            $region->update($request->all());
-            return response()->json(['region' => $region], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
+        $region = Region::findOrFail($id);
+        $region->update($request->all());
+        return ['region' => $region];
+}
 
     public function delete($id){
-        try {
-            Region::where('id', $id)
-                    ->delete();
-            return [
-                'message' => 'Region deleted'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        Region::where('id', $id)
+                ->delete();
+        return [ 'message' => 'Region deleted' ];
     }
 }

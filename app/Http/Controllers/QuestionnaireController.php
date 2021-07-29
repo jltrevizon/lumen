@@ -16,6 +16,6 @@ class QuestionnaireController extends Controller
     }
 
     public function create($vehicle_id){
-        return $this->createDataResponse($this->questionnaireRepository->create($vehicle_id), HttpFoundationResponse::HTTP_OK);
+        return $this->createDataResponse($this->questionnaireRepository->create($vehicle_id), HttpFoundationResponse::HTTP_CREATED);
     }
 }
