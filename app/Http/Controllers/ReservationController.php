@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\ReservationRepository;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class ReservationController extends Controller
 {
@@ -18,7 +19,7 @@ class ReservationController extends Controller
             'company_id' => 'required|integer'
         ]);
 
-        return $this->reservationRepository->getReservationActive($request);
+        return $this->getDataResponse($this->reservationRepository->getReservationActive($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getReservationActiveByCampa(Request $request){
@@ -27,11 +28,11 @@ class ReservationController extends Controller
             'campa_id' => 'required|integer'
         ]);
 
-        return $this->reservationRepository->getReservationActiveByCampa($request);
+        return $this->getDataResponse($this->reservationRepository->getReservationActiveByCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request){
-        return $this->reservationRepository->update($request);
+        return $this->updateDataResponse($this->reservationRepository->update($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getReservationsByVehicle(Request $request){
@@ -40,7 +41,7 @@ class ReservationController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
 
-        return $this->reservationRepository->getReservationsByVehicle($request);
+        return $this->getDataResponse($this->reservationRepository->getReservationsByVehicle($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleWithoutOrder(Request $request){
@@ -49,7 +50,7 @@ class ReservationController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
 
-        return $this->reservationRepository->vehicleWithoutOrder($request);
+        return $this->getDataResponse($this->reservationRepository->vehicleWithoutOrder($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleWithoutContract(Request $request){
@@ -58,7 +59,7 @@ class ReservationController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
 
-        return $this->reservationRepository->vehicleWithoutContract($request);
+        return $this->getDataResponse($this->reservationRepository->vehicleWithoutContract($request), HttpFoundationResponse::HTTP_OK);
     }
 
 }

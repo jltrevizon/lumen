@@ -160,6 +160,20 @@ class Vehicle extends Model
         return $query->where('ready_to_delivery', $value);
     }
 
+    public function scopeByStatePendingTasks($query, $ids){
+        return $query->whereHas('pendingTasks', function (Builder $builder) use($ids) {
+            return $builder->whereIn('state_pending_task_id', $ids);
+        })
+        ->whereHas('lastGroupTask');
+    }
+
+    public function lastGroupTask(){
+        return $this->hasOne(GroupTask::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
+
     public function lastUnapprovedGroupTask(){
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'

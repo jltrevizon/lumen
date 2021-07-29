@@ -59,4 +59,8 @@ class VehicleFilter extends ModelFilter
         return $this->byReadyDelivery($value);
     }
 
+    public function statePendingTasks($ids){
+        return $this->byStatePendingTasks($ids);
+    }
+
 }
