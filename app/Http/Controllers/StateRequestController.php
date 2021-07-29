@@ -33,7 +33,7 @@ class StateRequestController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->updateDataResponse($this->stateRequestRepository->update($request), HttpFoundationResponse::HTTP_OK);
+        return $this->updateDataResponse($this->stateRequestRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){

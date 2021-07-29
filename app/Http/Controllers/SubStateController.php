@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SubState;
 use App\Repositories\SubStateRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class SubStateController extends Controller
 {
@@ -14,13 +15,12 @@ class SubStateController extends Controller
         $this->subStateRepository = $subStateRepository;
     }
 
-    public function getAll(){
-        return SubState::with(['state'])
-                    ->get();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->subStateRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->subStateRepository->getById($id);
+        return $this->getDataResponse($this->subStateRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -30,14 +30,14 @@ class SubStateController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->subStateRepository->create($request);
+        return $this->createDataResponse($this->subStateRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->subStateRepository->update($request, $id);
+        return $this->updateDataResponse($this->subStateRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->subStateRepository->update($id);
+        return $this->deleteDataResponse($this->subStateRepository->update($id), HttpFoundationResponse::HTTP_OK);
     }
 }
