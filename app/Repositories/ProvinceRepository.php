@@ -8,51 +8,29 @@ use Exception;
 class ProvinceRepository {
 
     public function getById($id){
-        try {
-            return response()->json(['povince' => Province::findOrFail($id)]);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return ['povince' => Province::findOrFail($id)];
     }
 
     public function provinceByRegion($request){
-        try {
-            return Province::where('region_id', $request->input('region_id'))
-                        ->get();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return Province::where('region_id', $request->input('region_id'))
+                    ->get();
     }
 
     public function create($request){
-        try {
-            $province = Province::create($request->all());
-            $province->save();
-            return $province;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $province = Province::create($request->all());
+        $province->save();
+        return $province;
     }
 
     public function update($request, $id){
-        try {
-            $province = Province::findOrFail($id);
-            $province->update($request->all());
-            return response()->json(['province' => $province], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $province = Province::findOrFail($id);
+        $province->update($request->all());
+        return ['province' => $province];
     }
 
     public function delete($id){
-        try {
-            Province::where('id', $id)
-                    ->delete();
-            return [
-                'message' => 'Province deleted'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        Province::where('id', $id)
+                ->delete();
+        return [ 'message' => 'Province deleted' ];
     }
 }

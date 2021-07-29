@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\ReceptionRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class ReceptionController extends Controller
 {
@@ -18,10 +19,10 @@ class ReceptionController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
 
-        return $this->receptionRepository->create($request);
+        return $this->createDataResponse($this->receptionRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function getById($id){
-        return $this->receptionRepository->getById($id);
+        return $this->getDataResponse($this->receptionRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 }

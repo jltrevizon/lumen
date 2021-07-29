@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Province;
 use App\Repositories\ProvinceRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class ProvinceController extends Controller
 {
@@ -15,11 +16,11 @@ class ProvinceController extends Controller
     }
 
     public function getAll(){
-        return Province::all();
+        return $this->getDataResponse(Province::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->provinceRepository->getById($id);
+        return $this->getDataResponse($this->provinceRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function provinceByRegion(Request $request){
@@ -28,7 +29,7 @@ class ProvinceController extends Controller
             'region_id' => 'required|integer'
         ]);
 
-        return $this->provinceRepository->provinceByRegion($request);
+        return $this->getDataResponse($this->provinceRepository->provinceByRegion($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -39,14 +40,14 @@ class ProvinceController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->provinceRepository->create($request);
+        return $this->createDataResponse($this->provinceRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id){
-        return $this->provinceRepository->update($request, $id);
+        return $this->updateDataResponse($this->provinceRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->provinceRepository->delete($id);
+        return $this->deleteDataResponse($this->provinceRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Questionnaire;
 use App\Repositories\QuestionnaireRepository;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class QuestionnaireController extends Controller
 {
@@ -15,6 +16,6 @@ class QuestionnaireController extends Controller
     }
 
     public function create($vehicle_id){
-        return $this->questionnaireRepository->create($vehicle_id);
+        return $this->createDataResponse($this->questionnaireRepository->create($vehicle_id), HttpFoundationResponse::HTTP_OK);
     }
 }

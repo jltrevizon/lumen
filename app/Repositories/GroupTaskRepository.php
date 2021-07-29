@@ -42,7 +42,7 @@ class GroupTaskRepository extends Repository {
     public function update($request, $id){
         $group_task = GroupTask::findOrFail($id);
         $group_task->update($request->all());
-        return response()->json(['group_task' => $group_task], 200);
+        return ['group_task' => $group_task];
     }
 
     public function getLastByVehicle($vehicle_id){
@@ -60,7 +60,7 @@ class GroupTaskRepository extends Repository {
         $group_task = GroupTask::findOrFail($request->input('group_task_id'));
         $group_task->approved_available = 1;
         $group_task->save();
-        return response()->json(['message' => 'Solicitud aprobada!'], 200);
+        return ['message' => 'Solicitud aprobada!'];
     }
 
     public function declineGroupTask($request){
@@ -71,6 +71,6 @@ class GroupTaskRepository extends Repository {
                     ->delete();
         GroupTask::findOrFail($request->input('group_task_id'))
                     ->delete();
-        return response()->json(['message' => 'Solicitud declinada!'], 200);
+        return ['message' => 'Solicitud declinada!'];
     }
 }

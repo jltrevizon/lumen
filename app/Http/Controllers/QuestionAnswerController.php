@@ -25,7 +25,7 @@ class QuestionAnswerController extends Controller
             'questions' => 'required'
         ]);
 
-        return $this->questionAnswerRepository->create($request);
+        return $this->createDataResponse($this->questionAnswerRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id){

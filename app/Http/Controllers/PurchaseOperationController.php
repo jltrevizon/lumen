@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PurchaseOperation;
 use App\Repositories\PurchaseOperationRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class PurchaseOperationController extends Controller
 {
@@ -15,11 +16,11 @@ class PurchaseOperationController extends Controller
     }
 
     public function getAll(){
-        return PurchaseOperation::all();
+        return $this->getDataResponse(PurchaseOperation::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->purchaseOperationRepository->getById($id);
+        return $this->getDataResponse($this->purchaseOperationRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -30,14 +31,14 @@ class PurchaseOperationController extends Controller
             'price' => 'required'
         ]);
 
-        return $this->purchaseOperationRepository->create($request);
+        return $this->createDataResponse($this->purchaseOperationRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id){
-        return $this->purchaseOperationRepository->update($request);
+        return $this->updateDataResponse($this->purchaseOperationRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->purchaseOperationRepository->delete($id);
+        return $this->deleteDataResponse($this->purchaseOperationRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }

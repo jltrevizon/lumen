@@ -32,26 +32,26 @@ class PendingTask extends Model
     ];
 
     public function vehicle(){
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function task(){
-        return $this->belongsTo(Task::class, 'task_id');
+        return $this->belongsTo(Task::class);
     }
 
-    public function state_pending_task(){
-        return $this->belongsTo(StatePendingTask::class, 'state_pending_task_id');
+    public function statePendingTask(){
+        return $this->belongsTo(StatePendingTask::class);
     }
 
     public function groupTask(){
-        return $this->belongsTo(GroupTask::class, 'group_task_id');
+        return $this->belongsTo(GroupTask::class);
     }
 
     public function incidences(){
         return $this->belongsToMany(Incidence::class);
     }
 
-    public function pending_task_canceled(){
+    public function pendingTaskCanceled(){
         return $this->hasMany(PendingTaskCanceled::class);
     }
 

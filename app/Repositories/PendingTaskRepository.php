@@ -111,7 +111,7 @@ class PendingTaskRepository extends Repository {
     public function update($request, $id){
         $pending_task = PendingTask::findOrFail($id);
         $pending_task->update($request->all());
-        return response()->json(['pending_task' => $pending_task], 200);
+        return ['pending_task' => $pending_task];
     }
 
     public function createIncidence($request){
@@ -150,12 +150,12 @@ class PendingTaskRepository extends Repository {
             }
         }
         $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
-                                ->where(function ($query) {
-                                    return $query->where('state_pending_task_id', null)
-                                            ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
-                                })
-                                ->orderBy('order','asc')
-                                ->first();
+                            ->where(function ($query) {
+                                return $query->where('state_pending_task_id', null)
+                                        ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
+                            })
+                            ->orderBy('order','asc')
+                            ->first();
         $pending_task->state_pending_task_id = StatePendingTask::PENDING;
         $pending_task->datetime_pending = date("Y-m-d H:i:s");
         $pending_task->save();
@@ -163,9 +163,8 @@ class PendingTaskRepository extends Repository {
     }
 
     public function startPendingTask($request){
-        $pending_task = PendingTask::with(['incidences'])
-                                ->where('id', $request->input('pending_task_id'))
-                                ->first();
+        $pending_task = PendingTask::with($this->getWiths($request->with))
+                                ->findOrFail($request->input('pending_task_id'));
 
         if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->state_pending_task_id = StatePendingTask::IN_PROGRESS;
