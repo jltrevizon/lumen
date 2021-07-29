@@ -75,7 +75,7 @@ class PendingTask extends Model
     }
 
     public function scopeCanSeeHomework($query, $userTypeId){
-        return $query->whereHas('task.sub_state.type_users_app', function ($query) use($userTypeId) {
+        return $query->whereHas('task.subState.type_users_app', function ($query) use($userTypeId) {
             return $query->where('type_user_app_id', $userTypeId);
         });
     }
