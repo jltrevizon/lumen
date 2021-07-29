@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\StateRequest;
 use App\Repositories\StateRequestRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class StateRequestController extends Controller
 {
@@ -15,11 +16,11 @@ class StateRequestController extends Controller
     }
 
     public function getAll(){
-        return StateRequest::all();
+        return $this->getDataResponse(StateRequest::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->stateRequestRepository->getById($id);
+        return $this->getDataResponse($this->stateRequestRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -28,14 +29,14 @@ class StateRequestController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->stateRequestRepository->create($request);
+        return $this->createDataResponse($this->stateRequestRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->stateRequestRepository->update($request);
+        return $this->updateDataResponse($this->stateRequestRepository->update($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->stateRequestRepository->delete($id);
+        return $this->deleteDataResponse($this->stateRequestRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }

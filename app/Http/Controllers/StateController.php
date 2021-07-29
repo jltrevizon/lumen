@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\State;
 use App\Repositories\StateRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class StateController extends Controller
 {
@@ -15,19 +16,19 @@ class StateController extends Controller
     }
 
     public function getAll(){
-        return State::all();
+        return $this->getDataResponse(State::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->stateRepository->getById($id);
+        return $this->getDataResponse($this->stateRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getStatesWithVehicles(Request $request){
-        return $this->stateRepository->getStatesWithVehicles($request);
+        return $this->getDataResponse($this->stateRepository->getStatesWithVehicles($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getStatesWithVehiclesCampa(Request $request){
-        return $this->stateRepository->getStatesWithVehiclesCampa($request);
+        return $this->getDataResponse($this->stateRepository->getStatesWithVehiclesCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -36,14 +37,14 @@ class StateController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->stateRepository->create($request);
+        return $this->createDataResponse($this->stateRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->stateRepository->update($request, $id);
+        return $this->updateDataResponse($this->stateRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->stateRepository->delete($id);
+        return $this->deleteDataResponse($this->stateRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }

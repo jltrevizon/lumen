@@ -14,50 +14,28 @@ class StateRepository {
     }
 
     public function getAll(){
-        try {
-            return State::all();
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return State::all();
     }
 
     public function getById($id){
-        try {
-            return response()->json(['state' => State::findOrFail($id)], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return ['state' => State::findOrFail($id)];
     }
 
     public function create($request){
-        try {
-            $state = State::create($request->all());
-            $state->save();
-            return $state;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $state = State::create($request->all());
+        $state->save();
+        return $state;
     }
 
     public function update($request, $id){
-        try {
-            $state = State::findOrFail($id);
-            $state->update($request->all());
-            return response()->json(['state' => $state], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $state = State::findOrFail($id);
+        $state->update($request->all());
+        return ['state' => $state];
     }
 
     public function delete($id){
-        try {
-            State::where('id', $id)
-                ->delete();
-            return [
-                'message' => 'State deleted'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        State::where('id', $id)
+            ->delete();
+        return [ 'message' => 'State deleted' ];
     }
 }
