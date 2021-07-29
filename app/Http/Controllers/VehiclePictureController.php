@@ -7,6 +7,7 @@ use App\Models\VehiclePicture;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Repositories\VehiclePictureRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class VehiclePictureController extends Controller
 {
@@ -25,7 +26,7 @@ class VehiclePictureController extends Controller
             'longitude' => 'required|string'
         ]);
 
-        return $this->vehiclePictureRepository->create($request);
+        return $this->getDataResponse($this->vehiclePictureRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getPicturesByVehicle(Request $request){
@@ -34,6 +35,6 @@ class VehiclePictureController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
 
-        return $this->vehiclePictureRepository->getPicturesByVehicle($request);
+        return $this->getDataResponse($this->vehiclePictureRepository->getPicturesByVehicle($request), HttpFoundationResponse::HTTP_OK);
     }
 }
