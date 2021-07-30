@@ -170,7 +170,7 @@ public function verifyPlateReception($request){
     }
 
     public function vehicleDefleet($request) {
-            $user = $this->userRepository->getById(Auth::id());
+            $user = $this->userRepository->getById($request, Auth::id());
             $variables = $this->defleetVariableRepository->getVariablesByCompany($user->company_id);
             $date = date("Y-m-d");
             $date_defleet = date("Y-m-d", strtotime($date . " - $variables->years years")) . ' 00:00:00';

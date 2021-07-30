@@ -91,7 +91,7 @@ class RequestController extends Controller
         return $this->getDataResponse($this->requestRepository->getRequestDefleetApp($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getRequestReserveApp(){
+    public function getRequestReserveApp(Request $request){
         return $this->getDataResponse($this->requestRepository->getRequestReserveApp(), HttpFoundationResponse::HTTP_OK);
     }
 }

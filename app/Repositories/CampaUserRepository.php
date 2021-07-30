@@ -21,7 +21,7 @@ class CampaUserRepository extends Repository {
                 'user_id' => $request->input('user_id')
             ]);
         }
-        return $this->userRepository->getById($request->input('user_id'));
+        return $this->userRepository->getById($request, $request->input('user_id'));
     }
 
     public function delete($request){

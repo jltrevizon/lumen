@@ -95,7 +95,7 @@ class PendingTaskRepository extends Repository {
     }
 
     public function getPendingOrNextTask($request){
-        $user = $this->userRepository->getById(Auth::id());
+        $user = $this->userRepository->getById($request, Auth::id());
         return PendingTask::with($this->getWiths($request->with))
                 ->byCampas($user->campas->pluck('id')->toArray())
                 ->pendingOrInProgress()

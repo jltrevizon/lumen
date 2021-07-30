@@ -15,9 +15,9 @@ class DefleetVariableController extends Controller
         $this->defleetVariablesRepository = $defleetVariableRepository;
     }
 
-    public function getVariables(){
+    public function getVariables(Request $request){
 
-        return $this->getDataResponse($this->defleetVariablesRepository->getVariables(), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->defleetVariablesRepository->getVariables($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function createVariables(Request $request){

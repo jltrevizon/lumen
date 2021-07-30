@@ -152,7 +152,7 @@ class RequestRepository extends Repository {
     }
 
     public function getRequestDefleetApp($request){
-        $user = $this->userRepository->getById(Auth::id());
+        $user = $this->userRepository->getById($request, Auth::id());
         return RequestVehicle::with($this->getWiths($request->with))
                     ->byVehicleInCampa($user->campas->pluck('id')->toArray())
                     ->where('type_request_id', TypeRequest::DEFLEET)
@@ -160,8 +160,8 @@ class RequestRepository extends Repository {
                     ->get();
     }
 
-    public function getRequestReserveApp(){
-        $user = $this->userRepository->getById(Auth::id());
+    public function getRequestReserveApp($request){
+        $user = $this->userRepository->getById($request, Auth::id());
         return RequestVehicle::with(['vehicle.category','type_request'])
                     ->byVehicleInCampa($user->campas->pluck('id')->toArray())
                     ->where('type_request_id', TypeRequest::RESERVATION)
