@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TypeUserApp;
 use Exception;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class TypeUserAppController extends Controller
 {
@@ -15,11 +16,7 @@ class TypeUserAppController extends Controller
      */
     public function index()
     {
-        try {
-            return response()->json(['app_user_types' => TypeUserApp::all()]);
-        } catch(Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return $this->getDataResponse(['app_user_types' => TypeUserApp::all()], HttpFoundationResponse::HTTP_OK);
     }
 
     /**

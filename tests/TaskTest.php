@@ -26,28 +26,28 @@ class TaskTest extends TestCase
     /** @test */
     public function it_has_many_pending_tasks()
     {
-        $this->assertInstanceOf(HasMany::class, $this->task->pending_tasks());
-        $this->assertInstanceOf(PendingTask::class, $this->task->pending_tasks()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->task->pendingTasks());
+        $this->assertInstanceOf(PendingTask::class, $this->task->pendingTasks()->getModel());
     }
 
     /** @test */
     public function it_belongs_to_sub_state()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->task->sub_state());
-        $this->assertInstanceOf(SubState::class, $this->task->sub_state()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->task->subState());
+        $this->assertInstanceOf(SubState::class, $this->task->subState()->getModel());
     }
 
     /** @test */
     public function it_belongs_to_type_task()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->task->type_task());
-        $this->assertInstanceOf(TypeTask::class, $this->task->type_task()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->task->typeTask());
+        $this->assertInstanceOf(TypeTask::class, $this->task->typeTask()->getModel());
     }
 
     /** @test */
     public function it_has_many_purchase_operations()
     {
-        $this->assertInstanceOf(HasMany::class, $this->task->purchase_operations());
-        $this->assertInstanceOf(PurchaseOperation::class, $this->task->purchase_operations()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->task->purchaseOperations());
+        $this->assertInstanceOf(PurchaseOperation::class, $this->task->purchaseOperations()->getModel());
     }
 }

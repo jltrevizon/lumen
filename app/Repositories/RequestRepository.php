@@ -55,7 +55,7 @@ class RequestRepository extends Repository {
                         $this->vehicleRepository->updateState($vehicle['vehicle_id'], State::NOT_AVAILABLE);
                     } else {
                         $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::RESERVED);
-                        $this->vehicleRepository->updateState($vehicle['vehicle_id'], State::NOT_AVAILABLE);
+                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], State::NOT_AVAILABLE);
                     }
                     $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->input('reservation_time'), $request->input('planned_reservation'), $request->input('campa_id'), 1, $request->input('type_reservation_id'));
                 }

@@ -63,15 +63,15 @@ class VehicleTest extends TestCase
     /** @test */
     public function it_has_many_pending_tasks()
     {
-        $this->assertInstanceOf(HasMany::class, $this->vehicle->pending_tasks());
-        $this->assertInstanceOf(PendingTask::class, $this->vehicle->pending_tasks()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->pendingTasks());
+        $this->assertInstanceOf(PendingTask::class, $this->vehicle->pendingTasks()->getModel());
     }
 
      /** @test */
      public function it_has_many_group_task()
      {
-         $this->assertInstanceOf(HasMany::class, $this->vehicle->group_tasks());
-         $this->assertInstanceOf(GroupTask::class, $this->vehicle->group_tasks()->getModel());
+         $this->assertInstanceOf(HasMany::class, $this->vehicle->groupTasks());
+         $this->assertInstanceOf(GroupTask::class, $this->vehicle->groupTasks()->getModel());
      }
 
       /** @test */

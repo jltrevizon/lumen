@@ -6,6 +6,7 @@ use App\Models\Province;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -59,4 +60,11 @@ class CampaTest extends TestCase
         $this->assertInstanceOf(HasMany::class, $this->campa->reservations());
         $this->assertInstanceOf(Reservation::class, $this->campa->reservations()->getModel());
     }
+
+    /** @test */
+    public function search_by_company()
+    {
+        info($this->assertInstanceOf(Builder::class, $this->campa->byCompany(1)));
+    }
+
 }

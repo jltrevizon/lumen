@@ -47,8 +47,8 @@ class PendingtaskTest extends TestCase
     /** @test */
     public function it_belongs_to_state_pending_task()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->state_pending_task());
-        $this->assertInstanceOf(StatePendingTask::class, $this->pendingTask->state_pending_task()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->statePendingTask());
+        $this->assertInstanceOf(StatePendingTask::class, $this->pendingTask->statePendingTask()->getModel());
     }
 
     /** @test */
@@ -68,8 +68,8 @@ class PendingtaskTest extends TestCase
     /** @test */
     public function it_has_many_pending_task_canceled()
     {
-        $this->assertInstanceOf(HasMany::class, $this->pendingTask->pending_task_canceled());
-        $this->assertInstanceOf(PendingTaskCanceled::class, $this->pendingTask->pending_task_canceled()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->pendingTask->pendingTaskCanceled());
+        $this->assertInstanceOf(PendingTaskCanceled::class, $this->pendingTask->pendingTaskCanceled()->getModel());
     }
 
     /** @test */

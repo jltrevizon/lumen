@@ -8,8 +8,10 @@ use App\Models\Province;
 use App\Models\Company;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
+use Faker\Core\Number;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ramsey\Uuid\Type\Integer;
 
 class Campa extends Model
 {
@@ -45,7 +47,7 @@ class Campa extends Model
         return $this->hasMany(Reservation::class);
     }
 
-    public function scopeByCompany($query, $companyId){
+    public function scopeByCompany($query, int $companyId){
         return $query->where('company_id', $companyId);
     }
 
