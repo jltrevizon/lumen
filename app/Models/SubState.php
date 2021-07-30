@@ -23,6 +23,7 @@ class SubState extends Model
     const SIN_DOCUMENTACION = 9;
     const ALQUILADO = 10;
     const CHECK = 11;
+    const NOT_AVAILABLE = 12;
 
     protected $fillable = [
         'state_id',

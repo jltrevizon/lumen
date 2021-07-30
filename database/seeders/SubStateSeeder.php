@@ -68,6 +68,10 @@ class SubStateSeeder extends Seeder
             [
                 'name' => 'Check',
                 'state_id' => 6
+            ],
+            [
+                'name' => 'No disponible',
+                'state_id' => 12
             ]
         ];
     }

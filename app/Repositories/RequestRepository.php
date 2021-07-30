@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Models\Request as RequestVehicle;
 use App\Models\State;
 use App\Models\StateRequest;
+use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\TypeRequest;
 use App\Models\TypeReservation;
@@ -52,10 +53,10 @@ class RequestRepository extends Repository {
                     $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
                     if(count($tasks) > 0) {
                         $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::PRE_RESERVED);
-                        $this->vehicleRepository->updateState($vehicle['vehicle_id'], State::NOT_AVAILABLE);
+                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::CAMPA);
                     } else {
                         $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::RESERVED);
-                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], State::NOT_AVAILABLE);
+                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::NOT_AVAILABLE);
                     }
                     $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->input('reservation_time'), $request->input('planned_reservation'), $request->input('campa_id'), 1, $request->input('type_reservation_id'));
                 }
@@ -129,7 +130,7 @@ class RequestRepository extends Repository {
             return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
         $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::REQUEST_DEFLEET);
-        $this->vehicleRepository->updateState($request_vehicle['vehicle_id'], State::PENDING_SALE_VO);
+        $this->vehicleRepository->updateSubState($request_vehicle['vehicle_id'], SubState::SOLICITUD_DEFLEET);
         return [ 'message' => 'Ok' ];
     }
 
