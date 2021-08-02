@@ -24,8 +24,8 @@ class TypeUserAppTest extends TestCase
     /** @test */
     public function it_belongs_to_many_sub_states()
     {
-        $this->assertInstanceOf(BelongsToMany::class, $this->typeUserApp->sub_states());
-        $this->assertInstanceOf(SubState::class, $this->typeUserApp->sub_states()->getModel());
+        $this->assertInstanceOf(BelongsToMany::class, $this->typeUserApp->subStates());
+        $this->assertInstanceOf(SubState::class, $this->typeUserApp->subStates()->getModel());
     }
 
     /** @test */

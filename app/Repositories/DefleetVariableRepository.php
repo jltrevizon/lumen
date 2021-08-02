@@ -33,7 +33,7 @@ class DefleetVariableRepository {
     }
 
     public function updateVariables($request){
-        $variables = DefleetVariable::byCompany()->first();
+        $variables = DefleetVariable::byCompany($request)->first();
         if(!$variables) return [ 'message' => 'No hay registros que actualizar' ];
         $variables->update($request->all());
         return ['variables' => $variables];

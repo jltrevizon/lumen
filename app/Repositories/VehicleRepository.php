@@ -47,7 +47,7 @@ class VehicleRepository extends Repository {
 
     public function getAll($request){
         $vehicles = Vehicle::with($this->getWiths($request->with))
-                    ->byCampasOfUser()
+                    ->byCampasOfUser($request)
                     ->paginate();
         return [ 'vehicles' => $vehicles ];
     }
@@ -198,16 +198,16 @@ public function verifyPlateReception($request){
 
     public function getVehiclesWithReservationWithoutContractCampa($request) {
         $vehicles = Vehicle::with($this->getWiths($request->with))
-                    ->withOrderWithoutContract()
+                    ->byWithOrderWithoutContract()
                     ->filter($request->all())
                     ->get();
         return ['vehicles' => $vehicles];
     }
 
-    public function vehicleReserved(){
+    public function vehicleReserved($request){
         return Vehicle::with(['reservations' => fn ($query) => $query->where('active', true)])
             ->whereHas('reservations', fn (Builder $builder) => $builder->where('active', true))
-            ->byCampasOfUser()
+            ->byCampasOfUser($request)
             ->get();
     }
 
@@ -223,7 +223,7 @@ public function verifyPlateReception($request){
         $vehicles = Vehicle::with($this->getWiths($request->with))
             ->withRequestDefleetActive()
             ->where('trade_state_id', TradeState::REQUEST_DEFLEET)
-            ->byCampasOfUser()
+            ->byCampasOfUser($request)
             ->differentDefleeted()
             ->get();
         return ['vehicles' => $vehicles];

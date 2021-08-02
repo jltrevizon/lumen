@@ -12,6 +12,6 @@ class ReservationTime extends Model
     use HasFactory;
 
     public function company(){
-        return $this->belongsTo(Company::class, 'company_id');
+        return $this->belongsTo(Company::class);
     }
 }

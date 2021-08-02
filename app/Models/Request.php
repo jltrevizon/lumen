@@ -45,13 +45,13 @@ class Request extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function scopeByVehicleInCampa($query, $campaId){
+    public function scopeByVehicleInCampa($query, int $campaId){
         return $query->whereHas('vehicle', function(Builder $builder) use($campaId) {
             return $builder->where('campa_id', $campaId);
         });
     }
 
-    public function scopeByVehicleInCampas($query, $campaIds){
+    public function scopeByVehicleInCampas($query, array $campaIds){
         return $query->whereHas('vehicle', function(Builder $builder) use($campaIds) {
             return $builder->whereIn('campa_id', $campaIds);
         });

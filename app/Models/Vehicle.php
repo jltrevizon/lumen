@@ -102,57 +102,57 @@ class Vehicle extends Model
         ]);
     }
 
-    public function scopeByCampasOfUser($query){
-        $userRepository = new UserRepository();
-        $user = $userRepository->getById(Auth::id());
-        return $query->whereIn('campa_id', $user->campas->pluck('id')->toArray());
-    }
-
-    public function scopeByCampaId($id){
-        return $this->where('campa_id', $id);
-    }
-
     public function vehicleModel(){
         return $this->belongsTo(VehicleModel::class);
     }
 
-    public function scopeCampasIds($query, $ids){
+    public function scopeByCampasOfUser($query, $request){
+        $userRepository = new UserRepository();
+        $user = $userRepository->getById($request, Auth::id());
+        return $query->whereIn('campa_id', $user->campas->pluck('id')->toArray());
+    }
+
+    public function scopeByCampaId($query, int $id){
+        return $query->where('campa_id', $id);
+    }
+
+    public function scopeCampasIds($query, array $ids){
         return $query->whereIn('campa_id', $ids);
     }
 
-    public function scopeSubStateIds($query, $ids){
+    public function scopeSubStateIds($query, array $ids){
         return $query->whereIn('sub_state_id', $ids);
     }
 
-    public function scopeStateIds($query, $ids){
+    public function scopeStateIds($query, array $ids){
         return $query->whereHas('subState', function (Builder $builder) use ($ids) {
             return $builder->whereIn('state_id', $ids);
         });
     }
 
-    public function scopeByPlate($query, $plate){
+    public function scopeByPlate($query, string $plate){
         return $query->where('plate','like',"%" . $plate . "%");
     }
 
-    public function scopeByTradeStateIds($query, $ids){
+    public function scopeByTradeStateIds($query, array $ids){
         return $query->whereIn('trade_state_id', $ids);
     }
 
-    public function scopeBrandIds($query, $ids){
+    public function scopeBrandIds($query, array $ids){
         return $query->whereHas('vehicleModel', function (Builder $builder) use($ids) {
             return $builder->whereIn('brand_id', $ids);
         });
     }
 
-    public function scopeVehicleModelIds($query, $ids){
+    public function scopeVehicleModelIds($query, array $ids){
         return $query->whereIn('vehicle_model_id', $ids);
     }
 
-    public function scopeCategoriesIds($query, $ids){
+    public function scopeCategoriesIds($query, array $ids){
         return $query->whereIn('category_id',$ids);
     }
 
-    public function scopeByUbication($query, $ubication){
+    public function scopeByUbication($query, string $ubication){
         return $query->where('ubication','LIKE', "%$ubication%");
     }
 
@@ -160,7 +160,7 @@ class Vehicle extends Model
         return $query->where('ready_to_delivery', $value);
     }
 
-    public function scopeByStatePendingTasks($query, $ids){
+    public function scopeByStatePendingTasks($query, array $ids){
         return $query->whereHas('pendingTasks', function (Builder $builder) use($ids) {
             return $builder->whereIn('state_pending_task_id', $ids);
         })
@@ -245,7 +245,7 @@ class Vehicle extends Model
             });
     }
 
-    public function scopeWithOrderWithoutContract($query){
+    public function scopeByWithOrderWithoutContract($query){
         return $query->whereHas('reservations', function(Builder $builder) {
             return $builder->whereNotNull('order')
                 ->whereNull('contract')

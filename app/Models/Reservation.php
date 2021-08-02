@@ -42,7 +42,7 @@ class Reservation extends Model
         return $this->belongsTo(Transport::class, 'transport_id');
     }
 
-    public function scopeByCompany($query, $companyId){
+    public function scopeByCompany($query, int $companyId){
         return $query->whereHas('vehicle.campa', function (Builder $builder) use($companyId){
             return $builder->where('company_id', $companyId);
         });

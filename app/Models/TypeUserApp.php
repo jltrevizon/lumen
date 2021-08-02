@@ -9,7 +9,7 @@ class TypeUserApp extends Model
 {
     use HasFactory;
 
-    public function sub_states(){
+    public function subStates(){
         return $this->belongsToMany(SubState::class);
     }
 
