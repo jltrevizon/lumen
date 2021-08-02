@@ -5,6 +5,7 @@ use App\Models\PurchaseOperation;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TypeTask;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -49,5 +50,17 @@ class TaskTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->task->purchaseOperations());
         $this->assertInstanceOf(PurchaseOperation::class, $this->task->purchaseOperations()->getModel());
+    }
+
+    /** @test */
+    public function should_search_by_type_task()
+    {
+        $this->assertInstanceOf(Builder::class, $this->task->byTypeTasks([]));
+    }
+
+    /** @test */
+    public function should_search_by_sub_states()
+    {
+        $this->assertInstanceOf(Builder::class, $this->task->bySubStates([]));
     }
 }

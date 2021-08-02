@@ -8,6 +8,7 @@ class TaskRepository extends Repository {
 
     public function getAll($request){
         return Task::with($this->getWiths($request->with))
+                    ->filter($request->all())
                     ->get();
     }
 

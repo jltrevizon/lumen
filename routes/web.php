@@ -222,10 +222,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Tasks
          */
         $router->get('/tasks/getall', 'TaskController@getall');
-        $router->get('/tasks/{id}', 'TaskController@getById');
         $router->post('/tasks', 'TaskController@create');
         $router->put('/tasks/update/{id}', 'TaskController@update');
         $router->delete('/tasks/delete/{id}', 'TaskController@delete');
+        $router->get('/tasks/{id}', 'TaskController@getById');
 
         /**
          * Transports
