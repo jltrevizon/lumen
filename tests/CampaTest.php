@@ -64,7 +64,36 @@ class CampaTest extends TestCase
     /** @test */
     public function search_by_company()
     {
-        info($this->assertInstanceOf(Builder::class, $this->campa->byCompany(1)));
+        $this->assertInstanceOf(Builder::class, $this->campa->byCompany(1));
     }
 
+    /** @test */
+    public function search_by_companies()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byCompanies([]));
+    }
+
+    /** @test */
+    public function search_by_province()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byProvince(1));
+    }
+
+    /** @test */
+    public function search_by_provinces()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byProvinces([]));
+    }
+
+    /** @test */
+    public function search_by_region()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byRegion(1));
+    }
+
+    /** @test */
+    public function search_by_regions()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byRegions([]));
+    }
 }

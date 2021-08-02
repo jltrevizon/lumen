@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\State;
 use Illuminate\Database\Seeder;
 use App\Models\SubState;
 
@@ -27,51 +28,51 @@ class SubStateSeeder extends Seeder
         return [
             [
                 'name' => 'Campa',
-                'state_id' => 1,
+                'state_id' => State::AVAILABLE,
             ],
             [
                 'name' => 'Pendiente Lavado',
-                'state_id' => 1,
+                'state_id' => State::AVAILABLE,
             ],
             [
                 'name' => 'Mecánica',
-                'state_id' => 2,
+                'state_id' => State::WORKSHOP,
             ],
             [
                 'name' => 'Chapa',
-                'state_id' => 2,
+                'state_id' => State::WORKSHOP,
             ],
             [
                 'name' => 'Transformación',
-                'state_id' => 2,
+                'state_id' => State::WORKSHOP,
             ],
             [
                 'name' => 'ITV',
-                'state_id' => 2,
+                'state_id' => State::WORKSHOP,
             ],
             [
                 'name' => 'Limpieza',
-                'state_id' => 2,
+                'state_id' => State::WORKSHOP,
             ],
             [
                 'name' => 'Solicitado defleet',
-                'state_id' => 3,
+                'state_id' => State::PENDING_SALE_VO,
             ],
             [
                 'name' => 'Sin documentación',
-                'state_id' => 4,
+                'state_id' => State::NOT_AVAILABLE,
             ],
             [
                 'name' => 'Alquilado',
-                'state_id' => 5
+                'state_id' => State::DELIVERED
             ],
             [
                 'name' => 'Check',
-                'state_id' => 6
+                'state_id' => State::PRE_AVAILABLE
             ],
             [
                 'name' => 'No disponible',
-                'state_id' => 12
+                'state_id' => State::NOT_AVAILABLE
             ]
         ];
     }
