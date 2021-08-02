@@ -63,7 +63,7 @@ class PendingTask extends Model
         return $this->hasMany(Operation::class);
     }
 
-    public function scopeByCampas($query, $ids){
+    public function scopeByCampas($query, array $ids){
         return $query->whereHas('vehicle.campa', function (Builder $builder) use($ids){
             return $builder->whereIn('id', $ids);
         });
@@ -74,13 +74,13 @@ class PendingTask extends Model
                 ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
     }
 
-    public function scopeCanSeeHomework($query, $userTypeId){
+    public function scopeCanSeeHomework($query, int $userTypeId){
         return $query->whereHas('task.subState.type_users_app', function ($query) use($userTypeId) {
             return $query->where('type_user_app_id', $userTypeId);
         });
     }
 
-    public function scopeByPlate($query, $plate){
+    public function scopeByPlate($query, string $plate){
         return $query->whereHas('vehicle', function (Builder $builder) use($plate) {
             return $builder->where('plate', $plate);
         });

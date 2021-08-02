@@ -4,6 +4,7 @@ use App\Models\Company;
 use App\Models\Customer;
 use App\Models\Province;
 use App\Models\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -41,5 +42,11 @@ class CustomerTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->customer->requests());
         $this->assertInstanceOf(Request::class, $this->customer->requests()->getModel());
+    }
+
+    /** @test */
+    public function search_by_company()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byCompany(1));
     }
 }

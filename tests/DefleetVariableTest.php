@@ -2,6 +2,7 @@
 
 use App\Models\Company;
 use App\Models\DefleetVariable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -26,4 +27,5 @@ class DefleetVariableTest extends TestCase
         $this->assertInstanceOf(BelongsTo::class, $this->defleetVariable->company());
         $this->assertInstanceOf(Company::class, $this->defleetVariable->company()->getModel());
     }
+
 }

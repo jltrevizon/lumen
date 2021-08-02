@@ -10,6 +10,7 @@ use App\Models\StatePendingTask;
 use App\Models\Task;
 use App\Models\Vehicle;
 use App\Models\VehicleExit;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -84,5 +85,29 @@ class PendingtaskTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->pendingTask->operations());
         $this->assertInstanceOf(Operation::class, $this->pendingTask->operations()->getModel());
+    }
+
+    /** @test */
+    public function should_search_by_campas()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byCampas([]));
+    }
+
+    /** @test */
+    public function should_search_by_pending_or_in_progress()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->pendingOrInProgress());
+    }
+
+    /** @test */
+    public function should_can_see_homework()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->canSeeHomework(1));
+    }
+
+    /** @test */
+    public function should_search_by_plate()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byPlate('0000AAA'));
     }
 }

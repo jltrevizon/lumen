@@ -24,7 +24,7 @@ class Customer extends Model
         return $this->hasMany(Request::class, 'customer_id');
     }
 
-    public function scopeByCompany($query, $companyId){
+    public function scopeByCompany($query, int $companyId){
         return $query->where('company_id', $companyId);
     }
 }

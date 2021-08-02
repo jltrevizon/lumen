@@ -14,7 +14,7 @@ class UserRepository extends Repository {
     }
 
     public function getAll($request){
-        return User::with($this->getWiths($request))
+        return User::with($this->getWiths($request->with))
                     ->get();
     }
 
