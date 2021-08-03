@@ -19,7 +19,6 @@ class MailController extends Controller
     }
 
     public function testCode(SendCode $sendCode){
-        //return $sendCode->send();
     }
 
     public function sendCodePassword(Request $request){
@@ -33,7 +32,6 @@ class MailController extends Controller
             $passwordReset->save();
             if($user){
                 $this->sendCode->SendCodePassword($user->name, $code, $user->email);
-                return $user;
                 return response()->json(['message' => 'Email enviado'], 200);
             } else {
                 return response()->json(['message' => 'El usuario no existe'], 200);
@@ -54,7 +52,6 @@ class MailController extends Controller
                                         ->where('active', true)
                                         ->orderBy('created_at','desc')
                                         ->first();
-        //return $passwordResetCode;
         if($passwordResetCode && $passwordResetCode->code == $request->input('code')){
             $user->password = app('hash')->make($request->input('password'));
             $user->save();

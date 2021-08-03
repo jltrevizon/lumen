@@ -16,12 +16,11 @@ class QuestionRepository extends Repository {
     }
 
     public function getAll($request){
-        $user = User::with($this->getWiths($request->with))
-                    ->findOrFail(Auth::id());
-        $questions = Question::where('company_id', $user->company_id)
+        $user = User::findOrFail(Auth::id());
+        $questions = Question::with($this->getWiths($request->with))->where('company_id', $user->company_id)
                     ->get();
         if(count($questions) > 0) return $questions;
-        else return Question::where('company_id', Company::ALD)->get();
+        else return Question::with($this->getWiths($request->with))->where('company_id', Company::ALD)->get();
     }
 
     public function create($request){

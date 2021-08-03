@@ -67,7 +67,6 @@ class SeeStatusPendingTask extends Command
         $new_date1 = new DateTime($date1);
         $new_date2 = new DateTime($date2);
         $diff = $new_date1->diff($new_date2);
-        $hours = $diff->h + ($diff->days * 24);
-        return $hours;
+        return $diff->h + ($diff->days * 24);
     }
 }
