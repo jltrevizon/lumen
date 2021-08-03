@@ -69,7 +69,7 @@ class QuestionSeeder extends Seeder
             ],
             [
                 'company_id' => Company::ALD,
-                'question' => '¿El vehículo necesita una sustitución de luna?', 'description' => '¿El vehículo necesita una sustitución de luna?'
+                'question' => '¿El vehículo necesita una sustitución o reparación de luna?', 'description' => '¿El vehículo necesita una sustitución o reparación de luna?'
             ],
             [
                 'company_id' => Company::INVARAT,
