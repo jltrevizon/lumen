@@ -68,6 +68,10 @@ class QuestionSeeder extends Seeder
                 'question' => '¿Las placas de matrículas están dañadas?', 'description' => '¿Las placas de matrículas están dañadas?'
             ],
             [
+                'company_id' => Company::ALD,
+                'question' => '¿El vehículo necesita una sustitución de luna?', 'description' => '¿El vehículo necesita una sustitución de luna?'
+            ],
+            [
                 'company_id' => Company::INVARAT,
                 'question' => 'Estado general de carrocería', 'description' => 'Estado general de carrocería'
             ],
