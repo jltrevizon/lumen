@@ -19,7 +19,7 @@ class UserRepository extends Repository {
     }
 
     public function getById($request, $id){
-        return User::with($this->getWiths($request->with))
+        return User::with(['campas'])
                     ->findOrFail($id);
     }
 
