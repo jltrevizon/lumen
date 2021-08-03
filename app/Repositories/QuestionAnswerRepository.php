@@ -24,6 +24,7 @@ class QuestionAnswerRepository {
             $questionAnswer = new QuestionAnswer();
             $questionAnswer->questionnaire_id = $questionnaire;
             $questionAnswer->question_id = $question['question_id'];
+            $questionAnswer->task_id = $question['task_id'];
             $questionAnswer->response = $question['response'];
             $questionAnswer->description = $question['description'];
             $questionAnswer->save();
