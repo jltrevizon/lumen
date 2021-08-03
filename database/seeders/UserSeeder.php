@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +28,7 @@ class UserSeeder extends Seeder
     public function createUserAdmin(){
         return [
             'name' => 'Admin',
-            'role_id' => 1,
+            'role_id' => Role::ADMIN,
             'email' => 'admin@mail.com',
             'password' => Hash::make('password')
         ];

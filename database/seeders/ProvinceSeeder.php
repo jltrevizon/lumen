@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Province;
+use App\Models\Region;
 
 class ProvinceSeeder extends Seeder
 {
@@ -27,205 +28,205 @@ class ProvinceSeeder extends Seeder
     public function data(){
         return [
             [
-                'region_id' => 14,
+                'region_id' => Region::PAIS_VASCO,
                 'province_code' => 'VI',
                 'name' => 'Álava'
             ],
             [
-                'region_id' => 6,
+                'region_id' => Region::CASTILLA_LA_MANCHA,
                 'province_code' => 'AB',
                 'name' => 'Albacete'
             ],
             [
-                'region_id' => 9,
+                'region_id' => Region::COMMUNITY_VALENCIA,
                 'province_code' => 'A',
                 'name' => 'Alicante'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'AL',
                 'name' => 'Almería'
             ],[
-                'region_id' => 15,
+                'region_id' => Region::ASTURIAS,
                 'province_code' => 'O',
                 'name' => 'Asturias'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LEON,
                 'province_code' => 'AV',
                 'name' => 'Ávila'
             ],[
-                'region_id' => 10,
+                'region_id' => Region::EXTREMADURA,
                 'province_code' => 'BA',
                 'name' => 'Badajoz'
             ],[
-                'region_id' => 12,
+                'region_id' => Region::BALEARES,
                 'province_code' => 'PM',
                 'name' => 'Baleares'
             ],[
-                'region_id' => 7,
+                'region_id' => Region::CATALUÑA,
                 'province_code' => 'B',
                 'name' => 'Barcelona'
             ],[
-                'region_id' => 6,
+                'region_id' => Region::CASTILLA_LA_MANCHA,
                 'province_code' => 'BU',
                 'name' => 'Burgos'
             ],[
-                'region_id' => 10,
+                'region_id' => Region::EXTREMADURA,
                 'province_code' => 'CC',
                 'name' => 'Cáceres'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'CA',
                 'name' => 'Cádiz'
             ],[
-                'region_id' => 4,
+                'region_id' => Region::CANTABRIA,
                 'province_code' => 'S',
                 'name' => 'Cantabria'
             ],[
-                'region_id' => 9,
+                'region_id' => Region::COMMUNITY_VALENCIA,
                 'province_code' => 'CS',
                 'name' => 'Castellón'
             ],[
-                'region_id' => 6,
+                'region_id' => Region::CASTILLA_LA_MANCHA,
                 'province_code' => 'CR',
                 'name' => 'Ciudad Real'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'CO',
                 'name' => 'Córdoba'
             ],[
-                'region_id' => 6,
+                'region_id' => Region::CASTILLA_LA_MANCHA,
                 'province_code' => 'CU',
                 'name' => 'Cuenca'
             ],[
-                'region_id' => 7,
+                'region_id' => Region::CATALUÑA,
                 'province_code' => 'GI',
                 'name' => 'Gerona'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'GR',
                 'name' => 'Granada'
             ],[
-                'region_id' => 6,
+                'region_id' => Region::CASTILLA_LA_MANCHA,
                 'province_code' => 'GU',
                 'name' => 'Guadalajara'
             ],[
-                'region_id' => 14,
+                'region_id' => Region::PAIS_VASCO,
                 'province_code' => 'SS',
                 'name' => 'Guizpúzcoa'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'H',
                 'name' => 'Huelva'
             ],[
-                'region_id' => 2,
+                'region_id' => Region::ARAGON,
                 'province_code' => 'HU',
                 'name' => 'Huesca'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'J',
                 'name' => 'Jaén'
             ],[
-                'region_id' => 11,
+                'region_id' => Region::GALICIA,
                 'province_code' => 'C',
                 'name' => 'La Coruña'
             ],[
-                'region_id' => 13,
+                'region_id' => Region::LA_RIOJA,
                 'province_code' => 'LO',
                 'name' => 'La Rioja'
             ],[
-                'region_id' => 3,
+                'region_id' => Region::CANARIAS,
                 'province_code' => 'GC',
                 'name' => 'Las Palmas'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LA_MANCHA,
                 'province_code' => 'LE',
                 'name' => 'León'
             ],[
-                'region_id' => 7,
+                'region_id' => Region::CATALUÑA,
                 'province_code' => 'L',
                 'name' => 'Lérida'
             ],[
-                'region_id' => 11,
+                'region_id' => Region::GALICIA,
                 'province_code' => 'LU',
                 'name' => 'Lugo'
             ],[
-                'region_id' => 8,
+                'region_id' => Region::COMMUNITY_MADRID,
                 'province_code' => 'M',
                 'name' => 'Madrid'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'MA',
                 'name' => 'Málaga'
             ],[
-                'region_id' => 16,
+                'region_id' => Region::MURCIA,
                 'province_code' => 'MU',
                 'name' => 'Murcia'
             ],[
-                'region_id' => 17,
+                'region_id' => Region::NAVARRA,
                 'province_code' => 'NA',
                 'name' => 'Navarra'
             ],[
-                'region_id' => 11,
+                'region_id' => Region::GALICIA,
                 'province_code' => 'OR',
                 'name' => 'Orense'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LEON,
                 'province_code' => 'P',
                 'name' => 'Palencia'
             ],[
-                'region_id' => 11,
+                'region_id' => Region::GALICIA,
                 'province_code' => 'PO',
                 'name' => 'Pontevedra'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LEON,
                 'province_code' => 'SA',
                 'name' => 'Salamanca'
             ],[
-                'region_id' => 3,
+                'region_id' => Region::CANARIAS,
                 'province_code' => 'TF',
                 'name' => 'Santa Cruz de Tenerife'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LEON,
                 'province_code' => 'SG',
                 'name' => 'Segovia'
             ],[
-                'region_id' => 1,
+                'region_id' => Region::ANDALUCIA,
                 'province_code' => 'SE',
                 'name' => 'Sevilla'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LEON,
                 'province_code' => 'SO',
                 'name' => 'Soria'
             ],[
-                'region_id' => 7,
+                'region_id' => Region::CATALUÑA,
                 'province_code' => 'T',
                 'name' => 'Tarragona'
             ],[
-                'region_id' => 2,
+                'region_id' => Region::ARAGON,
                 'province_code' => 'TE',
                 'name' => 'Teruel'
             ],[
-                'region_id' => 6,
+                'region_id' => Region::CASTILLA_LA_MANCHA,
                 'province_code' => 'TO',
                 'name' => 'Toledo'
             ],[
-                'region_id' => 9,
+                'region_id' => Region::COMMUNITY_VALENCIA,
                 'province_code' => 'V',
                 'name' => 'Valencia'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LEON,
                 'province_code' => 'VA',
                 'name' => 'Valladolid'
             ],[
-                'region_id' => 14,
+                'region_id' => Region::PAIS_VASCO,
                 'province_code' => 'VI',
                 'name' => 'Vizcaya'
             ],[
-                'region_id' => 5,
+                'region_id' => Region::CASTILLA_LEON,
                 'province_code' => 'ZA',
                 'name' => 'Zamora'
             ],[
-                'region_id' => 2,
+                'region_id' => Region::ARAGON,
                 'province_code' => 'Z',
                 'name' => 'Zaragoza'
             ],

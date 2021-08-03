@@ -10,6 +10,14 @@ class Role extends Model
 {
     use HasFactory;
 
+    const ADMIN = 1;
+    const GLOBAL_MANAGER = 2;
+    const CAMPA_MANAGET = 3;
+    const USER_APP = 4;
+    const RECEPTION = 5;
+    const COMMERCIAL = 6;
+    const CONTROL = 7;
+
     protected $fillable = [
         'description'
     ];

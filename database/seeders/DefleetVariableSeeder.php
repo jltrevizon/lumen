@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use Illuminate\Database\Seeder;
 use App\Models\DefleetVariable;
 
@@ -27,9 +28,9 @@ class DefleetVariableSeeder extends Seeder
     public function data(){
         return [
             [
-                'company_id' => 1,
+                'company_id' => Company::ALD,
                 'kms' => '12000',
-                'years' => 6
+                'years' => random_int(1, 10)
             ]
         ];
     }
