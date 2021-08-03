@@ -25,6 +25,7 @@ class UserRepository extends Repository {
 
     public function create($request){
         $user = User::create($request->all());
+        $user->password = app('hash')->make($request->input('password'));
         $user->save();
         return $user;
     }
