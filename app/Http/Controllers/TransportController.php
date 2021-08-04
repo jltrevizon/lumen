@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transport;
 use App\Repositories\TransportRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class TransportController extends Controller
 {
@@ -15,11 +16,11 @@ class TransportController extends Controller
     }
 
     public function getAll(){
-        return Transport::all();
+        return $this->getDataResponse(Transport::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->transportRepository->getById($id);
+        return $this->getDataResponse($this->transportRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -28,14 +29,14 @@ class TransportController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->transportRepository->create($request);
+        return $this->createDataResponse($this->transportRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->transportRepository->update($request, $id);
+        return $this->updateDataResponse($this->transportRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->transportRepository->update($id);
+        return $this->deleteDataResponse($this->transportRepository->update($id), HttpFoundationResponse::HTTP_OK);
     }
 }

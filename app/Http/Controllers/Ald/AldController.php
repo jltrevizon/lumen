@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ald;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\Vehicle;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +16,7 @@ class AldController extends Controller
             $vehicles = Vehicle::with(['lastUnapprovedGroupTask','vehicleModel.brand','campa','category','lastQuestionnaire'])
             ->whereHas('lastUnapprovedGroupTask')
             ->whereHas('campa', function (Builder $builder) {
-                return $builder->where('company_id', 1);
+                return $builder->where('company_id', Company::ALD);
             })
             ->paginate(10);
             return response()->json(['vehicles' => $vehicles], 200);

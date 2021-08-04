@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\ReservationTimeRepository;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class ReservationTimeController extends Controller
 {
@@ -18,7 +19,7 @@ class ReservationTimeController extends Controller
             'company_id' => 'required|integer'
         ]);
 
-        return $this->reservationTimeRepository->getByCompany($request);
+        return $this->getDataResponse($this->reservationTimeRepository->getByCompany($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -28,10 +29,10 @@ class ReservationTimeController extends Controller
             'hours' => 'required|integer'
         ]);
 
-        return $this->reservationTimeRepository->create($request);
+        return $this->createDataResponse($this->reservationTimeRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request){
-        return $this->reservationTimeRepository->update($request);
+        return $this->updateDataResponse($this->reservationTimeRepository->update($request), HttpFoundationResponse::HTTP_OK);
     }
 }

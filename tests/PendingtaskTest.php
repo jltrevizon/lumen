@@ -3,14 +3,18 @@
 use App\Models\Company;
 use App\Models\GroupTask;
 use App\Models\Incidence;
+use App\Models\Operation;
 use App\Models\PendingTask;
 use App\Models\PendingTaskCanceled;
 use App\Models\StatePendingTask;
 use App\Models\Task;
 use App\Models\Vehicle;
+use App\Models\VehicleExit;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -44,15 +48,15 @@ class PendingtaskTest extends TestCase
     /** @test */
     public function it_belongs_to_state_pending_task()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->state_pending_task());
-        $this->assertInstanceOf(StatePendingTask::class, $this->pendingTask->state_pending_task()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->statePendingTask());
+        $this->assertInstanceOf(StatePendingTask::class, $this->pendingTask->statePendingTask()->getModel());
     }
 
     /** @test */
     public function it_belongs_to_group_task()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->group_task());
-        $this->assertInstanceOf(GroupTask::class, $this->pendingTask->group_task()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->groupTask());
+        $this->assertInstanceOf(GroupTask::class, $this->pendingTask->groupTask()->getModel());
     }
 
     /** @test */
@@ -65,7 +69,45 @@ class PendingtaskTest extends TestCase
     /** @test */
     public function it_has_many_pending_task_canceled()
     {
-        $this->assertInstanceOf(HasMany::class, $this->pendingTask->pending_task_canceled());
-        $this->assertInstanceOf(PendingTaskCanceled::class, $this->pendingTask->pending_task_canceled()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->pendingTask->pendingTaskCanceled());
+        $this->assertInstanceOf(PendingTaskCanceled::class, $this->pendingTask->pendingTaskCanceled()->getModel());
+    }
+
+    /** @test */
+    public function it_has_one_vehicle_exit()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->pendingTask->vehicleExit());
+        $this->assertInstanceOf(VehicleExit::class, $this->pendingTask->vehicleExit()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_operations()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->pendingTask->operations());
+        $this->assertInstanceOf(Operation::class, $this->pendingTask->operations()->getModel());
+    }
+
+    /** @test */
+    public function should_search_by_campas()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byCampas([]));
+    }
+
+    /** @test */
+    public function should_search_by_pending_or_in_progress()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->pendingOrInProgress());
+    }
+
+    /** @test */
+    public function should_can_see_homework()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->canSeeHomework(1));
+    }
+
+    /** @test */
+    public function should_search_by_plate()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byPlate('0000AAA'));
     }
 }

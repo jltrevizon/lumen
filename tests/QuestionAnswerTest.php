@@ -3,6 +3,7 @@
 use App\Models\Question;
 use App\Models\QuestionAnswer;
 use App\Models\Questionnaire;
+use App\Models\Task;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -32,5 +33,12 @@ class QuestionAnswerTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->questionAnswer->question());
         $this->assertInstanceOf(Question::class, $this->questionAnswer->question()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_task()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->questionAnswer->task());
+        $this->assertInstanceOf(Task::class, $this->questionAnswer->task()->getModel());
     }
 }

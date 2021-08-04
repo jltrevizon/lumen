@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\StateRequest;
 use App\Models\TypeRequest;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -56,5 +57,17 @@ class RequestTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->request->customer());
         $this->assertInstanceOf(Customer::class, $this->request->customer()->getModel());
+    }
+
+    /** @test */
+    public function should_search_vehicle_in_campa()
+    {
+        $this->assertInstanceOf(Builder::class, $this->request->byVehicleInCampa(1));
+    }
+
+    /** @test */
+    public function should_search_vehicle_in_campas()
+    {
+        $this->assertInstanceOf(Builder::class, $this->request->byVehicleInCampas([]));
     }
 }

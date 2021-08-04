@@ -13,42 +13,24 @@ class TransportRepository {
     }
 
     public function getById($id){
-        try {
-            return response()->json(['transport' => Transport::findOrFail($id)], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        return ['transport' => Transport::findOrFail($id)];
     }
 
     public function create($request){
-        try {
-            $transport = Transport::create($request->all());
-            $transport->save();
-            return $transport;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $transport = Transport::create($request->all());
+        $transport->save();
+        return $transport;
     }
 
     public function update($request, $id){
-        try {
-            $transport = Transport::findOrFail($id);
-            $transport->update($request->all());
-            return response()->json(['transport' => $transport], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $transport = Transport::findOrFail($id);
+        $transport->update($request->all());
+        return ['transport' => $transport];
     }
 
     public function delete($id){
-        try {
-            Transport::where('id', $id)
-                ->delete();
-            return [
-                'message' => 'Transport deleted'
-            ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        Transport::where('id', $id)
+            ->delete();
+        return [ 'message' => 'Transport deleted' ];
     }
 }

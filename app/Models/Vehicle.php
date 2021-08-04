@@ -15,11 +15,14 @@ use App\Models\Reception;
 use App\Models\TradeState;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use EloquentFilter\Filterable;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Auth;
 
 class Vehicle extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'remote_id',
@@ -57,15 +60,15 @@ class Vehicle extends Model
         return $this->hasMany(Request::class, 'vehicle_id');
     }
 
-    public function pending_tasks(){
+    public function pendingTasks(){
         return $this->hasMany(PendingTask::class, 'vehicle_id');
     }
 
-    public function group_tasks(){
+    public function groupTasks(){
         return $this->hasMany(GroupTask::class, 'vehicle_id');
     }
 
-    public function vehicle_pictures(){
+    public function vehiclePictures(){
         return $this->hasMany(VehiclePicture::class, 'vehicle_id');
     }
 
@@ -77,12 +80,20 @@ class Vehicle extends Model
         return $this->hasMany(Reception::class, 'vehicle_id');
     }
 
-    public function trade_state(){
+    public function tradeState(){
         return $this->belongsTo(TradeState::class, 'trade_state_id');
     }
 
     public function questionnaires(){
         return $this->hasMany(Questionnaire::class);
+    }
+
+    public function vehicleExits(){
+        return $this->hasMany(VehicleExit::class);
+    }
+
+    public function operations(){
+        return $this->hasMany(Operation::class);
     }
 
     public function lastQuestionnaire(){
@@ -95,32 +106,71 @@ class Vehicle extends Model
         return $this->belongsTo(VehicleModel::class);
     }
 
-    public function scopeCampasIds($query, $ids){
+    public function scopeByCampasOfUser($query, $request){
+        $userRepository = new UserRepository();
+        $user = $userRepository->getById($request, Auth::id());
+        return $query->whereIn('campa_id', $user->campas->pluck('id')->toArray());
+    }
+
+    public function scopeByCampaId($query, int $id){
+        return $query->where('campa_id', $id);
+    }
+
+    public function scopeCampasIds($query, array $ids){
         return $query->whereIn('campa_id', $ids);
     }
 
-    public function scopeSubStateIds($query, $ids){
+    public function scopeSubStateIds($query, array $ids){
         return $query->whereIn('sub_state_id', $ids);
     }
 
-    public function scopeStateIds($query, $ids){
+    public function scopeStateIds($query, array $ids){
         return $query->whereHas('subState', function (Builder $builder) use ($ids) {
             return $builder->whereIn('state_id', $ids);
         });
     }
 
-    public function scopePlate($query, $plate){
-        return $query->where('plate','like',"%$plate%");
+    public function scopeByPlate($query, string $plate){
+        return $query->where('plate','like',"%" . $plate . "%");
     }
 
-    public function scopeBrandIds($query, $ids){
+    public function scopeByTradeStateIds($query, array $ids){
+        return $query->whereIn('trade_state_id', $ids);
+    }
+
+    public function scopeBrandIds($query, array $ids){
         return $query->whereHas('vehicleModel', function (Builder $builder) use($ids) {
             return $builder->whereIn('brand_id', $ids);
         });
     }
 
-    public function scopeCategoriesIds($query, $ids){
+    public function scopeVehicleModelIds($query, array $ids){
+        return $query->whereIn('vehicle_model_id', $ids);
+    }
+
+    public function scopeCategoriesIds($query, array $ids){
         return $query->whereIn('category_id',$ids);
+    }
+
+    public function scopeByUbication($query, string $ubication){
+        return $query->where('ubication','LIKE', "%$ubication%");
+    }
+
+    public function scopeByReadyDelivery($query, $value){
+        return $query->where('ready_to_delivery', $value);
+    }
+
+    public function scopeByStatePendingTasks($query, array $ids){
+        return $query->whereHas('pendingTasks', function (Builder $builder) use($ids) {
+            return $builder->whereIn('state_pending_task_id', $ids);
+        })
+        ->whereHas('lastGroupTask');
+    }
+
+    public function lastGroupTask(){
+        return $this->hasOne(GroupTask::class)->ofMany([
+            'id' => 'max'
+        ]);
     }
 
     public function lastUnapprovedGroupTask(){
@@ -129,6 +179,100 @@ class Vehicle extends Model
         ], function ($query) {
             $query->where('approved', false)
                  ->where('approved_available', false);
+        });
+    }
+
+    public function scopeNoActiveOrPendingRequest($query){
+        return $query->whereHas('requests', function(Builder $builder) {
+            return $builder->where('state_request_id', StateRequest::DECLINED);
+        })
+        ->orWhereDoesntHave('requests');
+    }
+
+    public function scopeByParameterDefleet($query, $dateDefleet, $kms){
+        return $query->where('first_plate','<', $dateDefleet)
+                    ->orWhere('kms','>', $kms);
+    }
+
+    public function scopeByPendingRequestDefleet($query){
+        return $query->whereHas('requests', function(Builder $builder){
+            return $builder->where('type_request_id', TypeRequest::DEFLEET)
+                ->where(function($query) {
+                    return $query->where('state_request_id', StateRequest::REQUESTED)
+                        ->orWhere('state_request_id', StateRequest::APPROVED);
+                });
+        });
+    }
+
+    public function withoutOrderWithoutDelivery($query){
+        return $query->where(function ($query) {
+            return $query->whereNull('order');
+        })
+        ->orWhere(function ($query) {
+            return $query->whereNotNull('order')
+                ->whereNull('pickup_by_customer')
+                ->whereNull('transport_id');
+        })
+        ->where('active', true);
+    }
+
+    public function withRequestActive(){
+        return $this->hasMany(Request::class)
+        ->where('state_request_id', StateRequest::REQUESTED);
+    }
+
+    public function scopeThathasReservationWithoutOrderWithoutDelivery($query){
+        return $query->whereHas('reservations', function (Builder $builder) {
+            return $builder->where(function ($query) {
+                return $query->whereNull('order');
+            })
+            ->orWhere(function ($query) {
+                return $query->whereNotNull('order')
+                    ->whereNull('pickup_by_customer')
+                    ->whereNull('transport_id');
+            })
+            ->where('active', true);
+        });
+    }
+
+    public function withOrderWithoutContract($query){
+        return $query->whereNotNull('order')
+            ->whereNull('contract')
+            ->where('active', true)
+            ->where(function($query) {
+                return $query->whereNotNull('pickup_by_customer')
+                            ->orWhereNotNull('transport_id');
+            });
+    }
+
+    public function scopeByWithOrderWithoutContract($query){
+        return $query->whereHas('reservations', function(Builder $builder) {
+            return $builder->whereNotNull('order')
+                ->whereNull('contract')
+                ->where('active', true)
+                ->where(function($query) {
+                    return $query->whereNotNull('pickup_by_customer')
+                                ->orWhereNotNull('transport_id');
+                });
+        });
+    }
+
+    public function scopeWithRequestDefleetActive($query){
+        return $query->whereHas('requests', function (Builder $builder) {
+            return $builder->where('type_request_id', TypeRequest::DEFLEET)
+                    ->where('state_request_id', StateRequest::REQUESTED);
+        });
+    }
+
+    public function scopeDifferentDefleeted($query){
+        return $query->whereHas('subState.state', fn (Builder $builder) => $builder->where('id','!=', State::PENDING_SALE_VO));
+    }
+
+    public function scopeDefleetBetweenDateApproved(Builder $builder, $dateStart, $dateEnd){
+        return $builder->whereHas('requests', function($query) use($dateStart, $dateEnd){
+            return $query->where('type_request_id', TypeRequest::DEFLEET)
+                ->whereDate('datetime_approved', '>=', $dateStart)
+                ->whereDate('datetime_approved', '<=', $dateEnd);
         });
     }
 }

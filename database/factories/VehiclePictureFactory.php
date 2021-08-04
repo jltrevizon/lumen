@@ -6,16 +6,17 @@ use App\Model;
 use App\Models\Reception;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\VehiclePicture;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class VehiclePicturesFactory extends Factory
+class VehiclePictureFactory extends Factory
 {
-    protected $model = VehiclePicturesFactory::class;
+    protected $model = VehiclePicture::class;
 
     public function definition(): array
     {
     	return [
-    	    'vehicle_id' => Vehicle::factory()->create()->id,
+            'vehicle_id' => Vehicle::factory()->create()->id,
             'user_id' => User::factory()->create()->id,
             'reception_id' => Reception::factory()->create()->id,
             'url' => $this->faker->url,

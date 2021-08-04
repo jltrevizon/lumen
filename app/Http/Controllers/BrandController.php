@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\BrandRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class BrandController extends Controller
 {
@@ -12,11 +13,11 @@ class BrandController extends Controller
         $this->brandRepository = $brandRepository;
     }
 
-    public function getAll(){
-        return $this->brandRepository->getAll();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->brandRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return $this->brandRepository->getById($id);
+    public function getById(Request $request, $id){
+        return $this->getDataResponse($this->brandRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 }

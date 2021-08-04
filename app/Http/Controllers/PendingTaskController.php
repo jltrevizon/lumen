@@ -7,6 +7,7 @@ use App\Models\PendingTask;
 use App\Http\Controllers\GroupTaskController;
 use App\Http\Controllers\TaskController;
 use App\Repositories\PendingTaskRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class PendingTaskController extends Controller
 {
@@ -25,16 +26,16 @@ class PendingTaskController extends Controller
         $this->pendingTaskRepository = $pendingTaskRepository;
     }
 
-    public function getAll(){
-        return PendingTask::all();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->pendingTaskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return $this->pendingTaskRepository->getById($id);
+    public function getById(Request $request, $id){
+        return $this->getDataResponse($this->pendingTaskRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getPendingOrNextTask(){
-        return $this->pendingTaskRepository->getPendingOrNextTask();
+    public function getPendingOrNextTask(Request $request){
+        return $this->getDataResponse($this->pendingTaskRepository->getPendingOrNextTask($request));
     }
 
     public function create(Request $request){
@@ -47,11 +48,11 @@ class PendingTaskController extends Controller
             'order' => 'required|integer'
         ]);
 
-        return $this->pendingTaskRepository->create($request);
+        return $this->createDataResponse($this->pendingTaskRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->pendingTaskRepository->update($request, $id);
+        return $this->updateDataResponse($this->pendingTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function createIncidence(Request $request){
@@ -60,7 +61,7 @@ class PendingTaskController extends Controller
             'pending_task_id' => 'required|integer'
         ]);
 
-        return $this->pendingTaskRepository->createIncidence($request);
+        return $this->createDataResponse($this->pendingTaskRepository->createIncidence($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function resolvedIncidence(Request $request){
@@ -69,15 +70,11 @@ class PendingTaskController extends Controller
             'pending_task_id' => 'required|integer'
         ]);
 
-        return $this->pendingTaskRepository->resolvedIncidence($request);
+        return $this->updateDataResponse($this->pendingTaskRepository->resolvedIncidence($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->pendingTaskRepository->delete($id);
-    }
-
-    public function createFromArray(Request $request){
-        return $this->pendingTaskRepository->createFromArray($request);
+        return $this->deleteDataResponse($this->pendingTaskRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function startPendingTask(Request $request){
@@ -86,7 +83,7 @@ class PendingTaskController extends Controller
             'pending_task_id' => 'required|integer'
         ]);
 
-        return $this->pendingTaskRepository->startPendingTask($request);
+        return $this->updateDataResponse($this->pendingTaskRepository->startPendingTask($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function cancelPendingTask(Request $request){
@@ -95,7 +92,7 @@ class PendingTaskController extends Controller
             'pending_task_id' => 'required|integer'
         ]);
 
-        return $this->pendingTaskRepository->cancelPendingTask($request);
+        return $this->updateDataResponse($this->pendingTaskRepository->cancelPendingTask($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function finishPendingTask(Request $request){
@@ -104,17 +101,7 @@ class PendingTaskController extends Controller
             'pending_task_id' => 'required|integer'
         ]);
 
-        return $this->pendingTaskRepository->finishPendingTask($request);
-    }
-
-    public function getPendingTaskByState(Request $request){
-
-        $this->validate($request, [
-            'company_id' => 'required|integer',
-            'state_pending_task_id' => 'required|integer'
-        ]);
-
-        return $this->pendingTaskRepository->getPendingTaskByState($request);
+        return $this->updateDataResponse($this->pendingTaskRepository->finishPendingTask($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getPendingTaskByStateCampa(Request $request){
@@ -124,7 +111,7 @@ class PendingTaskController extends Controller
             'state_pending_task_id' => 'required|integer'
         ]);
 
-        return $this->pendingTaskRepository->getPendingTaskByStateCampa($request);
+        return $this->getDataResponse($this->pendingTaskRepository->getPendingTaskByStateCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getPendingTaskByPlate(Request $request){
@@ -133,11 +120,11 @@ class PendingTaskController extends Controller
             'plate' => 'required|string'
         ]);
 
-        return $this->pendingTaskRepository->getPendingTaskByPlate($request);
+        return $this->getDataResponse($this->pendingTaskRepository->getPendingTaskByPlate($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getPendingTasksByPlate(Request $request){
-        return $this->pendingTaskRepository->getPendingTasksByPlate($request);
+        return $this->getDataResponse($this->pendingTaskRepository->getPendingTasksByPlate($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function orderPendingTask(Request $request){
@@ -148,6 +135,10 @@ class PendingTaskController extends Controller
         ]);
 
         return $this->pendingTaskRepository->orderPendingTask($request);
+    }
+
+    public function addPendingTask(Request $request){
+        return $this->createDataResponse($this->pendingTaskRepository->addPendingTask($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
 }

@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\GroupTask;
 use App\Models\Incidence;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PendingTask extends Model
@@ -31,26 +32,58 @@ class PendingTask extends Model
     ];
 
     public function vehicle(){
-        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function task(){
-        return $this->belongsTo(Task::class, 'task_id');
+        return $this->belongsTo(Task::class);
     }
 
-    public function state_pending_task(){
-        return $this->belongsTo(StatePendingTask::class, 'state_pending_task_id');
+    public function statePendingTask(){
+        return $this->belongsTo(StatePendingTask::class);
     }
 
-    public function group_task(){
-        return $this->belongsTo(GroupTask::class, 'group_task_id');
+    public function groupTask(){
+        return $this->belongsTo(GroupTask::class);
     }
 
     public function incidences(){
         return $this->belongsToMany(Incidence::class);
     }
 
-    public function pending_task_canceled(){
+    public function pendingTaskCanceled(){
         return $this->hasMany(PendingTaskCanceled::class);
     }
+
+    public function vehicleExit(){
+        return $this->hasOne(VehicleExit::class);
+    }
+
+    public function operations(){
+        return $this->hasMany(Operation::class);
+    }
+
+    public function scopeByCampas($query, array $ids){
+        return $query->whereHas('vehicle.campa', function (Builder $builder) use($ids){
+            return $builder->whereIn('id', $ids);
+        });
+    }
+
+    public function scopePendingOrInProgress($query){
+        return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+    }
+
+    public function scopeCanSeeHomework($query, int $userTypeId){
+        return $query->whereHas('task.subState.type_users_app', function ($query) use($userTypeId) {
+            return $query->where('type_user_app_id', $userTypeId);
+        });
+    }
+
+    public function scopeByPlate($query, string $plate){
+        return $query->whereHas('vehicle', function (Builder $builder) use($plate) {
+            return $builder->where('plate', $plate);
+        });
+    }
+
 }

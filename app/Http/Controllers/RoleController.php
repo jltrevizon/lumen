@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Repositories\RoleRepository;
 use DateTime;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class RoleController extends Controller
 {
@@ -16,11 +17,11 @@ class RoleController extends Controller
     }
 
     public function getAll(){
-        return Role::all();
+        return $this->getDataResponse(Role::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->roleRepository->getById($id);
+        return $this->getDataResponse($this->roleRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -29,14 +30,14 @@ class RoleController extends Controller
             'description' => 'required|string'
         ]);
 
-        return $this->roleRepository->create($request);
+        return $this->createDataResponse($this->roleRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->roleRepository->update($request, $id);
+        return $this->updateDataResponse($this->roleRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->roleRepository->delete($id);
+        return $this->deleteDataResponse($this->roleRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }

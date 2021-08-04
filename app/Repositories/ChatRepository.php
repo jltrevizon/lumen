@@ -16,7 +16,7 @@ class ChatRepository {
 
     public function createMessage($request){
         try {
-            $user = $this->userRepository->getById(Auth::id());
+            $user = $this->userRepository->getById($request, Auth::id());
             $chat = new Chat();
             $chat->sent_user_app = false;
             $chat->campa_id = $request->input('campa_id');
@@ -30,7 +30,7 @@ class ChatRepository {
 
     public function createMessageApp($request){
         try {
-            $user = $this->userRepository->getById(Auth::id());
+            $user = $this->userRepository->getById($request, Auth::id());
             $chat = new Chat();
             $chat->sent_user_app = true;
             $chat->campa_id = $user->campa_id;
@@ -51,9 +51,9 @@ class ChatRepository {
         }
     }
 
-    public function getMessageApp(){
+    public function getMessageApp($request){
         try {
-            $user = $this->userRepository->getById(Auth::id());
+            $user = $this->userRepository->getById($request, Auth::id());
             return Chat::where('campa_id', $user->campa_id)
                     ->get();
         } catch (Exception $e) {

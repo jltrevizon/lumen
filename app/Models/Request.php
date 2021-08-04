@@ -8,6 +8,7 @@ use App\Models\StateRequest;
 use App\Models\TypeRequest;
 use App\Models\Reservation;
 use App\Models\Customer;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Request extends Model
@@ -42,5 +43,17 @@ class Request extends Model
 
     public function customer(){
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function scopeByVehicleInCampa($query, int $campaId){
+        return $query->whereHas('vehicle', function(Builder $builder) use($campaId) {
+            return $builder->where('campa_id', $campaId);
+        });
+    }
+
+    public function scopeByVehicleInCampas($query, array $campaIds){
+        return $query->whereHas('vehicle', function(Builder $builder) use($campaIds) {
+            return $builder->whereIn('campa_id', $campaIds);
+        });
     }
 }

@@ -12,24 +12,24 @@ class CompanyRepository {
 
     }
 
+    public function getAll(){
+        return Company::all();
+    }
+
+    public function getById($id){
+        return Company::findOrFail($id);
+    }
+
     public function create($request){
-        try {
-            $company = Company::create($request->all());
-            $company->save();
-            return $company;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $company = Company::create($request->all());
+        $company->save();
+        return $company;
     }
 
     public function update($request, $id){
-        try {
-            $company = Company::findOrFail($id);
-            $company->update($request->all());
-            return response()->json(['company' => $company], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $company = Company::findOrFail($id);
+        $company->update($request->all());
+        return ['company' => $company];
     }
 
 }

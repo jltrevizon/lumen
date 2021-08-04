@@ -19,22 +19,19 @@ class MailController extends Controller
     }
 
     public function testCode(SendCode $sendCode){
-        //return $sendCode->send();
     }
 
     public function sendCodePassword(Request $request){
         try {
-
             $code = $this->generateCode(6);
             $user = User::where('email', $request->input('email'))
                         ->first();
             $passwordReset = new PasswordResetCode();
-                        $passwordReset->user_id = $user->id;
-                        $passwordReset->code = $code;
-                        $passwordReset->save();
-                        if($user){
-                            $this->sendCode->SendCodePassword($user->name, $code, $user->email);
-                            return $user;
+            $passwordReset->user_id = $user->id;
+            $passwordReset->code = $code;
+            $passwordReset->save();
+            if($user){
+                $this->sendCode->SendCodePassword($user->name, $code, $user->email);
                 return response()->json(['message' => 'Email enviado'], 200);
             } else {
                 return response()->json(['message' => 'El usuario no existe'], 200);
@@ -55,7 +52,6 @@ class MailController extends Controller
                                         ->where('active', true)
                                         ->orderBy('created_at','desc')
                                         ->first();
-        //return $passwordResetCode;
         if($passwordResetCode && $passwordResetCode->code == $request->input('code')){
             $user->password = app('hash')->make($request->input('password'));
             $user->save();

@@ -6,6 +6,7 @@ use App\Models\Province;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -58,5 +59,41 @@ class CampaTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->campa->reservations());
         $this->assertInstanceOf(Reservation::class, $this->campa->reservations()->getModel());
+    }
+
+    /** @test */
+    public function search_by_company()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byCompany(1));
+    }
+
+    /** @test */
+    public function search_by_companies()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byCompanies([]));
+    }
+
+    /** @test */
+    public function search_by_province()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byProvince(1));
+    }
+
+    /** @test */
+    public function search_by_provinces()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byProvinces([]));
+    }
+
+    /** @test */
+    public function search_by_region()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byRegion(1));
+    }
+
+    /** @test */
+    public function search_by_regions()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byRegions([]));
     }
 }

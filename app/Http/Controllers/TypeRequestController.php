@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TypeRequest;
 use App\Repositories\TransportRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class TypeRequestController extends Controller
 {
@@ -15,22 +16,22 @@ class TypeRequestController extends Controller
     }
 
     public function getAll(){
-        return TypeRequest::all();
+        return $this->getDataResponse(TypeRequest::all(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return $this->transportRepository->getById($id);
+        return $this->getDataResponse($this->transportRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
-        return $this->transportRepository->create($request);
+        return $this->createDataResponse($this->transportRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->transportRepository->update($request);
+        return $this->updateDataResponse($this->transportRepository->update($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->transportRepository->delete($id);
+        return $this->deleteDataResponse($this->transportRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 }

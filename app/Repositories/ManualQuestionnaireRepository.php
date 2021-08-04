@@ -13,12 +13,8 @@ class ManualQuestionnaireRepository {
     }
 
     public function create($request){
-        try {
-            $manual_questionnaire = ManualQuestionnaire::create($request->all());
-            $manual_questionnaire->save();
-            return $manual_questionnaire;
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+        $manual_questionnaire = ManualQuestionnaire::create($request->all());
+        $manual_questionnaire->save();
+        return $manual_questionnaire;
     }
 }

@@ -141,7 +141,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Pending task
          */
-        $router->get('/pending-tasks/getall', 'PendingTaskController@getall');
+        $router->get('/pending-tasks/getall', 'PendingTaskController@getAll');
         $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
@@ -151,11 +151,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
         $router->post('/pending-tasks/incidence', 'PendingTaskController@createIncidence');
         $router->post('/pending-tasks/resolved', 'PendingTaskController@resolvedIncidence');
-        $router->post('/pending-tasks/by-state', 'PendingTaskController@getPendingTaskByState');
         $router->post('/pending-tasks/by-state/by-campa', 'PendingTaskController@getPendingTaskByStateCampa');
         $router->post('/pending-tasks/by-plate', 'PendingTaskController@getPendingTaskByPlate');
         $router->post('/pending-tasks/by-vehicle', 'PendingTaskController@getPendingTasksByPlate');
         $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
+        $router->post('/pending-tasks/add', 'PendingTaskController@addPendingTask');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         /**
          * Purchase operations
@@ -222,10 +222,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Tasks
          */
         $router->get('/tasks/getall', 'TaskController@getall');
-        $router->get('/tasks/{id}', 'TaskController@getById');
         $router->post('/tasks', 'TaskController@create');
         $router->put('/tasks/update/{id}', 'TaskController@update');
         $router->delete('/tasks/delete/{id}', 'TaskController@delete');
+        $router->get('/tasks/{id}', 'TaskController@getById');
 
         /**
          * Transports
@@ -265,12 +265,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/verify-plate-reception', 'VehicleController@verifyPlateReception');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
-        $router->post('/vehicles/defleet', 'VehicleController@vehicleDefleet');
-        $router->post('/vehicles/ready-to-delivery/campa', 'VehicleController@getVehiclesReadyToDeliveryCampa');
-        $router->post('/vehicles/ready-to-delivery/company', 'VehicleController@getVehiclesReadyToDeliveryCompany');
+        $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
         $router->post('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
-        $router->post('/vehicles/filter', 'VehicleController@filterVehicle');
+        $router->get('/vehicles/filter', 'VehicleController@filterVehicle');
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
         $router->post('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
@@ -308,6 +306,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Questions answer
          */
         $router->post('/question-answers', 'QuestionAnswerController@create');
+        $router->put('/question-answers/{id}', 'QuestionAnswerController@update');
 
         /**
          * Manual Questionnaire
@@ -354,5 +353,26 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->post('/reception', 'ReceptionController@create');
         $router->get('/reception/{id}','ReceptionController@getById');
+
+        /**
+         * Type User App
+         */
+        $router->get('/type-user-app', 'TypeUserAppController@index');
+
+        /**
+         * Vehicle exits
+         */
+        $router->get('/vehicle-exits', 'VehicleExitController@getAll');
+        $router->get('/vehicle-exits/{id}', 'VehicleExitController@getById');
+        $router->post('/vehicle-exits', 'VehicleExitController@create');
+        $router->put('/vehicle-exits/{id}', 'VehicleExitController@update');
+
+        /**
+         * Operations
+         */
+        $router->get('/operations', 'OperationController@getAll');
+        $router->get('/operations/{id}', 'OperationController@getById');
+        $router->post('/operations', 'OperationController@create');
+        $router->put('/operations/{id}', 'OperationController@update');
     });
 });

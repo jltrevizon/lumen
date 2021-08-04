@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Ald;
 
 use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
+use App\Models\StatePendingTask;
+use App\Models\SubState;
+use App\Models\Task;
 use App\Repositories\AccessoryRepository;
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
@@ -37,50 +40,49 @@ class PendingTaskAldController extends Controller
     public function createFromArray(Request $request){
         try {
             $groupTask = $this->groupTaskRepository->create($request);
-            foreach($request->input('tasks') as $task){
-                $pending_task = new PendingTask();
-                $pending_task->vehicle_id = $request->input('vehicle_id');
-                $taskDescription = $this->taskRepository->getById($task['task_id']);
-                $pending_task->task_id = $task['task_id'];
-                $pending_task->approved = $task['approved'];
-                if($task['task_order'] == 1){
-                    $pending_task->state_pending_task_id = 1;
-                    $pending_task->datetime_pending = date('Y-m-d H:i:s');
-                    $this->vehicleRepository->updateState($pending_task['vehicle_id'], 1);
-                    //El estado comercial del vehículo pasa a No disponible
-                    //$this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], 5);
-                }
-                $pending_task->group_task_id = $groupTask->id;
-                $pending_task->duration = $taskDescription['duration'];
-                $pending_task->order = $task['task_order'];
-                $pending_task->save();
-            }
+            $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
             $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
             $this->createTaskUbication($request->input('vehicle_id'), $groupTask);
             $this->vehicleRepository->updateBack($request);
 
-            $user = $this->userRepository->getById(Auth::id());
+            $user = $this->userRepository->getById($request, Auth::id());
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
             $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
-
             if($request->input('has_accessories')){
                 $this->receptionRepository->update($reception['id']);
                 $this->accessoryRepository->create($reception['id'], $request->input('accessories'));
             }
-            return [
-                'message' => 'OK'
-            ];
+            return [ 'message' => 'OK' ];
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }
 
-    public function createTaskWashed($vehicle_id, $group_task, $tasks){
+    private function createTasks($tasks, $vehicleId, $groupTaskId){
+        foreach($tasks as $task){
+            $pending_task = new PendingTask();
+            $pending_task->vehicle_id = $vehicleId;
+            $taskDescription = $this->taskRepository->getById($task['task_id']);
+            $pending_task->task_id = $task['task_id'];
+            $pending_task->approved = $task['approved'];
+            if($task['task_order'] == Task::UBICATION){
+                $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA);
+            }
+            $pending_task->group_task_id = $groupTaskId;
+            $pending_task->duration = $taskDescription['duration'];
+            $pending_task->order = $task['task_order'];
+            $pending_task->save();
+        }
+    }
+
+    private function createTaskWashed($vehicle_id, $group_task, $tasks){
         $pending_task = new PendingTask();
         $pending_task->vehicle_id = $vehicle_id;
         $taskDescription = $this->taskRepository->getById(28);
         if(count($tasks) < 1){
-            $pending_task->state_pending_task_id = 1;
+            $pending_task->state_pending_task_id = StatePendingTask::PENDING;
             $pending_task->datetime_pending = date("Y-m-d H:i:s");
         }
         $pending_task->group_task_id = $group_task->id;
@@ -90,10 +92,10 @@ class PendingTaskAldController extends Controller
         $pending_task->save();
     }
 
-    public function createTaskUbication($vehicle_id, $group_task){
+    private function createTaskUbication($vehicle_id, $group_task){
         $pending_task = new PendingTask();
         $pending_task->vehicle_id = $vehicle_id;
-        $taskDescription = $this->taskRepository->getById(1);
+        $taskDescription = $this->taskRepository->getById(Task::UBICATION);
         $pending_task->group_task_id = $group_task->id;
         $pending_task->task_id = $taskDescription['id'];
         $pending_task->duration = $taskDescription['duration'];

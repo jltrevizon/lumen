@@ -5,6 +5,7 @@ use App\Models\Company;
 use App\Models\Customer;
 use App\Models\DefleetVariable;
 use App\Models\Question;
+use App\Models\ReservationTime;
 use App\Models\State;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,18 +27,33 @@ class CompanyTest extends TestCase
     }
 
     /** @test */
+    public function it_has_many_to_campas()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->company->campas());
+        $this->assertInstanceOf(Campa::class, $this->company->campas()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_reservation_time()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->company->reservationTimes());
+        $this->assertInstanceOf(ReservationTime::class, $this->company->reservationTimes()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_to_customers()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->company->customers());
+        $this->assertInstanceOf(Customer::class, $this->company->customers()->getModel());
+    }
+
+    /** @test */
     public function it_has_many_to_users()
     {
         $this->assertInstanceOf(HasMany::class, $this->company->users());
         $this->assertInstanceOf(User::class, $this->company->users()->getModel());
     }
 
-    /** @test */
-    public function it_has_many_to_campas()
-    {
-        $this->assertInstanceOf(HasMany::class, $this->company->campas());
-        $this->assertInstanceOf(Campa::class, $this->company->campas()->getModel());
-    }
 
     /** @test */
     public function it_has_many_to_questions()
@@ -53,12 +69,6 @@ class CompanyTest extends TestCase
         $this->assertInstanceOf(DefleetVariable::class, $this->company->defleetVariable()->getModel());
     }
 
-    /** @test */
-    public function it_has_many_to_customers()
-    {
-        $this->assertInstanceOf(HasMany::class, $this->company->customers());
-        $this->assertInstanceOf(Customer::class, $this->company->customers()->getModel());
-    }
 
     /** @test */
     public function it_has_many_to_states()

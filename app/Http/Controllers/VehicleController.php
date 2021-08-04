@@ -10,8 +10,11 @@ use App\Models\Vehicle;
 use App\Repositories\VehicleRepository;
 use DateTime;
 use Exception;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response as FacadesResponse;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class VehicleController extends Controller
 {
@@ -21,22 +24,14 @@ class VehicleController extends Controller
         $this->vehicleRepository = $vehicleRepository;
     }
 
-    public function getAll(){
-        try {
-            $user = User::findOrFail(Auth::id());
-            $campas = Campa::where('company_id', $user->company_id)
-                            ->get();
-            //return $campas->pluck('id')->toArray();
-            return Vehicle::with(['campa','vehicleModel.brand'])
-                        ->whereIn('campa_id', $campas->pluck('id')->toArray())
-                        ->paginate(5000);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function getAll(Request $request){
+
+        return $this->getDataResponse($this->vehicleRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return $this->vehicleRepository->getById($id);
+    public function getById(Request $request, $id){
+
+        return $this->getDataResponse($this->vehicleRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -49,11 +44,11 @@ class VehicleController extends Controller
             'first_plate' => 'required|date',
         ]);
 
-        return $this->vehicleRepository->create($request);
+        return $this->createDataResponse(['vehicle' => $this->vehicleRepository->create($request)], HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->vehicleRepository->update($request, $id);
+        return $this->updateDataResponse(['vehicle' => $this->vehicleRepository->update($request, $id)], HttpFoundationResponse::HTTP_OK);
     }
 
     public function verifyPlate(Request $request){
@@ -62,21 +57,17 @@ class VehicleController extends Controller
             'plate' => 'required|string',
         ]);
 
-        return $this->vehicleRepository->verifyPlate($request);
+        return $this->getDataResponse($this->vehicleRepository->verifyPlate($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleDefleet(Request $request){
 
-        $this->validate($request, [
-            'campas' => 'required',
-            'limit' => 'required|integer'
-        ]);
-
-        return $this->vehicleRepository->vehicleDefleet($request);
+        return $this->getDataResponse(['vehicles' => $this->vehicleRepository->vehicleDefleet($request)], HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->vehicleRepository->delete($id);
+
+        return $this->deleteDataResponse($this->vehicleRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function createFromExcel(Request $request){
@@ -85,25 +76,7 @@ class VehicleController extends Controller
             'vehicles' => 'required'
         ]);
 
-        return $this->vehicleRepository->createFromExcel($request);
-    }
-
-    public function getVehiclesReadyToDeliveryCampa(Request $request){
-
-        $this->validate($request, [
-            'campa_id' => 'required|integer'
-        ]);
-
-        return $this->vehicleRepository->getVehiclesReadyToDeliveryCampa($request);
-    }
-
-    public function getVehiclesReadyToDeliveryCompany(Request $request){
-
-        $this->validate($request, [
-            'company_id' => 'required|integer'
-        ]);
-
-        return $this->vehicleRepository->getVehiclesReadyToDeliveryCompany($request);
+        return $this->createDataResponse($this->vehicleRepository->createFromExcel($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function getVehiclesWithReservationWithoutOrderCampa(Request $request){
@@ -112,7 +85,7 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request);
+        return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getVehiclesWithReservationWithoutContractCampa(Request $request){
@@ -121,24 +94,15 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->getVehiclesWithReservatiopcanWithoutContractCampa($request);
+        return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutContractCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function filterVehicle(Request $request){
-
-        $this->validate($request, [
-            'campas' => 'required',
-            'states' => 'required',
-            'brands' => 'required',
-            'categories' => 'required',
-            'limit' => 'required'
-        ]);
-
-        return $this->vehicleRepository->filterVehicle($request);
+        return $this->getDataResponse($this->vehicleRepository->filterVehicle($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function vehicleReserved(){
-        return $this->vehicleRepository->vehicleReserved();
+    public function vehicleReserved(Request $request){
+        return $this->getDataResponse($this->vehicleRepository->vehicleReserved($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function vehicleTotalsState(Request $request){
@@ -147,11 +111,11 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->vehicleTotalsState($request);
+        return $this->getDataResponse($this->vehicleRepository->vehicleTotalsState($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function vehicleRequestDefleet(){
-        return $this->vehicleRepository->vehicleRequestDefleet();
+    public function vehicleRequestDefleet(Request $request){
+        return $this->getDataResponse($this->vehicleRepository->vehicleRequestDefleet($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function verifyPlateReception(Request $request){
@@ -175,6 +139,6 @@ class VehicleController extends Controller
             'campas' => 'required'
         ]);
 
-        return $this->vehicleRepository->vehiclesByState($request);
+        return $this->getDataResponse($this->vehicleRepository->vehiclesByState($request), HttpFoundationResponse::HTTP_OK);
     }
 }

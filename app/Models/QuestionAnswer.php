@@ -15,7 +15,8 @@ class QuestionAnswer extends Model
         "questionnaire_id",
         "question_id",
         "response",
-        "description"
+        "description",
+        "description_response"
     ];
 
     public function questionnaire(){

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\ManualQuestionnaireRepository;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class ManualQuestionnaireController extends Controller
 {
@@ -19,7 +20,7 @@ class ManualQuestionnaireController extends Controller
             'filled_in' => 'required'
         ]);
 
-        return $this->manualQuestionnaireRepository->create($request);
+        return $this->createDataResponse($this->manualQuestionnaireRepository->create($request), HttpFoundationResponse::HTTP_OK);
     }
 
 }

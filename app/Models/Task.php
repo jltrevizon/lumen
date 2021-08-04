@@ -7,12 +7,15 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\TypeTask;
 use App\Models\PurchaseOperation;
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
+
+    const UBICATION = 1;
 
     protected $fillable = [
         'sub_state_id',
@@ -21,19 +24,27 @@ class Task extends Model
         'duration'
     ];
 
-    public function pending_tasks(){
-        return $this->hasMany(PendingTask::class, 'task_id');
+    public function pendingTasks(){
+        return $this->hasMany(PendingTask::class);
     }
 
-    public function sub_state(){
-        return $this->belongsTo(SubState::class, 'sub_state_id');
+    public function subState(){
+        return $this->belongsTo(SubState::class);
     }
 
-    public function type_task(){
-        return $this->belongsTo(TypeTask::class, 'type_task_id');
+    public function typeTask(){
+        return $this->belongsTo(TypeTask::class);
     }
 
-    public function purchase_operations(){
-        return $this->hasMany(PurchaseOperation::class, 'task_id');
+    public function purchaseOperations(){
+        return $this->hasMany(PurchaseOperation::class);
+    }
+
+    public function scopeByTypeTasks($query, array $ids){
+        return $query->whereIn('type_task_id', $ids);
+    }
+
+    public function scopeBySubStates($query, array $ids){
+        return $query->whereIn('sub_state_id', $ids);
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class UserController extends Controller
 {
@@ -14,13 +15,12 @@ class UserController extends Controller
         $this->userRepository = $userRepository;
     }
 
-    public function getAll(){
-        return User::with(['campas','company'])
-                    ->get();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->userRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return $this->userRepository->getById($id);
+    public function getById(Request $request, $id){
+        return $this->getDataResponse($this->userRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -31,7 +31,7 @@ class UserController extends Controller
             'password' => 'required|string'
         ]);
 
-        return $this->userRepository->create($request);
+        return $this->createDataResponse($this->userRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function createUserWithoutPassword(Request $request){
@@ -41,23 +41,23 @@ class UserController extends Controller
             'email' => 'required|email|unique:users'
         ]);
 
-        return $this->userRepository->createUserWithoutPassword($request);
+        return $this->createDataResponse($this->userRepository->createUserWithoutPassword($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->userRepository->update($request, $id);
+        return $this->updateDataResponse($this->userRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
-        return $this->userRepository->delete($id);
+        return $this->deleteDataResponse($this->userRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getUsersByCampa($campa_id){
-        return $this->userRepository->getUsersByCampa($campa_id);
+        return $this->getDataResponse($this->userRepository->getUsersByCampa($campa_id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getUsersByRole(Request $request, $role_id){
-        return $this->userRepository->getUsersByRole($request, $role_id);
+        return $this->getDataResponse($this->userRepository->getUsersByRole($request, $role_id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getActiveUsers(Request $request){
@@ -66,7 +66,7 @@ class UserController extends Controller
             'campa_id' => 'required|integer'
         ]);
 
-        return $this->userRepository->getActiveUsers($request);
+        return $this->getDataResponse($this->userRepository->getActiveUsers($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getUserByEmail(Request $request){
@@ -75,6 +75,6 @@ class UserController extends Controller
             'email' => 'required|string'
         ]);
 
-        return $this->userRepository->getUserByEmail($request);
+        return $this->getDataResponse($this->userRepository->getUserByEmail($request), HttpFoundationResponse::HTTP_OK);
     }
 }

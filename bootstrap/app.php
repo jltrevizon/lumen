@@ -102,6 +102,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register('Nord\Lumen\Cors\CorsServiceProvider');
 $app->register(Illuminate\Mail\MailServiceProvider::class);
+$app->register(EloquentFilter\LumenServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -114,7 +115,7 @@ $app->register(Illuminate\Mail\MailServiceProvider::class);
 */
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
-
+config(['eloquentfilter.namespace' => "App\\Filters\\"]);
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {

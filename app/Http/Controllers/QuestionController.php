@@ -7,6 +7,7 @@ use App\Models\Question;
 use App\Models\User;
 use App\Repositories\QuestionRepository;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class QuestionController extends Controller
 {
@@ -16,8 +17,8 @@ class QuestionController extends Controller
         $this->questionRepository = $questionRepository;
     }
 
-    public function getAll(){
-        return $this->questionRepository->getAll();
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->questionRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -27,7 +28,7 @@ class QuestionController extends Controller
             'description' => 'required|string'
         ]);
 
-        return $this->questionRepository->create($request);
+        return $this->createDataResponse($this->questionRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function delete($id){

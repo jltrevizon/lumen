@@ -13,6 +13,9 @@ class Company extends Model
 
     use HasFactory;
 
+    const ALD = 1;
+    const INVARAT = 2;
+
     protected $fillable = [
         'name',
         'tradename',
@@ -24,15 +27,15 @@ class Company extends Model
     ];
 
     public function campas(){
-        return $this->hasMany(Campa::class, 'company_id');
+        return $this->hasMany(Campa::class);
     }
 
-    public function reservation_times(){
-        return $this->hasMany(ReservationTime::class, 'company_id');
+    public function reservationTimes(){
+        return $this->hasMany(ReservationTime::class);
     }
 
     public function customers(){
-        return $this->hasMany(Customer::class, 'company_id');
+        return $this->hasMany(Customer::class);
     }
 
     public function users(){

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use Illuminate\Database\Seeder;
 use App\Models\State;
 
@@ -27,27 +28,27 @@ class StateSeeder extends Seeder
         return [
             [
                 'name' => 'Disponible',
-                'company_id' => 1
+                'company_id' => Company::ALD
             ],
             [
                 'name' => 'Taller',
-                'company_id' => 1
+                'company_id' => Company::ALD
             ],
             [
                 'name' => 'Pendiente Venta V.O.',
-                'company_id' => 1
+                'company_id' => Company::ALD
             ],
             [
                 'name' => 'No disponible',
-                'company_id' => 1
+                'company_id' => Company::ALD
             ],
             [
                 'name' => 'Entregado',
-                'company_id' => 1
+                'company_id' => Company::ALD
             ],
             [
                 'name' => 'Pre-disponible',
-                'company_id' => 1
+                'company_id' => Company::ALD
             ]
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Repositories\CompanyRepository;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class CompanyController extends Controller
 {
@@ -15,12 +16,11 @@ class CompanyController extends Controller
     }
 
     public function getAll(){
-        return Company::all();
+        return $this->getDataResponse($this->companyRepository->getAll(), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
-        return Company::where('id', $id)
-                    ->first();
+        return $this->getDataResponse($this->companyRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -29,11 +29,11 @@ class CompanyController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->companyRepository->create($request);
+        return $this->createDataResponse($this->companyRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
-        return $this->companyRepository->update($request, $id);
+        return $this->updateDataResponse($this->companyRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){

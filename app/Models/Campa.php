@@ -7,12 +7,16 @@ use App\Models\User;
 use App\Models\Province;
 use App\Models\Company;
 use App\Models\Vehicle;
+use EloquentFilter\Filterable;
+use Faker\Core\Number;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Ramsey\Uuid\Type\Integer;
 
 class Campa extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'company_id',
@@ -41,5 +45,33 @@ class Campa extends Model
 
     public function reservations(){
         return $this->hasMany(Reservation::class);
+    }
+
+    public function scopeByCompany($query, int $companyId){
+        return $query->where('company_id', $companyId);
+    }
+
+    public function scopeByCompanies($query, array $ids){
+        return $query->whereIn('company_id', $ids);
+    }
+
+    public function scopeByProvince($query, int $provinceId){
+        return $query->where('province_id', $provinceId);
+    }
+
+    public function scopeByProvinces($query, array $ids){
+        return $query->whereIn('province_id', $ids);
+    }
+
+    public function scopeByRegion($query, int $regionId){
+        return $query->whereHas('province', function (Builder $builder) use($regionId){
+            return $builder->where('region_id', $regionId);
+        });
+    }
+
+    public function scopeByRegions($query, array $ids){
+        return $query->whereHas('province', function (Builder $builder) use($ids){
+            return $builder->whereIn('region_id', $ids);
+        });
     }
 }
