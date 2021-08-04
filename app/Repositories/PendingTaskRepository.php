@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Models\PendingTask;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
 use App\Models\VehiclePicture;
@@ -207,7 +208,7 @@ class PendingTaskRepository extends Repository {
                 $pending_task_next->save();
                 return $this->getPendingOrNextTask($request);
             } else {
-                $this->vehicleRepository->updateState($pending_task['vehicle_id'], State::AVAILABLE); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){
                     $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], TradeState::RESERVED); // Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)
                     $vehicle->ready_to_delivery = true;
