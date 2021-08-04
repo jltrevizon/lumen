@@ -265,7 +265,7 @@ class Vehicle extends Model
     }
 
     public function scopeDifferentDefleeted($query){
-        return $query->whereHas('subState.state', fn (Builder $builder) => $builder->where('id','<>', State::PENDING_SALE_VO));
+        return $query->whereHas('subState.state', fn (Builder $builder) => $builder->where('id','!=', State::PENDING_SALE_VO));
     }
 
     public function scopeDefleetBetweenDateApproved(Builder $builder, $dateStart, $dateEnd){

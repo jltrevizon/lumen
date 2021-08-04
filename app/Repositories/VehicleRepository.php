@@ -223,7 +223,7 @@ public function verifyPlateReception($request){
             ->withRequestDefleetActive()
             ->where('trade_state_id', TradeState::REQUEST_DEFLEET)
             ->byCampasOfUser($request)
-            //->differentDefleeted()
+            ->differentDefleeted()
             ->get();
         return ['vehicles' => $vehicles];
     }
