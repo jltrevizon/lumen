@@ -31,7 +31,7 @@ class VehicleController extends Controller
 
     public function getById(Request $request, $id){
 
-        return $this->getDataResponse($this->vehicleRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->vehicleRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
