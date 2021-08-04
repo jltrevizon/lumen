@@ -225,7 +225,7 @@ class PendingTaskRepository extends Repository {
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
                 $pending_task->save();
-                $this->vehicleRepository->updateState($pending_task['vehicle_id'], State::AVAILABLE); //Cuando el vehículo se ubica cambia el estado a disponible
+                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); //Cuando el vehículo se ubica cambia el estado a disponible
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){
                     $this->vehicleRepository->updateTradeState($vehicle->id, TradeState::RESERVED); //Si el vehículo ha sido pre-reservado pasa a reservado (sin tareas pendientes)
                 }
