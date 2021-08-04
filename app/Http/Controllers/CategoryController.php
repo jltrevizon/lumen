@@ -33,7 +33,7 @@ class CategoryController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->getDataResponse($this->categoryRepository->create($request, $id), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->categoryRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){

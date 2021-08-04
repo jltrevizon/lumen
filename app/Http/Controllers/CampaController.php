@@ -59,7 +59,7 @@ class CampaController extends Controller
             'name' => 'required|string'
         ]);
 
-        return $this->createDataResponse($this->campaRepository->create($request), HttpFoundationResponse::HTTP_OK);
+        return $this->createDataResponse($this->campaRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){

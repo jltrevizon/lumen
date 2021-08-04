@@ -21,8 +21,8 @@ class VehicleSeeder extends Seeder
                 'category_id' => $vehicle['category_id'],
                 'ubication' => $vehicle['ubication'],
                 'plate' => $vehicle['plate'],
-                'branch' => $vehicle['branch'],
-                'vehicle_model' => $vehicle['vehicle_model'],
+                //'branch' => $vehicle['branch'],
+                //'vehicle_model' => $vehicle['vehicle_model'],
                 'first_plate' => $vehicle['first_plate'],
 
             ]);

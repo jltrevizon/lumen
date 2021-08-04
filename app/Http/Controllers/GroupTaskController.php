@@ -21,7 +21,7 @@ class GroupTaskController extends Controller
     }
 
     public function getById(Request $request, $id){
-        return $this->getDataResponse($this->groupTaskRespository->getById($request, $id));
+        return $this->getDataResponse($this->groupTaskRepository->getById($request, $id),HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){
@@ -30,7 +30,7 @@ class GroupTaskController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
 
-        return $this->createDataResponse($this->groupTaskRepository->create($request), HttpFoundationResponse::HTTP_OK);
+        return $this->createDataResponse($this->groupTaskRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
