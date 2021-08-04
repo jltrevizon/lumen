@@ -220,10 +220,10 @@ public function verifyPlateReception($request){
 
     public function vehicleRequestDefleet($request){
         $vehicles = Vehicle::with($this->getWiths($request->with))
-            ->withRequestDefleetActive()
+            //->withRequestDefleetActive()
             ->where('trade_state_id', TradeState::REQUEST_DEFLEET)
             //->byCampasOfUser($request)
-            ->differentDefleeted()
+            //->differentDefleeted()
             ->get();
         return ['vehicles' => $vehicles];
     }
