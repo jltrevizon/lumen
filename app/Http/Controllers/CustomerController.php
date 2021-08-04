@@ -33,7 +33,7 @@ class CustomerController extends Controller
     }
 
     public function update(Request $request, $id){
-        return $this->updateDataResponse($this->customerRepository->update($request, $id), HttpFoundationResponse::HTTP_CREATED);
+        return $this->updateDataResponse($this->customerRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getUserByCompany(Request $request){
