@@ -57,6 +57,7 @@ class GroupTaskRepository extends Repository {
         $vehicle->save();
         $group_task = GroupTask::findOrFail($request->input('group_task_id'));
         $group_task->approved_available = 1;
+        $group_task->approved = 1;
         $group_task->save();
         return ['message' => 'Solicitud aprobada!'];
     }
