@@ -69,12 +69,4 @@ class UserController extends Controller
         return $this->getDataResponse($this->userRepository->getActiveUsers($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getUserByEmail(Request $request){
-
-        $this->validate($request, [
-            'email' => 'required|string'
-        ]);
-
-        return $this->getDataResponse($this->userRepository->getUserByEmail($request), HttpFoundationResponse::HTTP_OK);
-    }
 }

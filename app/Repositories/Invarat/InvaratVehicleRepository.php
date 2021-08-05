@@ -7,20 +7,24 @@ use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Repositories\BrandRepository;
 use App\Repositories\VehicleModelRepository;
+use App\Repositories\VehicleRepository;
 
 class InvaratVehicleRepository {
 
     public function __construct(
         BrandRepository $brandRepository,
-        VehicleModelRepository $vehicleModelRepository
+        VehicleModelRepository $vehicleModelRepository,
+        VehicleRepository $vehicleRepository
         )
     {
         $this->brandRepository = $brandRepository;
         $this->vehicleModelRepository = $vehicleModelRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function createVehicle($request){
-
+        $vehicleExist = $this->vehicleRepository->getByPlate($request);
+        if($vehicleExist) return $vehicleExist;
         $brand = $this->brandRepository->getByNameFromExcel($request->input('brand'));
         $vehicleModel = $this->vehicleModelRepository->getByNameFromExcel($brand->id, $request->input('vehicle_model'));
         $vehicle = Vehicle::create($request->all());
