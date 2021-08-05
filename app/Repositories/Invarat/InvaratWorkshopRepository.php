@@ -11,9 +11,9 @@ use stdClass;
 
 class InvaratWorkshopRepository {
 
-    public function __construct()
+    public function __construct(InvaratUserRepository $invaratUserRepository)
     {
-
+        $this->invaratUserRepository = $invaratUserRepository;
     }
 
     public function createWorkshop($workshop){
@@ -25,7 +25,11 @@ class InvaratWorkshopRepository {
         $newWorkshop->address = $workshop['address'];
         $newWorkshop->phone = $workshop['phone'];
         $newWorkshop->save();
-        return $newWorkshop;
+        $user = $this->invaratUserRepository->createUser($workshop['email'], $newWorkshop->id);
+        return [
+            'user' => $user,
+            'workshop' => $newWorkshop
+        ];
     }
 
 }
