@@ -15,12 +15,12 @@ class CreateWorkshopsTable extends Migration
     {
         Schema::create('workshops', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('cif');
-            $table->string('address');
-            $table->string('location');
-            $table->string('province');
-            $table->integer('phone');
+            $table->string('name')->nullable();
+            $table->string('cif')->nullable();
+            $table->string('address')->nullable();
+            $table->string('location')->nullable();
+            $table->string('province')->nullable();
+            $table->integer('phone')->nullable();
             $table->timestamps();
         });
     }
