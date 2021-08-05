@@ -15,7 +15,7 @@ class InvaratUserRepository {
 
     public function createUser($email, $workshopId){
         $user = new User();
-        $user->role = Role::CAMPA_MANAGET;
+        $user->role_id = Role::CAMPA_MANAGET;
         $user->email = $email;
         $user->workshop_id = $workshopId;
         $user->company_id = Company::INVARAT;

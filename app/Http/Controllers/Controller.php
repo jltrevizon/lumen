@@ -56,4 +56,12 @@ class Controller extends BaseController
             return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function genericResponse($data) {
+        try {
+            return $data;
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }
