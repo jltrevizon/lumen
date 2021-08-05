@@ -25,8 +25,11 @@ class DatabaseSeeder extends Seeder
         $this->call(StatePendingTaskSeeder::class);
         $this->call(StateRequestSeeder::class);
         $this->call(StateSeeder::class);
+        $this->call(State1Seeder::class);
         $this->call(SubStateSeeder::class);
+        $this->call(SubState1Seeder::class);
         $this->call(TaskSeeder::class);
+        $this->call(Task1Seeder::class);
         $this->call(TradeStateSeeder::class);
         $this->call(TypeRequestSeeder::class);
         $this->call(TypeReservationSeeder::class);

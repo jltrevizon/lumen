@@ -24,6 +24,13 @@ class SubState extends Model
     const ALQUILADO = 10;
     const CHECK = 11;
     const NOT_AVAILABLE = 12;
+    const PENDING_TEST_DINAMIC = 13;
+    const PENDING_INITIAL_CHECK = 14;
+    const PENDING_BUDGET = 15;
+    const PENDING_AUTHORIZATION = 16;
+    const IN_REPAIR = 17;
+    const PENDING_CERTIFICATED = 18;
+    const PENDING_FINAL_CHECK = 19;
 
     protected $fillable = [
         'state_id',
