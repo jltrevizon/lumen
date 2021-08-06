@@ -38,4 +38,8 @@ class State extends Model
     public function sub_states(){
         return $this->hasMany(SubState::class, 'state_id');
     }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
 }

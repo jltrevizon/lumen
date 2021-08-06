@@ -96,6 +96,10 @@ class Vehicle extends Model
         return $this->hasMany(Operation::class);
     }
 
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
     public function lastQuestionnaire(){
         return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
             'id' => 'max'

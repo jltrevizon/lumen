@@ -15,4 +15,8 @@ class Workshop extends Model
         'province',
         'phone'
     ];
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
 }

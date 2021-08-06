@@ -15,4 +15,19 @@ class Order extends Model
         'id_gsp'
     ];
 
+    public function vehicle(){
+        return $this->belongsTo(Vehicle::class);
+    }
+
+    public function workshop(){
+        return $this->belongsTo(workshop::class);
+    }
+
+    public function state(){
+        return $this->belongsTo(State::class);
+    }
+
+    public function typeModelOrder(){
+        return $this->belongsTo(TypeModelOrder::class);
+    }
 }
