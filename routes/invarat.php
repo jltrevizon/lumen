@@ -8,6 +8,8 @@ $router->group(['prefix' => 'api'], function () use ($router){
         $router->post('/invarat/create-order', 'Invarat\InvaratOrderController@create');
         $router->get('/invarat/order-filter', 'Invarat\InvaratOrderController@orderFilter');
         $router->post('/invarat/budgets', 'Invarat\InvaratBudgetController@create');
+        $router->put('/invarat/update-budgets', 'Invarat\InvaratBudgetController@update');
+
     });
 
 });

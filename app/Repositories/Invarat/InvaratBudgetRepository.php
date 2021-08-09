@@ -19,10 +19,10 @@ class InvaratBudgetRepository extends Repository {
         $budget->vehicle_id = $request->input('vehicle_id');
         $budget->save();
         $this->invaratBudgetLineRepository->create($request->input('budget_lines'), $budget->id);
-        return $this->calculateTotlas($budget->id);
+        return $this->calculateTotals($budget->id);
     }
 
-    public function calculateTotlas($budgetId){
+    public function calculateTotals($budgetId){
         $budget = Budget::with(['budgetLines'])
                     ->findOrFail($budgetId);
         $subTotal = 0;
@@ -39,6 +39,12 @@ class InvaratBudgetRepository extends Repository {
         $budget->save();
         return Budget::with(['budgetLines','vehicle'])
             ->findOrFail($budgetId);
+    }
+
+    public function update($request){
+        $budget = Budget::findOrFail($request->input('budget_id'));
+        $this->invaratBudgetLineRepository->update($request->input('budget_lines'), $budget->id);
+        return $this->calculateTotals($budget->id);
     }
 
 }
