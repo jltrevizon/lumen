@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+
+    use Filterable;
 
     protected $fillable = [
         'vehicle_id',
@@ -29,5 +32,9 @@ class Order extends Model
 
     public function typeModelOrder(){
         return $this->belongsTo(TypeModelOrder::class);
+    }
+
+    public function scopeByStateIds($query, $ids){
+        return $query->whereIn('state_id', $ids);
     }
 }

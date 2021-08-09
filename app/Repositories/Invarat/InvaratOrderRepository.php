@@ -7,8 +7,9 @@ use App\Models\Order;
 use App\Models\Role;
 use App\Models\State;
 use App\Models\User;
+use App\Repositories\Repository;
 
-class InvaratOrderRepository {
+class InvaratOrderRepository extends Repository {
 
     public function __construct(
         InvaratWorkshopRepository $invaratWorkshopRepository,
@@ -29,6 +30,12 @@ class InvaratOrderRepository {
         $order->id_gsp = $request['id_gsp'];
         $order->save();
         return $order;
+    }
+
+    public function orderFilter($request){
+        return Order::with($this->getWiths($request->with))
+                    ->filter($request->all())
+                    ->get();
     }
 
 }

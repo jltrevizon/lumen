@@ -18,4 +18,8 @@ class InvaratOrderController extends Controller
     public function create(Request $request){
         return $this->createDataResponse($this->invaratOrderRepository->createOrder($request), HttpFoundationResponse::HTTP_CREATED);
     }
+
+    public function orderFilter(Request $request){
+        return $this->getDataResponse($this->invaratOrderRepository->orderFilter($request), HttpFoundationResponse::HTTP_OK);
+    }
 }
