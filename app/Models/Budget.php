@@ -8,6 +8,7 @@ class Budget extends Model
 {
 
     protected $fillable = [
+        'vehicle_id',
         'sub_total',
         'tax',
         'total'
@@ -15,6 +16,10 @@ class Budget extends Model
 
     public function budgetLines(){
         return $this->hasMany(BudgetLine::class);
+    }
+
+    public function vehicle(){
+        return $this->belongsTo(Vehicle::class);
     }
 
 }
