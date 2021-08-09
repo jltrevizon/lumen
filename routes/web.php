@@ -373,5 +373,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/operations/{id}', 'OperationController@getById');
         $router->post('/operations', 'OperationController@create');
         $router->put('/operations/{id}', 'OperationController@update');
+
+        /**
+         * Type budget lines
+         */
+        $router->get('/type-budget-lines', 'TypeBudgetLineController@index');
+
+        /**
+         * Taxes
+         */
+        $router->get('/taxes', 'TaxController@index');
     });
 });
