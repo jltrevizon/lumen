@@ -13,8 +13,9 @@ class CampaRepository extends Repository {
 
     }
 
-    public function getAll(){
-        return Campa::get();
+    public function getAll($request){
+        return Campa::with($this->getWiths($request->with))
+                ->get();
     }
 
     public function getById($request, $id){
