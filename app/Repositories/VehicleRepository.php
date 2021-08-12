@@ -73,7 +73,6 @@ class VehicleRepository extends Repository {
             $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
             $new_vehicle->vehicle_model_id = $vehicle_model['id'];
             $new_vehicle->save();
-            return $new_vehicle;
         }
         return ['message' => 'Vehicles created!'];
     }
