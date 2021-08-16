@@ -103,7 +103,7 @@ class PendingTaskRepository extends Repository {
         return PendingTask::with($this->getWiths($request->with))
                 ->byCampas($user->campas->pluck('id')->toArray())
                 ->pendingOrInProgress()
-                ->canSeeHomework($user['type_user_app_id'])
+                //->canSeeHomework($user['type_user_app_id'])
                 ->where('approved', true)
                 ->get();
     }
