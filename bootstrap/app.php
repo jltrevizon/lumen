@@ -103,6 +103,7 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register('Nord\Lumen\Cors\CorsServiceProvider');
 $app->register(Illuminate\Mail\MailServiceProvider::class);
 $app->register(EloquentFilter\LumenServiceProvider::class);
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

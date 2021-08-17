@@ -2,18 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Campa;
-use App\Models\DefleetVariable;
-use App\Models\User;
+use App\Exports\VehiclesExport;
 use Illuminate\Http\Request;
-use App\Models\Vehicle;
 use App\Repositories\VehicleRepository;
-use DateTime;
-use Exception;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response as FacadesResponse;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class VehicleController extends Controller
@@ -22,6 +14,10 @@ class VehicleController extends Controller
     public function __construct(VehicleRepository $vehicleRepository)
     {
         $this->vehicleRepository = $vehicleRepository;
+    }
+
+    public function download(Request $request, $companyId){
+        return Excel::download(new VehiclesExport($companyId), 'vehicles.xlsx');
     }
 
     public function getAll(Request $request){

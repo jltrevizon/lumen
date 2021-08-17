@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\AditionalModels\AditionalModels;
 use App\AditionalModels\AditionalsModels;
 use App\EloquentFunctions\EloquentFunctions;
+use App\Models\Company;
 use App\Models\DefleetVariable;
 use App\Models\TradeState;
 use App\Models\Vehicle;
@@ -72,6 +73,7 @@ class VehicleRepository extends Repository {
             $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
             $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
             $new_vehicle->vehicle_model_id = $vehicle_model['id'];
+            $new_vehicle->company_id = Company::ALD;
             $new_vehicle->save();
         }
         return ['message' => 'Vehicles created!'];
