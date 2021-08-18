@@ -78,7 +78,7 @@ definitions:
     mysql:
       image: mysql:5.7
       environment:
-        MYSQL_DATABASE: homestead
+        MYSQL_DATABASE: focus_testing
         MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
         MYSQL_USER: 'homestead'
         MYSQL_PASSWORD: 'secret'
