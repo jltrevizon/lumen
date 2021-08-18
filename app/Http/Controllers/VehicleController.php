@@ -17,7 +17,7 @@ class VehicleController extends Controller
     }
 
     public function download(Request $request, $companyId){
-        return Excel::download(new VehiclesExport($companyId), 'vehicles.xlsx');
+        return Excel::download(new VehiclesExport($companyId), 'vehicles.xlsx')->deleteFileAfterSend(true);
     }
 
     public function getAll(Request $request){
