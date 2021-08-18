@@ -42,6 +42,7 @@ common: &common
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
       - composer -V
       - composer install --ignore-platform-reqs
+      - RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql
       - php -r "file_exists('.env') || copy('.env.example', '.env');"
       - php artisan key:generate # Generate a key via Artisan
       - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
