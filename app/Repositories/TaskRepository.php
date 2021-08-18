@@ -33,4 +33,9 @@ class TaskRepository extends Repository {
             ->delete();
         return [ 'message' => 'Task deleted' ];
     }
+
+    public function getByCompany($companyId){
+        return Task::where('company_id', $companyId)
+                ->get();
+    }
 }

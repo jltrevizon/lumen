@@ -18,6 +18,14 @@ class State extends Model
     const NOT_AVAILABLE = 4;
     const DELIVERED = 5;
     const PRE_AVAILABLE = 6;
+    const PENDING_TEST_DINAMIC = 7;
+    const PENDING_INITIAL_CHECK = 8;
+    const PENDING_BUDGET = 9;
+    const PENDING_AUTHORIZATION = 10;
+    const IN_REPAIR = 11;
+    const PENDING_CERTIFICATED = 12;
+    const PENDING_FINAL_CHECK = 13;
+    const FINISHED = 14;
 
     protected $fillable = [
         'name'
@@ -29,5 +37,9 @@ class State extends Model
 
     public function sub_states(){
         return $this->hasMany(SubState::class, 'state_id');
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
     }
 }

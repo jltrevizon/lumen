@@ -9,11 +9,10 @@
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
-    <php>
+  <php>
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="DB_CONNECTION" value=":memory:"/>
-
+        <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="DB_DATABASE" value="focus_testing"/>
     </php>
 </phpunit>

@@ -65,7 +65,7 @@ class PendingTaskAldController extends Controller
             $taskDescription = $this->taskRepository->getById($task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
-            if($task['task_order'] == Task::UBICATION){
+            if($task['task_order'] == 1){
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
                 $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA);

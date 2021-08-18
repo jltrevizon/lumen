@@ -68,9 +68,8 @@ class UserRepository extends Repository {
                 ->get();
     }
 
-    public function getUserByEmail($request){
-        return User::with($this->getWiths($request->with))
-                ->where('email', $request->input('email'))
+    public function getUserByEmail($email){
+        return User::where('email', $email)
                 ->first();
     }
 

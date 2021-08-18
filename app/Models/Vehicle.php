@@ -26,6 +26,7 @@ class Vehicle extends Model
 
     protected $fillable = [
         'remote_id',
+        'company_id',
         "campa_id",
         'category_id',
         'sub_state_id',
@@ -58,6 +59,10 @@ class Vehicle extends Model
 
     public function requests(){
         return $this->hasMany(Request::class, 'vehicle_id');
+    }
+
+    public function company(){
+        return $this->belongsTo(Company::class);
     }
 
     public function pendingTasks(){
@@ -94,6 +99,14 @@ class Vehicle extends Model
 
     public function operations(){
         return $this->hasMany(Operation::class);
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
+    public function budgets(){
+        return $this->hasMany(Budget::class);
     }
 
     public function lastQuestionnaire(){

@@ -23,6 +23,8 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
+    $router->get('/campas/getall', 'CampaController@getall');
+
     $router->post('/auth/signin', 'AuthController@login');
 
         /**
@@ -45,7 +47,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/users/campa/{campa_id}', 'UserController@getUsersByCampa');
         $router->post('/users/role/{role_id}', 'UserController@getUsersByRole');
         $router->post('/users/active', 'UserController@getActiveUsers');
-        $router->post('/users/by-email', 'UserController@getUserByEmail');
         $router->post('/users/assign-campa', 'CampaUserController@create');
         $router->post('/users/delete-campa', 'CampaUserController@delete');
 
@@ -61,7 +62,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Campas
          */
-        $router->get('/campas/getall', 'CampaController@getall');
         $router->get('/campas/{id}', 'CampaController@getById');
         $router->post('/campas/by-region', 'CampaController@getCampasByRegion');
         $router->post('/campas/by-province', 'CampaController@getCampasByProvince');
@@ -274,6 +274,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
+        $router->get('/vehicles/download/{companyId}', 'VehicleController@download');
 
         /**
          * Vehicle Picture
@@ -374,5 +375,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/operations/{id}', 'OperationController@getById');
         $router->post('/operations', 'OperationController@create');
         $router->put('/operations/{id}', 'OperationController@update');
+
+        /**
+         * Type budget lines
+         */
+        $router->get('/type-budget-lines', 'TypeBudgetLineController@index');
+
+        /**
+         * Taxes
+         */
+        $router->get('/taxes', 'TaxController@index');
     });
 });

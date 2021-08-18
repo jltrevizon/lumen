@@ -53,7 +53,7 @@ class RequestRepository extends Repository {
                     $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
                     if(count($tasks) > 0) {
                         $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::PRE_RESERVED);
-                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::CAMPA);
+                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::NOT_AVAILABLE);
                     } else {
                         $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::RESERVED);
                         $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::NOT_AVAILABLE);

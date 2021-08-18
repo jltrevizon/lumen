@@ -8,6 +8,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ReservationTimeTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private ReservationTime $reservationTime;
 
     protected function setUp(): void

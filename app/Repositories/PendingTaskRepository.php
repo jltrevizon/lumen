@@ -97,10 +97,22 @@ class PendingTaskRepository extends Repository {
 
     public function getPendingOrNextTask($request){
         $user = $this->userRepository->getById($request, Auth::id());
+        if($user['type_user_app_id'] == null && ($user['role_id'] == 1 || $user['role_id'] == 2 || $user['role_id'] == 3)){
+            return $this->getPendingOrNextTaskByRole($request);
+        }
         return PendingTask::with($this->getWiths($request->with))
                 ->byCampas($user->campas->pluck('id')->toArray())
                 ->pendingOrInProgress()
                 ->canSeeHomework($user['type_user_app_id'])
+                ->where('approved', true)
+                ->get();
+    }
+
+    public function getPendingOrNextTaskByRole($request){
+        $user = $this->userRepository->getById($request, Auth::id());
+        return PendingTask::with($this->getWiths($request->with))
+                ->byCampas($user->campas->pluck('id')->toArray())
+                ->pendingOrInProgress()
                 ->where('approved', true)
                 ->get();
     }

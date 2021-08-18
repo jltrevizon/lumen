@@ -10,4 +10,6 @@ class InvaratController extends Controller
     public function test(){
         return 'Hola Focus Invarat';
     }
+
+
 }
