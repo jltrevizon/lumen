@@ -44,6 +44,7 @@ common: &common
       - composer install --ignore-platform-reqs
       - php -r "file_exists('.env') || copy('.env.example', '.env');"
       - php artisan key:generate # Generate a key via Artisan
+      - php artisan migrate
       - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
     services:
       - mysql
