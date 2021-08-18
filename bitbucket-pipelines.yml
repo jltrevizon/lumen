@@ -76,8 +76,8 @@ pipelines:
 definitions:
   services:
     mysql:
-      image: mysql:latest
-      environment:
+      image: mysql:5.7
+      variables:
         MYSQL_DATABASE: 'focus_testing'
         MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
         MYSQL_USER: 'homestead'
