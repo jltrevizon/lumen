@@ -72,12 +72,13 @@ pipelines:
           script:
             - apt-get update && apt-get install -y unzip wget
             - wget -q --spider https://forge.laravel.com/servers/454109/sites/1354396/deploy/http?token=IgQr1SbYEOjWDl8aVcbEqotX3Dw3poKJfRJKrwFQ
+
 definitions:
   services:
     mysql:
       image: mysql:5.7
       environment:
         MYSQL_DATABASE: 'focus_testing'
-        MYSQL_RANDOM_ROOT_PASSWORD: 'yes',
+        MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
         MYSQL_USER: 'homestead'
         MYSQL_PASSWORD: 'secret'
