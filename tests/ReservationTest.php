@@ -11,6 +11,9 @@ use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class ReservationTest extends TestCase
 {
+
+    use DatabaseTransactions;
+
     private Reservation $reservation;
 
     protected function setUp(): void
