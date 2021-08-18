@@ -78,7 +78,7 @@ definitions:
     mysql:
       image: mysql:5.7
       environment:
-        MYSQL_DATABASE: pipelines
+        MYSQL_DATABASE: homestead
         MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-        MYSQL_USERNAME: test_user
-        MYSQL_PASSWORD: test_user_password
+        MYSQL_USER: 'homestead'
+        MYSQL_PASSWORD: 'secret'
