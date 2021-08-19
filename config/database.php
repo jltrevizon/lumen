@@ -13,14 +13,10 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
         ],
-        'focus_testing' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST'),
-            'database' => 'focus_testing',
-            'username' => env('DB_USERNAME'),
-            'password' => env('DB_PASSWORD'),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-        ]
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'database' => database_path('testing.sqlite'), // ':memory:'
+            'prefix' => '',
+        ],
     ]
 ];

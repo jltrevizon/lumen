@@ -1,49 +1,73 @@
-image: skmedia/bitbucket-pipelines-php80:latest
+image: php:8.0
+
+#setup: &setup
+#  step:
+#    name: Setup
+#    script: # Setup System and Docker.
+#      - apt-get update && apt-get install -y wget zip unzip sqlite libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
+#      - docker-php-ext-install zip gd soap pcntl bcmath
+#      - docker-php-ext-configure gd --with-freetype --with-jpeg
+#      - docker-php-ext-install -j$(nproc) gd
+#
+#composer: &composer
+#  step:
+#    name: Composer
+#    caches:
+#      - composer
+#    artifacts:
+#      - vendor/**
+#    script:
+#      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
+#      - composer -V
+#      - composer install --ignore-platform-reqs
+#
+#tests: &tests
+#  step:
+#    name: Tests
+#    script:
+#      - php -r "file_exists('.env') || copy('.env.example', '.env');"
+#      - php artisan key:generate # Generate a key via Artisan
+#      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
 common: &common
   step:
-    name: App Build
+    name: Tests
     caches:
       - composer
     script:
-      - service mysql start
-      - mysql -h localhost --user=root --password=root -e "CREATE DATABASE focus;"
-      - mysql -h localhost --user=root --password=root -e "GRANT USAGE ON *.* TO 'homestead'@'localhost' IDENTIFIED BY 'secret';"
-      - mysql -h localhost --user=root --password=root -e "GRANT ALL PRIVILEGES ON focus.* TO 'homestead'@'localhost';"
-      - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
-      - composer --version
-      - composer install
-      - php artisan migrate --force
-      - composer global require phpunit/phpunit
-      - PATH="~/.composer/vendor/bin:$PATH"
-      - phpunit --version
-      - phpunit
+      - apt-get update && apt-get install -y wget git zip unzip sqlite3 libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
+      - docker-php-ext-install zip gd soap pcntl bcmath
+      - docker-php-ext-configure gd --with-freetype --with-jpeg
+      - docker-php-ext-install -j$(nproc) gd
+      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
+      - composer -V
+      - composer install --ignore-platform-reqs
+      - php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - php artisan key:generate # Generate a key via Artisan
+      - touch database/testing.sqlite
+      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
 pipelines:
-
+  #default:
+  #  - <<: *composer
+  #  - <<: *tests
   branches:
     master:
       - <<: *common
+#      - <<: *composer
+#      - <<: *tests
       - step:
           name: Deploy to master
           deployment: Production
           script:
             - apt-get update && apt-get install -y unzip wget
-            - wget -q --spider https://forge.laravel.com/servers/466621/sites/1342660/deploy/http?token=x7H4snM7g0jFIqBi2Ob0nETwJLYoLuFaodU4NicG
-    dev:
+            - wget -q --spider https://forge.laravel.com/servers/289977/sites/778266/deploy/http?token=m3GSsRl3C6SSgn6zhiS5ZrRDiBnYbQpyGnajUoYD
+    develop:
       - <<: *common
+#      - <<: *composer
+#      - <<: *tests
       - step:
           name: Deploy to development
           script:
             - apt-get update && apt-get install -y unzip wget
-            - wget -q --spider https://forge.laravel.com/servers/454109/sites/1354396/deploy/http?token=IgQr1SbYEOjWDl8aVcbEqotX3Dw3poKJfRJKrwFQ
-
-definitions:
-  services:
-    mysql:
-      image: mysql:8.0
-      variables:
-        MYSQL_DATABASE: 'focus_testing'
-        MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-        MYSQL_USER: 'test_user'
-        MYSQL_PASSWORD: 'test_user_password'
+            - wget -q --spider https://forge.laravel.com/servers/289360/sites/776341/deploy/http?token=P68vawI3UBf5yhU8mAFePP2aCfpgvNbSOUMRIK8J
