@@ -64,7 +64,7 @@ pipelines:
           script:
             - apt-get update && apt-get install -y unzip wget
             - wget -q --spider https://forge.laravel.com/servers/289977/sites/778266/deploy/http?token=m3GSsRl3C6SSgn6zhiS5ZrRDiBnYbQpyGnajUoYD
-    develop:
+    dev:
       - <<: *common
 #      - <<: *composer
 #      - <<: *tests
