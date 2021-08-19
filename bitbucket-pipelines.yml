@@ -13,6 +13,7 @@ common: &common
       - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
       - composer --version
       - composer install
+      - php -r "file_exists('.env') || copy('.env.example', '.env');"
       - php artisan migrate
       - composer global require phpunit/phpunit
       - PATH="~/.composer/vendor/bin:$PATH"
