@@ -29,31 +29,26 @@ image: php:8.0
 #      - php artisan key:generate # Generate a key via Artisan
 #      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
-common: &common
-  step:
-    name: App Build
-    caches:
-      - composer
-    script:
-      - apt-get update && apt-get install -y wget git zip unzip libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
-      - docker-php-ext-install zip gd soap pcntl bcmath pdo pdo_mysql
-      - docker-php-ext-configure gd --with-freetype --with-jpeg
-      - docker-php-ext-install -j$(nproc) gd
-      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
-      - apt-get install mariadb-server -y
-      - systemctl start mariadb
-      - mysql -h localhost --user=root --password=root -e "CREATE DATABASE focus_testing;"
-      - mysql -h localhost --user=root --password=root -e "GRANT USAGE ON *.* TO homestead@localhost IDENTIFIED BY 'secret';"
-      - mysql -h localhost --user=root --password=root -e "GRANT ALL PRIVILEGES ON test.* TO homestead@localhost;"
-      - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
-      - composer -V
-      - composer install --ignore-platform-reqs
-      - php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - php artisan key:generate # Generate a key via Artisan
-      - vendor/bin/phpunit # Run tests
-
 pipelines:
-  #default:
+  default:
+    - step:
+      name: Setup
+      script:
+        - apt-get update && apt-get install -y wget git zip unzip libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
+        - docker-php-ext-install zip gd soap pcntl bcmath pdo pdo_mysql
+        - docker-php-ext-configure gd --with-freetype --with-jpeg
+        - docker-php-ext-install -j$(nproc) gd
+    - step:
+      name: Composer
+      script:
+        - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
+        - composer -V
+        - composer install --ignore-platform-reqs
+    - step:
+      name: Tests
+      script:
+        - php -r "file_exists('.env') || copy('.env.example', '.env');"
+        - php artisan key:generate # Generate a key via Artisan
   #  - <<: *composer
   #  - <<: *tests
   branches:
