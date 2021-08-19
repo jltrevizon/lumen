@@ -40,12 +40,16 @@ common: &common
       - docker-php-ext-configure gd --with-freetype --with-jpeg
       - docker-php-ext-install -j$(nproc) gd
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
+      - service mysql start
+      - mysql -h localhost --user=root --password=root -e "CREATE DATABASE focus_testing;"
+      - mysql -h localhost --user=root --password=root -e "GRANT USAGE ON *.* TO homestead@localhost IDENTIFIED BY 'secret';"
+      - mysql -h localhost --user=root --password=root -e "GRANT ALL PRIVILEGES ON test.* TO homestead@localhost;"
+      - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
       - composer -V
       - composer install --ignore-platform-reqs
       - php -r "file_exists('.env') || copy('.env.example', '.env');"
       - php artisan key:generate # Generate a key via Artisan
-    services:
-      - mysql
+      - vendor/bin/phpunit # Run tests
 
 pipelines:
   #default:
