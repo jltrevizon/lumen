@@ -22,7 +22,6 @@ $router->get('/', function () use ($router) {
 
 
 $router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('/vehicles/download/{companyId}', 'VehicleController@download');
 
     $router->get('/campas/getall', 'CampaController@getall');
 
@@ -275,6 +274,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
+        $router->get('/vehicles/download/{companyId}', 'VehicleController@download');
 
         /**
          * Vehicle Picture
