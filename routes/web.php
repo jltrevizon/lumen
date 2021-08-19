@@ -23,8 +23,6 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->get('/campas/getall', 'CampaController@getall');
-
     $router->post('/auth/signin', 'AuthController@login');
 
         /**
@@ -62,6 +60,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Campas
          */
+        $router->get('/campas/getall', 'CampaController@getall');
         $router->get('/campas/{id}', 'CampaController@getById');
         $router->post('/campas/by-region', 'CampaController@getCampasByRegion');
         $router->post('/campas/by-province', 'CampaController@getCampasByProvince');
