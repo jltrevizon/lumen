@@ -1,4 +1,4 @@
-image: smartapps/bitbucket-pipelines-php-mysql:latest
+image: skmedia/bitbucket-pipelines-php80:latest
 
 common: &common
   step:
