@@ -51,6 +51,7 @@ pipelines:
         - php artisan key:generate # Generate a key via Artisan
   #  - <<: *composer
   #  - <<: *tests
+
   branches:
     master:
       - <<: *common
