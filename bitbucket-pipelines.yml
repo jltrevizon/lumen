@@ -12,7 +12,7 @@ common: &common
       - mysql -h localhost --user=root --password=root -e "GRANT ALL PRIVILEGES ON test.* TO homestead@localhost;"
       - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
       - composer --version
-      - composer global require "laravel/installer"
+      - composer global require johnnyfreeman/artisan-cli:*
       - php artisan migrate
       - composer global require phpunit/phpunit
       - PATH="~/.composer/vendor/bin:$PATH"
