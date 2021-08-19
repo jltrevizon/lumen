@@ -49,10 +49,10 @@ common: &common
       - mysql
   step:
     name: Tests
-      script:
-        - php -r "file_exists('.env') || copy('.env.example', '.env');"
-        - php artisan key:generate # Generate a key via Artisan
-        - vendor/bin/phpunit # Run tests
+    script:
+      - php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - php artisan key:generate # Generate a key via Artisan
+      - vendor/bin/phpunit # Run tests
 
 pipelines:
   #default:
