@@ -12,7 +12,7 @@ common: &common
       - mysql -h localhost --user=root --password=root -e "GRANT ALL PRIVILEGES ON test.* TO homestead@localhost;"
       - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
       - composer --version
-      - phpunit --version
+      - ./vendor/bin/phpunit --version
       - composer install
       - phpunit
 
