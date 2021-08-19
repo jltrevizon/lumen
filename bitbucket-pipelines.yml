@@ -31,7 +31,7 @@ image: php:8.0
 
 common: &common
   step:
-    name: Tests
+    name: App Build
     caches:
       - composer
     script:
@@ -46,6 +46,10 @@ common: &common
       - php artisan key:generate # Generate a key via Artisan
     services:
       - mysql
+  step:
+    name: Run Unit Tests
+    scripts:
+      - ./vendor/bin/phpunit --testsuite Unit
 
 pipelines:
   #default:
