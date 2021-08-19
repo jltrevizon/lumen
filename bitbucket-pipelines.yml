@@ -48,7 +48,7 @@ common: &composer
     script:
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
       - composer -V
-      - composer install --ignore-platform-reqs
+      - composer install --prefer-dist
 
 common: &tests
   step:
