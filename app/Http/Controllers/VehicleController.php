@@ -2,22 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\VehiclesExport;
+use App\Mail\DownloadVehicles;
+use App\Models\PendingDownload;
 use Illuminate\Http\Request;
 use App\Repositories\VehicleRepository;
-use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
 
-    public function __construct(VehicleRepository $vehicleRepository)
+    public function __construct(VehicleRepository $vehicleRepository, DownloadVehicles $downloadVehicles)
     {
         $this->vehicleRepository = $vehicleRepository;
+        $this->downloadVehicles = $downloadVehicles;
     }
 
-    public function download(Request $request, $companyId){
-        return Excel::download(new VehiclesExport($companyId), 'vehicles.xlsx');
+    public function download(Request $request){
+        $pendingDownload = new PendingDownload();
+        $pendingDownload->user_id = Auth::id();
+        $pendingDownload->type_document = 'vehicles';
+        $pendingDownload->save();
+        return $this->createDataResponse('Documento generandose, en cuanto esté listo, le llegará a su correo', HttpFoundationResponse::HTTP_OK);
     }
 
     public function getAll(Request $request){
@@ -76,10 +82,6 @@ class VehicleController extends Controller
     }
 
     public function getVehiclesWithReservationWithoutOrderCampa(Request $request){
-
-        $this->validate($request, [
-            'campas' => 'required'
-        ]);
 
         return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request), HttpFoundationResponse::HTTP_OK);
     }

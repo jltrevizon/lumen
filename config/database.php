@@ -13,5 +13,10 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
         ],
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'database' => database_path('testing.sqlite'), // ':memory:'
+            'prefix' => '',
+        ],
     ]
 ];
