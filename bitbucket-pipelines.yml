@@ -29,28 +29,22 @@ image: php:8.0
 #      - php artisan key:generate # Generate a key via Artisan
 #      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
-common: &common
-  step:
-    name: Tests
-    script:
-      - php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - php artisan key:generate # Generate a key via Artisan
-      - vendor/bin/phpunit # Run tests
+common: &setup
   step:
     name: App Build
     caches:
       - composer
     script:
-      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
-      - composer -V
-      - composer install --ignore-platform-reqs
-  step:
-    name: Setup
-    script:
       - apt-get update && apt-get install -y wget git zip unzip libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
       - docker-php-ext-install zip gd soap pcntl bcmath pdo pdo_mysql
       - docker-php-ext-configure gd --with-freetype --with-jpeg
       - docker-php-ext-install -j$(nproc) gd
+      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
+      - composer -V
+      - composer install --ignore-platform-reqs
+      - php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - php artisan key:generate # Generate a key via Artisan
+      - vendor/bin/phpunit # Run tests
     services:
       - mysql
 
@@ -60,7 +54,7 @@ pipelines:
   #  - <<: *tests
   branches:
     master:
-      - <<: *common
+      - <<: *setup
 #      - <<: *composer
 #      - <<: *tests
       - step:
@@ -70,7 +64,7 @@ pipelines:
             - apt-get update && apt-get install -y unzip wget
             - wget -q --spider https://forge.laravel.com/servers/466621/sites/1342660/deploy/http?token=x7H4snM7g0jFIqBi2Ob0nETwJLYoLuFaodU4NicG
     dev:
-      - <<: *common
+      - <<: *setup
 #      - <<: *composer
 #      - <<: *tests
       - step:
