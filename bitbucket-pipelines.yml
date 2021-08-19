@@ -31,12 +31,11 @@ image: php:8.0
 
 common: &common
   step:
-    name: Setup
+    name: Tests
     script:
-      - apt-get update && apt-get install -y wget git zip unzip libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
-      - docker-php-ext-install zip gd soap pcntl bcmath pdo pdo_mysql
-      - docker-php-ext-configure gd --with-freetype --with-jpeg
-      - docker-php-ext-install -j$(nproc) gd
+      - php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - php artisan key:generate # Generate a key via Artisan
+      - vendor/bin/phpunit # Run tests
   step:
     name: App Build
     caches:
@@ -45,14 +44,15 @@ common: &common
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
       - composer -V
       - composer install --ignore-platform-reqs
+  step:
+    name: Setup
+    script:
+      - apt-get update && apt-get install -y wget git zip unzip libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
+      - docker-php-ext-install zip gd soap pcntl bcmath pdo pdo_mysql
+      - docker-php-ext-configure gd --with-freetype --with-jpeg
+      - docker-php-ext-install -j$(nproc) gd
     services:
       - mysql
-  step:
-    name: Tests
-    script:
-      - php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - php artisan key:generate # Generate a key via Artisan
-      - vendor/bin/phpunit # Run tests
 
 pipelines:
   #default:
