@@ -44,7 +44,7 @@ class DownloadVehicles extends Command
     public function handle(MailDownloadVehicles $downloadVehicles)
     {
         $requestDownloads = PendingDownload::with(['user'])
-                                        ->where('sended', true)
+                                        ->where('sended', false)
                                         ->where('type_document', 'vehicles')
                                         ->get();
 
