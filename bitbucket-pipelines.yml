@@ -1,33 +1,4 @@
-image: smartapps/bitbucket-pipelines-php-mysql:stretch
-
-#setup: &setup
-#  step:
-#    name: Setup
-#    script: # Setup System and Docker.
-#      - apt-get update && apt-get install -y wget zip unzip sqlite libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
-#      - docker-php-ext-install zip gd soap pcntl bcmath
-#      - docker-php-ext-configure gd --with-freetype --with-jpeg
-#      - docker-php-ext-install -j$(nproc) gd
-#
-#composer: &composer
-#  step:
-#    name: Composer
-#    caches:
-#      - composer
-#    artifacts:
-#      - vendor/**
-#    script:
-#      - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
-#      - composer -V
-#      - composer install --ignore-platform-reqs
-#
-#tests: &tests
-#  step:
-#    name: Tests
-#    script:
-#      - php -r "file_exists('.env') || copy('.env.example', '.env');"
-#      - php artisan key:generate # Generate a key via Artisan
-#      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
+image: smartapps/bitbucket-pipelines-php-mysql:latest
 
 common: &common
   step:
@@ -36,7 +7,7 @@ common: &common
       - composer
     script:
       - service mysql start
-      - mysql -h localhost --user=root --password=root -e "CREATE DATABASE focus_testing;"
+      - mysql -h localhost --user=root --password=root -e "CREATE DATABASE focus;"
       - mysql -h localhost --user=root --password=root -e "GRANT USAGE ON *.* TO homestead@localhost IDENTIFIED BY 'secret';"
       - mysql -h localhost --user=root --password=root -e "GRANT ALL PRIVILEGES ON test.* TO homestead@localhost;"
       - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
@@ -46,14 +17,10 @@ common: &common
       - phpunit
 
 pipelines:
-  #default:
-  #  - <<: *composer
-  #  - <<: *tests
+
   branches:
     master:
       - <<: *common
-#      - <<: *composer
-#      - <<: *tests
       - step:
           name: Deploy to master
           deployment: Production
@@ -62,8 +29,6 @@ pipelines:
             - wget -q --spider https://forge.laravel.com/servers/466621/sites/1342660/deploy/http?token=x7H4snM7g0jFIqBi2Ob0nETwJLYoLuFaodU4NicG
     dev:
       - <<: *common
-#      - <<: *composer
-#      - <<: *tests
       - step:
           name: Deploy to development
           script:
