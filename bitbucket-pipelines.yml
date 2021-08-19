@@ -13,7 +13,7 @@ common: &common
       - mysql -h localhost --user=root --password=root -e "FLUSH PRIVILEGES;"
       - composer --version
       - composer global require phpunit/phpunit
-      - PATH="/home/vagrant/.composer/vendor/bin:$PATH"
+      - PATH="~/.composer/vendor/bin:$PATH"
       - phpunit --version
       - composer install
       - phpunit
