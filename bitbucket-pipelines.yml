@@ -40,6 +40,7 @@ common: &common
       - docker-php-ext-configure gd --with-freetype --with-jpeg
       - docker-php-ext-install -j$(nproc) gd
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
+      - apt-get install mysql-server
       - service mysql start
       - mysql -h localhost --user=root --password=root -e "CREATE DATABASE focus_testing;"
       - mysql -h localhost --user=root --password=root -e "GRANT USAGE ON *.* TO homestead@localhost IDENTIFIED BY 'secret';"
