@@ -41,7 +41,7 @@ common: &common
       - docker-php-ext-install -j$(nproc) gd
       - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
       - apt-get install mariadb-server -y
-      - service mysql start
+      - systemctl start mariadb
       - mysql -h localhost --user=root --password=root -e "CREATE DATABASE focus_testing;"
       - mysql -h localhost --user=root --password=root -e "GRANT USAGE ON *.* TO homestead@localhost IDENTIFIED BY 'secret';"
       - mysql -h localhost --user=root --password=root -e "GRANT ALL PRIVILEGES ON test.* TO homestead@localhost;"
