@@ -83,10 +83,6 @@ class VehicleController extends Controller
 
     public function getVehiclesWithReservationWithoutOrderCampa(Request $request){
 
-        $this->validate($request, [
-            'campas' => 'required'
-        ]);
-
         return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
