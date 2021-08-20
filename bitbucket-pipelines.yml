@@ -31,7 +31,7 @@ image: php:8.0
 
 common: &common
   step:
-    name: Setup
+    name: Tests
     caches:
       - composer
     script:
@@ -45,14 +45,9 @@ common: &common
       - php -r "file_exists('.env') || copy('.env.example', '.env');"
       - php artisan migrate --force
       - php artisan key:generate # Generate a key via Artisan
+      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
     services:
       - mysql
-
-common: &tests
-  step:
-    name: Tests
-    script:
-      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
 pipelines:
   #default:
@@ -62,7 +57,7 @@ pipelines:
     master:
       - <<: *common
 #      - <<: *composer
-      - <<: *tests
+#      - <<: *tests
       - step:
           name: Deploy to master
           deployment: Production
@@ -70,29 +65,9 @@ pipelines:
             - apt-get update && apt-get install -y unzip wget
             - wget -q --spider https://forge.laravel.com/servers/466621/sites/1342660/deploy/http?token=x7H4snM7g0jFIqBi2Ob0nETwJLYoLuFaodU4NicG
     dev:
-      - step:
-          name: Setup
-          caches:
-            - composer
-          script:
-            - apt-get update && apt-get install -y wget git zip unzip sqlite3 libpng-dev libjpeg-dev zlib1g-dev libzip-dev libxml2-dev libnss3 libmcrypt-dev libfreetype6-dev libjpeg62-turbo-dev
-            - docker-php-ext-install zip gd soap pcntl bcmath pdo_mysql
-            - docker-php-ext-configure gd --with-freetype --with-jpeg
-            - docker-php-ext-install -j$(nproc) gd
-            - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer # Install Composer
-            - composer -V
-            - composer install --ignore-platform-reqs
-            - php -r "file_exists('.env') || copy('.env.example', '.env');"
-            - php artisan migrate --force
-            - php artisan key:generate # Generate a key via Artisan
-          services:
-            - mysql
-
-      - step:
-          name: Tests
-          script:
-            - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
-
+      - <<: *common
+#      - <<: *composer
+#      - <<: *tests
       - step:
           name: Deploy to development
           script:
