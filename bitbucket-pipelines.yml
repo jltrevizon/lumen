@@ -87,14 +87,14 @@ pipelines:
             - php artisan key:generate # Generate a key via Artisan
       - step:
           name: Tests
+          script:
+            - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
       - step:
           name: Deploy to development
           script:
             - apt-get update && apt-get install -y unzip wget
             - wget -q --spider https://forge.laravel.com/servers/454109/sites/1354396/deploy/http?token=IgQr1SbYEOjWDl8aVcbEqotX3Dw3poKJfRJKrwFQ
-          script:
-            - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
 definitions:
   services:
