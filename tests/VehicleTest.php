@@ -1,9 +1,12 @@
 <?php
 
+use App\Models\Budget;
 use App\Models\Campa;
 use App\Models\Category;
+use App\Models\Company;
 use App\Models\GroupTask;
 use App\Models\Operation;
+use App\Models\Order;
 use App\Models\PendingTask;
 use App\Models\Questionnaire;
 use App\Models\Reception;
@@ -62,6 +65,13 @@ class VehicleTest extends TestCase
         $this->assertInstanceOf(HasMany::class, $this->vehicle->requests());
         $this->assertInstanceOf(Request::class, $this->vehicle->requests()->getModel());
     }
+
+       /** @test */
+       public function it_belongs_to_company()
+       {
+           $this->assertInstanceOf(BelongsTo::class, $this->vehicle->company());
+           $this->assertInstanceOf(Company::class, $this->vehicle->company()->getModel());
+       }
 
     /** @test */
     public function it_has_many_pending_tasks()
@@ -134,10 +144,30 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function it_has_many_orders()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->orders());
+        $this->assertInstanceOf(Order::class, $this->vehicle->orders()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_budgets()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->budgets());
+        $this->assertInstanceOf(Budget::class, $this->vehicle->budgets()->getModel());
+    }
+
+    /** @test */
     public function it_belongs_to_vehicle_model()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->vehicleModel());
         $this->assertInstanceOf(VehicleModel::class, $this->vehicle->vehicleModel()->getModel());
+    }
+
+    /** @test */
+    public function search_by_campas_of_user()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byCampasOfUser([]));
     }
 
     /** @test */
@@ -213,7 +243,14 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
-    public function should_search_las_unapproved_group_task()
+    public function search_last_group_task()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->vehicle->lastGroupTask());
+        $this->assertInstanceOf(GroupTask::class, $this->vehicle->lastGroupTask()->getModel());
+    }
+
+    /** @test */
+    public function should_search_last_unapproved_group_task()
     {
         $this->assertInstanceOf(HasOne::class, $this->vehicle->lastUnapprovedGroupTask());
         $this->assertInstanceOf(GroupTask::class, $this->vehicle->lastUnapprovedGroupTask()->getModel());
@@ -238,17 +275,18 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function should_search_that_has_reservation_without_order_without_delivery()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->thathasReservationWithoutOrderWithoutDelivery());
+    }
+
+    /** @test */
     public function should_search_with_request_active()
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->withRequestActive());
         $this->assertInstanceOf(Request::class, $this->vehicle->withRequestActive()->getModel());
     }
 
-    /** @test */
-    public function should_search_that_has_reservation_without_order_without_delivery()
-    {
-        $this->assertInstanceOf(Builder::class, $this->vehicle->thathasReservationWithoutOrderWithoutDelivery());
-    }
 
     /** @test */
     public function should_search_with_order_without_contract()

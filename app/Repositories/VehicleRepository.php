@@ -47,8 +47,9 @@ class VehicleRepository extends Repository {
     }
 
     public function getAll($request){
+        $user = $this->userRepository->getById($request, Auth::id());
         $vehicles = Vehicle::with($this->getWiths($request->with))
-                    ->byCampasOfUser($request)
+                    ->byCampasOfUser($user->campas->pluck('id')->toArray())
                     ->paginate();
         return [ 'vehicles' => $vehicles ];
     }
@@ -206,9 +207,10 @@ public function verifyPlateReception($request){
     }
 
     public function vehicleReserved($request){
+        $user = $this->userRepository->getById($request, Auth::id());
         return Vehicle::with(['reservations' => fn ($query) => $query->where('active', true)])
             ->whereHas('reservations', fn (Builder $builder) => $builder->where('active', true))
-            ->byCampasOfUser($request)
+            ->byCampasOfUser($user->campas->pluck('id')->toArray())
             ->get();
     }
 
@@ -221,10 +223,11 @@ public function verifyPlateReception($request){
     }
 
     public function vehicleRequestDefleet($request){
+        $user = $this->userRepository->getById($request, Auth::id());
         $vehicles = Vehicle::with($this->getWiths($request->with))
             ->withRequestDefleetActive()
             ->where('trade_state_id', TradeState::REQUEST_DEFLEET)
-            ->byCampasOfUser($request)
+            ->byCampasOfUser($user->campas->pluck('id')->toArray())
             ->get();
         return ['vehicles' => $vehicles];
     }

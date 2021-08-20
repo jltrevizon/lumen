@@ -35,7 +35,7 @@ class State extends Model
         return $this->hasMany(Vehicle::class, 'state_id');
     }
 
-    public function sub_states(){
+    public function subStates(){
         return $this->hasMany(SubState::class, 'state_id');
     }
 

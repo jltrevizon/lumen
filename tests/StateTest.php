@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Order;
 use App\Models\State;
 use App\Models\SubState;
 use App\Models\Vehicle;
@@ -30,7 +31,14 @@ class StateTest extends TestCase
     /** @test */
     public function it_has_many_sub_states()
     {
-        $this->assertInstanceOf(HasMany::class, $this->state->sub_states());
-        $this->assertInstanceOf(SubState::class, $this->state->sub_states()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->state->subStates());
+        $this->assertInstanceOf(SubState::class, $this->state->subStates()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_orders()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->state->orders());
+        $this->assertInstanceOf(Order::class, $this->state->orders()->getModel());
     }
 }
