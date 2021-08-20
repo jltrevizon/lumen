@@ -22,7 +22,7 @@ class DefleetVariableRepository {
 
     public function createVariables($request){
         $user = $this->userRepository->getById($request, Auth::id());
-        $variables = DefleetVariable::byCompany()->first();
+        $variables = DefleetVariable::byCompany($request, $user['campas'][0]['company_id'])->first();
         if($variables) return [ 'message' => 'Ya existen variables de defleet para esta empresa' ];
         $variables = new DefleetVariable();
         $variables->company_id = $user['campa']['company_id'];

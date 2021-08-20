@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
 
-    use Filterable;
+    use Filterable, HasFactory;
 
     protected $fillable = [
         'vehicle_id',
@@ -34,11 +35,11 @@ class Order extends Model
         return $this->belongsTo(TypeModelOrder::class);
     }
 
-    public function scopeByStateIds($query, $ids){
+    public function scopeByStateIds($query, array $ids){
         return $query->whereIn('state_id', $ids);
     }
 
-    public function scopeByWorkshopId($query, $id){
+    public function scopeByWorkshopId($query, int $id){
         return $query->where('workshop_id', $id);
     }
 }
