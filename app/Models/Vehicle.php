@@ -248,16 +248,6 @@ class Vehicle extends Model
         });
     }
 
-    public function withOrderWithoutContract($query){
-        return $query->whereNotNull('order')
-            ->whereNull('contract')
-            ->where('active', true)
-            ->where(function($query) {
-                return $query->whereNotNull('pickup_by_customer')
-                            ->orWhereNotNull('transport_id');
-            });
-    }
-
     public function scopeByWithOrderWithoutContract($query){
         return $query->whereHas('reservations', function(Builder $builder) {
             return $builder->whereNotNull('order')
