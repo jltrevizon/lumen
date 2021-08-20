@@ -3,7 +3,6 @@
 use App\Models\Order;
 use App\Models\Workshop;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class WorkshopTest extends TestCase

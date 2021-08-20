@@ -31,7 +31,7 @@ image: php:8.0
 
 common: &common
   step:
-    name: Tests
+    name: Setup
     caches:
       - composer
     script:
@@ -45,9 +45,14 @@ common: &common
       - php -r "file_exists('.env') || copy('.env.example', '.env');"
       - php artisan migrate --force
       - php artisan key:generate # Generate a key via Artisan
-      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
     services:
       - mysql
+
+common: &tests
+  step:
+    name: Tests
+    script:
+      - vendor/bin/phpunit -d memory_limit=512M --no-coverage # Run tests
 
 pipelines:
   #default:
@@ -57,7 +62,7 @@ pipelines:
     master:
       - <<: *common
 #      - <<: *composer
-#      - <<: *tests
+      - <<: *tests
       - step:
           name: Deploy to master
           deployment: Production
@@ -67,7 +72,7 @@ pipelines:
     dev:
       - <<: *common
 #      - <<: *composer
-#      - <<: *tests
+      - <<: *tests
       - step:
           name: Deploy to development
           script:
