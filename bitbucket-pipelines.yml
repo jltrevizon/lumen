@@ -85,6 +85,9 @@ pipelines:
             - php -r "file_exists('.env') || copy('.env.example', '.env');"
             - php artisan migrate --force
             - php artisan key:generate # Generate a key via Artisan
+          services:
+            - mysql
+
       - step:
           name: Tests
           script:
