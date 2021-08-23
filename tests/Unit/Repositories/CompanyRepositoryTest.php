@@ -15,7 +15,6 @@ class CompanyRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->signIn(User::findOrFail(1));
         $this->repository = new CompanyRepository();
     }
 
@@ -39,6 +38,7 @@ class CompanyRepositoryTest extends TestCase
     /** @test */
     public function should_return_two_companies()
     {
+        Company::where('id','>', 0)->delete();
         $company = Company::factory()->create();
         $request = new Request();
         $request->replace(['name' => $company['name']]);
@@ -55,4 +55,5 @@ class CompanyRepositoryTest extends TestCase
     {
         return $this->repository->create($data);
     }
+
 }
