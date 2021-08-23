@@ -29,6 +29,17 @@ class CompanyRepositoryTest extends TestCase
     }
 
     /** @test */
+    public function should_return_two_companies()
+    {
+        Company::factory()->create();
+
+        Company::factory()->create();
+
+        $companies = $this->repository->getAll();
+        $this->assertCount(2, $companies);
+    }
+
+    /** @test */
     public function should_return_zero_companies()
     {
         $companies = $this->repository->getAll();
@@ -36,19 +47,29 @@ class CompanyRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function should_return_two_companies()
+    public function should_return_company_by_id()
     {
-        Company::where('id','>', 0)->delete();
+        $company = Company::factory()->create();
+
+        $getCompany = $this->repository->getById($company->id);
+
+        $this->assertEquals($company['name'], $getCompany['name']);
+        $this->assertEquals($company['tradename'], $getCompany['tradename']);
+        $this->assertEquals($company['nif'], $getCompany['nif']);
+        $this->assertEquals($company['phone'], $getCompany['phone']);
+    }
+
+    /** @test */
+    public function should_updated_correctly()
+    {
+        $name = 'Prueba Update Company';
         $company = Company::factory()->create();
         $request = new Request();
-        $request->replace(['name' => $company['name']]);
+        $request->replace(['name' => $name]);
 
-        $company = Company::factory()->create();
-        $request = new Request();
-        $request->replace(['name' => $company['name']]);
+        $updateCompany = $this->repository->update($request, $company->id);
 
-        $companies = $this->repository->getAll();
-        $this->assertCount(2, $companies);
+        $this->assertEquals($name, $updateCompany['company']['name']);
     }
 
     private function createCompany($data)
