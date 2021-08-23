@@ -5,6 +5,7 @@ use App\Models\Company;
 use App\Models\Province;
 use App\Models\Region;
 use App\Models\User;
+use App\Repositories\CampaRepository;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -15,19 +16,14 @@ class CampaRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->region = Region::factory()->create();
-        $this->province = Province::factory()->create();
-        $this->company = Company::factory()->create();
-        $this->campa = Campa::factory()->create();
-        $this->user = $this->signIn();
     }
 
-    // /**@test */
-    // public function testGetAllCampa()
-    // {
-    //     $response = $this->json('GET', 'api/campas/getall');
-    //     $response->assertResponseStatus(200);
-    // }
+    /**@test */
+    public function testGetAllCampa()
+    {
+        $response = $this->json('GET', 'api/campas/getall');
+        $response->assertResponseStatus(200);
+    }
 
     // /**@test */
     // public function testGetCampaById()
