@@ -6,6 +6,7 @@ use App\Models\Province;
 use App\Models\Region;
 use App\Models\User;
 use App\Repositories\CampaRepository;
+use Carbon\Factory;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -21,7 +22,8 @@ class CampaRepositoryTest extends TestCase
     /**@test */
     public function testGetAllCampa()
     {
-        $response = $this->json('GET', 'api/campas/getall');
+        $response = $this->actingAs($this->signIn(), 'api')
+        ->json('GET', 'api/campas/getall');
         $response->assertResponseStatus(200);
     }
 
