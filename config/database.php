@@ -24,7 +24,7 @@ return [
         ],
         'sqlite' => [
             'driver' => 'sqlite',
-            'database' => database_path('testing.sqlite'), // ':memory:'
+            'database' => 'focus_testing', // ':memory:'
             'prefix' => '',
         ],
     ]
