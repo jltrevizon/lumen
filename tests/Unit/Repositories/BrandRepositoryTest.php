@@ -36,6 +36,14 @@ class BrandRepositoryTest extends TestCase
     }
 
     /** @test */
+    public function should_return_zero_brands()
+    {
+        $request = new Request();
+        $result = $this->repository->getAll($request);
+        $this->assertCount(0, $result['brands']);
+    }
+
+    /** @test */
     public function should_return_brand_by_name()
     {
         $brand = Brand::factory()->create();
