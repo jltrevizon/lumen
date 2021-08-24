@@ -107,6 +107,12 @@ class Vehicle extends Model
         ]);
     }
 
+    public function lastReception(){
+        return $this->hasOne(Reception::class)->with(['accessories'])->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
     public function orders(){
         return $this->hasMany(Order::class);
     }
