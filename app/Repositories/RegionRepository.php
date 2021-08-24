@@ -2,11 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Question;
 use App\Models\Region;
-use App\Models\User;
-use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class RegionRepository {
 

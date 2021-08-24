@@ -8,7 +8,7 @@ use Exception;
 class ProvinceRepository {
 
     public function getById($id){
-        return ['povince' => Province::findOrFail($id)];
+        return ['province' => Province::findOrFail($id)];
     }
 
     public function provinceByRegion($request){
