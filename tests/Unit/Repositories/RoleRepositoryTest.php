@@ -24,6 +24,7 @@ class RoleRepositoryTest extends TestCase
         $request->replace(['description' => $role['description']]);
         $result = $this->createRole($request);
         $this->assertEquals($role['description'], $result['description']);
+        $this->assertNotEquals($role['id'], $result['id']);
     }
 
     /** @test */

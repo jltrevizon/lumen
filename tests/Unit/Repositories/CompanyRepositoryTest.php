@@ -26,6 +26,7 @@ class CompanyRepositoryTest extends TestCase
         $request->replace(['name' => $company['name']]);
         $result = $this->createCompany($request);
         $this->assertEquals($result['name'], $company['name']);
+        $this->assertNotEquals($result['id'], $company['id']);
     }
 
     /** @test */

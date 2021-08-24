@@ -23,6 +23,7 @@ class CampaRepositoryTest extends TestCase
         $request->replace(['name' => $campa['name'], 'company_id' => $campa['company_id']]);
         $result = $this->createCampa($request);
         $this->assertEquals($result['name'], $request['name']);
+        $this->assertNotEquals($result['id'], $request['id']);
     }
 
     /** @test */
