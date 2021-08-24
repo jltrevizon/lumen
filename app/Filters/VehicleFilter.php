@@ -63,4 +63,8 @@ class VehicleFilter extends ModelFilter
         return $this->byStatePendingTasks($ids);
     }
 
+    public function campaNull(){
+        return $this->byCampaNull();
+    }
+
 }

@@ -124,6 +124,10 @@ class Vehicle extends Model
         return $query->whereIn('campa_id', $campasIds);
     }
 
+    public function scopeByCampaNull($query){
+        return $query->whereNull('campa_id');
+    }
+
     public function scopeByCampaId($query, int $id){
         return $query->where('campa_id', $id);
     }
