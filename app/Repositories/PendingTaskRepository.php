@@ -89,6 +89,12 @@ class PendingTaskRepository extends Repository {
         $pending_task->save();
     }
 
+    public function pendingTasksFilter($request){
+        return PendingTask::with($this->getWiths($request->with))
+                        ->filter($request->all())
+                        ->paginate();
+    }
+
     public function getById($request, $id){
         $pending_task = PendingTask::with($this->getWiths($request->with))
                             ->findOrFail($id);
