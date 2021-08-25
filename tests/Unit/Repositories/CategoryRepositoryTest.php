@@ -76,7 +76,6 @@ class CategoryRepositoryTest extends TestCase
         $this->assertEquals($name, $result['category']['name']);
         $this->assertNotEquals($category['name'], $result['category']['name']);
         $this->assertEquals($category['id'], $result['category']['id']);
-
     }
 
     private function createCategory($data)
