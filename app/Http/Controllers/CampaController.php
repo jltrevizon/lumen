@@ -23,35 +23,6 @@ class CampaController extends Controller
         return $this->getDataResponse($this->campaRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getCampasByRegion(Request $request){
-
-        $this->validate($request, [
-            'region_id' => 'required|integer',
-            'company_id' => 'required|integer'
-        ]);
-
-        return $this->getDataResponse($this->campaRepository->getCampasByRegion($request), HttpFoundationResponse::HTTP_OK);
-    }
-
-    public function getCampasByProvince(Request $request){
-
-        $this->validate($request, [
-            'province_id' => 'required|integer',
-            'company_id' => 'required|integer'
-        ]);
-
-        return $this->getDataResponse($this->campaRepository->getCampasByProvince($request), HttpFoundationResponse::HTTP_OK);
-    }
-
-    public function getByCompany(Request $request){
-
-        $this->validate($request, [
-            'company_id' => 'required|integer'
-        ]);
-
-        return $this->getDataResponse($this->campaRepository->getByCompany($request), HttpFoundationResponse::HTTP_OK);
-    }
-
     public function create(Request $request){
 
         $this->validate($request, [

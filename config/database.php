@@ -13,9 +13,18 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
         ],
+        'mysql2' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => 'focus_testing',
+            'username' => 'homestead',
+            'password' => 'secret',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+        ],
         'sqlite' => [
             'driver' => 'sqlite',
-            'database' => database_path('testing.sqlite'), // ':memory:'
+            'database' => 'focus_testing', // ':memory:'
             'prefix' => '',
         ],
     ]

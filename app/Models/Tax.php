@@ -23,4 +23,8 @@ class Tax extends Model
         'description'
     ];
 
+    public function budgetLines(){
+        return $this->hasMany(BudgetLine::class);
+    }
+
 }

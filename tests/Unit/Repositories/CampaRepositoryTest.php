@@ -1,11 +1,8 @@
 <?php
 
 use App\Models\Campa;
-use App\Models\Company;
-use App\Models\Province;
-use App\Models\Region;
-use App\Models\User;
-use Laravel\Lumen\Testing\DatabaseMigrations;
+use App\Repositories\CampaRepository;
+use Illuminate\Http\Request;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CampaRepositoryTest extends TestCase
@@ -15,84 +12,53 @@ class CampaRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->region = Region::factory()->create();
-        $this->province = Province::factory()->create();
-        $this->company = Company::factory()->create();
-        $this->campa = Campa::factory()->create();
-        $this->user = $this->signIn();
+        $this->repository = new CampaRepository();
     }
 
-    // /**@test */
-    // public function testGetAllCampa()
-    // {
-    //     $response = $this->json('GET', 'api/campas/getall');
-    //     $response->assertResponseStatus(200);
-    // }
+    /** @test */
+    public function it_can_create_a_campa_correctly()
+    {
+        $campa = Campa::factory()->create();
+        $request = new Request();
+        $request->replace(['name' => $campa['name'], 'company_id' => $campa['company_id']]);
+        $result = $this->createCampa($request);
+        $this->assertEquals($result['name'], $request['name']);
+        $this->assertNotEquals($result['id'], $request['id']);
+    }
 
-    // /**@test */
-    // public function testGetCampaById()
-    // {
-    //     $response = $this->json('GET', 'api/campas/'.$this->campa->id);
-    //     $response->assertResponseStatus(200);
+    /** @test */
+    public function should_return_two_campas()
+    {
+        Campa::factory()->create();
+        Campa::factory()->create();
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->getAll($request);
+        $this->assertCount(2, $result);
+    }
 
-    // }
+    /** @test */
+    public function should_return_zero_campas()
+    {
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->getAll($request);
+        $this->assertCount(0, $result);
+    }
 
-    // /**@test */
-    // public function testGetCampaByComapny()
-    // {
-    //     $response = $this->json('POST', 'api/campas/by-company',[
-    //         'company_id' => $this->company->id
-    //     ]);
-    //     $response->assertResponseStatus(200);
-    // }
+    /** @test */
+    public function should_return_a_campa_by_id()
+    {
+        $campa = Campa::factory()->create();
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->getById($request, $campa->id);
+        $this->assertEquals($campa['name'], $result['name']);
+    }
 
-    // /**@test */
-    // public function testGetCampaByRegion()
-    // {
-    //     $response = $this->json('POST', 'api/campas/by-region',[
-    //         'region_id' => $this->region->id,
-    //         'company_id' => $this->company->id
-    //     ]);
-    //     $response->assertResponseStatus(200);
-    // }
+    private function createCampa($data)
+    {
+        return $this->repository->create($data);
+    }
 
-    // /**@test */
-    // public function testGetCampaByProvince()
-    // {
-    //     $response = $this->json('POST', 'api/campas/by-region',[
-    //         'region_id' => $this->region->id,
-    //         'company_id' => $this->company->id
-    //     ]);
-    //     $response->assertResponseStatus(200);
-    // }
-
-    // /**@test */
-    // public function testCreateCampa()
-    // {
-    //     $response = $this->json('POST', 'api/campas', [
-    //         'company_id' => $this->company->id,
-    //         'name' => 'Testing create',
-    //     ])->assertResponseStatus(201);
-
-    //     $this->seeInDatabase('campas', ['name'=>'Testing create']);
-    // }
-
-    // /**@test */
-    // public function testUpdateCampa()
-    // {
-    //     $response = $this->json('PUT', 'api/campas/update/'.$this->campa->id, [
-    //         'name' => 'Testing update',
-    //     ])->assertResponseStatus(200);
-
-    //     $this->assertEquals('Testing update', $this->campa->fresh()->name);
-    //     $this->seeInDatabase('campas', ['name'=>'Testing update']);
-    // }
-
-    // /**@test */
-    // public function testDeleteCampa()
-    // {
-    //     $response = $this->json('DELETE', '/api/campas/delete/'.$this->campa->id)->assertResponseStatus(200);
-
-    //     $this->assertNull($this->campa->fresh());
-    // }
 }

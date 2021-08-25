@@ -124,7 +124,36 @@ class PendingTaskRepository extends Repository {
     public function update($request, $id){
         $pending_task = PendingTask::findOrFail($id);
         $pending_task->update($request->all());
+        $this->realignPendingTask($pending_task);
         return ['pending_task' => $pending_task];
+    }
+
+    private function realignPendingTask($pendingTask){
+        PendingTask::where('group_task_id', $pendingTask['group_task_id'])
+                    ->where(function ($query){
+                        return $query->whereNull('state_pending_task_id')
+                                ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
+                    })
+                    ->chunk(200, function ($pendingTasks) {
+                        foreach ($pendingTasks as $pendingTask){
+                            $pendingTask->update(['state_pending_task_id' => null]);
+                        }
+                    });
+        $pendingInProgress = PendingTask::where('group_task_id', $pendingTask['group_task_id'])
+                                    ->where('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                                    ->get();
+        if(count($pendingInProgress) == 0) {
+            $firstPendingTask = PendingTask::where('group_task_id', $pendingTask['group_task_id'])
+                    ->where(function ($query){
+                        return $query->whereNull('state_pending_task_id')
+                                ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
+                    })
+                    ->where('approved', true)
+                    ->orderBy('order', 'ASC')
+                    ->first();
+            $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+            $firstPendingTask->save();
+        }
     }
 
     public function createIncidence($request){

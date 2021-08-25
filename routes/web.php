@@ -62,9 +62,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/campas/getall', 'CampaController@getall');
         $router->get('/campas/{id}', 'CampaController@getById');
-        $router->post('/campas/by-region', 'CampaController@getCampasByRegion');
-        $router->post('/campas/by-province', 'CampaController@getCampasByProvince');
-        $router->post('/campas/by-company', 'CampaController@getByCompany');
         $router->post('/campas', 'CampaController@create');
         $router->put('/campas/update/{id}', 'CampaController@update');
         $router->delete('/campas/delete/{id}', 'CampaController@delete');

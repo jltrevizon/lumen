@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Models\Role;
 use Exception;
 
-class RoleRepository {
+class RoleRepository extends Repository {
 
     public function __construct()
     {

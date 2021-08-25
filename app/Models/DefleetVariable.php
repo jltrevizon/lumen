@@ -22,11 +22,8 @@ class DefleetVariable extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function scopeByCompany($query, $request){
-        $userRepository = new UserRepository();
-        $user = $userRepository->getById($request, Auth::id());
-        return $query->where('company_id', $user['campas'][0]['company_id'])
-                ->first();
+    public function scopeByCompany($query, int $companyId){
+        return $query->where('company_id', $companyId);
     }
 
 }

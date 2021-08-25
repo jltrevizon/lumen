@@ -101,6 +101,18 @@ class Vehicle extends Model
         return $this->hasMany(Operation::class);
     }
 
+    public function lastQuestionnaire(){
+        return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
+    public function lastReception(){
+        return $this->hasOne(Reception::class)->with(['accessories'])->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
     public function orders(){
         return $this->hasMany(Order::class);
     }
@@ -109,20 +121,17 @@ class Vehicle extends Model
         return $this->hasMany(Budget::class);
     }
 
-    public function lastQuestionnaire(){
-        return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
-            'id' => 'max'
-        ]);
-    }
 
     public function vehicleModel(){
         return $this->belongsTo(VehicleModel::class);
     }
 
-    public function scopeByCampasOfUser($query, $request){
-        $userRepository = new UserRepository();
-        $user = $userRepository->getById($request, Auth::id());
-        return $query->whereIn('campa_id', $user->campas->pluck('id')->toArray());
+    public function scopeByCampasOfUser($query, array $campasIds){
+        return $query->whereIn('campa_id', $campasIds);
+    }
+
+    public function scopeByCampaNull($query){
+        return $query->whereNull('campa_id');
     }
 
     public function scopeByCampaId($query, int $id){
@@ -217,23 +226,6 @@ class Vehicle extends Model
         });
     }
 
-    public function withoutOrderWithoutDelivery($query){
-        return $query->where(function ($query) {
-            return $query->whereNull('order');
-        })
-        ->orWhere(function ($query) {
-            return $query->whereNotNull('order')
-                ->whereNull('pickup_by_customer')
-                ->whereNull('transport_id');
-        })
-        ->where('active', true);
-    }
-
-    public function withRequestActive(){
-        return $this->hasMany(Request::class)
-        ->where('state_request_id', StateRequest::REQUESTED);
-    }
-
     public function scopeThathasReservationWithoutOrderWithoutDelivery($query){
         return $query->whereHas('reservations', function (Builder $builder) {
             return $builder->where(function ($query) {
@@ -248,14 +240,9 @@ class Vehicle extends Model
         });
     }
 
-    public function withOrderWithoutContract($query){
-        return $query->whereNotNull('order')
-            ->whereNull('contract')
-            ->where('active', true)
-            ->where(function($query) {
-                return $query->whereNotNull('pickup_by_customer')
-                            ->orWhereNotNull('transport_id');
-            });
+    public function withRequestActive(){
+        return $this->hasMany(Request::class)
+        ->where('state_request_id', StateRequest::REQUESTED);
     }
 
     public function scopeByWithOrderWithoutContract($query){
