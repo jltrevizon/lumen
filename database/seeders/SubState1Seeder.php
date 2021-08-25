@@ -27,8 +27,8 @@ class SubState1Seeder extends Seeder
     public function data(){
         return [
             [
-                'name' => 'Pendiente prueba dinámica',
-                'state_id' => State::PENDING_TEST_DINAMIC
+                'name' => 'Pendiente prueba dinámica inicial',
+                'state_id' => State::PENDING_TEST_DINAMIC_INITIAL
             ],
             [
                 'name' => 'Pendiente checklist incial',
@@ -47,13 +47,21 @@ class SubState1Seeder extends Seeder
                 'state_id' => State::IN_REPAIR
             ],
             [
-                'name' => 'Pendiente de certificado',
-                'state_id' => State::PENDING_CERTIFICATED
+                'name' => 'Pendiente prueba dinámica final',
+                'state_id' => State::PENDING_TEST_DINAMIC_FINAL
             ],
             [
                 'name' => 'Pendiente de check final',
                 'state_id' => State::PENDING_FINAL_CHECK
-            ]
+            ],
+            [
+                'name' => 'Pendiente de certificado',
+                'state_id' => State::PENDING_CERTIFICATED
+            ],
+            [
+                'name' => 'Finalizado',
+                'state_id' => State::FINISHED
+            ],
         ];
     }
 }

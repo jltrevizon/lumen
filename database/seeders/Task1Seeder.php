@@ -33,9 +33,9 @@ class Task1Seeder extends Seeder
         return [
             [
                 'company_id' => Company::INVARAT,
-                'sub_state_id' => SubState::PENDING_TEST_DINAMIC,
+                'sub_state_id' => SubState::PENDING_TEST_DINAMIC_INITIAL,
                 'type_task_id' => TypeTask::SPECIAL,
-                'name' => 'Prueba dinámica',
+                'name' => 'Prueba dinámica inical',
                 'duration' => random_int(1, 40),
             ],
             [
@@ -54,9 +54,30 @@ class Task1Seeder extends Seeder
             ],
             [
                 'company_id' => Company::INVARAT,
+                'sub_state_id' => SubState::PENDING_AUTHORIZATION,
+                'type_task_id' => TypeTask::SPECIAL,
+                'name' => 'Autorización',
+                'duration' => random_int(1, 40),
+            ],
+            [
+                'company_id' => Company::INVARAT,
                 'sub_state_id' => SubState::IN_REPAIR,
                 'type_task_id' => TypeTask::SPECIAL,
                 'name' => 'Reparación',
+                'duration' => random_int(1, 40),
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'sub_state_id' => SubState::PENDING_TEST_DINAMIC_FINAL,
+                'type_task_id' => TypeTask::SPECIAL,
+                'name' => 'Prueba dinámica final',
+                'duration' => random_int(1, 40),
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'sub_state_id' => SubState::PENDING_TEST_CHECK_FINAL,
+                'type_task_id' => TypeTask::SPECIAL,
+                'name' => 'Checklist final',
                 'duration' => random_int(1, 40),
             ],
             [

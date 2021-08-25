@@ -27,7 +27,7 @@ class State1Seeder extends Seeder
     public function data(){
         return [
             [
-                'name' => 'Pendiente prueba dinámica',
+                'name' => 'Pendiente prueba dinámica inicial',
                 'company_id' => Company::INVARAT
             ],
             [
@@ -47,11 +47,15 @@ class State1Seeder extends Seeder
                 'company_id' => Company::INVARAT
             ],
             [
-                'name' => 'Pendiente de certificado',
+                'name' => 'Pendiente prueba dinámica final',
                 'company_id' => Company::INVARAT
             ],
             [
                 'name' => 'Pendiente de check final',
+                'company_id' => Company::INVARAT
+            ],
+            [
+                'name' => 'Pendiente de certificado',
                 'company_id' => Company::INVARAT
             ],
             [
