@@ -25,7 +25,7 @@ class StateRequestRepository {
     public function update($request, $id){
         $state_request = StateRequest::findOrFail($id);
         $state_request->update($request->all());
-        return response()->json(['state_request' => $state_request], 200);
+        return ['state_request' => $state_request];
     }
 
     public function delete($id){
