@@ -18,6 +18,7 @@ class Task extends Model
     const UBICATION = 1;
 
     protected $fillable = [
+        'company_id',
         'sub_state_id',
         'type_task_id',
         'name',
