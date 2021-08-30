@@ -26,7 +26,7 @@ class InvaratOrderRepository extends Repository {
         $order = new Order();
         $order->vehicle_id = $vehicle['id'];
         $order->workshop_id = $workshop['workshop']['id'];
-        $order->state_id = State::PENDING_TEST_DINAMIC;
+        $order->state_id = State::PENDING_TEST_DINAMIC_INITIAL;
         $order->id_gsp = $request['id_gsp'];
         $order->save();
         return Order::with(['workshop','vehicle.pendingTasks' => function ($query) {
