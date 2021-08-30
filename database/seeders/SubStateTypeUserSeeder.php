@@ -91,6 +91,14 @@ class SubStateTypeUserSeeder extends Seeder
                 'sub_state_id' => SubState::LIMPIEZA,
                 'type_user_app_id' => TypeUserApp::MOONS
             ],
+            [
+                'sub_state_id' => SubState::ITV,
+                'type_user_app_id' => TypeUserApp::OPERATOR_CAMPA
+            ],
+            [
+                'sub_state_id' => SubState::TRANSFORMACION,
+                'type_user_app_id' => TypeUserApp::WORKSHOP_CHAPA
+            ]
         ];
     }
 }
