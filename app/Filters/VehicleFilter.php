@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class VehicleFilter extends ModelFilter
 {
+    public function ids($ids)
+    {
+        return $this->byIds($ids);
+    }
 
     public function campas($ids)
     {
