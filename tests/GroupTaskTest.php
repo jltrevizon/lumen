@@ -24,8 +24,8 @@ class GroupTaskTest extends TestCase
     /** @test */
     public function it_has_many_pending_tasks()
     {
-        $this->assertInstanceOf(HasMany::class, $this->groupTask->pending_tasks());
-        $this->assertInstanceOf(PendingTask::class, $this->groupTask->pending_tasks()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->groupTask->pendingTasks());
+        $this->assertInstanceOf(PendingTask::class, $this->groupTask->pendingTasks()->getModel());
     }
 
     /** @test */
