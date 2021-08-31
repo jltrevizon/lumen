@@ -54,8 +54,8 @@ class VehicleRepository extends Repository {
         return [ 'vehicles' => $vehicles ];
     }
 
-    public function getById($id){
-        return Vehicle::findOrFail($id);
+    public function getById($request, $id){
+        return Vehicle::with($this->getWiths($request->with))->findOrFail($id);
     }
 
     public function filterVehicle($request) {
