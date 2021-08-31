@@ -23,6 +23,7 @@ class BrandRepositoryTest extends TestCase
         $result = $this->repository->create($brand['name']);
         $this->assertEquals($brand['name'], $result['name']);
         $this->assertNotEquals($brand['id'], $result['id']);
+        //Hola
     }
 
     /** @test */
