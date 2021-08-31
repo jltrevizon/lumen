@@ -17,7 +17,7 @@ class GroupTask extends Model
         'approved'
     ];
 
-    public function pending_tasks(){
+    public function pendingTasks(){
         return $this->hasMany(PendingTask::class, 'group_task_id');
     }
 
