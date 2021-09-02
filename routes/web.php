@@ -382,5 +382,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Taxes
          */
         $router->get('/taxes', 'TaxController@index');
+
+        /**
+         * Type model order
+         */
+        $router->get('/type-model-order', 'TypeModelOrderController@getAll');
     });
 });
