@@ -306,6 +306,10 @@ class QuestionSeeder extends Seeder
             [
                 'company_id' => Company::INVARAT,
                 'question' => 'Limpieza tapicería', 'description' => 'Limpieza tapicería'
+            ],
+            [
+                'company_id' => Company::ALD,
+                'question' => 'Elige origen del vehículo'
             ]
         ];
     }
