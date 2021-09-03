@@ -392,5 +392,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Budget pending task
          */
         $router->post('/budget-pending-task', 'BudgetPendingTaskController@create');
+        $router->put('/budget-pending-task/{id}', 'BudgetPendingTaskController@update');
     });
 });

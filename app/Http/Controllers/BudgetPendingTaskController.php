@@ -16,4 +16,8 @@ class BudgetPendingTaskController extends Controller
     public function create(Request $request){
         return $this->createDataResponse($this->budgetPendingTaskRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
+
+    public function update(Request $request, $id){
+        return $this->updateDataResponse($this->budgetPendingTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
+    }
 }

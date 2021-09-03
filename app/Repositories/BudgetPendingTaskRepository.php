@@ -18,4 +18,10 @@ class BudgetPendingTaskRepository extends Repository {
         $budgetPendingTask = BudgetPendingTask::create($request->all());
         return $budgetPendingTask;
     }
+
+    public function update($request, $id){
+        $budgetPendingTask = BudgetPendingTask::findOrFail($id);
+        $budgetPendingTask->update($request->all());
+        return ['budget_pending_task' => $budgetPendingTask];
+    }
 }
