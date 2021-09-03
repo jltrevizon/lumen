@@ -113,7 +113,7 @@ class Vehicle extends Model
     }
 
     public function lastReception(){
-        return $this->hasOne(Reception::class)->with(['accessories'])->ofMany([
+        return $this->hasOne(Reception::class)->with(['accessories, vehiclePictures'])->ofMany([
             'id' => 'max'
         ]);
     }
