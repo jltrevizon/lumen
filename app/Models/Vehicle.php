@@ -33,6 +33,7 @@ class Vehicle extends Model
         'ubication',
         'plate',
         'vehicle_model_id',
+        'type_model_order_id',
         'kms',
         'priority',
         'version',
@@ -83,6 +84,10 @@ class Vehicle extends Model
 
     public function receptions(){
         return $this->hasMany(Reception::class, 'vehicle_id');
+    }
+
+    public function typeModelOrder(){
+        return $this->belongsTo(TypeModelOrder::class);
     }
 
     public function tradeState(){
