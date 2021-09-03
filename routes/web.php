@@ -387,5 +387,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Type model order
          */
         $router->get('/type-model-order', 'TypeModelOrderController@getAll');
+
+        /**
+         * Budget pending task
+         */
+        $router->post('/budget-pending-task', 'BudgetPendingTaskController@create');
     });
 });
