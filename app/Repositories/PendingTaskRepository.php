@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Repositories;
+
+use App\Models\Order;
 use App\Models\PendingTask;
 use App\Models\State;
 use App\Models\StatePendingTask;
@@ -212,7 +214,7 @@ class PendingTaskRepository extends Repository {
 
     public function startPendingTask($request){
         $pending_task = PendingTask::with($this->getWiths($request->with))
-                                ->findOrFail($request->input('pending_task_id'));
+                        ->findOrFail($request->input('pending_task_id'));
 
         if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->state_pending_task_id = StatePendingTask::IN_PROGRESS;
@@ -220,11 +222,27 @@ class PendingTaskRepository extends Repository {
             $pending_task->save();
             $detail_task = $this->taskRepository->getById($pending_task['task_id']);
             $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
+            $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
         } else {
             return [
                 'message' => 'La tarea no está en estado pendiente'
             ];
+        }
+    }
+
+    private function updateStateOrder($request){
+        $pending_task = PendingTask::with(['task.subState.state', 'vehicle.orders'])
+                        ->where('id', $request->input('pending_task_id'))
+                        ->whereHas('vehicle.orders', function (Builder $builder) {
+                            return $builder->where('state_id', '<>', State::FINISHED);
+                        })
+                    ->first();
+        if($pending_task){
+            $order = $pending_task['vehicle']['orders'][count($pending_task['vehicle']['orders']) - 1];
+            $updateOrder = Order::findOrFail($order['id']);
+            $updateOrder->state_id = $pending_task['task']['subState']['state']['id'];
+            $updateOrder->save();
         }
     }
 

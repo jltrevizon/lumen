@@ -33,6 +33,7 @@ class Vehicle extends Model
         'ubication',
         'plate',
         'vehicle_model_id',
+        'type_model_order_id',
         'kms',
         'priority',
         'version',
@@ -85,6 +86,10 @@ class Vehicle extends Model
         return $this->hasMany(Reception::class, 'vehicle_id');
     }
 
+    public function typeModelOrder(){
+        return $this->belongsTo(TypeModelOrder::class);
+    }
+
     public function tradeState(){
         return $this->belongsTo(TradeState::class, 'trade_state_id');
     }
@@ -108,7 +113,7 @@ class Vehicle extends Model
     }
 
     public function lastReception(){
-        return $this->hasOne(Reception::class)->with(['accessories'])->ofMany([
+        return $this->hasOne(Reception::class)->with(['accessories','vehiclePictures'])->ofMany([
             'id' => 'max'
         ]);
     }

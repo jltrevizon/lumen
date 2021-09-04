@@ -382,5 +382,17 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Taxes
          */
         $router->get('/taxes', 'TaxController@index');
+
+        /**
+         * Type model order
+         */
+        $router->get('/type-model-order', 'TypeModelOrderController@getAll');
+
+        /**
+         * Budget pending task
+         */
+        $router->post('/budget-pending-task', 'BudgetPendingTaskController@create');
+        $router->put('/budget-pending-task/{id}', 'BudgetPendingTaskController@update');
+        $router->get('/budget-pending-task', 'BudgetPendingTaskController@getAll');
     });
 });

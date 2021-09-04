@@ -18,7 +18,7 @@ class Reception extends Model
         return $this->hasMany(Accessory::class);
     }
 
-    public function vehicle_pictures(){
+    public function vehiclePictures(){
         return $this->hasMany(VehiclePicture::class);
     }
 }

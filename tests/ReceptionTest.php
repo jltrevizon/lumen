@@ -39,7 +39,7 @@ class ReceptionTest extends TestCase
      /** @test */
      public function it_has_many_vehicle_pictures()
      {
-         $this->assertInstanceOf(HasMany::class, $this->reception->vehicle_pictures());
-         $this->assertInstanceOf(VehiclePicture::class, $this->reception->vehicle_pictures()->getModel());
+         $this->assertInstanceOf(HasMany::class, $this->reception->vehiclePictures());
+         $this->assertInstanceOf(VehiclePicture::class, $this->reception->vehiclePictures()->getModel());
      }
 }

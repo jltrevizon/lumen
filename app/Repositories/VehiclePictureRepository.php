@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Models\Vehicle;
 use App\Models\VehiclePicture;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class VehiclePictureRepository extends Repository {
@@ -14,7 +14,10 @@ class VehiclePictureRepository extends Repository {
     }
 
     public function create($request){
+        $vehicle = Vehicle::with(['lastReception'])
+                    ->findOrFail($request->input('vehicle_id'));
         $vehicle_picture = new VehiclePicture();
+        $vehicle_picture->reception_id = $vehicle['lastReception']['id'];
         $vehicle_picture->vehicle_id = $request->input('vehicle_id');
         $vehicle_picture->user_id = Auth::id();
         $vehicle_picture->url = $request->input('url');
