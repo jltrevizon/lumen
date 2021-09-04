@@ -64,6 +64,10 @@ class PendingTask extends Model
         return $this->hasMany(Operation::class);
     }
 
+    public function budgetPendingTasks(){
+        return $this->hasMany(BudgetPendingTask::class);
+    }
+
     public function scopeByCampas($query, array $ids){
         return $query->whereHas('vehicle.campa', function (Builder $builder) use($ids){
             return $builder->whereIn('id', $ids);

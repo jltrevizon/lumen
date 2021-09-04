@@ -20,4 +20,8 @@ class BudgetPendingTaskController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->budgetPendingTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->budgetPendingTaskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
+    }
 }

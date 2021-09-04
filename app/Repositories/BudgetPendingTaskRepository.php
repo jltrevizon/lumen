@@ -24,4 +24,10 @@ class BudgetPendingTaskRepository extends Repository {
         $budgetPendingTask->update($request->all());
         return ['budget_pending_task' => $budgetPendingTask];
     }
+
+    public function getAll($request){
+        return BudgetPendingTask::with($this->getWiths($request->with))
+                    ->filter($request->all())
+                    ->get();
+    }
 }
