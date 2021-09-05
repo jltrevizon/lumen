@@ -257,7 +257,7 @@ class PendingTaskRepository extends Repository {
 
     public function finishPendingTask($request){
         $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
-        $vehicle = $this->vehicleRepository->getById($pending_task['vehicle_id']);
+        $vehicle = $this->vehicleRepository->getById($request, $pending_task['vehicle_id']);
         if($pending_task->state_pending_task_id == StatePendingTask::IN_PROGRESS){
             $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
