@@ -14,11 +14,8 @@ class DownloadController extends Controller
         $deliveryNote = new DeliveryNote();
         $deliveryNote->body = strval($request->getContent());
         $deliveryNote->save();
-        $vehiclesIds = collect($request->input('vehicles'));
-
-        $ids = $vehiclesIds->pluck('id')->toArray();
         $vehicles = Vehicle::with(['vehicleModel'])
-                            ->whereIn('id', $ids)
+                            ->whereIn('id', $request->input('vehicles'))
                             ->get();
 
         $data = [
