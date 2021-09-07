@@ -33,6 +33,8 @@ class SubState extends Model
     const PENDING_TEST_CHECK_FINAL = 19;
     const PENDING_CERTIFICATED = 20;
     const FINISHED = 21;
+    const WORKSHOP_EXTERNAL = 22;
+    const PRE_AVAILABLE = 23;
 
     protected $fillable = [
         'state_id',
