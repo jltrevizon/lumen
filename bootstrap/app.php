@@ -62,7 +62,7 @@ $app->singleton(
 */
 
 $app->configure('app');
-
+$app->configure('dompdf');
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -104,6 +104,7 @@ $app->register('Nord\Lumen\Cors\CorsServiceProvider');
 $app->register(Illuminate\Mail\MailServiceProvider::class);
 $app->register(EloquentFilter\LumenServiceProvider::class);
 $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
+$app->register(\Barryvdh\DomPDF\ServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -114,6 +115,7 @@ $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 | can respond to, as well as the controllers that may handle them.
 |
 */
+
 
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 config(['eloquentfilter.namespace' => "App\\Filters\\"]);

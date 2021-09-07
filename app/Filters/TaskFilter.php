@@ -15,4 +15,8 @@ class TaskFilter extends ModelFilter
     {
         return $this->bySubStates($ids);
     }
+
+    public function ids($ids){
+        return $this->byIds($ids);
+    }
 }

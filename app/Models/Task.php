@@ -41,6 +41,10 @@ class Task extends Model
         return $this->hasMany(PurchaseOperation::class);
     }
 
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
+
     public function scopeByTypeTasks($query, array $ids){
         return $query->whereIn('type_task_id', $ids);
     }
