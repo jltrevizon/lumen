@@ -65,8 +65,9 @@ class TaskRepositoryTest extends TestCase
     /** @test */
     public function should_return_a_task_by_id()
     {
+        $request = new Request();
         $task = Task::factory()->create();
-        $result = $this->repository->getById($task->id);
+        $result = $this->repository->getById($request, $task->id);
         $this->assertEquals($task->id, $result['id']);
         $this->assertEquals($task->company_id, $result['company_id']);
         $this->assertEquals($task->sub_state_id, $result['sub_state_id']);
