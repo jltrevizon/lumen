@@ -12,7 +12,7 @@ class TaskRepository extends Repository {
                     ->get();
     }
 
-    public function getById($id){
+    public function getById($request, $id){
         return Task::findOrFail($id);
     }
 

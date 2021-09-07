@@ -6,6 +6,8 @@ use App\Mail\DownloadVehicles;
 use App\Models\PendingDownload;
 use Illuminate\Http\Request;
 use App\Repositories\VehicleRepository;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Illuminate\Support\Facades\Auth;
 

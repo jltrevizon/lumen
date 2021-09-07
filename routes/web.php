@@ -24,6 +24,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
+    $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
 
         /**
          * Reset password
@@ -394,5 +395,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/budget-pending-task', 'BudgetPendingTaskController@create');
         $router->put('/budget-pending-task/{id}', 'BudgetPendingTaskController@update');
         $router->get('/budget-pending-task', 'BudgetPendingTaskController@getAll');
+
+        /**
+         * Download
+         */
     });
 });

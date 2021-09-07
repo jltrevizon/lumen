@@ -53,6 +53,14 @@ class TypeUserAppSeeder extends Seeder
                 'name' => 'Lunas',
                 'description' => null
             ],
+            [
+                'name' => 'Administrativo taller mecánica',
+                'descripción' => 'Puede mirar las tareas pendientes de los vehículos y subir presupuestos para las tareas de taller de mecánica'
+            ],
+            [
+                'name' => 'Administrativo taller carrocería',
+                'descripción' => 'Puede mirar las tareas pendientes de los vehículos y subir presupuestos para las tareas de taller carrocería'
+            ]
         ];
     }
 }
