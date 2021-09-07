@@ -30,7 +30,9 @@ class RoleSeeder extends Seeder
             ['description' => 'User App'],
             ['description' => 'Recepción'],
             ['description' => 'Comercial'],
-            ['description' => 'Control']
+            ['description' => 'Control'],
+            ['description' => 'Administrativo taller mecánico'],
+            ['description' => 'Administrativo taller carrocería']
         ];
     }
 }
