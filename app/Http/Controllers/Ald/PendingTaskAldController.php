@@ -62,7 +62,7 @@ class PendingTaskAldController extends Controller
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
-            $taskDescription = $this->taskRepository->getById($task['task_id']);
+            $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
             if($task['task_order'] == 1){
@@ -80,7 +80,7 @@ class PendingTaskAldController extends Controller
     private function createTaskWashed($vehicle_id, $group_task, $tasks){
         $pending_task = new PendingTask();
         $pending_task->vehicle_id = $vehicle_id;
-        $taskDescription = $this->taskRepository->getById(28);
+        $taskDescription = $this->taskRepository->getById([], 28);
         if(count($tasks) < 1){
             $pending_task->state_pending_task_id = StatePendingTask::PENDING;
             $pending_task->datetime_pending = date("Y-m-d H:i:s");
@@ -95,7 +95,7 @@ class PendingTaskAldController extends Controller
     private function createTaskUbication($vehicle_id, $group_task){
         $pending_task = new PendingTask();
         $pending_task->vehicle_id = $vehicle_id;
-        $taskDescription = $this->taskRepository->getById(Task::UBICATION);
+        $taskDescription = $this->taskRepository->getById([], Task::UBICATION);
         $pending_task->group_task_id = $group_task->id;
         $pending_task->task_id = $taskDescription['id'];
         $pending_task->duration = $taskDescription['duration'];
