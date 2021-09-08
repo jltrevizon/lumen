@@ -67,7 +67,7 @@ class PendingTaskRepository extends Repository {
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $task['vehicle_id'];
-            $taskDescription = $this->taskRepository->getById($task['task_id']);
+            $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             if($task['order'] == 1){
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
@@ -83,7 +83,7 @@ class PendingTaskRepository extends Repository {
     private function createUbication($vehicleId, $groupTaskId){
         $pending_task = new PendingTask();
         $pending_task->vehicle_id = $vehicleId;
-        $taskDescription = $this->taskRepository->getById(Task::UBICATION);
+        $taskDescription = $this->taskRepository->getById([], Task::UBICATION);
         $pending_task->group_task_id = $groupTaskId;
         $pending_task->task_id = $taskDescription->id;
         $pending_task->duration = $taskDescription['duration'];
@@ -220,7 +220,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->state_pending_task_id = StatePendingTask::IN_PROGRESS;
             $pending_task->datetime_start = date('Y-m-d H:i:s');
             $pending_task->save();
-            $detail_task = $this->taskRepository->getById($pending_task['task_id']);
+            $detail_task = $this->taskRepository->getById([], $pending_task['task_id']);
             $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
             $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
@@ -326,7 +326,7 @@ class PendingTaskRepository extends Repository {
     public function addPendingTask($request){
         $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))
                         ->get();
-        $task = $this->taskRepository->getById($request->input('task_id'));
+        $task = $this->taskRepository->getById([], $request->input('task_id'));
         $pendingTask = new PendingTask();
         $pendingTask->task_id = $task['id'];
         $pendingTask->vehicle_id = $request->input('vehicle_id');
