@@ -14,7 +14,7 @@ class TaskReservationRepository {
 
     public function create($request_id, $tasks, $vehicle_id){
         foreach($tasks as $task){
-            $task_save = $this->taskRepository->getById($task['task_id']);
+            $task_save = $this->taskRepository->getById([], $task['task_id']);
             $task_reservation = new TaskReservation();
             $task_reservation->request_id = $request_id;
             $task_reservation->vehicle_id = $vehicle_id;
