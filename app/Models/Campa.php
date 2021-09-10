@@ -57,6 +57,10 @@ class Campa extends Model
         return $query->where('province_id', $provinceId);
     }
 
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
+
     public function scopeByProvinces($query, array $ids){
         return $query->whereIn('province_id', $ids);
     }
