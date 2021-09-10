@@ -52,4 +52,8 @@ class Task extends Model
     public function scopeBySubStates($query, array $ids){
         return $query->whereIn('sub_state_id', $ids);
     }
+
+    public function scopeByCompany($query, array $ids){
+        return $query->whereIn('company_id', $ids);
+    }
 }
