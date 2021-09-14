@@ -9,6 +9,7 @@ use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
+use App\Models\Vehicle;
 use App\Models\VehiclePicture;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskReservationRepository;
@@ -336,6 +337,26 @@ class PendingTaskRepository extends Repository {
         $pendingTask->save();
 
         return ['pending_task' => $pendingTask];
+    }
+
+    public function addPendingTaskFinished($request){
+        $vehicle = Vehicle::with(['lastGroupTask.pendingTasks'])
+                    ->findOrFail($request->input('vehicle_id'));
+        $task = $this->taskRepository->getById([], $request->input('task_id'));
+        $pendingTask = new PendingTask();
+        $pendingTask->vehicle_id = $vehicle->id;
+        $pendingTask->task_id = $task->id;
+        $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+        $pendingTask->group_task_id = $vehicle['lastGroupTask']['id'];
+        $pendingTask->duration = $task['duration'];
+        $pendingTask->order = 1;
+        $pendingTask->approved = true;
+        $pendingTask->status_color = 'green';
+        $pendingTask->datetime_pending = date('Y-m-d');
+        $pendingTask->datetime_start = date('Y-m-d');
+        $pendingTask->datetime_finish = date('Y-m-d');
+        $pendingTask->save();
+        return $pendingTask;
     }
 
 }
