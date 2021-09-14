@@ -141,6 +141,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pending-tasks/getall', 'PendingTaskController@getAll');
         $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
         $router->post('/pending-tasks', 'PendingTaskController@create');
+        $router->post('/pending-tasks/add-pending-task-finished', 'PendingTaskController@addPendingTaskFinished');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
@@ -404,5 +405,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Download
          */
+
+
     });
 });
