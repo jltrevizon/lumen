@@ -19,4 +19,8 @@ class TaskFilter extends ModelFilter
     public function ids($ids){
         return $this->byIds($ids);
     }
+
+    public function companies($ids){
+        return $this->byCompany($ids);
+    }
 }

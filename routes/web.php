@@ -275,6 +275,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
 
         /**
+         * Vehicle model
+         */
+        $router->get('/vehicle-models','VehicleModelController@getAll');
+
+        /**
          * Vehicle Picture
          */
         $router->post('/vehicle-pictures', 'VehiclePictureController@create');

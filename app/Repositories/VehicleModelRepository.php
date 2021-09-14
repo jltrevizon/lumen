@@ -13,6 +13,10 @@ class VehicleModelRepository {
 
     }
 
+    public function getAll(){
+        return VehicleModel::all();
+    }
+
     public function getByNameFromExcel($brand_id, $vehicle_name){
         try {
             $vehicle_model = VehicleModel::where('name', $vehicle_name)
