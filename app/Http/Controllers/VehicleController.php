@@ -141,4 +141,8 @@ class VehicleController extends Controller
 
         return $this->getDataResponse($this->vehicleRepository->vehiclesByState($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function changeSubState(Request $request){
+        return $this->updateDataResponse($this->vehicleRepository->changeSubState($request), HttpFoundationResponse::HTTP_OK);
+    }
 }

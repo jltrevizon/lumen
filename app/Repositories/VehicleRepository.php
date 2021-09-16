@@ -242,4 +242,17 @@ public function verifyPlateReception($request){
             ->get();
     }
 
+    public function changeSubState($request){
+        $vehicles = $request->input('vehicles');
+        Vehicle::whereIn('id', collect($vehicles)->pluck('id')->toArray())
+                ->chunk(200, function ($vehicles) use($request) {
+                    foreach($vehicles as $vehicle){
+                        $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
+                    }
+                });
+        return [
+            'message' => 'Vehicles updated!'
+        ];
+    }
+
 }
