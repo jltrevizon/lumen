@@ -22,6 +22,11 @@ class CampaRepository extends Repository {
                 ->findOrFail($id);
     }
 
+    public function getByName($name){
+        return Campa::where('name', $name)
+                    ->first();
+    }
+
     public function create($request){
         $campa = Campa::create($request->all());
         return $campa;

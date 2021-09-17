@@ -34,7 +34,7 @@ class TypeModelOrderSeeder extends Seeder
                 'name' => '2D'
             ],
             [
-                'name' => 'CARFLEX'
+                'name' => 'ALD Flex'
             ]
         ];
     }

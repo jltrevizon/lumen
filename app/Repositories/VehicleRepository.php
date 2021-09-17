@@ -70,11 +70,13 @@ class VehicleRepository extends Repository {
         $vehicles = $request->input('vehicles');
         foreach($vehicles as $vehicle){
             $new_vehicle = Vehicle::create($vehicle);
+            $campa = $vehicle['campa'] ? $this->campaRepository->getByName($vehicle['campa']) : null;
+            $new_vehicle->campa_id = $campa ? $campa['id'] : null;
             $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
             if($category) $new_vehicle->category_id = $category['id'];
-            $brand = $this->brandRepository->getByNameFromExcel($vehicle['brand']);
-            $vehicle_model = $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']);
-            $new_vehicle->vehicle_model_id = $vehicle_model['id'];
+            $brand = $vehicle['brand'] ? $this->brandRepository->getByNameFromExcel($vehicle['brand']) : null;
+            $vehicle_model = $brand ? $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']) : null;
+            $new_vehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
             $new_vehicle->company_id = Company::ALD;
             $new_vehicle->save();
         }
