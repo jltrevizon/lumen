@@ -95,7 +95,7 @@ class PendingTaskRepository extends Repository {
     public function pendingTasksFilter($request){
         return PendingTask::with($this->getWiths($request->with))
                         ->filter($request->all())
-                        ->paginate();
+                        ->paginate($request->input('per_page'));
     }
 
     public function getById($request, $id){
