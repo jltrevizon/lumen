@@ -167,7 +167,7 @@ class PendingTaskRepository extends Repository {
 
     public function createIncidence($request){
         $incidence = $this->incidenceRepository->createIncidence($request);
-        $pending_task = PendingTask::findOrFail('id', $request->input('pending_task_id'));
+        $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
         $pending_task->status_color = "Red";
         $pending_task->save();
         $this->incidencePendingTaskRepository->create($incidence->id, $pending_task->id);
