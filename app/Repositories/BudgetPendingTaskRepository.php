@@ -28,6 +28,6 @@ class BudgetPendingTaskRepository extends Repository {
     public function getAll($request){
         return BudgetPendingTask::with($this->getWiths($request->with))
                     ->filter($request->all())
-                    ->get();
+                    ->paginate();
     }
 }
