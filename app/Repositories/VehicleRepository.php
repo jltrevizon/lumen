@@ -80,6 +80,7 @@ class VehicleRepository extends Repository {
             $brand = $vehicle['brand'] ? $this->brandRepository->getByNameFromExcel($vehicle['brand']) : null;
             $vehicle_model = $brand ? $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']) : null;
             $new_vehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
+            $new_vehicle->sub_state_id = $vehicle['ubication'] ? SubState::CAMPA : null;
             $new_vehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
             $new_vehicle->company_id = Company::ALD;
             $new_vehicle->save();
