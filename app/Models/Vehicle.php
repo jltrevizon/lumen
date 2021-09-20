@@ -33,6 +33,7 @@ class Vehicle extends Model
         'ubication',
         'plate',
         'vehicle_model_id',
+        'color',
         'type_model_order_id',
         'kms',
         'priority',
@@ -132,6 +133,10 @@ class Vehicle extends Model
 
     public function vehicleModel(){
         return $this->belongsTo(VehicleModel::class);
+    }
+
+    public function scopeByWhereHasBudgetPendingTask($query){
+        return $query->whereHas('pendingtasks.budgetPendingTasks');
     }
 
     public function scopeByCampasOfUser($query, array $campasIds){

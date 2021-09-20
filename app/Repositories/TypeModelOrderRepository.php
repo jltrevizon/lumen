@@ -12,4 +12,9 @@ class TypeModelOrderRepository {
         return TypeModelOrder::all();
     }
 
+    public function getByName($name){
+        return TypeModelOrder::where('name', $name)
+                ->first();
+    }
+
 }

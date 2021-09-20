@@ -71,4 +71,8 @@ class VehicleFilter extends ModelFilter
         return $this->byCampaNull();
     }
 
+    public function whereHasBudgetPendingTask(){
+        return $this->byWhereHasBudgetPendingTask();
+    }
+
 }
