@@ -35,6 +35,7 @@ class VehicleRepository extends Repository {
         GroupTaskRepository $groupTaskRepository,
         BrandRepository $brandRepository,
         VehicleModelRepository $vehicleModelRepository,
+        TypeModelOrderRepository $typeModelOrderRepository,
         CampaRepository $campaRepository)
     {
         $this->userRepository = $userRepository;
@@ -45,6 +46,7 @@ class VehicleRepository extends Repository {
         $this->brandRepository = $brandRepository;
         $this->vehicleModelRepository = $vehicleModelRepository;
         $this->campaRepository = $campaRepository;
+        $this->typeModelOrderRepository = $typeModelOrderRepository;
     }
 
     public function getAll($request){
@@ -71,11 +73,13 @@ class VehicleRepository extends Repository {
         foreach($vehicles as $vehicle){
             $new_vehicle = Vehicle::create($vehicle);
             $campa = $vehicle['campa'] ? $this->campaRepository->getByName($vehicle['campa']) : null;
+            $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
             $new_vehicle->campa_id = $campa ? $campa['id'] : null;
             $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
             if($category) $new_vehicle->category_id = $category['id'];
             $brand = $vehicle['brand'] ? $this->brandRepository->getByNameFromExcel($vehicle['brand']) : null;
             $vehicle_model = $brand ? $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']) : null;
+            $new_vehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
             $new_vehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
             $new_vehicle->company_id = Company::ALD;
             $new_vehicle->save();

@@ -35,6 +35,15 @@ class TypeModelOrderSeeder extends Seeder
             ],
             [
                 'name' => 'ALD Flex'
+            ],
+            [
+                'name' => 'CARMARKET'
+            ],
+            [
+                'name' => 'DEVOLUCIÓN'
+            ],
+            [
+                'name' => 'VO'
             ]
         ];
     }
