@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Campa;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -44,5 +43,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(TaxSeeder::class);
         $this->call(VehicleSeeder::class);
+        $this->call(TypeReportSeeder::class);
     }
 }
