@@ -2,19 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Mail\EntriesVehicles as MailEntriesVehicles;
-use Faker\Core\File;
+use App\Mail\StockVehicles as MailStockVehicles;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
 
-class EntriesVehicles extends Command
+class StockVehicles extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'entry:vehicles';
+    protected $signature = 'stock:vehicles';
 
     /**
      * The console command description.
@@ -38,8 +36,8 @@ class EntriesVehicles extends Command
      *
      * @return mixed
      */
-    public function handle(MailEntriesVehicles $entriesVehicles)
+    public function handle(MailStockVehicles $stockVehicles)
     {
-        $entriesVehicles->build();
+        $stockVehicles->build();
     }
 }

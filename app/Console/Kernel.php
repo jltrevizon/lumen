@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\SeeStatusPendingTask::class,
         \App\Console\Commands\DownloadVehicles::class,
         \App\Console\Commands\EntriesVehicles::class,
+        \App\Console\Commands\StockVehicles::class,
     ];
 
     /**
