@@ -95,7 +95,7 @@ class PendingTaskRepository extends Repository {
     public function pendingTasksFilter($request){
         return PendingTask::with($this->getWiths($request->with))
                         ->filter($request->all())
-                        ->paginate();
+                        ->paginate($request->input('per_page'));
     }
 
     public function getById($request, $id){
@@ -167,7 +167,7 @@ class PendingTaskRepository extends Repository {
 
     public function createIncidence($request){
         $incidence = $this->incidenceRepository->createIncidence($request);
-        $pending_task = PendingTask::findOrFail('id', $request->input('pending_task_id'));
+        $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
         $pending_task->status_color = "Red";
         $pending_task->save();
         $this->incidencePendingTaskRepository->create($incidence->id, $pending_task->id);

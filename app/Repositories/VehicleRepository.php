@@ -53,7 +53,7 @@ class VehicleRepository extends Repository {
         $user = $this->userRepository->getById($request, Auth::id());
         $vehicles = Vehicle::with($this->getWiths($request->with))
                     ->byCampasOfUser($user->campas->pluck('id')->toArray())
-                    ->paginate();
+                    ->paginate($request->input('per_page'));
         return [ 'vehicles' => $vehicles ];
     }
 
@@ -64,7 +64,7 @@ class VehicleRepository extends Repository {
     public function filterVehicle($request) {
         $vehicles = Vehicle::with($this->getWiths($request->with))
                     ->filter($request->all())
-                    ->paginate();
+                    ->paginate($request->input('per_page'));
         return [ 'vehicles' => $vehicles ];
     }
 
@@ -188,7 +188,7 @@ public function verifyPlateReception($request){
                     ->noActiveOrPendingRequest()
                     ->byParameterDefleet($date_defleet, $variables->kms)
                     ->filter($request->all())
-                    ->paginate();
+                    ->paginate($request->input('per_page'));
     }
 
     public function delete($id) {
