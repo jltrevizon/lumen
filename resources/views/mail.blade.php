@@ -45,8 +45,8 @@
         <div class="row justify-content-md-center" style="justify-content: center !important;">
             <div class="col-md-8">
                 <p style="color: #8898aa !important; text-align: center !important;">
-                    Enviado por MKD Automotive<br>
-                    Av. de Bruselas, 16, 28108 Alcobendas, Madrid<br>
+                    Enviado por Grupo Mobius<br>
+                    Calle Anabel Segura, 7, 28108 Alcobendas, Madrid<br>
                     <a href="#" class="btn btn-link" style="font-weight: 400; text-decoration: none; color: #5e72e4;">Blog</a> •
                     <a href="#" class="btn btn-link" style="font-weight: 400; text-decoration: none; color: #5e72e4;">Políticas</a>
                 </p>

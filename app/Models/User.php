@@ -50,6 +50,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->belongsTo(TypeUserApp::class);
     }
 
+    public function peopleForReports(){
+        return $this->hasMany(PeopleForReport::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

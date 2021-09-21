@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\SeeStatusPendingTask::class,
         \App\Console\Commands\DownloadVehicles::class,
+        \App\Console\Commands\EntriesVehicles::class,
+        \App\Console\Commands\StockVehicles::class,
     ];
 
     /**
