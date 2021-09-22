@@ -127,6 +127,10 @@ class Vehicle extends Model
         return $this->hasMany(Budget::class);
     }
 
+    public function deliveryVehicles(){
+        return $this->hasMany(DeliveryVehicle::class);
+    }
+
     public function scopeByIds($query, $ids){
         return $query->whereIn('id', $ids);
     }

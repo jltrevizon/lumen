@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Exports\StockVehiclesExport;
+use App\Exports\DeliveryVehiclesExport;
 use App\Models\PeopleForReport;
 use App\Models\TypeReport;
 use Illuminate\Bus\Queueable;
@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
-class StockVehicles extends Mailable
+class DeliveryVehicles extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -34,20 +34,20 @@ class StockVehicles extends Mailable
     public function build()
     {
         $peopleForReport = PeopleForReport::with(['user'])
-                ->where('type_report_id', TypeReport::STOCK)
-                ->get();
+                    ->where('type_report_id', TypeReport::EXITS)
+                    ->get();
         $data = [
-            'title' => 'Stock de vehículos',
-            'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d-m-Y')
+            'title' => 'Salidas de vehículos',
+            'sub_title' => 'Adjunto se encuentra un documento con todas las salidas de vehículos de día ' . date('d-m-Y')
         ];
-        $receptions = new StockVehiclesExport();
-        $file = Excel::download($receptions, 'entradas.xlsx')->getFile();
-        foreach($peopleForReport as $user){
+        $deliveries = new DeliveryVehiclesExport();
+        $file = Excel::download($deliveries, 'salidas.xlsx')->getFile();
+        foreach($peopleForReport as $user) {
             Mail::send('report-generic', $data, function($message) use($user, $file){
                 $message->to($user['user']['email'], $user['user']['name']);
-                $message->subject('Stock de vehículos en campa');
+                $message->subject('Salidas de vehículos de la campa');
                 $message->from('inout@mkdautomotive.com', 'Focus');
-                $message->attach($file, ['as => entradas.xlsx']);
+                $message->attach($file, ['as => salidas.xlsx']);
             });
         }
         \unlink($file->getRealPath());
