@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BudgetPendingTask;
 use App\Models\Company;
 use App\Models\GroupTask;
 use App\Models\Incidence;
@@ -88,6 +89,13 @@ class PendingtaskTest extends TestCase
     }
 
     /** @test */
+    public function it_has_many_budget_pending_tasks()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->pendingTask->budgetPendingTasks());
+        $this->assertInstanceOf(BudgetPendingTask::class, $this->pendingTask->budgetPendingTasks()->getModel());
+    }
+
+    /** @test */
     public function should_search_by_campas()
     {
         $this->assertInstanceOf(Builder::class, $this->pendingTask->byCampas([]));
@@ -109,5 +117,29 @@ class PendingtaskTest extends TestCase
     public function should_search_by_plate()
     {
         $this->assertInstanceOf(Builder::class, $this->pendingTask->byPlate('0000AAA'));
+    }
+
+    /** @test */
+    public function should_search_by_vehicle_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byVehicleIds([]));
+    }
+
+    /** @test */
+    public function should_search_by_task_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byTaskIds([]));
+    }
+
+    /** @test */
+    public function should_search_by_state_pending_task_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byStatePendingTaskIds([]));
+    }
+
+    /** @test */
+    public function should_search_by_group_task_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byGroupTaskIds([]));
     }
 }

@@ -53,6 +53,12 @@ class TaskTest extends TestCase
     }
 
     /** @test */
+    public function should_search_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->task->byIds([]));
+    }
+
+    /** @test */
     public function should_search_by_type_task()
     {
         $this->assertInstanceOf(Builder::class, $this->task->byTypeTasks([]));
@@ -62,5 +68,11 @@ class TaskTest extends TestCase
     public function should_search_by_sub_states()
     {
         $this->assertInstanceOf(Builder::class, $this->task->bySubStates([]));
+    }
+
+    /** @test */
+    public function should_search_by_company()
+    {
+        $this->assertInstanceOf(Builder::class, $this->task->byCompany([]));
     }
 }

@@ -263,7 +263,8 @@ class PendingTaskRepository extends Repository {
             $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->save();
-            $pending_task_next = PendingTask::where('group_task_id', $pending_task->group_task_id)
+            $pending_task_next = PendingTask::with(['task'])
+                                    ->where('group_task_id', $pending_task->group_task_id)
                                     ->where('order','>',$pending_task->order)
                                     ->where('approved', true)
                                     ->orderBy('order', 'asc')
@@ -272,6 +273,7 @@ class PendingTaskRepository extends Repository {
                 $pending_task_next->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
                 $pending_task_next->save();
+                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $pending_task_next['task']['sub_state_id']);
                 return $this->getPendingOrNextTask($request);
             } else {
                 $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar

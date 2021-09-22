@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BudgetPendingTask extends Model
 {
 
-    use Filterable;
+    use Filterable, HasFactory;
 
     protected $fillable = [
         'pending_task_id',
