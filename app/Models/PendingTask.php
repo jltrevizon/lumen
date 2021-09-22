@@ -25,6 +25,7 @@ class PendingTask extends Model
         'duration',
         'order',
         'approved',
+        'observations',
         'code_authorization',
         'status_color',
         'datetime_pending',
