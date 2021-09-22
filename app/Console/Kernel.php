@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\DownloadVehicles::class,
         \App\Console\Commands\EntriesVehicles::class,
         \App\Console\Commands\StockVehicles::class,
+        \App\Console\Commands\DeliveryVehicles::class,
     ];
 
     /**
@@ -29,6 +30,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('status:pendingtask')->everyMinute();
         $schedule->command('download:vehicles')->everyMinute();
+        $schedule->command('entry:vehicles')->everyMinute();
+        $schedule->command('stock:vehicles')->everyMinute();
+        $schedule->command('delivery:vehicles')->everyMinute();
     }
 
 

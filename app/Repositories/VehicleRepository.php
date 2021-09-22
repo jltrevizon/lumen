@@ -7,6 +7,7 @@ use App\AditionalModels\AditionalsModels;
 use App\EloquentFunctions\EloquentFunctions;
 use App\Models\Company;
 use App\Models\DefleetVariable;
+use App\Models\DeliveryVehicle;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
@@ -36,6 +37,7 @@ class VehicleRepository extends Repository {
         BrandRepository $brandRepository,
         VehicleModelRepository $vehicleModelRepository,
         TypeModelOrderRepository $typeModelOrderRepository,
+        DeliveryVehicleRepository $deliveryVehicleRepository,
         CampaRepository $campaRepository)
     {
         $this->userRepository = $userRepository;
@@ -47,6 +49,7 @@ class VehicleRepository extends Repository {
         $this->vehicleModelRepository = $vehicleModelRepository;
         $this->campaRepository = $campaRepository;
         $this->typeModelOrderRepository = $typeModelOrderRepository;
+        $this->deliveryVehicleRepository = $deliveryVehicleRepository;
     }
 
     public function getAll($request){
@@ -254,6 +257,9 @@ public function verifyPlateReception($request){
         Vehicle::whereIn('id', collect($vehicles)->pluck('id')->toArray())
                 ->chunk(200, function ($vehicles) use($request) {
                     foreach($vehicles as $vehicle){
+                        if($request->input('sub_state_id') == SubState::ALQUILADO){
+                            $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'));
+                        }
                         $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
                     }
                 });
