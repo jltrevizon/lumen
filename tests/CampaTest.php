@@ -3,6 +3,7 @@
 use App\Models\Campa;
 use App\Models\Company;
 use App\Models\Province;
+use App\Models\Reception;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -62,6 +63,13 @@ class CampaTest extends TestCase
     }
 
     /** @test */
+    public function it_has_many_receptions()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->campa->receptions());
+        $this->assertInstanceOf(Reception::class, $this->campa->receptions()->getModel());
+    }
+
+    /** @test */
     public function search_by_company()
     {
         $this->assertInstanceOf(Builder::class, $this->campa->byCompany(1));
@@ -71,6 +79,12 @@ class CampaTest extends TestCase
     public function search_by_companies()
     {
         $this->assertInstanceOf(Builder::class, $this->campa->byCompanies([]));
+    }
+
+    /** @test */
+    public function search_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byIds([]));
     }
 
     /** @test */

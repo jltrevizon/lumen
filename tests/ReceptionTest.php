@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Accessory;
+use App\Models\Campa;
 use App\Models\Reception;
 use App\Models\Vehicle;
 use App\Models\VehiclePicture;
@@ -42,4 +43,11 @@ class ReceptionTest extends TestCase
          $this->assertInstanceOf(HasMany::class, $this->reception->vehiclePictures());
          $this->assertInstanceOf(VehiclePicture::class, $this->reception->vehiclePictures()->getModel());
      }
+
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->reception->campa());
+        $this->assertInstanceOf(Campa::class, $this->reception->campa()->getModel());
+    }
 }
