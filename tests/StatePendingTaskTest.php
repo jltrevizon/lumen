@@ -22,7 +22,7 @@ class StatePendingTaskTest extends TestCase
     /** @test */
     public function it_has_many_pending_tasks()
     {
-        $this->assertInstanceOf(HasMany::class, $this->statePendingTask->pending_tasks());
-        $this->assertInstanceOf(PendingTask::class, $this->statePendingTask->pending_tasks()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->statePendingTask->pendingTasks());
+        $this->assertInstanceOf(PendingTask::class, $this->statePendingTask->pendingTasks()->getModel());
     }
 }

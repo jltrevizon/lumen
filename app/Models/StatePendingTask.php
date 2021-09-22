@@ -19,7 +19,7 @@ class StatePendingTask extends Model
         'name'
     ];
 
-    public function pending_tasks(){
+    public function pendingTasks(){
         return $this->hasMany(PendingTask::class, 'state_pending_task_id');
     }
 }

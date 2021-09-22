@@ -2,11 +2,13 @@
 
 use App\Models\Campa;
 use App\Models\Company;
+use App\Models\PeopleForReport;
 use App\Models\Role;
 use App\Models\TypeUserApp;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -48,5 +50,12 @@ class UserTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->user->type_user_app());
         $this->assertInstanceOf(TypeUserApp::class, $this->user->type_user_app()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_people_for_reports()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->user->peopleForReports());
+        $this->assertInstanceOf(PeopleForReport::class, $this->user->peopleForReports()->getModel());
     }
 }
