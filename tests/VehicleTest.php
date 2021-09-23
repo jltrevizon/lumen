@@ -4,6 +4,7 @@ use App\Models\Budget;
 use App\Models\Campa;
 use App\Models\Category;
 use App\Models\Company;
+use App\Models\DeliveryVehicle;
 use App\Models\GroupTask;
 use App\Models\Operation;
 use App\Models\Order;
@@ -14,6 +15,7 @@ use App\Models\Request;
 use App\Models\Reservation;
 use App\Models\SubState;
 use App\Models\TradeState;
+use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use App\Models\VehicleExit;
 use App\Models\VehicleModel;
@@ -108,6 +110,13 @@ class VehicleTest extends TestCase
          $this->assertInstanceOf(Reception::class, $this->vehicle->receptions()->getModel());
      }
 
+     /** @test */
+     public function it_has_belongs_to_type_model_order()
+     {
+         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->typeModelOrder());
+         $this->assertInstanceOf(TypeModelOrder::class, $this->vehicle->typeModelOrder()->getModel());
+     }
+
       /** @test */
     public function it_belongs_to_trade_state()
     {
@@ -144,6 +153,13 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function shoul_search_last_reception()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->vehicle->lastReception());
+        $this->assertInstanceOf(Reception::class, $this->vehicle->lastReception()->getModel());
+    }
+
+    /** @test */
     public function it_has_many_orders()
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->orders());
@@ -158,6 +174,19 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function it_has_many_to_delivery_vehicles()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->deliveryVehicles());
+        $this->assertInstanceOf(DeliveryVehicle::class, $this->vehicle->deliveryVehicles()->getModel());
+    }
+
+    /** @test */
+    public function should_search_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byIds([]));
+    }
+
+    /** @test */
     public function it_belongs_to_vehicle_model()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->vehicleModel());
@@ -165,9 +194,21 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function should_search_where_has_budget_pending_task()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->whereHasBudgetPendingTask([]));
+    }
+
+    /** @test */
     public function search_by_campas_of_user()
     {
         $this->assertInstanceOf(Builder::class, $this->vehicle->byCampasOfUser([]));
+    }
+
+    /** @test */
+    public function search_by_campa_null()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byCampaNull());
     }
 
     /** @test */

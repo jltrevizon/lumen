@@ -21,10 +21,14 @@ class AccessoryRepository {
                 $new_accessory->name = $accessory['name'];
                 $new_accessory->save();
             }
+            return ['message' => 'Accessories created!'];
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
+    }
 
+    public function getAll(){
+        return Accessory::all();
     }
 
 }

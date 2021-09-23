@@ -52,9 +52,6 @@ class GroupTaskRepository extends Repository {
     }
 
     public function approvedGroupTaskToAvailable($request){
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        $vehicle->sub_state_id = SubState::CAMPA;
-        $vehicle->save();
         $group_task = GroupTask::findOrFail($request->input('group_task_id'));
         $group_task->approved_available = 1;
         $group_task->approved = 1;
