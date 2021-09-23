@@ -404,8 +404,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/budget-pending-task', 'BudgetPendingTaskController@getAll');
 
         /**
-         * Download
+         * Questionnaire
          */
+        $router->get('/questionnaire/{id}', 'QuestionnaireController@getById');
 
 
     });
