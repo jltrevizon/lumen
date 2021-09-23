@@ -68,7 +68,6 @@ class PendingTaskAldController extends Controller
             if($task['task_order'] == 1){
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
-                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CHECK);
             }
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
@@ -101,6 +100,7 @@ class PendingTaskAldController extends Controller
         $pending_task->duration = $taskDescription['duration'];
         $pending_task->order = 100;
         $pending_task->save();
+        $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CHECK);
     }
 
     public function updatePendingTask(Request $request){
