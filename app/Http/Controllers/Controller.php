@@ -64,4 +64,8 @@ class Controller extends BaseController
             return $e->getMessage();
         }
     }
+
+    public function getWiths($elements){
+        return collect($elements ?? [])->toArray();
+    }
 }
