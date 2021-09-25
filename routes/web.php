@@ -408,6 +408,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/questionnaire/{id}', 'QuestionnaireController@getById');
 
-
+        /**
+         * Login logs
+         */
+        $router->post('/login-logs', 'LoginLogController@create');
+        $router->post('/login-logs/by-user', 'LoginLogController@getUser');
     });
 });
