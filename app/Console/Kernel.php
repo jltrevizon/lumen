@@ -30,9 +30,12 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('status:pendingtask')->everyMinute();
         $schedule->command('download:vehicles')->everyMinute();
-        $schedule->command('entry:vehicles')->everyMinute();
-        $schedule->command('stock:vehicles')->everyMinute();
-        $schedule->command('delivery:vehicles')->everyMinute();
+        $schedule->command('stock:vehicles')->dailyAt('08:30');
+        $schedule->command('entry:vehicles')->dailyAt('08:30');
+        $schedule->command('delivery:vehicles')->dailyAt('08:30');
+        $schedule->command('entry:vehicles')->dailyAt('13:30');
+        $schedule->command('stock:vehicles')->dailyAt('13:30');
+        $schedule->command('delivery:vehicles')->dailyAt('13:30');
     }
 
 
