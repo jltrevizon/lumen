@@ -90,6 +90,13 @@ class VehicleRepository extends Repository {
                 $new_vehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
                 $new_vehicle->company_id = Company::ALD;
                 $new_vehicle->save();
+            } else {
+                $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
+                $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
+                if($category) $existVehicle->category_id = $category['id'];
+                $existVehicle->color = $vehicle['color'];
+                $existVehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
+                $existVehicle->save();
             }
         }
         return ['message' => 'Vehicles created!'];
