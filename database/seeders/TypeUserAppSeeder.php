@@ -55,11 +55,11 @@ class TypeUserAppSeeder extends Seeder
             ],
             [
                 'name' => 'Administrativo taller mecánica',
-                'descripción' => 'Puede mirar las tareas pendientes de los vehículos y subir presupuestos para las tareas de taller de mecánica'
+                'description' => 'Puede mirar las tareas pendientes de los vehículos y subir presupuestos para las tareas de taller de mecánica'
             ],
             [
                 'name' => 'Administrativo taller carrocería',
-                'descripción' => 'Puede mirar las tareas pendientes de los vehículos y subir presupuestos para las tareas de taller carrocería'
+                'description' => 'Puede mirar las tareas pendientes de los vehículos y subir presupuestos para las tareas de taller carrocería'
             ]
         ];
     }
