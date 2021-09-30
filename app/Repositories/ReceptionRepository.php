@@ -17,6 +17,9 @@ class ReceptionRepository {
     }
 
     public function create($request){
+        Reception::where('vehicle_id', $request->input('vehicle_id'))
+            ->whereDate('created_at', date('Y-m-d'))
+            ->delete();
         $user = $this->userRepository->getById([], Auth::id());
         $reception = new Reception();
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
