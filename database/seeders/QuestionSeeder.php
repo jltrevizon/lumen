@@ -20,7 +20,7 @@ class QuestionSeeder extends Seeder
             Question::create([
                 'company_id' => $question['company_id'],
                 'question' => $question['question'],
-                'description' => $question['description']
+                'description' => $question['question']
             ]);
         }
     }
