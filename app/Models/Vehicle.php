@@ -139,6 +139,70 @@ class Vehicle extends Model
         return $this->belongsTo(VehicleModel::class);
     }
 
+    public function scopeByRole($query, $roleId){
+        if ($roleId == Role::MANAGER_MECHANIC) {
+            return $this->mechanic($query);
+        }
+
+        if ($roleId == Role::MANAGER_CHAPA) {
+            return $this->chapa($query);
+        }
+    }
+
+    private function mechanic($query){
+        return $query->with(['vehicleModel.brand','lastGroupTask.pendingTasks.task.subState','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.vehicle.vehicleModel.brand',
+            'lastGroupTask.pendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
+            'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.statePendingTask',
+            'lastGroupTask.pendingTasks' => function ($query) {
+                return $query->where(function($query){
+                    return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+                })
+                ->whereHas('task', function($query){
+                    return $query->where('sub_state_id', SubState::MECANICA);
+                });
+            }
+        ])
+        ->whereHas('pendingTasks', function(Builder $builder){
+            return $builder->where(function($query){
+                $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            })
+            ->whereHas('task', function(Builder $builder){
+                return $builder->where('sub_state_id', SubState::MECANICA);
+            });
+        });
+    }
+
+    private function chapa($query){
+        return $query->with(['vehicleModel.brand','lastGroupTask.pendingTasks.task.subState','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.vehicle.vehicleModel.brand',
+        'lastGroupTask.pendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
+        'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.statePendingTask',
+        'lastGroupTask.pendingTasks' => function ($query) {
+                return $query->where(function($query){
+                    return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                        ->orWhereNull('state_pending_task_id');
+                })
+                ->whereHas('task', function($query){
+                    return $query->where('sub_state_id', SubState::MECANICA)
+                        ->orWhere('sub_state_id', SubState::CHAPA);
+                });
+            }
+        ])
+        ->whereHas('pendingTasks', function(Builder $builder){
+            return $builder->where(function($query){
+                $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                    ->orWhereNull('state_pending_task_id');
+            })
+            ->whereHas('task', function(Builder $builder){
+                return $builder->where('sub_state_id', SubState::MECANICA)
+                    ->orWhere('sub_state_id', SubState::CHAPA);
+            });
+        });
+    }
+
     public function scopeByWhereHasBudgetPendingTask($query){
         return $query->whereHas('pendingtasks.budgetPendingTasks');
     }
