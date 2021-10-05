@@ -312,6 +312,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Questions answer
          */
         $router->post('/question-answers', 'QuestionAnswerController@create');
+        $router->post('/question-answers/checklist', 'QuestionAnswerController@createChecklist');
         $router->put('/question-answers/update/{id}', 'QuestionAnswerController@update');
 
         /**
