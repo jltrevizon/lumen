@@ -22,4 +22,8 @@ class PendingTaskFilter extends ModelFilter
         return $this->byGroupTaskIds($ids);
     }
 
+    public function ids($ids){
+        return $this->byIds($ids);
+    }
+
 }
