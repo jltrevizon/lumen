@@ -12,6 +12,7 @@ class Budget extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'order_id',
         'sub_total',
         'tax',
         'total'
