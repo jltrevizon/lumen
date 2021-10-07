@@ -42,7 +42,6 @@ class PendingTaskAldController extends Controller
             $groupTask = $this->groupTaskRepository->create($request);
             $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
             $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
-            $this->createTaskUbication($request->input('vehicle_id'), $groupTask);
             $this->vehicleRepository->updateBack($request);
 
             $user = $this->userRepository->getById($request, Auth::id());
@@ -89,18 +88,6 @@ class PendingTaskAldController extends Controller
         $pending_task->duration = $taskDescription['duration'];
         $pending_task->order = 99;
         $pending_task->save();
-    }
-
-    private function createTaskUbication($vehicle_id, $group_task){
-        $pending_task = new PendingTask();
-        $pending_task->vehicle_id = $vehicle_id;
-        $taskDescription = $this->taskRepository->getById([], Task::UBICATION);
-        $pending_task->group_task_id = $group_task->id;
-        $pending_task->task_id = $taskDescription['id'];
-        $pending_task->duration = $taskDescription['duration'];
-        $pending_task->order = 100;
-        $pending_task->save();
-        $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CHECK);
     }
 
     public function updatePendingTask(Request $request){
