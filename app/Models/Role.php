@@ -17,6 +17,8 @@ class Role extends Model
     const RECEPTION = 5;
     const COMMERCIAL = 6;
     const CONTROL = 7;
+    const MANAGER_MECHANIC = 8;
+    const MANAGER_CHAPA = 9;
 
     protected $fillable = [
         'description'

@@ -17,6 +17,7 @@ class InvaratBudgetRepository extends Repository {
     public function create($request){
         $budget = new Budget();
         $budget->vehicle_id = $request->input('vehicle_id');
+        $budget->order_id = $request->input('order_id');
         $budget->save();
         $this->invaratBudgetLineRepository->create($request->input('budget_lines'), $budget->id);
         return $this->calculateTotals($budget->id);

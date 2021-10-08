@@ -352,4 +352,10 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(Builder::class, $this->vehicle->defleetBetweenDateApproved('2021-01-01','2021-12-31'));
     }
+
+    /** @test */
+    public function should_search_pending_task_in_progress_or_pending()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->withPendingTaskOrProgress());
+    }
 }

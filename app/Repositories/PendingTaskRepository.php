@@ -49,6 +49,7 @@ class PendingTaskRepository extends Repository {
 
     public function getAll($request){
         return PendingTask::with($this->getWiths($request->with))
+                    ->filter($request->all())
                     ->get();
     }
 
@@ -220,6 +221,7 @@ class PendingTaskRepository extends Repository {
         if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->state_pending_task_id = StatePendingTask::IN_PROGRESS;
             $pending_task->datetime_start = date('Y-m-d H:i:s');
+            $pending_task->user_start_id = Auth::id();
             $pending_task->save();
             $detail_task = $this->taskRepository->getById([], $pending_task['task_id']);
             $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
@@ -261,6 +263,7 @@ class PendingTaskRepository extends Repository {
         $vehicle = $this->vehicleRepository->getById($request, $pending_task['vehicle_id']);
         if($pending_task->state_pending_task_id == StatePendingTask::IN_PROGRESS){
             $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+            $pending_task->user_end_id = Auth::id();
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->save();
             $pending_task_next = PendingTask::with(['task'])
@@ -292,6 +295,7 @@ class PendingTaskRepository extends Repository {
                 $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
+                $pending_task->user_end_id = Auth::id();
                 $pending_task->save();
                 $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); //Cuando el vehículo se ubica cambia el estado a disponible
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){

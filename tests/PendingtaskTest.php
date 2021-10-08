@@ -9,6 +9,7 @@ use App\Models\PendingTask;
 use App\Models\PendingTaskCanceled;
 use App\Models\StatePendingTask;
 use App\Models\Task;
+use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VehicleExit;
 use Illuminate\Database\Eloquent\Builder;
@@ -96,6 +97,18 @@ class PendingtaskTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_user_start(){
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->userStart());
+        $this->assertInstanceOf(User::class, $this->pendingTask->userStart()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_user_end(){
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->userEnd());
+        $this->assertInstanceOf(User::class, $this->pendingTask->userEnd()->getModel());
+    }
+
+    /** @test */
     public function should_search_by_campas()
     {
         $this->assertInstanceOf(Builder::class, $this->pendingTask->byCampas([]));
@@ -141,5 +154,10 @@ class PendingtaskTest extends TestCase
     public function should_search_by_group_task_ids()
     {
         $this->assertInstanceOf(Builder::class, $this->pendingTask->byGroupTaskIds([]));
+    }
+
+    /** @test */
+    public function should_search_by_ids(){
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byIds([]));
     }
 }

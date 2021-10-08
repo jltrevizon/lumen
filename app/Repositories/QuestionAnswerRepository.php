@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\QuestionAnswer;
+use App\Models\Questionnaire;
 use Exception;
 
 class QuestionAnswerRepository {
@@ -37,6 +38,37 @@ class QuestionAnswerRepository {
         }
         return [
             'message' => 'Ok'
+        ];
+    }
+
+    public function createChecklist($request){
+        $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
+        $questions = $request->input('questions');
+        foreach($questions as $question){
+            $questionAnswer = new QuestionAnswer();
+            $questionAnswer->questionnaire_id = $questionnaire;
+            $questionAnswer->question_id = $question['question_id'];
+            $questionAnswer->response = $question['response'];
+            $questionAnswer->description = $question['description'];
+            $questionAnswer->save();
+        }
+        $questionnaireComplete = Questionnaire::with(['questionAnswers.question']) 
+                ->findOrFail($questionnaire);
+        $client = new \GuzzleHttp\Client();
+        $response = $client->post(
+            'https://devgsp20.invarat.com/api/createChecklist',
+            [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Zm9jdXM6aW52YXJhdGZvY3Vz'
+                ],
+                'body' => json_encode($questionnaireComplete)
+            ]
+        );
+        return [
+            'message' => 'Ok',
+            'message_gsp' => $response
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Filters\Base\BaseFilter\BaseFilter;
+use App\Models\Role;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -73,6 +74,10 @@ class VehicleFilter extends ModelFilter
 
     public function whereHasBudgetPendingTask(){
         return $this->byWhereHasBudgetPendingTask();
+    }
+
+    public function byUserRole($roleId){
+        return $this->byRole($roleId);
     }
 
 }

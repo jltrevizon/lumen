@@ -28,6 +28,16 @@ class QuestionAnswerController extends Controller
         return $this->createDataResponse($this->questionAnswerRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
+    public function createChecklist(Request $request){
+
+        $this->validate($request, [
+            'vehicle_id' => 'required|integer',
+            'questions' => 'required'
+        ]);
+
+        return $this->createDataResponse($this->questionAnswerRepository->createChecklist($request), HttpFoundationResponse::HTTP_CREATED);
+    }
+
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->questionAnswerRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }

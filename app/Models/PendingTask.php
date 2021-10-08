@@ -21,6 +21,8 @@ class PendingTask extends Model
         'vehicle_id',
         'task_id',
         'state_pending_task_id',
+        'user_start_id',
+        'user_end_id',
         'group_task_id',
         'duration',
         'order',
@@ -69,6 +71,14 @@ class PendingTask extends Model
         return $this->hasMany(BudgetPendingTask::class);
     }
 
+    public function userStart(){
+        return $this->belongsTo(User::class, 'user_start_id');
+    }
+
+    public function userEnd(){
+        return $this->belongsTo(User::class, 'user_end_id');
+    }
+
     public function scopeByCampas($query, array $ids){
         return $query->whereHas('vehicle.campa', function (Builder $builder) use($ids){
             return $builder->whereIn('id', $ids);
@@ -106,5 +116,9 @@ class PendingTask extends Model
 
     public function scopeByGroupTaskIds($query,  array $ids){
         return $query->whereIn('group_task_id', $ids);
+    }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
     }
 }

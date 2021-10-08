@@ -42,4 +42,8 @@ class Order extends Model
     public function scopeByWorkshopId($query, int $id){
         return $query->where('workshop_id', $id);
     }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
 }
