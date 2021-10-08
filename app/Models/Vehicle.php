@@ -156,7 +156,8 @@ class Vehicle extends Model
             'lastGroupTask.pendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                        ->orWhereNull('state_pending_task_id');
                 })
                 ->whereHas('task', function($query){
                     return $query->where('sub_state_id', SubState::MECANICA);
@@ -164,13 +165,15 @@ class Vehicle extends Model
             }
         ])
         ->whereHas('pendingTasks', function(Builder $builder){
-            return $builder->where(function($query){
-                $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
-            })
-            ->whereHas('task', function(Builder $builder){
-                return $builder->where('sub_state_id', SubState::MECANICA);
-            });
+            return $builder->where('approved', true)
+                ->where(function($query){
+                    $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                        ->orWhereNull('state_pending_task_id');
+                })
+                ->whereHas('task', function(Builder $builder){
+                    return $builder->where('sub_state_id', SubState::MECANICA);
+                });
         });
     }
 
