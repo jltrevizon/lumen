@@ -356,4 +356,13 @@ class Vehicle extends Model
                 ->whereDate('datetime_approved', '<=', $dateEnd);
         });
     }
+
+    public function withPendingTaskOrProgress(){
+        return $this->hasMany(PendingTask::class)
+            ->where(function($query){
+                return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            });
+
+    }
 }

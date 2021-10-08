@@ -50,4 +50,14 @@ class BudgetPendingTaskRepositoryTest extends TestCase
         $this->assertEquals($budgetPendingTask->id, $result['budget_pending_task']['id']);
     }
 
+    /** @test */
+    public function should_return_two_budgets_pending_task()
+    {
+        BudgetPendingTask::factory()->create();
+        BudgetPendingTask::factory()->create();
+        $request = new Request();
+        $result = $this->repository->getAll($request);
+        $this->assertCount(2, $result->items());
+    }
+
 }
