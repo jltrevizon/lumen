@@ -185,21 +185,21 @@ class Vehicle extends Model
                         ->orWhereNull('state_pending_task_id');
                 })
                 ->whereHas('task', function($query){
-                    return $query->where('sub_state_id', SubState::MECANICA)
-                        ->orWhere('sub_state_id', SubState::CHAPA);
+                    return $query->where('sub_state_id', SubState::CHAPA)
+                        ->orWhere('sub_state_id', SubState::MECANICA);
                 });
             }
         ])
         ->whereHas('pendingTasks', function(Builder $builder){
-            return $builder->where(function($query){
-                $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
-                    ->orWhereNull('state_pending_task_id');
-            })
-            ->whereHas('task', function(Builder $builder){
-                return $builder->where('sub_state_id', SubState::MECANICA)
-                    ->orWhere('sub_state_id', SubState::CHAPA);
-            });
+            return $builder->where('approved', true)
+                ->where(function($query){
+                    $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                        ->orWhereNull('state_pending_task_id');
+                })
+                ->whereHas('task', function(Builder $builder){
+                    return $builder->where('sub_state_id', SubState::CHAPA);
+                });
         });
     }
 
