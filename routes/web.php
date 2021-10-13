@@ -25,7 +25,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
-
+    
+    $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
          * Reset password
          */
