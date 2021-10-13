@@ -80,4 +80,8 @@ class VehicleFilter extends ModelFilter
         return $this->byRole($roleId);
     }
 
+    public function hasGroupTaskUnapproved($value){
+        return $this->byHasGroupTaskUnapproved($value);
+    }
+
 }

@@ -288,6 +288,13 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeByHasGroupTaskUnapproved($query, $value){
+        return $query->whereHas('groupTasks', function(Builder $builder) {
+            return $builder->where('approved', false)
+                ->where('approved_available', false);
+        });
+    }
+
     public function scopeNoActiveOrPendingRequest($query){
         return $query->whereHas('requests', function(Builder $builder) {
             return $builder->where('state_request_id', StateRequest::DECLINED);
