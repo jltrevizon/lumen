@@ -21,6 +21,7 @@ class VehiclePictureRepository extends Repository {
         $vehicle_picture->vehicle_id = $request->input('vehicle_id');
         $vehicle_picture->user_id = Auth::id();
         $vehicle_picture->url = $request->input('url');
+        $vehicle_picture->place = $request->input('place');
         $vehicle_picture->latitude = $request->input('latitude');
         $vehicle_picture->longitude = $request->input('longitude');
         $vehicle_picture->save();
