@@ -13,4 +13,8 @@ class BudgetPendingTaskFilter extends ModelFilter
     public function stateBudgetPendingTasks($ids){
         return $this->byStateBudgetPendingTaskIds($ids);
     }
+
+    public function vehiclePlate($plate){
+        return $this->byPlate($plate);
+    }
 }

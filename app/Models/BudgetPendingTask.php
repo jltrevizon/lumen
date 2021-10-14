@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,5 +32,11 @@ class BudgetPendingTask extends Model
 
     public function scopeByStateBudgetPendingTaskIds($query, $ids){
         return $query->whereIn('state_budget_pending_task_id', $ids);
+    }
+
+    public function scopeByPlate($query, $plate){
+        return $query->whereHas('pendingTask.vehicle', function(Builder $builder) use($plate) {
+            return $builder->where('plate','like',"%$plate%");
+        });
     }
 }
