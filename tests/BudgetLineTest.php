@@ -4,6 +4,7 @@ use App\Models\Budget;
 use App\Models\BudgetLine;
 use App\Models\Tax;
 use App\Models\TypeBudgetLine;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -40,5 +41,28 @@ class BudgetLineTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->budgetLine->tax());
         $this->assertInstanceOf(Tax::class, $this->budgetLine->tax()->getModel());
+    }
+
+    /** @test */
+    public function should_return_budget_lines_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->budgetLine->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_budget_lines_by_budget_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->budgetLine->byBudgetIds([]));
+    }
+
+    /** @test */
+    public function should_return_budget_lines_by_tax_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->budgetLine->byTaxIds([]));
+    }
+
+    /** @test */
+    public function should_return_budget_lines_by_name(){
+        $this->assertInstanceOf(Builder::class, $this->budgetLine->byName(''));
     }
 }

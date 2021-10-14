@@ -420,5 +420,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Budget
          */
         $router->get('/budgets', 'BudgetController@getAll');
+
+        /**
+         * Budget lines
+         */
+        $router->get('/budget-lines', 'BudgetLineController@getAll');
     });
 });

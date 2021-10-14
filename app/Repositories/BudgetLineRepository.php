@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Models\Budget;
+use App\Models\BudgetLine;
 
-class BudgetRepository extends Repository {
+class BudgetLineRepository extends Repository {
 
     public function getAll($request){
-        return Budget::with($this->getWiths($request->with))
+        return BudgetLine::with($this->getWiths($request->with))
                 ->filter($request->all())
                 ->paginate($request->input('per_page'));
     }
