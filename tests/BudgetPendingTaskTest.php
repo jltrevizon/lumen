@@ -45,4 +45,10 @@ class BudgetPendingTaskTest extends TestCase
     {
         $this->assertInstanceOf(Builder::class, $this->budgetPendingTask->byStateBudgetPendingTaskIds([]));
     }
+
+    /** @test */
+    public function should_return_budget_pending_task_by_vehicle_plate()
+    {
+        $this->assertInstanceOf(Builder::class, $this->budgetPendingTask->byPlate(''));
+    }
 }

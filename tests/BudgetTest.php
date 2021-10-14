@@ -3,6 +3,7 @@
 use App\Models\Budget;
 use App\Models\BudgetLine;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -33,5 +34,23 @@ class BudgetTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->budget->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->budget->vehicle()->getModel());
+    }
+
+    /** @test */
+    public function should_return_budgets_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->budget->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_budgets_by_vehicle_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->budget->byVehicleIds([]));
+    }
+
+    /** @test */
+    public function should_return_budgets_by_order_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->budget->byOrderIds([]));
     }
 }

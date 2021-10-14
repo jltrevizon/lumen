@@ -4,6 +4,7 @@ namespace App\Repositories\Invarat;
 
 use App\Models\Order;
 use App\Models\State;
+use App\Models\StatePendingTask;
 use App\Repositories\Repository;
 
 class InvaratOrderRepository extends Repository {
@@ -39,7 +40,7 @@ class InvaratOrderRepository extends Repository {
     public function orderFilter($request){
         return Order::with($this->getWiths($request->with))
                     ->filter($request->all())
-                    ->get();
+                    ->paginate($request->input('per_page'));
     }
 
 }

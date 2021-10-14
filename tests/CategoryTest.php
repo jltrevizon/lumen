@@ -27,4 +27,16 @@ class CategoryTest extends TestCase
         $this->assertInstanceOf(Vehicle::class, $this->category->vehicles()->getModel());
     }
 
+    /** @test */
+    public function should_return_categories_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->category->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_categories_by_name()
+    {
+        $this->assertInstanceOf(Builder::class, $this->category->byName(''));
+    }
+
 }

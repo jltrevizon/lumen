@@ -62,4 +62,10 @@ class OrderTest extends TestCase
     {
         $this->assertInstanceOf(Builder::class, $this->order->byWorkshopId(1));
     }
+
+    /** @test */
+    public function should_return_orders_by_vehicle_plate()
+    {
+        $this->assertInstanceOf(Builder::class, $this->order->byVehiclePlate(''));
+    }
 }

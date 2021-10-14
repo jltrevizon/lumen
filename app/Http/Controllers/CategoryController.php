@@ -15,8 +15,8 @@ class CategoryController extends Controller
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function getAll(){
-        return $this->getDataResponse($this->categoryRepository->getAll(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->categoryRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){

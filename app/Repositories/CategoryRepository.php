@@ -5,15 +5,17 @@ namespace App\Repositories;
 use App\Models\Category;
 use Exception;
 
-class CategoryRepository {
+class CategoryRepository extends Repository {
 
     public function __construct()
     {
 
     }
 
-    public function getAll(){
-        return Category::all();
+    public function getAll($request){
+        return Category::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function getById($id){

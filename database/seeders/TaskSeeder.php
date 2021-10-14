@@ -54,7 +54,7 @@ class TaskSeeder extends Seeder
             ],
             [
                 'company_id' => Company::ALD,
-                'sub_state_id' => SubState::ITV,
+                'sub_state_id' => SubState::MECANICA,
                 'type_task_id' => TypeTask::SPECIAL,
                 'name' => 'ITV',
                 'duration' => random_int(1, 40),

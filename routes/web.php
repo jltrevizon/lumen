@@ -25,7 +25,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
-
+    
+    $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
          * Reset password
          */
@@ -33,7 +34,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/password/reset','MailController@passwordReset');
 
     $router->group(['middleware' => ['auth']], function () use ($router) {
-
+        $router->get('refresh','AuthController@refresh');
         /**
          * Users
          */
@@ -414,5 +415,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->post('/login-logs', 'LoginLogController@create');
         $router->post('/login-logs/by-user', 'LoginLogController@getUser');
+
+        /**
+         * Budget
+         */
+        $router->get('/budgets', 'BudgetController@getAll');
+
+        /**
+         * Budget lines
+         */
+        $router->get('/budget-lines', 'BudgetLineController@getAll');
     });
 });

@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Campa;
 use App\Models\ReservationTime;
 use App\Models\Customer;
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Company extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     const ALD = 1;
     const INVARAT = 2;
@@ -52,5 +53,21 @@ class Company extends Model
 
     public function states(){
         return $this->hasMany(State::class);
+    }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByName($query, string $name){
+        return $query->where('name','like',"%$name%");
+    }
+
+    public function scopeByNif($query, string $nif){
+        return $query->where('nif','like',"%$nif%");
+    }
+
+    public function scopeByPhone($query, string $phone){
+        return $query->where('phone','like',"%$phone%");
     }
 }

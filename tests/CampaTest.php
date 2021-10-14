@@ -88,6 +88,12 @@ class CampaTest extends TestCase
     }
 
     /** @test */
+    public function should_return_campas_by_name()
+    {
+        $this->assertInstanceOf(Builder::class, $this->campa->byName(''));
+    }
+
+    /** @test */
     public function search_by_province()
     {
         $this->assertInstanceOf(Builder::class, $this->campa->byProvince(1));

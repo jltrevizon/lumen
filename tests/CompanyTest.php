@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\ReservationTime;
 use App\Models\State;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -75,5 +76,29 @@ class CompanyTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->company->states());
         $this->assertInstanceOf(State::class, $this->company->states()->getModel());
+    }
+
+    /** @test */
+    public function should_return_companies_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->company->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_companies_by_name()
+    {
+        $this->assertInstanceOf(Builder::class, $this->company->byName(''));
+    }
+
+    /** @test */   
+    public function should_return_companies_by_nif()
+    {
+        $this->assertInstanceOf(Builder::class, $this->company->byNif(''));
+    }
+
+    /** @test */
+    public function should_return_companies_by_phone()
+    {
+        $this->assertInstanceOf(Builder::class, $this->company->byPhone(''));
     }
 }

@@ -61,7 +61,6 @@ class PendingTaskRepository extends Repository {
         if(count($has_pending_task) > 0) return [ 'message' => 'El vehículo tiene tareas pendientes o en curso' ];
         $tasks = $this->taskReservationRepository->getByRequest($request_id);
         $this->createTasks($tasks, $groupTask->id);
-        $this->createUbication($vehicle_id, $groupTask->id);
         return [ 'message' => 'OK' ];
     }
 
@@ -82,16 +81,6 @@ class PendingTaskRepository extends Repository {
         }
     }
 
-    private function createUbication($vehicleId, $groupTaskId){
-        $pending_task = new PendingTask();
-        $pending_task->vehicle_id = $vehicleId;
-        $taskDescription = $this->taskRepository->getById([], Task::UBICATION);
-        $pending_task->group_task_id = $groupTaskId;
-        $pending_task->task_id = $taskDescription->id;
-        $pending_task->duration = $taskDescription['duration'];
-        $pending_task->order = 100;
-        $pending_task->save();
-    }
 
     public function pendingTasksFilter($request){
         return PendingTask::with($this->getWiths($request->with))

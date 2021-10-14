@@ -26,14 +26,15 @@ class AldController extends Controller
         $this->groupTaskRepository = $groupTaskRepository;
     }
 
-    public function unapprovedTask(){
+    public function unapprovedTask(Request $request){
         try {
             return Vehicle::with(['lastUnapprovedGroupTask','vehicleModel.brand','campa','category','lastQuestionnaire'])
             ->whereHas('lastUnapprovedGroupTask')
             ->whereHas('campa', function (Builder $builder) {
                 return $builder->where('company_id', Company::ALD);
             })
-            ->paginate();
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()], 409);
         }
@@ -48,7 +49,8 @@ class AldController extends Controller
                     ->whereHas('campa', function (Builder $builder) {
                         return $builder->where('company_id', Company::ALD);
                     })
-                    ->paginate();
+                    ->filter($request->all())
+                    ->paginate($request->input('per_page'));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }

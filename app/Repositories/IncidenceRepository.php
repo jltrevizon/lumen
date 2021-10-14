@@ -40,6 +40,7 @@ class IncidenceRepository {
         $incidence = Incidence::findOrFail($request->input('incidence_id'));
         $incidence->resolved = true;
         $incidence->save();
+        return $incidence;
     }
 
     public function update($request, $id){

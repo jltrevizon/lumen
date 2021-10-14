@@ -16,6 +16,7 @@ class VehiclePicture extends Model
         'user_id',
         'reception_id',
         'url',
+        'place',
         'latitude',
         'longitude',
         'active'
