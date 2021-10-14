@@ -21,4 +21,8 @@ class CampaFilter extends ModelFilter
     public function regions($ids){
         return $this->byRegions($ids);
     }
+
+    public function name($name){
+        return $this->byName($name);
+    }
 }
