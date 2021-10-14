@@ -415,5 +415,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->post('/login-logs', 'LoginLogController@create');
         $router->post('/login-logs/by-user', 'LoginLogController@getUser');
+
+        /**
+         * Budget
+         */
+        $router->get('/budgets', 'BudgetController@getAll');
     });
 });

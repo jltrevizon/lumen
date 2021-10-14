@@ -2,12 +2,7 @@
 
 namespace App\Repositories;
 
-use App\AditionalModels\AditionalModels;
-use App\AditionalModels\AditionalsModels;
-use App\EloquentFunctions\EloquentFunctions;
 use App\Models\Company;
-use App\Models\DefleetVariable;
-use App\Models\DeliveryVehicle;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
@@ -20,11 +15,7 @@ use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\VehicleModelRepository;
-use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\TryCatch;
-use Symfony\Component\Console\Input\Input;
 
 class VehicleRepository extends Repository {
 
