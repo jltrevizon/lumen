@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,5 +46,11 @@ class Order extends Model
 
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByVehiclePlate($query, string $plate){
+        return $query->whereHas('vehicle', function(Builder $builder) use($plate){
+            return $builder->where('plate','like',"%$plate%");
+        });
     }
 }

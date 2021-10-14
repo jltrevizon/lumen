@@ -15,8 +15,8 @@ class CompanyController extends Controller
         $this->companyRepository = $companyRepository;
     }
 
-    public function getAll(){
-        return $this->getDataResponse($this->companyRepository->getAll(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->companyRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){

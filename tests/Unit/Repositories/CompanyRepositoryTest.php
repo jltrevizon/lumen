@@ -35,16 +35,19 @@ class CompanyRepositoryTest extends TestCase
         Company::factory()->create();
 
         Company::factory()->create();
-
-        $companies = $this->repository->getAll();
-        $this->assertCount(2, $companies);
+        $request = new Request();
+        $request->with = [];
+        $companies = $this->repository->getAll($request);
+        $this->assertCount(2, $companies->items());
     }
 
     /** @test */
     public function should_return_zero_companies()
     {
-        $companies = $this->repository->getAll();
-        $this->assertCount(0, $companies);
+        $request = new Request();
+        $request->with = [];
+        $companies = $this->repository->getAll($request);
+        $this->assertCount(0, $companies->items());
     }
 
     /** @test */

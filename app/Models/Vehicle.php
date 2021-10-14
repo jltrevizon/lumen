@@ -373,6 +373,5 @@ class Vehicle extends Model
                 return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             });
-
     }
 }

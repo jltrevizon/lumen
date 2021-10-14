@@ -5,15 +5,17 @@ namespace App\Repositories;
 use App\Models\Company;
 use Exception;
 
-class CompanyRepository {
+class CompanyRepository extends Repository{
 
     public function __construct()
     {
 
     }
 
-    public function getAll(){
-        return Company::all();
+    public function getAll($request){
+        return Company::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function getById($id){
