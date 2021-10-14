@@ -33,6 +33,7 @@ class AldController extends Controller
             ->whereHas('campa', function (Builder $builder) {
                 return $builder->where('company_id', Company::ALD);
             })
+            ->filter($request->all())
             ->paginate($request->input('per_page'));
         } catch (Exception $e){
             return response()->json(['message' => $e->getMessage()], 409);
@@ -48,6 +49,7 @@ class AldController extends Controller
                     ->whereHas('campa', function (Builder $builder) {
                         return $builder->where('company_id', Company::ALD);
                     })
+                    ->filter($request->all())
                     ->paginate($request->input('per_page'));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
