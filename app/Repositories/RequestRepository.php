@@ -76,7 +76,6 @@ class RequestRepository extends Repository {
         return RequestVehicle::findOrFail($id);
     }
 
-
     public function update($request, $id){
         $request_vehicle = RequestVehicle::findOrFail($id);
         $request_vehicle->update($request->all());
