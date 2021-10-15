@@ -46,15 +46,19 @@ class CustomerRepositoryTest extends TestCase
     {
         Customer::factory()->create();
         Customer::factory()->create();
-        $result = $this->repository->getAll();
-        $this->assertCount(2, $result);
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->getAll($request);
+        $this->assertCount(2, $result->items());
     }
 
     /** @test */
     public function should_return_zero_customers()
     {
-        $result = $this->repository->getAll();
-        $this->assertCount(0, $result);
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->getAll($request);
+        $this->assertCount(0, $result->items());
     }
 
     /** @test */
