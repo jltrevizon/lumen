@@ -17,4 +17,8 @@ class OrderFilter extends ModelFilter
     public function workshop($id){
         return $this->byWorkshopId($id);
     }
+
+    public function vehiclePlate($plate){
+        return $this->byVehiclePlate($plate);
+    }
 }
