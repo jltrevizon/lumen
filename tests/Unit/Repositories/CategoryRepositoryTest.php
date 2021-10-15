@@ -37,7 +37,7 @@ class CategoryRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result->items());
+        $this->assertCount(2, $result);
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class CategoryRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(0, $result->items());
+        $this->assertCount(0, $result);
     }
 
     /** @test */
