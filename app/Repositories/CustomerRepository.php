@@ -5,15 +5,17 @@ namespace App\Repositories;
 use App\Models\Customer;
 use Exception;
 
-class CustomerRepository {
+class CustomerRepository extends Repository{
 
     public function __construct()
     {
 
     }
 
-    public function getAll(){
-        return Customer::all();
+    public function getAll($request){
+        return Customer::with($this->getWiths($request->with))
+                ->filter($request->all())
+                ->paginate();
     }
 
     public function getById($id){

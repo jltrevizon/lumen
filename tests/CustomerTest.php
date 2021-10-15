@@ -45,8 +45,50 @@ class CustomerTest extends TestCase
     }
 
     /** @test */
+    public function should_return_customers_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byIds([]));
+    }
+
+    /** @test */
     public function search_by_company()
     {
         $this->assertInstanceOf(Builder::class, $this->customer->byCompany(1));
+    }
+
+    /** @test */
+    public function should_return_customers_by_companies_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byCompanies([]));
+    }
+
+    /** @test */
+    public function should_return_customers_by_province()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byProvince([]));
+    }
+
+    /** @test */
+    public function should_return_customers_by_name()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byName(''));
+    }
+
+    /** @test */
+    public function should_return_customers_by_cif()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byCif(''));
+    }
+
+    /** @test */
+    public function should_return_customers_by_phone()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byPhone(''));
+    }
+
+    /** @test */
+    public function should_return_customers_by_address()
+    {
+        $this->assertInstanceOf(Builder::class, $this->customer->byAddress(''));
     }
 }
