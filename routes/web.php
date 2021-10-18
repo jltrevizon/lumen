@@ -131,7 +131,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/provinces/getall', 'ProvinceController@getall');
         $router->get('/provinces/{id}', 'ProvinceController@getById');
-        $router->post('/provinces/by-region', 'ProvinceController@provinceByRegion');
         $router->post('/provinces', 'ProvinceController@create');
         $router->put('/provinces/update/{id}', 'ProvinceController@update');
         $router->delete('/provinces/delete/{id}', 'ProvinceController@delete');
@@ -432,5 +431,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Password reset code
          */
         $router->get('/password-reset-code', 'PasswordResetCodeController@getAll');
+
+        /**
+         * People for report
+         */
+        $router->get('/people-for-report', 'PeopleForReportController@getAll');
     });
 });

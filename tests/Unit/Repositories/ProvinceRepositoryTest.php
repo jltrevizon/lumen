@@ -50,30 +50,14 @@ class ProvinceRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function should_return_provinces_by_region()
+    public function should_return_two_provinces()
     {
-        $region1 = Region::factory()->create();
-        $region2 = Region::factory()->create();
+        Province::factory()->create();
+        Province::factory()->create();
         $request = new Request();
-
-        $request->replace(['name' => 'Test province 1', 'province_code' => 'TEST1', 'region_id' => $region1->id]);
-        $this->createProvince($request);
-
-        $request->replace(['name' => 'Test province 2', 'province_code' => 'TEST2', 'region_id' => $region1->id]);
-        $this->createProvince($request);
-
-        $request->replace(['name' => 'Test province 3', 'province_code' => 'TEST3', 'region_id' => $region2->id]);
-        $this->createProvince($request);
-
-        $request->replace(['region_id' => $region1->id]);
-        $result = $this->repository->provinceByRegion($request);
-
-        $this->assertCount(2, $result);
-
-        $request->replace(['region_id' => $region2->id]);
-        $result = $this->repository->provinceByRegion($request);
-
-        $this->assertCount(1, $result);
+        $request->with = [];
+        $result = $this->repository->getAll($request);
+        $this->assertCount(2, $result->items());
     }
 
     /** @test */

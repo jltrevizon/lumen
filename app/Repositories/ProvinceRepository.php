@@ -5,15 +5,16 @@ namespace App\Repositories;
 use App\Models\Province;
 use Exception;
 
-class ProvinceRepository {
+class ProvinceRepository extends Repository {
+
+    public function getAll($request){
+        return Province::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
+    }
 
     public function getById($id){
         return ['province' => Province::findOrFail($id)];
-    }
-
-    public function provinceByRegion($request){
-        return Province::where('region_id', $request->input('region_id'))
-                    ->get();
     }
 
     public function create($request){
