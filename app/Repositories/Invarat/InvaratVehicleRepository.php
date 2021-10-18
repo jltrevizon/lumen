@@ -29,7 +29,7 @@ class InvaratVehicleRepository {
         $vehicleModel = $this->vehicleModelRepository->getByNameFromExcel($brand->id, $request->input('vehicle_model'));
         $vehicle = Vehicle::create($request->all());
         $vehicle->company_id = Company::INVARAT;
-        $vehicle->sub_state_id = SubState::PENDING_TEST_DINAMIC;
+        $vehicle->sub_state_id = SubState::PENDING_TEST_DINAMIC_INITIAL;
         $vehicle->vehicle_model_id= $vehicleModel->id;
         $vehicle->save();
         return $vehicle;
