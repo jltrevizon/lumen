@@ -167,6 +167,13 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function it_has_one_order()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->vehicle->lastOrder());
+        $this->assertInstanceOf(Order::class, $this->vehicle->lastOrder()->getModel());
+    }
+
+    /** @test */
     public function it_has_many_budgets()
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->budgets());
