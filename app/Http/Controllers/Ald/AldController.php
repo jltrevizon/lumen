@@ -28,7 +28,7 @@ class AldController extends Controller
 
     public function unapprovedTask(Request $request){
         try {
-            return Vehicle::with(['lastUnapprovedGroupTask','vehicleModel.brand','campa','category','lastQuestionnaire'])
+            return Vehicle::with($this->getWiths($request->with))
             ->whereHas('lastUnapprovedGroupTask')
             ->whereHas('campa', function (Builder $builder) {
                 return $builder->where('company_id', Company::ALD);
