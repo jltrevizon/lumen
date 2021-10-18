@@ -119,8 +119,15 @@ class Vehicle extends Model
         ]);
     }
 
+    
     public function orders(){
         return $this->hasMany(Order::class);
+    }
+    
+    public function lastOrder(){
+        return $this->hasOne(Order::class)->ofMany([
+            'id' => 'max'
+        ]); 
     }
 
     public function budgets(){
