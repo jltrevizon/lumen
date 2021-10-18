@@ -292,6 +292,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Variables defleet
          */
         $router->get('/defleet-variables', 'DefleetVariableController@getVariables');
+        $router->get('/defleet-variables/getall', 'DefleetVariableController@getAll');
         $router->put('/defleet-variables', 'DefleetVariableController@updateVariables');
         $router->post('/defleet-variables', 'DefleetVariableController@createVariables');
 

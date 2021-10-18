@@ -4,23 +4,19 @@ namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
 
-class CompanyFilter extends ModelFilter
+class GroupTaskFilter extends ModelFilter
 {
 
     public function ids($ids){
         return $this->byIds($ids);
     }
 
-    public function name($name){
-        return $this->byName($name);
+    public function vehicleIds($ids){
+        return $this->byVehicleIds($ids);
     }
 
-    public function byNif($nif){
-        return $this->byNif($nif);
-    }
-
-    public function byPhone($phone){
-        return $this->byPhone($phone);
+    public function approved($approved){
+        return $this->byApproved($approved);
     }
 
     /**

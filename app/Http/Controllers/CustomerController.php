@@ -15,8 +15,8 @@ class CustomerController extends Controller
         $this->customerRepository = $customerRepository;
     }
 
-    public function getAll(){
-        return $this->getDataResponse($this->customerRepository->getAll(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->customerRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){

@@ -4,23 +4,35 @@ namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
 
-class CompanyFilter extends ModelFilter
+class CustomerFilter extends ModelFilter
 {
 
     public function ids($ids){
         return $this->byIds($ids);
     }
 
+    public function companyIds($ids){
+        return $this->byCompanies($ids);
+    }
+
+    public function provinceIds($ids){
+        return $this->byProvince($ids);
+    }
+
     public function name($name){
         return $this->byName($name);
     }
 
-    public function byNif($nif){
-        return $this->byNif($nif);
+    public function cif($cif){
+        return $this->byCif($cif);
     }
 
-    public function byPhone($phone){
+    public function phone($phone){
         return $this->byPhone($phone);
+    }
+
+    public function address($address){
+        return $this->byAddress($address);
     }
 
     /**

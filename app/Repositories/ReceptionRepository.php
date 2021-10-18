@@ -10,13 +10,19 @@ use Illuminate\Support\Facades\Auth;
 class ReceptionRepository {
 
     public function __construct(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        VehiclePictureRepository $vehiclePictureRepository
     )
     {
         $this->userRepository = $userRepository;
+        $this->vehiclePictureRepository = $vehiclePictureRepository;
     }
 
     public function create($request){
+        $receptionDuplicate = Reception::where('vehicle_id', $request->input('vehicle_id'))
+                ->whereDate('created_at', date('Y-m-d'))
+                ->first();
+        $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
         Reception::where('vehicle_id', $request->input('vehicle_id'))
             ->whereDate('created_at', date('Y-m-d'))
             ->delete();
