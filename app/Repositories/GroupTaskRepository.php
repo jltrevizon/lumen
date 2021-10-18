@@ -14,8 +14,10 @@ class GroupTaskRepository extends Repository {
 
     }
 
-    public function getAll(){
-        return GroupTask::all();
+    public function getAll($request){
+        return GroupTask::with($this->getWiths($request->with))
+                ->filter($request->all())
+                ->paginate();
     }
 
     public function getById($request, $id){

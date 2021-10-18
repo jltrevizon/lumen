@@ -16,8 +16,8 @@ class GroupTaskController extends Controller
         $this->groupTaskRepository = $groupTaskRepository;
     }
 
-    public function getAll(){
-        return $this->getDataResponse($this->groupTaskRepository->getAll(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->groupTaskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById(Request $request, $id){
