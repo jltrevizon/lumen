@@ -22,7 +22,7 @@ class ReceptionRepository {
         $receptionDuplicate = Reception::where('vehicle_id', $request->input('vehicle_id'))
                 ->whereDate('created_at', date('Y-m-d'))
                 ->first();
-        $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
+        if($receptionDuplicate) $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
         Reception::where('vehicle_id', $request->input('vehicle_id'))
             ->whereDate('created_at', date('Y-m-d'))
             ->delete();
