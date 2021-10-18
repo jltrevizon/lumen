@@ -18,4 +18,16 @@ class PasswordResetCode extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByUserIds($query, array $ids){
+        return $query->whereIn('user_id', $ids);
+    }
+
+    public function scopeByActive($query, bool $active){
+        return $query->where('active', $active);
+    }
 }

@@ -8,6 +8,7 @@ class OperationRepository extends Repository {
 
     public function getAll($request){
         return Operation::with($this->getWiths($request->with))
+                        ->filter($request->all())
                         ->get();
     }
 
