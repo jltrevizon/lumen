@@ -5,15 +5,17 @@ namespace App\Repositories;
 use App\Models\Incidence;
 use Exception;
 
-class IncidenceRepository {
+class IncidenceRepository extends Repository {
 
     public function __construct()
     {
 
     }
 
-    public function getAll(){
-        return Incidence::all();
+    public function getAll($request){
+        return Incidence::with($this->getWiths($request->with)) 
+            ->filter($request->all())
+            ->paginate();
     }
 
     public function getById($id){

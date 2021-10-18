@@ -310,6 +310,50 @@ class QuestionSeeder extends Seeder
             [
                 'company_id' => Company::ALD,
                 'question' => 'Elige origen del vehículo'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Aire acondicionado funciona correctamente'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Triángulos y chalecos'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Nivel líquido dirección asistida'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Comprobación del bloqueo de puertas'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Comprobación de arranque del motor'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Comprobación de funcionamiento de la caja de cambios'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Comprobación del sistema de frenos'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Comprobación de la caja reductora (Todo terreno, 44, D4 y 4F)'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Comprobación de amortiguación (Vehículo parado)'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Limpieza de caja de carga'
+            ],
+            [
+                'company_id' => Company::INVARAT,
+                'question' => 'Limpieza de bajos (Barro)'
             ]
         ];
     }
