@@ -436,5 +436,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * People for report
          */
         $router->get('/people-for-report', 'PeopleForReportController@getAll');
+
+        /**
+         * Comments
+         */
+        $router->get('/comments', 'CommentController@getAll');
+        $router->post('/comments', 'CommentController@create');
     });
 });
