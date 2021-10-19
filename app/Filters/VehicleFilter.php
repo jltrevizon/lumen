@@ -84,4 +84,8 @@ class VehicleFilter extends ModelFilter
         return $this->byHasGroupTaskUnapproved($value);
     }
 
+    public function hasOrderNotFinish($value){
+        return $this->byHasOrderNotFinish($value);
+    }
+
 }

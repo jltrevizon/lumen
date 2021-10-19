@@ -32,4 +32,10 @@ class QuestionRepository extends Repository {
         $question->save();
         return $question;
     }
+
+    public function filter($request){
+        return Question::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
+    }
 }

@@ -45,4 +45,15 @@ class QuestionRepositoryTest extends TestCase
         $this->assertCount(2, $result);
     }
 
+    /** @test */
+    public function should_return_two_questions_by_filter()
+    {
+        Question::factory()->create();
+        Question::factory()->create();
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->filter($request);
+        $this->assertCount(2, $result->items());
+    }
+
 }

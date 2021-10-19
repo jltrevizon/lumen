@@ -4,6 +4,7 @@ use App\Models\Campa;
 use App\Models\Customer;
 use App\Models\Province;
 use App\Models\Region;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -36,10 +37,34 @@ class ProvinceTest extends TestCase
         $this->assertInstanceOf(Campa::class, $this->province->campas()->getModel());
     }
 
-      /** @test */
-      public function it_has_many_customers()
-      {
-          $this->assertInstanceOf(HasMany::class, $this->province->customers());
-          $this->assertInstanceOf(Customer::class, $this->province->customers()->getModel());
-      }
+    /** @test */
+    public function it_has_many_customers()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->province->customers());
+        $this->assertInstanceOf(Customer::class, $this->province->customers()->getModel());
+    }
+
+    /** @test */
+    public function should_return_provinces_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->province->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_provinces_by_region_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->province->byRegionIds([]));
+    }
+
+    /** @test */
+    public function should_return_provinces_by_province_code()
+    {
+        $this->assertInstanceOf(Builder::class, $this->province->byProvinceCode(''));
+    }
+
+    /** @test */
+    public function should_return_provinces_by_name()
+    {
+        $this->assertInstanceOf(Builder::class, $this->province->byName(''));
+    }
 }

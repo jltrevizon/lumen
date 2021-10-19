@@ -15,8 +15,8 @@ class IncidenceController extends Controller
         $this->incidenceRepository = $incidenceRepository;
     }
 
-    public function getAll(){
-        return $this->getDataResponse($this->incidenceRepository->getAll(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->incidenceRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){

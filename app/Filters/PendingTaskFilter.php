@@ -26,4 +26,8 @@ class PendingTaskFilter extends ModelFilter
         return $this->byIds($ids);
     }
 
+    public function taskIds($ids){
+        return $this->byTaskIds($ids);
+    }
+
 }

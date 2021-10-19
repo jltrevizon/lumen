@@ -131,7 +131,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/provinces/getall', 'ProvinceController@getall');
         $router->get('/provinces/{id}', 'ProvinceController@getById');
-        $router->post('/provinces/by-region', 'ProvinceController@provinceByRegion');
         $router->post('/provinces', 'ProvinceController@create');
         $router->put('/provinces/update/{id}', 'ProvinceController@update');
         $router->delete('/provinces/delete/{id}', 'ProvinceController@delete');
@@ -414,6 +413,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Login logs
          */
+        $router->get('/login-logs', 'LoginLogController@getAll');
         $router->post('/login-logs', 'LoginLogController@create');
         $router->post('/login-logs/by-user', 'LoginLogController@getUser');
 
@@ -426,5 +426,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Budget lines
          */
         $router->get('/budget-lines', 'BudgetLineController@getAll');
+
+        /**
+         * Password reset code
+         */
+        $router->get('/password-reset-code', 'PasswordResetCodeController@getAll');
+
+        /**
+         * People for report
+         */
+        $router->get('/people-for-report', 'PeopleForReportController@getAll');
     });
 });

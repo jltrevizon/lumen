@@ -3,11 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\LoginLog;
+use App\Repositories\LoginLogRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginLogController extends Controller
 {
+
+    public function __construct(LoginLogRepository $loginLogRepository)
+    {
+        $this->loginLogRepository = $loginLogRepository;
+    }
+
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->loginLogRepository->getAll($request), Response::HTTP_OK);
+    }
 
     public function create(Request $request){
         $loginLog = new LoginLog();
@@ -21,5 +32,6 @@ class LoginLogController extends Controller
         return LoginLog::where('user_id', $request->input('user_id'))
                     ->get();
     }
+
 
 }

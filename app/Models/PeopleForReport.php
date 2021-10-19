@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PeopleForReport extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'user_id',
@@ -21,6 +22,18 @@ class PeopleForReport extends Model
 
     public function typeReport(){
         return $this->belongsTo(TypeReport::class);
+    }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByUserIds($query, array $ids){
+        return $query->whereIn('user_id', $ids);
+    }
+
+    public function scopeByTypeReportIds($query, array $ids){
+        return $query->whereIn('type_report_id', $ids);
     }
 
 }

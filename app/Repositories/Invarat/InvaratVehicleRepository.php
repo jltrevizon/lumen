@@ -3,13 +3,17 @@
 namespace App\Repositories\Invarat;
 
 use App\Models\Company;
+use App\Models\StatePendingTask;
 use App\Models\SubState;
+use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use App\Repositories\BrandRepository;
+use App\Repositories\Repository;
 use App\Repositories\VehicleModelRepository;
 use App\Repositories\VehicleRepository;
+use Illuminate\Database\Eloquent\Builder;
 
-class InvaratVehicleRepository {
+class InvaratVehicleRepository extends Repository {
 
     public function __construct(
         BrandRepository $brandRepository,
@@ -29,10 +33,20 @@ class InvaratVehicleRepository {
         $vehicleModel = $this->vehicleModelRepository->getByNameFromExcel($brand->id, $request->input('vehicle_model'));
         $vehicle = Vehicle::create($request->all());
         $vehicle->company_id = Company::INVARAT;
-        $vehicle->sub_state_id = SubState::PENDING_TEST_DINAMIC;
+        $vehicle->sub_state_id = SubState::PENDING_TEST_DINAMIC_INITIAL;
         $vehicle->vehicle_model_id= $vehicleModel->id;
         $vehicle->save();
         return $vehicle;
+    }
+
+    public function vehiclesByChannel($request){
+        return Vehicle::with($this->getWiths($request->with))
+            ->whereHas('pendingTasks', function(Builder $builder) {
+                return $builder->where('state_pending_task_id','!=' , StatePendingTask::FINISHED);
+            })
+            ->where('type_model_order_id', '!=', TypeModelOrder::ALDFLEX)
+            ->get()
+            ->groupby('type_model_order_id');
     }
 
 }

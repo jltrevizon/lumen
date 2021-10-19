@@ -3,6 +3,7 @@
 use App\Models\Company;
 use App\Models\Question;
 use App\Models\QuestionAnswer;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -33,5 +34,23 @@ class QuestionTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->question->question_answer());
         $this->assertInstanceOf(QuestionAnswer::class, $this->question->question_answer()->getModel());
+    }
+
+    /** @test */
+    public function should_return_questions_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->question->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_questions_by_company_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->question->byCompanyIds([]));
+    }
+
+    /** @test */
+    public function should_return_questions_by_name_question()
+    {
+        $this->assertInstanceOf(Builder::class, $this->question->byNameQuestion(''));
     }
 }

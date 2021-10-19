@@ -52,7 +52,7 @@ class QuestionAnswerRepository {
             $questionAnswer->description = $question['description'];
             $questionAnswer->save();
         }
-        $questionnaireComplete = Questionnaire::with(['questionAnswers.question']) 
+        $questionnaireComplete = Questionnaire::with(['questionAnswers.question','vehicle.lastOrder']) 
                 ->findOrFail($questionnaire);
         $client = new \GuzzleHttp\Client();
         $response = $client->post(
