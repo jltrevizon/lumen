@@ -42,7 +42,8 @@ class IncidenceRepositoryTest extends TestCase
         $description = 'Description incidence';
         $request = new Request();
         $request->replace([
-            'description' => $description
+            'description' => $description,
+            'resolved' => false
         ]);
         $result = $this->repository->create($request);
         $this->assertEquals($description, $result['description']);

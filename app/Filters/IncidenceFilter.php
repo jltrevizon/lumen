@@ -15,6 +15,14 @@ class IncidenceFilter extends ModelFilter
         return $this->byResolved($resolved);
     }
 
+    public function vehicleIds($ids){
+        return $this->byVehicleIds($ids);
+    }
+
+    public function read($read){
+        return $this->byRead($read);
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].

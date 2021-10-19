@@ -13,12 +13,18 @@ class Incidence extends Model
     use HasFactory, Filterable;
 
     protected $fillable = [
+        'vehicle_id',
         'description',
+        'read',
         'resolved'
     ];
 
     public function pending_tasks(){
         return $this->belongsToMany(PendingTask::class);
+    }
+
+    public function vehicle(){
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function scopeByIds($query, array $ids){
@@ -27,5 +33,13 @@ class Incidence extends Model
 
     public function scopeByResolved($query, bool $resolved){
         return $query->where('resolved', $resolved);
+    }
+
+    public function scopeByVehicleIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByRead($query, bool $read){
+        return $query->where('read', $read);
     }
 }

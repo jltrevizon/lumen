@@ -23,9 +23,7 @@ class IncidenceRepository extends Repository {
     }
 
     public function create($request){
-        $incidence = new Incidence();
-        $incidence->description = $request->get('description');
-        $incidence->resolved = false;
+        $incidence = Incidence::create($request->all());
         $incidence->save();
         return $incidence;
     }
