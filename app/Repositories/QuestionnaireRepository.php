@@ -13,7 +13,8 @@ class QuestionnaireRepository extends Repository {
     }
 
     public function create($request){
-        return Questionnaire::create($request->all());
+        $questionnaire = Questionnaire::create($request->all());
+        return $questionnaire;
     }
 
     public function getById($request, $id){
