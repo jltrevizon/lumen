@@ -19,11 +19,11 @@ class QuestionAnswerRepository {
     }
 
     public function create($request){
-        $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
+        $questionnaire = $this->questionnaireRepository->create($request);
         $questions = $request->input('questions');
         foreach($questions as $question){
             $questionAnswer = new QuestionAnswer();
-            $questionAnswer->questionnaire_id = $questionnaire;
+            $questionAnswer->questionnaire_id = $questionnaire['id'];
             $questionAnswer->question_id = $question['question_id'];
             $questionAnswer->task_id = $question['task_id'];
             $questionAnswer->response = $question['response'];
