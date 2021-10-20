@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Reception;
 use App\Models\Request;
+use App\Models\SubState;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,12 +13,14 @@ class ReceptionRepository {
     public function __construct(
         UserRepository $userRepository,
         VehiclePictureRepository $vehiclePictureRepository,
-        AccessoryRepository $accessoryRepository
+        AccessoryRepository $accessoryRepository,
+        VehicleRepository $vehicleRepository
     )
     {
         $this->userRepository = $userRepository;
         $this->vehiclePictureRepository = $vehiclePictureRepository;
         $this->accessoryRepository = $accessoryRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function create($request){
@@ -37,6 +40,7 @@ class ReceptionRepository {
         $reception->vehicle_id = $request->input('vehicle_id');
         $reception->has_accessories = false;
         $reception->save();
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), SubState::CHECK);
         return ['reception' => $reception];
     }
 
