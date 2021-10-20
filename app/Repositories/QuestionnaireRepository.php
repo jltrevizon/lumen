@@ -12,11 +12,8 @@ class QuestionnaireRepository extends Repository {
 
     }
 
-    public function create($vehicle_id){
-        $questionnaire = new Questionnaire();
-        $questionnaire->vehicle_id = $vehicle_id;
-        $questionnaire->save();
-        return $questionnaire->id;
+    public function create($request){
+        return Questionnaire::create($request->all());
     }
 
     public function getById($request, $id){
