@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\Comment;
 use App\Models\Incidence;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -34,6 +36,13 @@ class IncidenceTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->incidence->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->incidence->vehicle()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_to_comments()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->incidence->comments());
+        $this->assertInstanceOf(Comment::class, $this->incidence->comments()->getModel());
     }
 
     /** @test */

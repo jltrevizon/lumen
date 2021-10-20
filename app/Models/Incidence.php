@@ -27,6 +27,10 @@ class Incidence extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
