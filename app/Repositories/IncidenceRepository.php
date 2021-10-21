@@ -29,10 +29,7 @@ class IncidenceRepository extends Repository {
     }
 
     public function createIncidence($request){
-        $incidence = new Incidence();
-        $incidence->description = $request->input('description');
-        $incidence->resolved = false;
-        $incidence->save();
+        $incidence = Incidence::create($request->all());
         return $incidence;
     }
 
