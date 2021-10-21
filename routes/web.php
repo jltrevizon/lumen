@@ -450,5 +450,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/incidence-images', 'IncidenceImageController@store');
         $router->put('/incidence-images/{id}', 'IncidenceImageController@update');
 
+        /**
+         * Zones
+         */
+
+         $router->get('/zones', 'ZoneController@index');
+         $router->post('/zones', 'ZoneController@store');
+         $router->put('/zones/{id}', 'ZoneController@update');
     });
 });

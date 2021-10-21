@@ -17,7 +17,7 @@ class IncidenceImageRepository extends Repository {
     public function index($request){
         return IncidenceImage::with($this->getWiths($request->with))
             ->filter($request->all())
-            ->paginate();
+            ->paginate($request->input('per_page'));
     }
 
     public function store($request){
