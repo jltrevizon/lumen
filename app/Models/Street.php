@@ -6,21 +6,26 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Zone extends Model
+class Street extends Model
 {
     
     use HasFactory, Filterable;
-    
+
     protected $fillable = [
+        'zone_id',
         'name'
     ];
 
-    public function streets(){
-        return $this->hasMany(Street::class);
+    public function zone(){
+        return $this->belongsTo(Zone::class);
     }
 
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByZoneIds($query, array $ids){
+        return $query->whereIn('zone_id', $ids);
     }
 
     public function scopeByName($query, string $name){

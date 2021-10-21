@@ -453,9 +453,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Zones
          */
+        $router->get('/zones', 'ZoneController@index');
+        $router->post('/zones', 'ZoneController@store');
+        $router->put('/zones/{id}', 'ZoneController@update');
 
-         $router->get('/zones', 'ZoneController@index');
-         $router->post('/zones', 'ZoneController@store');
-         $router->put('/zones/{id}', 'ZoneController@update');
+        /**
+         * Streets
+         */
+        $router->get('/streets','StreetController@index');
+        $router->post('/streets','StreetController@store');
+        $router->put('/streets/{id}','StreetController@update');
     });
 });
