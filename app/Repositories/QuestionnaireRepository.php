@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Questionnaire;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class QuestionnaireRepository extends Repository {
 
@@ -12,11 +13,11 @@ class QuestionnaireRepository extends Repository {
 
     }
 
-    public function create($vehicle_id){
-        $questionnaire = new Questionnaire();
-        $questionnaire->vehicle_id = $vehicle_id;
+    public function create($request){
+        $questionnaire = Questionnaire::create($request->all());
+        $questionnaire->user_id = Auth::id();
         $questionnaire->save();
-        return $questionnaire->id;
+        return $questionnaire;
     }
 
     public function getById($request, $id){

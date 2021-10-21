@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\DeliveryVehicle;
 use App\Models\GroupTask;
+use App\Models\Incidence;
 use App\Models\Operation;
 use App\Models\Order;
 use App\Models\PendingTask;
@@ -143,6 +144,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->operations());
         $this->assertInstanceOf(Operation::class, $this->vehicle->operations()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_incidences()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->incidences());
+        $this->assertInstanceOf(Incidence::class, $this->vehicle->incidences()->getModel());
     }
 
     /** @test */

@@ -11,7 +11,9 @@ class Questionnaire extends Model
     use HasFactory;
 
     protected $fillable = [
-        'vehicle_id'
+        'user_id',
+        'vehicle_id',
+        'file'
     ];
 
     public function vehicle(){

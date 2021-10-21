@@ -1,9 +1,14 @@
 <?php
 
+use App\Models\Comment;
 use App\Models\Incidence;
+use App\Models\IncidenceImage;
 use App\Models\PendingTask;
+use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -27,6 +32,27 @@ class IncidenceTest extends TestCase
         $this->assertInstanceOf(PendingTask::class, $this->incidence->pending_tasks()->getModel());
     }
 
+    /** @tes */
+    public function it_belongs_to_vehicle()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->incidence->vehicle());
+        $this->assertInstanceOf(Vehicle::class, $this->incidence->vehicle()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_to_comments()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->incidence->comments());
+        $this->assertInstanceOf(Comment::class, $this->incidence->comments()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_incidence_images()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->incidence->incidenceImages());
+        $this->assertInstanceOf(IncidenceImage::class, $this->incidence->incidenceImages()->getModel());
+    }
+
     /** @test */
     public function should_return_incidences_by_ids()
     {
@@ -38,4 +64,17 @@ class IncidenceTest extends TestCase
     {
         $this->assertInstanceOf(Builder::class, $this->incidence->byResolved(1));
     }
+
+    /** @test */
+    public function should_return_incidences_by_vehicles_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->incidence->byVehicleIds([]));
+    }
+
+    /** @test */
+    public function should_return_incidences_by_read()
+    {
+        $this->assertInstanceOf(Builder::class, $this->incidence->byRead(1));
+    }
+
 }

@@ -436,5 +436,39 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * People for report
          */
         $router->get('/people-for-report', 'PeopleForReportController@getAll');
+
+        /**
+         * Comments
+         */
+        $router->get('/comments', 'CommentController@getAll');
+        $router->post('/comments', 'CommentController@create');
+
+        /**
+         * Incidence image
+         */
+        $router->get('/incidence-images', 'IncidenceImageController@index');
+        $router->post('/incidence-images', 'IncidenceImageController@store');
+        $router->put('/incidence-images/{id}', 'IncidenceImageController@update');
+
+        /**
+         * Zones
+         */
+        $router->get('/zones', 'ZoneController@index');
+        $router->post('/zones', 'ZoneController@store');
+        $router->put('/zones/{id}', 'ZoneController@update');
+
+        /**
+         * Streets
+         */
+        $router->get('/streets','StreetController@index');
+        $router->post('/streets','StreetController@store');
+        $router->put('/streets/{id}','StreetController@update');
+
+        /**
+         * Squares
+         */
+        $router->get('/squares','SquareController@index');
+        $router->post('/squares','SquareController@store');
+        $router->put('/squares/{id}','SquareController@update');
     });
 });

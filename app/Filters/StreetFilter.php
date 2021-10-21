@@ -4,23 +4,19 @@ namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
 
-class IncidenceFilter extends ModelFilter
+class StreetFilter extends ModelFilter
 {
 
     public function ids($ids){
         return $this->byIds($ids);
     }
 
-    public function resolved($resolved){
-        return $this->byResolved($resolved);
+    public function zoneIds($ids){
+        return $this->byZoneIds($ids);
     }
 
-    public function vehicleIds($ids){
-        return $this->byVehicleIds($ids);
-    }
-
-    public function read($read){
-        return $this->byRead($read);
+    public function name($name){
+        return $this->byName($name);
     }
 
     /**
