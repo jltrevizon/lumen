@@ -463,5 +463,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/streets','StreetController@index');
         $router->post('/streets','StreetController@store');
         $router->put('/streets/{id}','StreetController@update');
+
+        /**
+         * Squares
+         */
+        $router->get('/squares','SquareController@index');
+        $router->post('/squares','SquareController@store');
+        $router->put('/squares/{id}','SquareController@update');
     });
 });
