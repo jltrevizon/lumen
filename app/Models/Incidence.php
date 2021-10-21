@@ -31,6 +31,10 @@ class Incidence extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function incidenceImages(){
+        return $this->hasMany(incidenceImage::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }

@@ -442,5 +442,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/comments', 'CommentController@getAll');
         $router->post('/comments', 'CommentController@create');
+
+        /**
+         * Incidence image
+         */
+        $router->get('/incidence-images', 'IncidenceImageController@index');
+        $router->post('/incidence-images', 'IncidenceImageController@store');
+        $router->put('/incidence-images/{id}', 'IncidenceImageController@update');
+
     });
 });

@@ -2,6 +2,7 @@
 
 use App\Models\Comment;
 use App\Models\Incidence;
+use App\Models\IncidenceImage;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,6 +44,13 @@ class IncidenceTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->incidence->comments());
         $this->assertInstanceOf(Comment::class, $this->incidence->comments()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_incidence_images()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->incidence->incidenceImages());
+        $this->assertInstanceOf(IncidenceImage::class, $this->incidence->incidenceImages()->getModel());
     }
 
     /** @test */

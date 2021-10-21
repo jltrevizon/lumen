@@ -6,27 +6,23 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class IncidenceImage extends Model
 {
     
     use HasFactory, Filterable;
 
     protected $fillable = [
         'incidence_id',
-        'user_id',
-        'description'
+        'comment_id',
+        'url'
     ];
 
     public function incidence(){
         return $this->belongsTo(Incidence::class);
     }
 
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
-
-    public function incidenceImages(){
-        return $this->hasMany(IncidenceImage::class);
+    public function comment(){
+        return $this->belongsTo(Comment::class);
     }
 
     public function scopeByIds($query, array $ids){
@@ -37,8 +33,8 @@ class Comment extends Model
         return $query->whereIn('incidence_id', $ids);
     }
 
-    public function scopeByUserIds($query, array $ids){
-        return $query->whereIn('user_id', $ids);
+    public function scopeByCommentIds($query, array $ids){
+        return $query->whereIn('comment_id', $ids);
     }
 
 }

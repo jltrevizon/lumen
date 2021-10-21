@@ -2,9 +2,11 @@
 
 use App\Models\Comment;
 use App\Models\Incidence;
+use App\Models\IncidenceImage;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -31,6 +33,13 @@ class CommentTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->comment->user());
         $this->assertInstanceOf(User::class, $this->comment->user()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_incidence_images()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->comment->incidenceImages());
+        $this->assertInstanceOf(IncidenceImage::class, $this->comment->incidenceImages()->getModel());
     }
 
     /** @test */
