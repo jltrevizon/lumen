@@ -354,4 +354,13 @@ class PendingTaskRepository extends Repository {
         return $pendingTask;
     }
 
+    public function updatePendingTaskFromValidation($groupTask, $taskIdActual, $taskIdNew){
+        $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
+            ->where('task_id', $taskIdActual)
+            ->first();
+        $pendingTask->task_id = $taskIdNew;
+        $pendingTask->save();
+        
+    }
+
 }

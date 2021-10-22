@@ -11,11 +11,15 @@ class QuestionAnswerRepository {
     public function __construct(
         QuestionnaireRepository $questionnaireRepository,
         ReceptionRepository $receptionRepository,
+        GroupTaskRepository $groupTaskRepository,
+        PendingTaskRepository $pendingTaskRepository,
         AccessoryRepository $accessoryRepository)
     {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->receptionRepository = $receptionRepository;
         $this->accessoryRepository = $accessoryRepository;
+        $this->groupTaskRepository = $groupTaskRepository;
+        $this->pendingTaskRepository = $pendingTaskRepository;
     }
 
     public function create($request){
@@ -74,7 +78,8 @@ class QuestionAnswerRepository {
 
     public function update($request, $id){
         $questionAnswer = QuestionAnswer::findOrFail($id);
-        $lastQuestionnaire = $this->questionnaireRepository->getLastQuestionnaireByVehicleId($request->input('vehicle_id'));
+        $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
+        $this->pendingTaskRepository->updatePendingTaskFromValidation($groupTask, $request->input('last_task_id'), $request->input('task_id'));
         $questionAnswer->update($request->all());
         return ['question_answer' => $questionAnswer];
     }

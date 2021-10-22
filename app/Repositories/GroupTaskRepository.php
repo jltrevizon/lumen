@@ -82,4 +82,9 @@ class GroupTaskRepository extends Repository {
                     ->delete();
         return ['message' => 'Solicitud declinada!'];
     }
+
+    public function groupTaskByQuestionnaireId($questionnaireId){
+        return GroupTask::where('questionnaire_id', $questionnaireId)
+            ->first();
+    }
 }
