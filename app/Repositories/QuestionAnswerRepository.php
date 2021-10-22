@@ -37,7 +37,7 @@ class QuestionAnswerRepository {
             $this->accessoryRepository->create($reception['id'], $request->input('accessories'));
         }
         return [
-            'message' => 'Ok'
+            'questionnaire' => $questionnaire
         ];
     }
 
@@ -74,6 +74,7 @@ class QuestionAnswerRepository {
 
     public function update($request, $id){
         $questionAnswer = QuestionAnswer::findOrFail($id);
+        $lastQuestionnaire = $this->questionnaireRepository->getLastQuestionnaireByVehicleId($request->input('vehicle_id'));
         $questionAnswer->update($request->all());
         return ['question_answer' => $questionAnswer];
     }

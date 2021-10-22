@@ -2,6 +2,7 @@
 
 use App\Models\GroupTask;
 use App\Models\PendingTask;
+use App\Models\Questionnaire;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,6 +35,13 @@ class GroupTaskTest extends TestCase
         $this->assertInstanceOf(BelongsTo::class, $this->groupTask->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->groupTask->vehicle()->getModel());
     }
+
+    /** @test */
+    public function it_belongs_to_questionnaire(){
+        $this->assertInstanceOf(BelongsTo::class, $this->groupTask->questionnaire());
+        $this->assertInstanceOf(Questionnaire::class, $this->groupTask->questionnaire()->getModel());
+    }
+
 
     /** @test */
     public function should_return_group_tasks_by_ids(){
