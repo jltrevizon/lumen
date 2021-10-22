@@ -15,7 +15,7 @@ class IncidenceRepository extends Repository {
     public function getAll($request){
         return Incidence::with($this->getWiths($request->with)) 
             ->filter($request->all())
-            ->paginate();
+            ->paginate($request->input('per_page'));
     }
 
     public function getById($id){
