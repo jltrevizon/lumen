@@ -156,6 +156,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/add', 'PendingTaskController@addPendingTask');
         $router->get('/pending-tasks/filter', 'PendingTaskController@pendingTasksFilter');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
+        $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
         /**
          * Purchase operations
          */
@@ -315,6 +316,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/question-answers', 'QuestionAnswerController@create');
         $router->post('/question-answers/checklist', 'QuestionAnswerController@createChecklist');
         $router->put('/question-answers/update/{id}', 'QuestionAnswerController@update');
+        $router->put('/question-answers/update-response/{id}', 'QuestionAnswerController@updateResponse');
 
         /**
          * Manual Questionnaire

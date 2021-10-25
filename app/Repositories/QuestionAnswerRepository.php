@@ -83,4 +83,10 @@ class QuestionAnswerRepository {
         $questionAnswer->update($request->all());
         return ['question_answer' => $questionAnswer];
     }
+
+    public function updateResponse($request, $id){
+        $questionAnswer = QuestionAnswer::findOrFail($id);
+        $questionAnswer->update($request->all());
+        return $questionAnswer;
+    }
 }
