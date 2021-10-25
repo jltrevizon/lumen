@@ -41,4 +41,8 @@ class QuestionAnswerController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->questionAnswerRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function updateResponse(Request $request, $id){
+        return $this->updateDataResponse($this->questionAnswerRepository->updateResponse($request, $id), HttpFoundationResponse::HTTP_OK);
+    }
 }

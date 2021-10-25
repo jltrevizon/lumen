@@ -15,6 +15,7 @@ class GroupTask extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'questionnaire_id',
         'approved'
     ];
 
@@ -24,6 +25,10 @@ class GroupTask extends Model
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'group_task_id');
+    }
+
+    public function questionnaire(){
+        return $this->belongsTo(Questionnaire::class);
     }
 
     public function scopeByIds($query, array $ids){
