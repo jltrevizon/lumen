@@ -161,7 +161,7 @@ class PendingTaskRepository extends Repository {
         $pending_task->status_color = "Red";
         $pending_task->save();
         $this->incidencePendingTaskRepository->create($incidence->id, $pending_task->id);
-        return [ 'message' => 'Ok' ];
+        return [ 'incidence' => $incidence ];
     }
 
     public function resolvedIncidence($request){
