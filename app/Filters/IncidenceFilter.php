@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Filters;
 
@@ -21,6 +21,10 @@ class IncidenceFilter extends ModelFilter
 
     public function read($read){
         return $this->byRead($read);
+    }
+
+    public function plate($plate){
+        return $this->byPlate($plate);
     }
 
     /**

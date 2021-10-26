@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\PendingTask;
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Incidence extends Model
@@ -45,6 +46,12 @@ class Incidence extends Model
 
     public function scopeByVehicleIds($query, array $ids){
         return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByPlate($query, string $plate){
+        return $query->whereHas('vehicle', function(Builder $builder) use($plate){
+            return $builder->where('plate','like',"%$plate%");
+        });
     }
 
     public function scopeByRead($query, bool $read){
