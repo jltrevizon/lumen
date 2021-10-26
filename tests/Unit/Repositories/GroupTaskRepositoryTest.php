@@ -23,8 +23,10 @@ class GroupTaskRepositoryTest extends TestCase
     {
         GroupTask::factory()->create();
         GroupTask::factory()->create();
-        $result = $this->repository->getAll();
-        $this->assertCount(2, $result);
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->getAll($request);
+        $this->assertCount(2, $result->items());
     }
 
     /** @test */

@@ -11,19 +11,23 @@ class QuestionAnswerRepository {
     public function __construct(
         QuestionnaireRepository $questionnaireRepository,
         ReceptionRepository $receptionRepository,
+        GroupTaskRepository $groupTaskRepository,
+        PendingTaskRepository $pendingTaskRepository,
         AccessoryRepository $accessoryRepository)
     {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->receptionRepository = $receptionRepository;
         $this->accessoryRepository = $accessoryRepository;
+        $this->groupTaskRepository = $groupTaskRepository;
+        $this->pendingTaskRepository = $pendingTaskRepository;
     }
 
     public function create($request){
-        $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
+        $questionnaire = $this->questionnaireRepository->create($request);
         $questions = $request->input('questions');
         foreach($questions as $question){
             $questionAnswer = new QuestionAnswer();
-            $questionAnswer->questionnaire_id = $questionnaire;
+            $questionAnswer->questionnaire_id = $questionnaire['id'];
             $questionAnswer->question_id = $question['question_id'];
             $questionAnswer->task_id = $question['task_id'];
             $questionAnswer->response = $question['response'];
@@ -37,23 +41,23 @@ class QuestionAnswerRepository {
             $this->accessoryRepository->create($reception['id'], $request->input('accessories'));
         }
         return [
-            'message' => 'Ok'
+            'questionnaire' => $questionnaire
         ];
     }
 
     public function createChecklist($request){
-        $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
+        $questionnaire = $this->questionnaireRepository->create($request);
         $questions = $request->input('questions');
         foreach($questions as $question){
             $questionAnswer = new QuestionAnswer();
-            $questionAnswer->questionnaire_id = $questionnaire;
+            $questionAnswer->questionnaire_id = $questionnaire['id'];
             $questionAnswer->question_id = $question['question_id'];
             $questionAnswer->response = $question['response'];
             $questionAnswer->description = $question['description'];
             $questionAnswer->save();
         }
-        $questionnaireComplete = Questionnaire::with(['questionAnswers.question']) 
-                ->findOrFail($questionnaire);
+        $questionnaireComplete = Questionnaire::with(['questionAnswers.question','vehicle.lastOrder']) 
+                ->findOrFail($questionnaire['id']);
         $client = new \GuzzleHttp\Client();
         $response = $client->post(
             'https://devgsp20.invarat.com/api/createChecklist',
@@ -74,7 +78,15 @@ class QuestionAnswerRepository {
 
     public function update($request, $id){
         $questionAnswer = QuestionAnswer::findOrFail($id);
+        $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
+        $this->pendingTaskRepository->updatePendingTaskFromValidation($groupTask, $request->input('last_task_id'), $request->input('task_id'));
         $questionAnswer->update($request->all());
         return ['question_answer' => $questionAnswer];
+    }
+
+    public function updateResponse($request, $id){
+        $questionAnswer = QuestionAnswer::findOrFail($id);
+        $questionAnswer->update($request->all());
+        return $questionAnswer;
     }
 }

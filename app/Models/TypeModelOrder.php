@@ -13,6 +13,7 @@ class TypeModelOrder extends Model
     const BIPI = 1;
     const REDRIVE = 2;
     const D2 = 3;
+    const ALDFLEX = 4;
 
     protected $fillable = [
         'name'

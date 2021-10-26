@@ -31,6 +31,10 @@ class QuestionController extends Controller
         return $this->createDataResponse($this->questionRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
+    public function filter(Request $request){
+        return $this->getDataResponse($this->questionRepository->filter($request), HttpFoundationResponse::HTTP_OK);
+    }
+
     public function delete($id){
         return Question::where('id', $id)
                         ->delete();

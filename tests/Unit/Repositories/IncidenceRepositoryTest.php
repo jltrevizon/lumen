@@ -22,8 +22,10 @@ class IncidenceRepositoryTest extends TestCase
     {
         Incidence::factory()->create();
         Incidence::factory()->create();
-        $result = $this->repository->getAll();
-        $this->assertCount(2, $result);
+        $request = new Request();
+        $request->with = [];
+        $result = $this->repository->getAll($request);
+        $this->assertCount(2, $result->items());
     }
 
     /** @test */
@@ -40,7 +42,8 @@ class IncidenceRepositoryTest extends TestCase
         $description = 'Description incidence';
         $request = new Request();
         $request->replace([
-            'description' => $description
+            'description' => $description,
+            'resolved' => false
         ]);
         $result = $this->repository->create($request);
         $this->assertEquals($description, $result['description']);

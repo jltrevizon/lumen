@@ -14,8 +14,10 @@ class GroupTaskRepository extends Repository {
 
     }
 
-    public function getAll(){
-        return GroupTask::all();
+    public function getAll($request){
+        return GroupTask::with($this->getWiths($request->with))
+                ->filter($request->all())
+                ->paginate();
     }
 
     public function getById($request, $id){
@@ -34,6 +36,7 @@ class GroupTaskRepository extends Repository {
     public function create($request){
         $group_task = new GroupTask();
         $group_task->vehicle_id = $request->input('vehicle_id');
+        $group_task->questionnaire_id = $request->input('questionnaire_id');
         $group_task->approved = 0;
         $group_task->save();
         return $group_task;
@@ -78,5 +81,10 @@ class GroupTaskRepository extends Repository {
         GroupTask::findOrFail($request->input('group_task_id'))
                     ->delete();
         return ['message' => 'Solicitud declinada!'];
+    }
+
+    public function groupTaskByQuestionnaireId($questionnaireId){
+        return GroupTask::where('questionnaire_id', $questionnaireId)
+            ->first();
     }
 }

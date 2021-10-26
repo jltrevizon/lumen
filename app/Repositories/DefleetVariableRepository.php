@@ -7,11 +7,17 @@ use App\Repositories\UserRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
-class DefleetVariableRepository {
+class DefleetVariableRepository extends Repository{
 
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
+    }
+
+    public function getAll($request){
+        return DefleetVariable::with($this->getWiths($request->with))
+                ->filter($request->all())
+                ->paginate();
     }
 
     public function getVariables($request){

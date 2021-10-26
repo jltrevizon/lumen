@@ -131,7 +131,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/provinces/getall', 'ProvinceController@getall');
         $router->get('/provinces/{id}', 'ProvinceController@getById');
-        $router->post('/provinces/by-region', 'ProvinceController@provinceByRegion');
         $router->post('/provinces', 'ProvinceController@create');
         $router->put('/provinces/update/{id}', 'ProvinceController@update');
         $router->delete('/provinces/delete/{id}', 'ProvinceController@delete');
@@ -157,6 +156,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/add', 'PendingTaskController@addPendingTask');
         $router->get('/pending-tasks/filter', 'PendingTaskController@pendingTasksFilter');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
+        $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
         /**
          * Purchase operations
          */
@@ -292,6 +292,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Variables defleet
          */
         $router->get('/defleet-variables', 'DefleetVariableController@getVariables');
+        $router->get('/defleet-variables/getall', 'DefleetVariableController@getAll');
         $router->put('/defleet-variables', 'DefleetVariableController@updateVariables');
         $router->post('/defleet-variables', 'DefleetVariableController@createVariables');
 
@@ -315,6 +316,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/question-answers', 'QuestionAnswerController@create');
         $router->post('/question-answers/checklist', 'QuestionAnswerController@createChecklist');
         $router->put('/question-answers/update/{id}', 'QuestionAnswerController@update');
+        $router->put('/question-answers/update-response/{id}', 'QuestionAnswerController@updateResponse');
 
         /**
          * Manual Questionnaire
@@ -413,6 +415,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Login logs
          */
+        $router->get('/login-logs', 'LoginLogController@getAll');
         $router->post('/login-logs', 'LoginLogController@create');
         $router->post('/login-logs/by-user', 'LoginLogController@getUser');
 
@@ -425,5 +428,49 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Budget lines
          */
         $router->get('/budget-lines', 'BudgetLineController@getAll');
+
+        /**
+         * Password reset code
+         */
+        $router->get('/password-reset-code', 'PasswordResetCodeController@getAll');
+
+        /**
+         * People for report
+         */
+        $router->get('/people-for-report', 'PeopleForReportController@getAll');
+
+        /**
+         * Comments
+         */
+        $router->get('/comments', 'CommentController@getAll');
+        $router->post('/comments', 'CommentController@create');
+
+        /**
+         * Incidence image
+         */
+        $router->get('/incidence-images', 'IncidenceImageController@index');
+        $router->post('/incidence-images', 'IncidenceImageController@store');
+        $router->put('/incidence-images/{id}', 'IncidenceImageController@update');
+
+        /**
+         * Zones
+         */
+        $router->get('/zones', 'ZoneController@index');
+        $router->post('/zones', 'ZoneController@store');
+        $router->put('/zones/{id}', 'ZoneController@update');
+
+        /**
+         * Streets
+         */
+        $router->get('/streets','StreetController@index');
+        $router->post('/streets','StreetController@store');
+        $router->put('/streets/{id}','StreetController@update');
+
+        /**
+         * Squares
+         */
+        $router->get('/squares','SquareController@index');
+        $router->post('/squares','SquareController@store');
+        $router->put('/squares/{id}','SquareController@update');
     });
 });

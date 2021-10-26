@@ -4,19 +4,33 @@ namespace App\Repositories;
 
 use App\Models\Reception;
 use App\Models\Request;
+use App\Models\SubState;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class ReceptionRepository {
 
     public function __construct(
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        VehiclePictureRepository $vehiclePictureRepository,
+        AccessoryRepository $accessoryRepository,
+        VehicleRepository $vehicleRepository
     )
     {
         $this->userRepository = $userRepository;
+        $this->vehiclePictureRepository = $vehiclePictureRepository;
+        $this->accessoryRepository = $accessoryRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function create($request){
+        $receptionDuplicate = Reception::where('vehicle_id', $request->input('vehicle_id'))
+                ->whereDate('created_at', date('Y-m-d'))
+                ->first();
+        if($receptionDuplicate){
+            $this->accessoryRepository->deleteAccessoriesByReception($receptionDuplicate);
+            $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
+        } 
         Reception::where('vehicle_id', $request->input('vehicle_id'))
             ->whereDate('created_at', date('Y-m-d'))
             ->delete();
@@ -26,6 +40,7 @@ class ReceptionRepository {
         $reception->vehicle_id = $request->input('vehicle_id');
         $reception->has_accessories = false;
         $reception->save();
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), SubState::CHECK);
         return ['reception' => $reception];
     }
 

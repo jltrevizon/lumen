@@ -44,8 +44,8 @@ class VehicleController extends Controller
             'campa_id' => 'required|integer',
             'category_id' => 'required|integer',
             'plate' => 'required|string',
-            'vehicle_model_id' => 'required|integer',
-            'first_plate' => 'required|date',
+            'vehicle_model_id' => 'nullable|integer',
+            'first_plate' => 'nullable|date',
         ]);
 
         return $this->createDataResponse(['vehicle' => $this->vehicleRepository->create($request)], HttpFoundationResponse::HTTP_CREATED);

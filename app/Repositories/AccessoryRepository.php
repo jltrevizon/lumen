@@ -31,4 +31,12 @@ class AccessoryRepository {
         return Accessory::all();
     }
 
+    public function deleteAccessoriesByReception($reception){
+        Accessory::where('reception_id', $reception['id'])
+                ->delete();
+        return [
+            'message' => 'Accessories deleted'
+        ];
+    }
+
 }

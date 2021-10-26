@@ -354,4 +354,26 @@ class PendingTaskRepository extends Repository {
         return $pendingTask;
     }
 
+    public function updatePendingTaskFromValidation($groupTask, $taskIdActual, $taskIdNew){
+        $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
+            ->where('task_id', $taskIdActual)
+            ->first();
+        $pendingTask->task_id = $taskIdNew;
+        $pendingTask->save();
+    }
+
+    public function updateApprovedPendingTaskFromValidation($request){
+        $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
+        PendingTask::where('group_task_id', $groupTask['id'])
+            ->where('task_id', $request->input('task_id'))
+            ->chunk(200, function($pendingTasks) use($request) {
+                foreach($pendingTasks as $pendingTask) {
+                    $pendingTask->update(['approved' => $request->input('approved')]);
+                }
+            });
+        return [
+            'message' => 'Pending task update'
+        ];
+    }
+
 }

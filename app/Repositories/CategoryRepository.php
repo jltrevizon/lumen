@@ -15,7 +15,7 @@ class CategoryRepository extends Repository {
     public function getAll($request){
         return Category::with($this->getWiths($request->with))
             ->filter($request->all())
-            ->paginate($request->input('per_page'));
+            ->get();
     }
 
     public function getById($id){

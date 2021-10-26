@@ -5,15 +5,17 @@ namespace App\Repositories;
 use App\Models\Incidence;
 use Exception;
 
-class IncidenceRepository {
+class IncidenceRepository extends Repository {
 
     public function __construct()
     {
 
     }
 
-    public function getAll(){
-        return Incidence::all();
+    public function getAll($request){
+        return Incidence::with($this->getWiths($request->with)) 
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function getById($id){
@@ -21,18 +23,13 @@ class IncidenceRepository {
     }
 
     public function create($request){
-        $incidence = new Incidence();
-        $incidence->description = $request->get('description');
-        $incidence->resolved = false;
+        $incidence = Incidence::create($request->all());
         $incidence->save();
         return $incidence;
     }
 
     public function createIncidence($request){
-        $incidence = new Incidence();
-        $incidence->description = $request->input('description');
-        $incidence->resolved = false;
-        $incidence->save();
+        $incidence = Incidence::create($request->all());
         return $incidence;
     }
 
