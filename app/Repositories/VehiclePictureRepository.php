@@ -17,7 +17,7 @@ class VehiclePictureRepository extends Repository {
         $vehicle = Vehicle::with(['lastReception'])
                     ->findOrFail($request->input('vehicle_id'));
         $vehicle_picture = new VehiclePicture();
-        $vehicle_picture->reception_id = $vehicle['lastReception']['id'];
+        $vehicle_picture->reception_id = $vehicle['lastReception']['id'] ?? null;
         $vehicle_picture->vehicle_id = $request->input('vehicle_id');
         $vehicle_picture->user_id = Auth::id();
         $vehicle_picture->url = $request->input('url');
