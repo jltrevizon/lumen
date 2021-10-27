@@ -10,6 +10,11 @@ class VehicleModel extends Model
 
     use HasFactory;
 
+    protected $fillable = [
+        'brand_id',
+        'name'
+    ];
+
     public function vehicles(){
         return $this->hasMany(Vehicle::class);
     }

@@ -20,6 +20,11 @@ class BrandRepository extends Repository {
         ];
     }
 
+    public function store($request){
+        $brand = Brand::create($request->all());
+        return $brand;
+    }
+
     public function getById($request, $id){
         $brand = Brand::with($this->getWiths($request->with))->findOrFail($id);
         return ['brand' => $brand];
