@@ -9,7 +9,7 @@ class SquareRepository extends Repository {
     public function index($request){
         return Square::with($this->getWiths($request->with))
             ->filter($request->all())
-            ->paginate($request->input('per_page'));
+            ->get();
     }
 
     public function store($request){
