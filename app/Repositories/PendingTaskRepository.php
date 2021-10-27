@@ -358,6 +358,7 @@ class PendingTaskRepository extends Repository {
         $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
             ->where('task_id', $taskIdActual)
             ->first();
+            dd($taskIdNew);
         $pendingTask->task_id = $taskIdNew;
         $pendingTask->save();
     }
