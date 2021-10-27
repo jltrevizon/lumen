@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\QuestionAnswer;
 use App\Models\Questionnaire;
+use App\Models\SubState;
 use Exception;
 
 class QuestionAnswerRepository {
@@ -13,6 +14,7 @@ class QuestionAnswerRepository {
         ReceptionRepository $receptionRepository,
         GroupTaskRepository $groupTaskRepository,
         PendingTaskRepository $pendingTaskRepository,
+        VehicleRepository $vehicleRepository,
         AccessoryRepository $accessoryRepository)
     {
         $this->questionnaireRepository = $questionnaireRepository;
@@ -20,6 +22,7 @@ class QuestionAnswerRepository {
         $this->accessoryRepository = $accessoryRepository;
         $this->groupTaskRepository = $groupTaskRepository;
         $this->pendingTaskRepository = $pendingTaskRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function create($request){
@@ -40,6 +43,7 @@ class QuestionAnswerRepository {
             $this->receptionRepository->update($reception['id']);
             $this->accessoryRepository->create($reception['id'], $request->input('accessories'));
         }
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), SubState::CHECK);
         return [
             'questionnaire' => $questionnaire
         ];
