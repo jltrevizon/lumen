@@ -72,6 +72,12 @@ class IncidenceTest extends TestCase
     }
 
     /** @test */
+    public function should_return_incidences_plate()
+    {
+        $this->assertInstanceOf(Builder::class, $this->incidence->byPlate(''));
+    }
+
+    /** @test */
     public function should_return_incidences_by_read()
     {
         $this->assertInstanceOf(Builder::class, $this->incidence->byRead(1));
