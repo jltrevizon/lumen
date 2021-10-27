@@ -40,7 +40,7 @@ class ReceptionRepository {
         $reception->vehicle_id = $request->input('vehicle_id');
         $reception->has_accessories = false;
         $reception->save();
-        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), SubState::CHECK);
+    
         return ['reception' => $reception];
     }
 
