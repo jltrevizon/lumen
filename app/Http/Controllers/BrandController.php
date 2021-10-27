@@ -20,4 +20,8 @@ class BrandController extends Controller
     public function getById(Request $request, $id){
         return $this->getDataResponse($this->brandRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function store(Request $request){
+        return $this->createDataResponse($this->brandRepository->store($request), HttpFoundationResponse::HTTP_OK);
+    }
 }

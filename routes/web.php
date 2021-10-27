@@ -281,6 +281,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Vehicle model
          */
         $router->get('/vehicle-models','VehicleModelController@getAll');
+        $router->post('/vehicle-models', 'VehicleModelController@store');
 
         /**
          * Vehicle Picture
@@ -346,6 +347,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Brands
          */
         $router->get('/brands','BrandController@getAll');
+        $router->post('/brands', 'BrandController@store');
         $router->get('/brands/{id}','BrandController@getById');
 
         /**

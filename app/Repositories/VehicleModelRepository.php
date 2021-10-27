@@ -17,6 +17,11 @@ class VehicleModelRepository {
         return VehicleModel::all();
     }
 
+    public function store($request){
+        $vehicle_model = VehicleModel::create($request->all());
+        return $vehicle_model;
+    }
+
     public function getByNameFromExcel($brand_id, $vehicle_name){
         try {
             $vehicle_model = VehicleModel::where('name', $vehicle_name)

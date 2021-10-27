@@ -17,4 +17,8 @@ class VehicleModelController extends Controller
     public function getAll(){
         return $this->getDataResponse($this->vehicleModelRepository->getAll(), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function store(Request $request){
+        return $this->createDataResponse($this->vehicleModelRepository->store($request), HttpFoundationResponse::HTTP_OK);
+    }
 }
