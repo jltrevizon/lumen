@@ -82,8 +82,10 @@ class QuestionAnswerRepository {
 
     public function update($request, $id){
         $questionAnswer = QuestionAnswer::findOrFail($id);
-        $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
-        $this->pendingTaskRepository->updatePendingTaskFromValidation($groupTask, $request->input('last_task_id'), $request->input('task_id'));
+        if($request->input('task_id')){
+            $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
+            $this->pendingTaskRepository->updatePendingTaskFromValidation($groupTask, $request->input('last_task_id'), $request->input('task_id'));
+        }
         $questionAnswer->update($request->all());
         return ['question_answer' => $questionAnswer];
     }
