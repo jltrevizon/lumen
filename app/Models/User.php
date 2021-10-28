@@ -35,6 +35,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
     ];
 
+    protected $dates = [
+        'deleted_at'
+    ];
+
     public function campas(){
         return $this->belongsToMany(Campa::class);
     }

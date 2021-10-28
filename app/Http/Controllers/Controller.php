@@ -20,7 +20,7 @@ class Controller extends BaseController
             'token' => $token,
             'token_type' => 'bearer',
             'user' => $user,
-            'expires_in' => Auth::factory()->getTTL() * 600,
+            'expires_in' => time() * 60 * 60 * 60 * 24,
             'code' => Response::HTTP_OK
         ], Response::HTTP_OK);
     }
