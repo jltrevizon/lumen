@@ -7,6 +7,7 @@ use App\Models\Reception;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\Zone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -67,6 +68,13 @@ class CampaTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->campa->receptions());
         $this->assertInstanceOf(Reception::class, $this->campa->receptions()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_zones()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->campa->zones());
+        $this->assertInstanceOf(Zone::class, $this->campa->zones()->getModel());
     }
 
     /** @test */

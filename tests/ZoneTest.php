@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Campa;
 use App\Models\Street;
 use App\Models\Zone;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -18,6 +20,13 @@ class ZoneTest extends TestCase
     {
         parent::setUp();
         $this->zone = Zone::factory()->create();
+    }
+
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->zone->campa());
+        $this->assertInstanceOf(Campa::class, $this->zone->campa()->getModel());
     }
 
     /** @test */
