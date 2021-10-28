@@ -15,6 +15,10 @@ class ZoneFilter extends ModelFilter
         return $this->byName($name);
     }
 
+    public function campaIds($ids){
+        return $this->byCampaIds($ids);
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].

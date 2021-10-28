@@ -49,6 +49,10 @@ class Campa extends Model
         return $this->hasMany(Reception::class);
     }
 
+    public function zones(){
+        return $this->hasMany(Zone::class);
+    }
+
     public function scopeByCompany($query, int $companyId){
         return $query->where('company_id', $companyId);
     }

@@ -12,8 +12,13 @@ class Zone extends Model
     use HasFactory, Filterable;
     
     protected $fillable = [
+        'campa_id',
         'name'
     ];
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
+    }
 
     public function streets(){
         return $this->hasMany(Street::class);
@@ -25,6 +30,10 @@ class Zone extends Model
 
     public function scopeByName($query, string $name){
         return $query->where('name','like',"%$name%");
+    }
+
+    public function scopeByCampaIds($query, array $ids){
+        return $query->whereIn('campa_id', $ids);
     }
 
 }

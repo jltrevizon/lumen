@@ -58,15 +58,17 @@ class PendingTaskAldController extends Controller
     }
 
     private function createTasks($tasks, $vehicleId, $groupTaskId){
+        $isPendingTaskAssign = false;
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
-            if($task['task_order'] == 1){
+            if($task['approved'] == true && $isPendingTaskAssign == false){
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                $isPendingTaskAssign = true;
             }
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
