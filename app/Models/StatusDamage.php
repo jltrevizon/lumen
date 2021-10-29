@@ -9,6 +9,10 @@ class StatusDamage extends Model
 {
 
     use HasFactory;
+
+    const PENDING = 1;
+    const APPROVED = 2;
+    const DECLINED = 3;
     
     protected $fillable = [
         'description'
