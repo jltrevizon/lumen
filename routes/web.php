@@ -474,5 +474,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/squares','SquareController@index');
         $router->post('/squares','SquareController@store');
         $router->put('/squares/{id}','SquareController@update');
+
+        /**
+         * Colors
+         */
+        $router->get('/colors','ColorController@index');
+        $router->post('/colors','ColorController@store');
+        $router->put('/colors/{id}','ColorController@update');
     });
 });

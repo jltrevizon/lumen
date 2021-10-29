@@ -30,6 +30,7 @@ class Vehicle extends Model
         "campa_id",
         'category_id',
         'sub_state_id',
+        'color_id',
         'ubication',
         'plate',
         'vehicle_model_id',
@@ -57,6 +58,10 @@ class Vehicle extends Model
 
     public function subState(){
         return $this->belongsTo(SubState::class);
+    }
+
+    public function color(){
+        return $this->belongsTo(Color::class);
     }
 
     public function requests(){

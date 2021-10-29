@@ -3,6 +3,7 @@
 use App\Models\Budget;
 use App\Models\Campa;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Company;
 use App\Models\DeliveryVehicle;
 use App\Models\GroupTask;
@@ -60,6 +61,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->subState());
         $this->assertInstanceOf(SubState::class, $this->vehicle->subState()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_color()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->vehicle->color());
+        $this->assertInstanceOf(Color::class, $this->vehicle->color()->getModel());
     }
 
     /** @test */
