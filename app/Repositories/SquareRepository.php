@@ -18,7 +18,7 @@ class SquareRepository extends Repository {
     }
 
     public function update($request, $id){
-        $request->input('vehicle_id') ?? $this->freeSquare($request->input('vehicle_id'));
+        if($request->input('vehicle_id')) $this->freeSquare($request->input('vehicle_id'));
         $square = Square::findOrFail($id);
         $square->update($request->all());
         return $square;
@@ -26,7 +26,7 @@ class SquareRepository extends Repository {
 
     private function freeSquare($vehicleId){
         Square::where('vehicle_id', $vehicleId)
-            ->chunck(200, function ($squares){
+            ->chunk(200, function ($squares){
                 foreach($squares as $square){
                     $square->update(['vehicle_id' => null]);
                 }
