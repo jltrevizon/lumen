@@ -116,6 +116,10 @@ class Vehicle extends Model
         return $this->hasMany(Incidence::class);
     }
 
+    public function accessories(){
+        return $this->belongsToMany(Accessory::class);
+    }
+
     public function lastQuestionnaire(){
         return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
             'id' => 'max'
@@ -123,7 +127,7 @@ class Vehicle extends Model
     }
 
     public function lastReception(){
-        return $this->hasOne(Reception::class)->with(['accessories','vehiclePictures'])->ofMany([
+        return $this->hasOne(Reception::class)->with(['vehiclePictures'])->ofMany([
             'id' => 'max'
         ]);
     }

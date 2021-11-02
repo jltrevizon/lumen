@@ -13,4 +13,8 @@ class Accessory extends Model
         'name'
     ];
 
+    public function vehicles(){
+        return $this->belongsToMany(Vehicle::class);
+    }
+
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Accessory;
 use App\Models\Budget;
 use App\Models\Campa;
 use App\Models\Category;
@@ -24,6 +25,7 @@ use App\Models\VehicleModel;
 use App\Models\VehiclePicture;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -159,6 +161,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->incidences());
         $this->assertInstanceOf(Incidence::class, $this->vehicle->incidences()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_many_accessories()
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->vehicle->accessories());
+        $this->assertInstanceOf(Accessory::class, $this->vehicle->accessories()->getModel());
     }
 
     /** @test */
