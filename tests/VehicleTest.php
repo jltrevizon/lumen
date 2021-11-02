@@ -16,6 +16,7 @@ use App\Models\Questionnaire;
 use App\Models\Reception;
 use App\Models\Request;
 use App\Models\Reservation;
+use App\Models\Square;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\TypeModelOrder;
@@ -223,6 +224,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->vehicleModel());
         $this->assertInstanceOf(VehicleModel::class, $this->vehicle->vehicleModel()->getModel());
+    }
+
+    /** @test */
+    public function it_has_one_square()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->vehicle->square());
+        $this->assertInstanceOf(Square::class, $this->vehicle->square()->getModel());
     }
 
     /** @test */

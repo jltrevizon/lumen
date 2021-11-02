@@ -159,6 +159,10 @@ class Vehicle extends Model
         return $this->belongsTo(VehicleModel::class);
     }
 
+    public function square(){
+        return $this->hasOne(Square::class);
+    }
+
     public function scopeByRole($query, $roleId){
         if ($roleId == Role::MANAGER_MECHANIC) {
             return $this->mechanic($query);
