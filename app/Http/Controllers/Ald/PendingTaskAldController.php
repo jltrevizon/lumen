@@ -34,7 +34,6 @@ class PendingTaskAldController extends Controller
         $this->vehicleRepository = $vehicleRepository;
         $this->userRepository = $userRepository;
         $this->receptionRepository = $receptionRepository;
-        $this->accessoryRepository = $accessoryRepository;
     }
 
     public function createFromArray(Request $request){
@@ -47,10 +46,6 @@ class PendingTaskAldController extends Controller
             $user = $this->userRepository->getById($request, Auth::id());
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
             $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
-            if($request->input('has_accessories')){
-                $this->receptionRepository->update($reception['id']);
-                $this->accessoryRepository->create($reception['id'], $request->input('accessories'));
-            }
             return [ 'message' => 'OK' ];
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);

@@ -18,18 +18,4 @@ class AccessoryTest extends TestCase
         parent::setUp();
         $this->accessory = Accessory::factory()->create();
     }
-
-    /** @test */
-    public function it_belongs_to_reception()
-    {
-        $this->assertInstanceOf(BelongsTo::class, $this->accessory->reception());
-        $this->assertInstanceOf(Reception::class, $this->accessory->reception()->getModel());
-    }
-
-    /** @test */
-    public function it_belongs_to_vehicle()
-    {
-        $this->assertInstanceOf(BelongsTo::class, $this->accessory->vehicle());
-        $this->assertInstanceOf(Vehicle::class, $this->accessory->vehicle()->getModel());
-    }
 }

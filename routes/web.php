@@ -491,5 +491,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/damages', 'DamageController@store');
         $router->put('/damages/{id}', 'DamageController@update');
 
+        /**
+         * Accessory
+         */
+        $router->get('/accessories', 'AccessoryController@index');
+        $router->post('/accessories', 'AccessoryController@store');
+        $router->put('/accessories/{id}', 'AccessoryController@update');
     });
 });
