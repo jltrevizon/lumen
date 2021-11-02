@@ -497,5 +497,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/accessories', 'AccessoryController@index');
         $router->post('/accessories', 'AccessoryController@store');
         $router->put('/accessories/{id}', 'AccessoryController@update');
+
+        /**
+         * Accessory vehicle
+         */
+        $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
+        $router->post('/accessory-vehicle', 'AccessoryVehicleController@store');
+        $router->post('/accessory-vehicle/delete', 'AccessoryVehicleController@destroy');
     });
 });
