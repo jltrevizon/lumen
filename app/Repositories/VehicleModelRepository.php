@@ -45,7 +45,13 @@ class VehicleModelRepository {
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
+    }
 
+    public function update($request, $id){
+        $vehicleModel = VehicleModel::findOrFail($id);
+        $vehicleModel->update($request->all());
+        $vehicleModel->save();
+        return $vehicleModel;
     }
 
 }
