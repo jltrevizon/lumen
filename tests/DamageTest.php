@@ -4,6 +4,7 @@ use App\Models\Damage;
 use App\Models\StatusDamage;
 use App\Models\Task;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -40,6 +41,30 @@ class DamageTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->damage->statusDamage());
         $this->assertInstanceOf(StatusDamage::class, $this->damage->statusDamage()->getModel());
+    }
+
+    /** @test */
+    public function should_return_damages_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->damage->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_damages_by_vehicle_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->damage->byVehicleIds([]));
+    }
+
+    /** @test */
+    public function should_return_damages_by_task_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->damage->byTaskIds([]));
+    }
+
+    /** @test */
+    public function should_return_damages_by_status_damage_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->damage->byIds([]));
     }
 
 }

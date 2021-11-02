@@ -29,4 +29,19 @@ class Damage extends Model
         return $this->belongsTo(StatusDamage::class);
     }
 
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByVehicleIds($query, array $ids){
+        return $query->whereIn('vehicle_id', $ids);
+    }
+
+    public function scopeByTaskIds($query, array $ids){
+        return $query->whereIn('task_id', $ids);
+    }
+
+    public function scopeByStatusDamageIds($query, array $ids){
+        return $query->whereIn('status_damage_id', $ids);
+    }
 }

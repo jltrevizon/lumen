@@ -483,5 +483,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/colors','ColorController@index');
         $router->post('/colors','ColorController@store');
         $router->put('/colors/{id}','ColorController@update');
+
+        /**
+         * Damages
+         */
+        $router->get('/damages', 'DamageController@index');
+        $router->post('/damages', 'DamageController@store');
+        $router->put('/damages/{id}', 'DamageController@update');
+
     });
 });
