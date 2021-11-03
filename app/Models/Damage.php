@@ -12,11 +12,16 @@ class Damage extends Model
     use HasFactory, Filterable;
 
     protected $fillable = [
+        'user_id',
         'vehicle_id',
         'task_id',
         'status_damage_id',
         'description'
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);

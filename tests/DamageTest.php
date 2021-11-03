@@ -3,6 +3,7 @@
 use App\Models\Damage;
 use App\Models\StatusDamage;
 use App\Models\Task;
+use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,13 @@ class DamageTest extends TestCase
     {
         parent::setUp();
         $this->damage = Damage::factory()->create();
+    }
+
+    /** @test */
+    public function it_belongs_to_user()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damage->user());
+        $this->assertInstanceOf(User::class, $this->damage->user()->getModel());
     }
 
     /** @test */

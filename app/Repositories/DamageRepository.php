@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Damage;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
 
@@ -15,6 +16,8 @@ class DamageRepository extends Repository {
 
     public function store($request){
         $damage = Damage::create($request->all());
+        $damage->user_id = Auth::id();
+        $damage->save();
         return $damage;
     }
 
