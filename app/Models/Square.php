@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,6 +40,12 @@ class Square extends Model
 
     public function scopeByName($query, string $name){
         return $query->where('name','like',"%$name%");
+    }
+
+    public function scopeByCampaIds($query, array $ids){
+        return $query->whereHas('street.zone.campa', function (Builder $builder) use ($ids){
+            return $builder->whereIn('id', $ids);
+        });
     }
 
 }

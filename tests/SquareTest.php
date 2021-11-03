@@ -59,4 +59,10 @@ class SquareTest extends TestCase
         $this->assertInstanceOf(Builder::class, $this->square->byName(''));
     }
 
+    /** @test */
+    public function should_return_squares_by_campa_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->square->byCampaIds([]));
+    }
+
 }
