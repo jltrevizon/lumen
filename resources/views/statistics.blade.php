@@ -21,5 +21,13 @@
     <img src="https://quickchart.io/chart?c={{$pending_tasks_end_by_days}}" width="600px" alt="">
     <h2>Tareas finalizadas en los últimos meses</h2>
     <img src="https://quickchart.io/chart?c={{$pending_tasks_end_by_months}}" width="600px" alt="">
+    <h2>Fotos gesionadas en la última semana</h2>
+    <img src="https://quickchart.io/chart?c={{$images_by_days}}" width="600px" alt="">
+    <h2>Fotos gesionadas en la últimos meses</h2>
+    <img src="https://quickchart.io/chart?c={{$images_by_months}}" width="600px" alt="">
+    <h2>Presupuestos de tareas gesionados en la última semana</h2>
+    <img src="https://quickchart.io/chart?c={{$budget_pending_tasks_by_days}}" width="600px" alt="">
+    <h2>Presupuestos de tareas gesionados en la últimos meses</h2>
+    <img src="https://quickchart.io/chart?c={{$budget_pending_tasks_by_months}}" width="600px" alt="">
 </body>
 </html>
