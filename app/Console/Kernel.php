@@ -37,6 +37,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('entry:vehicles')->dailyAt('13:30');
         $schedule->command('stock:vehicles')->dailyAt('13:30');
         $schedule->command('delivery:vehicles')->dailyAt('13:30');
+        $schedule->command('statistics')->dailyAt('09:00');
+
     }
 
 

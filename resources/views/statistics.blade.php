@@ -59,5 +59,25 @@
             <img src="https://quickchart.io/chart?c={{$budget_pending_tasks_by_months}}" width="500px" alt="">
         </div>
     </div>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Total de vehículos</th>
+                <th>Total de recepciones</th>
+                <th>Total de tareas creadas</th>
+                <th>Total de fotos</th>
+                <th>Total de presupuestos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>    
+                <td>{{$total_vehicles}}</td>
+                <td>{{$total_receptions}}</td>
+                <td>{{$total_task_created}}</td>
+                <td>{{$total_images}}</td>
+                <td>{{$total_budget_pending_task}}</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

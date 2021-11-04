@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\BudgetPendingTask;
 use App\Models\PendingTask;
 use App\Models\Reception;
+use App\Models\Vehicle;
 use App\Models\VehiclePicture;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -64,7 +65,7 @@ class StatisticsMail extends Mailable
         $valuesChartImagesByMonths = $chartImagesByMonths['values'];
         $labelChartBudgetPendingTaskByMonths = $chartBudgetPendingTaskByMonths['labels'];
         $valuesChartBudgetPendingTaskByMonths = $chartBudgetPendingTaskByMonths['values'];
-
+        $totals = $this->totals();
         $data = [ 
             'reception_by_days' => urlencode("{ type: 'bar', data: { labels: $labels, datasets: [{ label: 'Recepciones por día', data: $values, backgroundColor: getGradientFillHelper('vertical', ['#089A9F', '#08B9BF', '#0AE3EB']), }] } }"),
             'reception_by_months' => urlencode("{ type: 'bar', data: { labels: $labelsChartByMonths, datasets: [{ label: 'Recepciones por meses', data: $valuesChartByMonths, backgroundColor: getGradientFillHelper('vertical', ['#089A9F', '#08B9BF', '#0AE3EB']), }] } }"),
@@ -76,7 +77,11 @@ class StatisticsMail extends Mailable
             'images_by_months' => urlencode("{ type: 'bar', data: { labels: $labelChartImagesByMonths, datasets: [{ label: 'Tareas finalizadas en los últimos meses', data: $valuesChartImagesByMonths, backgroundColor: getGradientFillHelper('vertical', ['#089A9F', '#08B9BF', '#0AE3EB']), }] } }"),
             'budget_pending_tasks_by_days' => urlencode("{ type: 'bar', data: { labels: $labelBudgetPendingTask, datasets: [{ label: 'Tareas finalizadas en los últimos meses', data: $valueBudgetPendingTask, backgroundColor: getGradientFillHelper('vertical', ['#089A9F', '#08B9BF', '#0AE3EB']), }] } }"),
             'budget_pending_tasks_by_months' => urlencode("{ type: 'bar', data: { labels: $labelChartBudgetPendingTaskByMonths, datasets: [{ label: 'Tareas finalizadas en los últimos meses', data: $valuesChartBudgetPendingTaskByMonths, backgroundColor: getGradientFillHelper('vertical', ['#089A9F', '#08B9BF', '#0AE3EB']), }] } }"),
-            
+            'total_receptions' => $totals['receptions'],
+            'total_task_created' => $totals['pending_tasks'],
+            'total_vehicles' => $totals['vehicles'],
+            'total_images' => $totals['images'],
+            'total_budget_pending_task' => $totals['budgets'] 
         ];
         Mail::send('statistics', $data, function($message){
             $message->to('anelvin.mejia@grupomobius.com')->subject('Prueba de reporte');
@@ -297,4 +302,23 @@ class StatisticsMail extends Mailable
             'values' => json_encode($values)
         ];
     }
+
+    private function totals(){
+
+        $receptions = Reception::count();
+        $pendingTasks = PendingTask::where('approved', true)
+            ->count();
+        $vehicles = Vehicle::count();
+        $images = VehiclePicture::count();
+        $budgets = BudgetPendingTask::count();
+        return [
+            'vehicles' => $vehicles,
+            'receptions' => $receptions,
+            'pending_tasks' => $pendingTasks, 
+            'images' => $images,
+            'budgets' => $budgets
+        ];
+    }
+
+
 }
