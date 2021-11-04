@@ -48,6 +48,6 @@ class SubStateTest extends TestCase
     /** @test */
     public function should_return_sub_states_by_state_id()
     {
-        $this->assertInstanceOf(Builder::class, $this->subState->byState([]));
+        $this->assertInstanceOf(Builder::class, $this->subState->byStateIds([]));
     }
 }
