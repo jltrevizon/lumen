@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\State;
 use App\Models\Task;
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SubState extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     const CAMPA = 1;
     const PENDIENTE_LAVADO = 2;
@@ -51,5 +52,9 @@ class SubState extends Model
 
     public function type_users_app(){
         return $this->belongsToMany(TypeUserApp::class);
+    }
+
+    public function scopeByStateIds($query, array $ids){
+        return $query->whereIn('state_id', $ids);
     }
 }
