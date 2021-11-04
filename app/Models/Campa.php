@@ -16,6 +16,27 @@ class Campa extends Model
 
     use HasFactory, Filterable;
 
+    const ROCIAUTO = 1;
+    const VIAS_PALANTE = 2;
+    const LEGANES = 3;
+    const MYR_CORUÑA = 4;
+    const AUTOSELEC = 5;
+    const DEKRA_VALENCIA = 6;
+    const MOTORDOS_LAS_PALMAS = 7;
+    const CAMPA_LOIU = 8;
+    const TOQUERO_MALLORCA = 9;
+    const OSKIALIA = 10;
+    const DELOTSER = 11;
+    const TALAVERON = 12;
+    const DELOTSER_MADRID = 13;
+    const PRO_MOTOR_OLIVA = 14;
+    const MYR_SANTIAGO = 15;
+    const MOTORDOS_TENERIFE = 16;
+    const DEKRA_ZARAGOZA = 17;
+    const PULLMANCAR = 18;
+    const TOQUERO_SAN_FERNANDO = 19;
+    const TOQUERO_SOTO = 20;
+
     protected $fillable = [
         'company_id',
         'province_id',
