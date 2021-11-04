@@ -54,7 +54,7 @@ class SubState extends Model
         return $this->belongsToMany(TypeUserApp::class);
     }
 
-    public function scopeByState($query, array $ids){
+    public function scopeByStateIds($query, array $ids){
         return $query->whereIn('state_id', $ids);
     }
 }
