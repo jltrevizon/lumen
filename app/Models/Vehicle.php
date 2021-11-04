@@ -274,6 +274,10 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeByTypeModelOrderIds($query, array $ids){
+        return $query->whereIn('type_model_order_id', $ids);
+    }
+
     public function scopeVehicleModelIds($query, array $ids){
         return $query->whereIn('vehicle_model_id', $ids);
     }
@@ -386,7 +390,9 @@ class Vehicle extends Model
     }
 
     public function scopeDifferentDefleeted($query){
-        return $query->whereHas('subState.state', fn (Builder $builder) => $builder->where('id','!=', State::PENDING_SALE_VO));
+        return $query->whereHas('subState.state', function (Builder $builder) {
+            return $builder->where('id','!=', State::PENDING_SALE_VO);
+        });
     }
 
     public function scopeDefleetBetweenDateApproved(Builder $builder, $dateStart, $dateEnd){

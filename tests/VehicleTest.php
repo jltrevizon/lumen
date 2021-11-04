@@ -294,6 +294,12 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function should_vehicle_by_type_model_order_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byTypeModelOrderIds([]));
+    }
+
+    /** @test */
     public function should_search_by_vehicle_models()
     {
         $this->assertInstanceOf(Builder::class, $this->vehicle->vehicleModelIds([]));
