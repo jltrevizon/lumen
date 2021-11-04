@@ -4,6 +4,7 @@ use App\Models\State;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TypeUserApp;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,5 +43,11 @@ class SubStateTest extends TestCase
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->subState->type_users_app());
         $this->assertInstanceOf(TypeUserApp::class, $this->subState->type_users_app()->getModel());
+    }
+
+    /** @test */
+    public function should_return_sub_states_by_state_id()
+    {
+        $this->assertInstanceOf(Builder::class, $this->subState->byState([]));
     }
 }

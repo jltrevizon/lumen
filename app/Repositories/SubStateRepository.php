@@ -14,7 +14,8 @@ class SubStateRepository extends Repository {
 
     public function getAll($request){
         return SubState::with($this->getWiths($request->with))
-                    ->get();
+            ->filter($request->all())
+            ->get();
     }
 
     public function getById($id){
