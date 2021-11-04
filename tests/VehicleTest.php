@@ -398,4 +398,10 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->withPendingTaskOrProgress());
     }
+
+    /** @test */
+    public function should_return_vehicle_by_task_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byTaskIds([]));
+    }
 }
