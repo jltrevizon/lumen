@@ -14,12 +14,10 @@ class QuestionAnswerRepository {
         ReceptionRepository $receptionRepository,
         GroupTaskRepository $groupTaskRepository,
         PendingTaskRepository $pendingTaskRepository,
-        VehicleRepository $vehicleRepository,
-        AccessoryRepository $accessoryRepository)
+        VehicleRepository $vehicleRepository)
     {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->receptionRepository = $receptionRepository;
-        $this->accessoryRepository = $accessoryRepository;
         $this->groupTaskRepository = $groupTaskRepository;
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->vehicleRepository = $vehicleRepository;
@@ -39,10 +37,6 @@ class QuestionAnswerRepository {
         }
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
 
-        if($request->input('has_accessories')){
-            $this->receptionRepository->update($reception['id']);
-            $this->accessoryRepository->create($reception['id'], $request->input('accessories'));
-        }
         $this->vehicleRepository->updateSubState($request->input('vehicle_id'), SubState::CHECK);
         return [
             'questionnaire' => $questionnaire

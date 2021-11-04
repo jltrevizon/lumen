@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Accessory;
 use App\Models\Budget;
 use App\Models\Campa;
 use App\Models\Category;
+use App\Models\Color;
 use App\Models\Company;
 use App\Models\DeliveryVehicle;
 use App\Models\GroupTask;
@@ -14,6 +16,7 @@ use App\Models\Questionnaire;
 use App\Models\Reception;
 use App\Models\Request;
 use App\Models\Reservation;
+use App\Models\Square;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\TypeModelOrder;
@@ -23,6 +26,7 @@ use App\Models\VehicleModel;
 use App\Models\VehiclePicture;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -60,6 +64,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->subState());
         $this->assertInstanceOf(SubState::class, $this->vehicle->subState()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_color()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->vehicle->color());
+        $this->assertInstanceOf(Color::class, $this->vehicle->color()->getModel());
     }
 
     /** @test */
@@ -154,6 +165,13 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_many_accessories()
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->vehicle->accessories());
+        $this->assertInstanceOf(Accessory::class, $this->vehicle->accessories()->getModel());
+    }
+
+    /** @test */
     public function should_search_last_questionnaire()
     {
         $this->assertInstanceOf(HasOne::class, $this->vehicle->lastQuestionnaire());
@@ -206,6 +224,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicle->vehicleModel());
         $this->assertInstanceOf(VehicleModel::class, $this->vehicle->vehicleModel()->getModel());
+    }
+
+    /** @test */
+    public function it_has_one_square()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->vehicle->square());
+        $this->assertInstanceOf(Square::class, $this->vehicle->square()->getModel());
     }
 
     /** @test */

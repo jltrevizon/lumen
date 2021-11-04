@@ -32,7 +32,6 @@ class PendingTaskRepository extends Repository {
         VehicleRepository $vehicleRepository,
         ReceptionRepository $receptionRepository,
         PendingTaskCanceledRepository $pendingTaskCanceledRepository,
-        AccessoryRepository $accessoryRepository,
         IncidencePendingTaskRepository $incidencePendingTaskRepository)
     {
         $this->groupTaskRepository = $groupTaskRepository;
@@ -43,7 +42,6 @@ class PendingTaskRepository extends Repository {
         $this->vehicleRepository = $vehicleRepository;
         $this->receptionRepository = $receptionRepository;
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
-        $this->accessoryRepository = $accessoryRepository;
         $this->incidencePendingTaskRepository = $incidencePendingTaskRepository;
     }
 

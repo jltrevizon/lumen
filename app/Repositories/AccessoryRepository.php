@@ -6,37 +6,23 @@ use App\Models\Accessory;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 
-class AccessoryRepository {
+class AccessoryRepository extends Repository {
 
-    public function __construct()
-    {
-
+    public function index($request){
+        return Accessory::with($this->getWiths($request->all()))
+            ->filter($request->all())
+            ->get();
     }
 
-    public function create($reception_id, $accessories){
-        try{
-            foreach($accessories as $accessory){
-                $new_accessory = new Accessory();
-                $new_accessory->reception_id = $reception_id;
-                $new_accessory->name = $accessory['name'];
-                $new_accessory->save();
-            }
-            return ['message' => 'Accessories created!'];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
+    public function store($request){
+        $accessory = Accessory::create($request->all());
+        return $accessory;
     }
 
-    public function getAll(){
-        return Accessory::all();
-    }
-
-    public function deleteAccessoriesByReception($reception){
-        Accessory::where('reception_id', $reception['id'])
-                ->delete();
-        return [
-            'message' => 'Accessories deleted'
-        ];
+    public function update($request, $id){
+        $accessory = Accessory::findOrFail($id);
+        $accessory->update($request->all());
+        return $accessory;
     }
 
 }

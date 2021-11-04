@@ -13,13 +13,11 @@ class ReceptionRepository {
     public function __construct(
         UserRepository $userRepository,
         VehiclePictureRepository $vehiclePictureRepository,
-        AccessoryRepository $accessoryRepository,
         VehicleRepository $vehicleRepository
     )
     {
         $this->userRepository = $userRepository;
         $this->vehiclePictureRepository = $vehiclePictureRepository;
-        $this->accessoryRepository = $accessoryRepository;
         $this->vehicleRepository = $vehicleRepository;
     }
 
@@ -28,7 +26,6 @@ class ReceptionRepository {
                 ->whereDate('created_at', date('Y-m-d'))
                 ->first();
         if($receptionDuplicate){
-            $this->accessoryRepository->deleteAccessoriesByReception($receptionDuplicate);
             $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
         } 
         Reception::where('vehicle_id', $request->input('vehicle_id'))

@@ -16,25 +16,4 @@ class AccessoryRepositoryTest extends TestCase
         $this->repository = new AccessoryRepository();
     }
 
-    /** @test */
-    public function should_create_accessories_correctly()
-    {
-        $accessories = [
-            ['name' => 'Accessory 1'],
-            ['name' => 'Accessory 2'],
-            ['name' => 'Accessory 3'],
-        ];
-        $reception = Reception::factory()->create();
-        $result = $this->repository->create($reception->id, $accessories);
-        $this->assertEquals('Accessories created!', $result['message']);
-    }
-
-    /** @test */
-    public function should_two_accessories()
-    {
-        Accessory::factory()->create();
-        Accessory::factory()->create();
-        $result = $this->repository->getAll();
-        $this->assertCount(2, $result);
-    }
 }

@@ -2,29 +2,24 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Accessory extends Model
 {
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
-        'reception_id',
-        'vehicle_id',
-        'name',
-        'description',
-        'mounted',
-        'datetime_mounted',
-        'datetime_unmounted'
+        'name'
     ];
 
-    public function reception(){
-        return $this->belongsTo(Reception::class);
+    public function vehicles(){
+        return $this->belongsToMany(Vehicle::class);
     }
 
-    public function vehicle(){
-        return $this->belongsTo(Vehicle::class);
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
     }
 
 }

@@ -44,4 +44,11 @@ class BrandRepository extends Repository {
         return $brand;
     }
 
+    public function update($request, $id){
+        $brand = Brand::findOrFail($id);
+        $brand->update($request->all());
+        $brand->save();
+        return $brand;
+    }
+
 }

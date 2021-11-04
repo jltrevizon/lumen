@@ -282,6 +282,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/vehicle-models','VehicleModelController@getAll');
         $router->post('/vehicle-models', 'VehicleModelController@store');
+        $router->put('/vehicle-models/{id}', 'VehicleModelController@update');
 
         /**
          * Vehicle Picture
@@ -348,6 +349,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/brands','BrandController@getAll');
         $router->post('/brands', 'BrandController@store');
+        $router->put('/brands/{id}', 'BrandController@update');
         $router->get('/brands/{id}','BrandController@getById');
 
         /**
@@ -474,5 +476,33 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/squares','SquareController@index');
         $router->post('/squares','SquareController@store');
         $router->put('/squares/{id}','SquareController@update');
+
+        /**
+         * Colors
+         */
+        $router->get('/colors','ColorController@index');
+        $router->post('/colors','ColorController@store');
+        $router->put('/colors/{id}','ColorController@update');
+
+        /**
+         * Damages
+         */
+        $router->get('/damages', 'DamageController@index');
+        $router->post('/damages', 'DamageController@store');
+        $router->put('/damages/{id}', 'DamageController@update');
+
+        /**
+         * Accessory
+         */
+        $router->get('/accessories', 'AccessoryController@index');
+        $router->post('/accessories', 'AccessoryController@store');
+        $router->put('/accessories/{id}', 'AccessoryController@update');
+
+        /**
+         * Accessory vehicle
+         */
+        $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
+        $router->post('/accessory-vehicle', 'AccessoryVehicleController@store');
+        $router->post('/accessory-vehicle/delete', 'AccessoryVehicleController@destroy');
     });
 });

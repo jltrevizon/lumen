@@ -4,27 +4,23 @@ namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
 
-class SquareFilter extends ModelFilter
+class DamageFilter extends ModelFilter
 {
 
     public function ids($ids){
         return $this->byIds($ids);
     }
 
-    public function streetIds($ids){
-        return $this->byStreetIds($ids);
-    }
-
     public function vehicleIds($ids){
         return $this->byVehicleIds($ids);
     }
 
-    public function name($ids){
-        return $this->byName($ids);
+    public function taskIds($ids){
+        return $this->byTaskIds($ids);
     }
 
-    public function campaIds($ids){
-        return $this->byCampaIds($ids);
+    public function statusDamageIds($ids){
+        return $this->byStatusDamageIds($ids);
     }
 
     /**

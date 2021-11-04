@@ -30,6 +30,7 @@ class Vehicle extends Model
         "campa_id",
         'category_id',
         'sub_state_id',
+        'color_id',
         'ubication',
         'plate',
         'vehicle_model_id',
@@ -57,6 +58,10 @@ class Vehicle extends Model
 
     public function subState(){
         return $this->belongsTo(SubState::class);
+    }
+
+    public function color(){
+        return $this->belongsTo(Color::class);
     }
 
     public function requests(){
@@ -111,6 +116,10 @@ class Vehicle extends Model
         return $this->hasMany(Incidence::class);
     }
 
+    public function accessories(){
+        return $this->belongsToMany(Accessory::class);
+    }
+
     public function lastQuestionnaire(){
         return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
             'id' => 'max'
@@ -118,7 +127,7 @@ class Vehicle extends Model
     }
 
     public function lastReception(){
-        return $this->hasOne(Reception::class)->with(['accessories','vehiclePictures'])->ofMany([
+        return $this->hasOne(Reception::class)->with(['vehiclePictures'])->ofMany([
             'id' => 'max'
         ]);
     }
@@ -148,6 +157,10 @@ class Vehicle extends Model
 
     public function vehicleModel(){
         return $this->belongsTo(VehicleModel::class);
+    }
+
+    public function square(){
+        return $this->hasOne(Square::class);
     }
 
     public function scopeByRole($query, $roleId){
