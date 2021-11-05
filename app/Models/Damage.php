@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,5 +50,11 @@ class Damage extends Model
 
     public function scopeByStatusDamageIds($query, array $ids){
         return $query->whereIn('status_damage_id', $ids);
+    }
+
+    public function scopeByPlate($query, string $plate){
+        return $query->whereHas('vehicle', function (Builder $builder) use($plate){
+            return $builder->where('plate', 'like',"%$plate%");
+        });
     }
 }

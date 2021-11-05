@@ -75,4 +75,9 @@ class DamageTest extends TestCase
         $this->assertInstanceOf(Builder::class, $this->damage->byIds([]));
     }
 
+    /** @test */
+    public function should_return_damage_by_plate()
+    {
+        $this->assertInstanceOf(Builder::class, $this->damage->byPlate(''));
+    }
 }

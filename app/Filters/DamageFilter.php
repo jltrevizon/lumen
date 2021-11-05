@@ -23,6 +23,10 @@ class DamageFilter extends ModelFilter
         return $this->byStatusDamageIds($ids);
     }
 
+    public function plate($plate){
+        return $this->byPlate($plate);
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
