@@ -515,15 +515,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Status damage
          */
-        $router->get('/status-damage', 'StatusDamageController@index');
-        $router->post('/status-damage', 'StatusDamageController@store');
-        $router->put('/status-damage/{id}', 'StatusDamageController@destroy');
+        $router->get('/status-damages', 'StatusDamageController@index');
+        $router->post('/status-damages', 'StatusDamageController@store');
+        $router->put('/status-damages/{id}', 'StatusDamageController@destroy');
 
         /**
          * Severity damage
          */
-        $router->get('/severity-damage', 'SeverityDamageController@index');
-        $router->post('/severity-damage', 'SeverityDamageController@store');
-        $router->put('/severity-damage/{id}', 'SeverityDamageController@destroy');
+        $router->get('/severity-damages', 'SeverityDamageController@index');
+        $router->post('/severity-damages', 'SeverityDamageController@store');
+        $router->put('/severity-damages/{id}', 'SeverityDamageController@destroy');
     });
 });
