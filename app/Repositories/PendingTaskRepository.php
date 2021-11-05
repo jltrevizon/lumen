@@ -369,6 +369,10 @@ class PendingTaskRepository extends Repository {
                     $pendingTask->update(['approved' => $request->input('approved')]);
                 }
             });
+        $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
+            ->where('task_id', $request->input('task_id'))
+            ->first();
+        $this->realignPendingTask($pendingTask);
         return [
             'message' => 'Pending task update'
         ];

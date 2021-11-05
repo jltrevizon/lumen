@@ -294,6 +294,12 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function should_vehicle_by_type_model_order_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byTypeModelOrderIds([]));
+    }
+
+    /** @test */
     public function should_search_by_vehicle_models()
     {
         $this->assertInstanceOf(Builder::class, $this->vehicle->vehicleModelIds([]));
@@ -397,5 +403,11 @@ class VehicleTest extends TestCase
     public function should_search_pending_task_in_progress_or_pending()
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->withPendingTaskOrProgress());
+    }
+
+    /** @test */
+    public function should_return_vehicle_by_task_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byTaskIds([]));
     }
 }

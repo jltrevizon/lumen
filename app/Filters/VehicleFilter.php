@@ -39,6 +39,10 @@ class VehicleFilter extends ModelFilter
         return $this->brandIds($ids);
     }
 
+    public function typeModelOrderIds($ids){
+        return $this->byTypeModelOrderIds($ids);
+    }
+
     public function vehicleModels($ids)
     {
         return $this->vehicleModelIds($ids);
@@ -86,6 +90,10 @@ class VehicleFilter extends ModelFilter
 
     public function hasOrderNotFinish($value){
         return $this->byHasOrderNotFinish($value);
+    }
+
+    public function taskIds($ids){
+        return $this->byTaskIds($ids);
     }
 
 }
