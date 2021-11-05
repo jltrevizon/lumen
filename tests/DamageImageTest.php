@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Damage;
 use App\Models\DamageImage;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -22,17 +23,10 @@ class DamageImageTest extends TestCase
     }
 
     /** @test */
-    public function it_belongs_to_user()
+    public function it_belongs_to_damage()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->damageImage->user());
-        $this->assertInstanceOf(User::class, $this->damageImage->user()->getModel());
-    }
-
-    /** @test */
-    public function it_belongs_to_vehicle()
-    {
-        $this->assertInstanceOf(BelongsTo::class, $this->damageImage->vehicle());
-        $this->assertInstanceOf(Vehicle::class, $this->damageImage->vehicle()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->damageImage->damage());
+        $this->assertInstanceOf(Damage::class, $this->damageImage->damage()->getModel());
     }
 
     /** @test */
@@ -41,21 +35,11 @@ class DamageImageTest extends TestCase
         $this->assertInstanceOf(Builder::class, $this->damageImage->byIds([]));
     }
 
-    /** @test */
-    public function should_return_damage_images_by_user_ids()
-    {
-        $this->assertInstanceOf(Builder::class, $this->damageImage->byUserIds([]));
-    }
 
     /** @test */
-    public function should_return_damage_images_by_vehicle_ids()
+    public function should_return_damage_images_by_damage_ids()
     {
-        $this->assertInstanceOf(Builder::class, $this->damageImage->byVehicleIds([]));
+        $this->assertInstanceOf(Builder::class, $this->damageImage->byDamageIds([]));
     }
 
-    /** @test */
-    public function should_return_damage_images_by_plate()
-    {
-        $this->assertInstanceOf(Builder::class, $this->damageImage->byPlate(''));
-    }
 }

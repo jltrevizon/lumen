@@ -13,35 +13,20 @@ class DamageImage extends Model
     use HasFactory, Filterable;
 
     protected $fillable = [
-        'user_id',
-        'vehicle_id',
-        'description'
+        'damage_id',
+        'url',
     ];
 
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
-
-    public function vehicle(){
-        return $this->belongsTo(Vehicle::class);
+    public function damage(){
+        return $this->belongsTo(Damage::class);
     }
 
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
 
-    public function scopeByUserIds($query, array $ids){
-        return $query->whereIn('user_id', $ids);
-    }
-
-    public function scopeByVehicleIds($query, array $ids){
-        return $query->whereIn('vehicle_id', $ids);
-    }
-
-    public function scopeByPlate($query, string $plate){
-        return $query->whereHas('vehicle', function(Builder $builder) use($plate){
-            return $builder->where('plate','like',"%$plate%");
-        });
+    public function scopeByDamageIds($query, array $ids){
+        return $query->whereIn('damage_id', $ids);
     }
 
 }

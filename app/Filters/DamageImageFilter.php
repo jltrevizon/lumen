@@ -11,16 +11,8 @@ class DamageImageFilter extends ModelFilter
         return $this->byIds($ids);
     }
 
-    public function userIds($ids){
-        return $this->byUserIds($ids);
-    }
-
-    public function vehicleIds($ids){
-        return $this->byVehicleIds($ids);
-    }
-
-    public function plate($plate){
-        return $this->byPlate($plate);
+    public function damageIds($ids){
+        return $this->byDamageIds($ids);
     }
 
     /**

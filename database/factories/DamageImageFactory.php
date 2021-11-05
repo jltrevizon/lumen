@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Model;
+use App\Models\Damage;
 use App\Models\DamageImage;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -15,9 +16,8 @@ class DamageImageFactory extends Factory
     public function definition(): array
     {
     	return [
-    	    'user_id' => User::factory()->create()->id,
-            'vehicle_id' => Vehicle::factory()->create()->id,
-            'description' => $this->faker->name
+    	    'damage_id' => Damage::factory()->create()->id,
+            'url' => $this->faker->imageUrl
     	];
     }
 }

@@ -511,5 +511,19 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/damage-images', 'DamageImageController@index');
         $router->post('/damage-images', 'DamageImageController@store');
         $router->put('/damage-images/{id}', 'DamageImageController@destroy');
+
+        /**
+         * Status damage
+         */
+        $router->get('/status-damage', 'StatusDamageController@index');
+        $router->post('/status-damage', 'StatusDamageController@store');
+        $router->put('/status-damage/{id}', 'StatusDamageController@destroy');
+
+        /**
+         * Severity damage
+         */
+        $router->get('/severity-damage', 'SeverityDamageController@index');
+        $router->post('/severity-damage', 'SeverityDamageController@store');
+        $router->put('/severity-damage/{id}', 'SeverityDamageController@destroy');
     });
 });
