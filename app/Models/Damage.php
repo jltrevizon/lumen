@@ -41,6 +41,10 @@ class Damage extends Model
         return $this->belongsTo(SeverityDamage::class);
     }
 
+    public function damageImage(){
+        return $this->hasMany(DamageImage::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
