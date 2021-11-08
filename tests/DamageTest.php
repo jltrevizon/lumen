@@ -82,8 +82,8 @@ class DamageTest extends TestCase
     /** @test */
     public function it_has_many_damage_image()
     {
-        $this->assertInstanceOf(HasMany::class, $this->damage->damageImage());
-        $this->assertInstanceOf(DamageImage::class, $this->damage->damageImage()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->damage->damageImages());
+        $this->assertInstanceOf(DamageImage::class, $this->damage->damageImages()->getModel());
     }
 
     /** @test */
