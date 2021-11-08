@@ -41,7 +41,7 @@ class Damage extends Model
         return $this->belongsTo(SeverityDamage::class);
     }
 
-    public function damageImage(){
+    public function damageImages(){
         return $this->hasMany(DamageImage::class);
     }
 
