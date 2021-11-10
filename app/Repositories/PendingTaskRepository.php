@@ -378,4 +378,33 @@ class PendingTaskRepository extends Repository {
         ];
     }
 
+    public function createPendingTaskFromDamage($damage){
+        $groupTask = $this->groupTaskRepository->getLastByVehicle($damage['vehicle_id']);
+        $task = $this->taskRepository->getById([], $damage['task_id']);
+        $pendingTasks = PendingTask::where('group_task_id', $groupTask['id'])
+            ->get();
+        if($groupTask && $groupTask['approved'] == true){
+            $groupTask = $this->groupTaskRepository->createGroupTaskApproved($damage);
+            PendingTask::create([
+                'vehicle_id' => $damage['vehicle_id'],
+                'task_id' => $damage['task_id'],
+                'state_pending_task_id' => StatePendingTask::PENDING,
+                'group_task_id' => $groupTask['id'],
+                'duration' => $task['id'],
+                'order' => 1,
+                'approved' => true,
+                'datetime_pending' => date('Y-m-d H:i:s')
+            ]);
+        } else {
+            PendingTask::create([
+                'vehicle_id' => $damage['vehicle_id'],
+                'task_id' => $damage['task_id'],
+                'group_task_id' => $groupTask['id'],
+                'duration' => $task['id'],
+                'order' => count($pendingTasks) + 1,
+                'approved' => true
+            ]);
+        }
+    }
+
 }
