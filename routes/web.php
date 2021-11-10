@@ -504,5 +504,26 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
         $router->post('/accessory-vehicle', 'AccessoryVehicleController@store');
         $router->post('/accessory-vehicle/delete', 'AccessoryVehicleController@destroy');
+    
+        /**
+         * Damage images
+         */
+        $router->get('/damage-images', 'DamageImageController@index');
+        $router->post('/damage-images', 'DamageImageController@store');
+        $router->put('/damage-images/{id}', 'DamageImageController@destroy');
+
+        /**
+         * Status damage
+         */
+        $router->get('/status-damages', 'StatusDamageController@index');
+        $router->post('/status-damages', 'StatusDamageController@store');
+        $router->put('/status-damages/{id}', 'StatusDamageController@destroy');
+
+        /**
+         * Severity damage
+         */
+        $router->get('/severity-damages', 'SeverityDamageController@index');
+        $router->post('/severity-damages', 'SeverityDamageController@store');
+        $router->put('/severity-damages/{id}', 'SeverityDamageController@destroy');
     });
 });

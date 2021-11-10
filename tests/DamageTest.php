@@ -1,12 +1,15 @@
 <?php
 
 use App\Models\Damage;
+use App\Models\DamageImage;
+use App\Models\SeverityDamage;
 use App\Models\StatusDamage;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -70,9 +73,34 @@ class DamageTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_severity_damage()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damage->severityDamage());
+        $this->assertInstanceOf(SeverityDamage::class, $this->damage->severityDamage()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_damage_image()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->damage->damageImages());
+        $this->assertInstanceOf(DamageImage::class, $this->damage->damageImages()->getModel());
+    }
+
+    /** @test */
     public function should_return_damages_by_status_damage_ids()
     {
         $this->assertInstanceOf(Builder::class, $this->damage->byIds([]));
     }
 
+    /** @test */
+    public function should_return_damage_by_plate()
+    {
+        $this->assertInstanceOf(Builder::class, $this->damage->byPlate(''));
+    }
+
+    /** @test */
+    public function should_return_damage_by_severity_damage_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->damage->bySeverityDamageIds([]));
+    }
 }

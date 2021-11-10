@@ -147,6 +147,7 @@ class VehicleRepository extends Repository {
         $vehicleDefleet = Vehicle::with($this->getWiths($request->with))
             ->byPlate($request->input('plate'))
             ->byPendingRequestDefleet()
+            ->filter($request->all())
             ->first();
         if($vehicleDefleet){
             return ['defleet' => true, 'vehicle' => $vehicleDefleet];
