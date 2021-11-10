@@ -51,6 +51,15 @@ class GroupTaskRepository extends Repository {
         return $group_task;
     }
 
+    public function createGroupTaskApprovedByVehicle($vehicleId){
+        $group_task = new GroupTask();
+        $group_task->vehicle_id = $vehicleId;
+        $group_task->approved = 1;
+        $group_task->approved_available = 1;
+        $group_task->save();
+        return $group_task;
+    }
+
     public function update($request, $id){
         $group_task = GroupTask::findOrFail($id);
         $group_task->update($request->all());
