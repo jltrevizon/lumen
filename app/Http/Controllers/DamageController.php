@@ -44,7 +44,7 @@ class DamageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->update($this->damageRepository->update($request, $id), Response::HTTP_OK);
+        return $this->updateDataResponse($this->damageRepository->update($request, $id), Response::HTTP_OK);
     }
 
 }

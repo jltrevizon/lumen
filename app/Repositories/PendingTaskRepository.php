@@ -382,12 +382,20 @@ class PendingTaskRepository extends Repository {
         $groupTask = $this->groupTaskRepository->getLastByVehicle($damage['vehicle_id']);
         $task = $this->taskRepository->getById([], $damage['task_id']);
         $pendingTasks = 0;
+        $pendingTasksApproved = 0;
         if($groupTask){
+            $pendingTasksApproved = PendingTask::where('group_task_id',$groupTask['id'])
+                ->where(function($query){
+                    return $query->where('state_pending_task_id','!=' ,StatePendingTask::FINISHED)
+                        ->orWhereNull('state_pending_task_id');
+                })
+                ->where('approved', true)
+                ->count();
             $pendingTasks = PendingTask::where('group_task_id', $groupTask['id'])
                 ->get();
             $pendingTasks = count($pendingTasks);
         }  
-        if($groupTask && $groupTask['approved'] == true){
+        if($pendingTasksApproved == 0){
             $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($damage['vehicle_id']);
             PendingTask::create([
                 'vehicle_id' => $damage['vehicle_id'],
