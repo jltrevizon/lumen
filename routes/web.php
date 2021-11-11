@@ -525,5 +525,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/severity-damages', 'SeverityDamageController@index');
         $router->post('/severity-damages', 'SeverityDamageController@store');
         $router->put('/severity-damages/{id}', 'SeverityDamageController@destroy');
+
+        /**
+         * History Location
+         */
+        $router->get('/history-locations', 'HistoryLocationController@index');
     });
 });
