@@ -23,4 +23,8 @@ class Questionnaire extends Model
     public function questionAnswers(){
         return $this->hasMany(QuestionAnswer::class);
     }
+
+    public function groupTask(){
+        return $this->hasOne(GroupTask::class);
+    }
 }
