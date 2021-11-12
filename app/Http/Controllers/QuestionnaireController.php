@@ -15,6 +15,10 @@ class QuestionnaireController extends Controller
         $this->questionnaireRepository = $questionnaireRepository;
     }
 
+    public function index(Request $request){
+        return $this->getDataResponse($this->questionnaireRepository->index($request), HttpFoundationResponse::HTTP_OK);
+    }
+
     public function create($vehicle_id){
         return $this->createDataResponse($this->questionnaireRepository->create($vehicle_id), HttpFoundationResponse::HTTP_CREATED);
     }

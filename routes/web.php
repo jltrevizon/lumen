@@ -414,6 +414,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Questionnaire
          */
+        $router->get('/questionnaire','QuestionnaireController@index');
         $router->get('/questionnaire/{id}', 'QuestionnaireController@getById');
 
         /**
