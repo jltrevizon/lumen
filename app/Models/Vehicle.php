@@ -176,7 +176,7 @@ class Vehicle extends Model
     private function mechanic($query){
         return $query->with(['vehicleModel.brand','lastGroupTask.pendingTasks.task.subState','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.vehicle.vehicleModel.brand',
             'lastGroupTask.pendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
-            'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.statePendingTask',
+            'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','typeModelOrder','lastGroupTask.pendingTasks.statePendingTask',
             'lastGroupTask.pendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
@@ -204,7 +204,7 @@ class Vehicle extends Model
     private function chapa($query){
         return $query->with(['vehicleModel.brand','lastGroupTask.pendingTasks.task.subState','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.vehicle.vehicleModel.brand',
         'lastGroupTask.pendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
-        'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.statePendingTask',
+        'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','typeModelOrder','lastGroupTask.pendingTasks.statePendingTask',
         'lastGroupTask.pendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
