@@ -5,26 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Questionnaire extends Model
+class HistoryLocation extends Model
 {
-
+    
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'vehicle_id',
-        'file'
+        'square_id'
+    ];
+
+    protected $dates = [
+        'deleted_at'
     ];
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function questionAnswers(){
-        return $this->hasMany(QuestionAnswer::class);
+    public function square(){
+        return $this->belongsTo(Square::class);
     }
 
-    public function groupTask(){
-        return $this->hasOne(GroupTask::class);
-    }
 }

@@ -378,4 +378,45 @@ class PendingTaskRepository extends Repository {
         ];
     }
 
+    public function createPendingTaskFromDamage($damage){
+        $groupTask = $this->groupTaskRepository->getLastByVehicle($damage['vehicle_id']);
+        $task = $this->taskRepository->getById([], $damage['task_id']);
+        $pendingTasks = 0;
+        $pendingTasksApproved = 0;
+        if($groupTask){
+            $pendingTasksApproved = PendingTask::where('group_task_id',$groupTask['id'])
+                ->where(function($query){
+                    return $query->where('state_pending_task_id','!=' ,StatePendingTask::FINISHED)
+                        ->orWhereNull('state_pending_task_id');
+                })
+                ->where('approved', true)
+                ->count();
+            $pendingTasks = PendingTask::where('group_task_id', $groupTask['id'])
+                ->get();
+            $pendingTasks = count($pendingTasks);
+        }  
+        if($pendingTasksApproved == 0){
+            $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($damage['vehicle_id']);
+            PendingTask::create([
+                'vehicle_id' => $damage['vehicle_id'],
+                'task_id' => $damage['task_id'],
+                'state_pending_task_id' => StatePendingTask::PENDING,
+                'group_task_id' => $groupTask['id'],
+                'duration' => $task['id'],
+                'order' => 1,
+                'approved' => true,
+                'datetime_pending' => date('Y-m-d H:i:s')
+            ]);
+        } else {
+            PendingTask::create([
+                'vehicle_id' => $damage['vehicle_id'],
+                'task_id' => $damage['task_id'],
+                'group_task_id' => $groupTask['id'],
+                'duration' => $task['id'],
+                'order' => $pendingTasks + 1,
+                'approved' => true
+            ]);
+        }
+    }
+
 }

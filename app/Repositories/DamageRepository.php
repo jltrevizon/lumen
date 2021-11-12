@@ -3,10 +3,16 @@
 namespace App\Repositories;
 
 use App\Models\Damage;
+use App\Models\StatusDamage;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
+
+    public function __construct(PendingTaskRepository $pendingTaskRepository)
+    {
+        $this->pendingTaskRepository = $pendingTaskRepository;
+    }
 
     public function index($request){
         return Damage::with($this->getWiths($request->with))
@@ -24,6 +30,9 @@ class DamageRepository extends Repository {
     public function update($request, $id){
         $damage = Damage::findOrFail($id);
         $damage->update($request->all());
+        if($request->input('status_damage_id') == StatusDamage::APPROVED){
+            $this->pendingTaskRepository->createPendingTaskFromDamage($damage);
+        }
         return $damage;
     }
 
