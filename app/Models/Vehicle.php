@@ -180,8 +180,7 @@ class Vehicle extends Model
             'lastGroupTask.pendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
-                        ->orWhereNull('state_pending_task_id');
+                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
                 })
                 ->whereHas('task', function($query){
                     return $query->where('sub_state_id', SubState::MECANICA);
