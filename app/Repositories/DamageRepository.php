@@ -17,7 +17,7 @@ class DamageRepository extends Repository {
     public function index($request){
         return Damage::with($this->getWiths($request->with))
             ->filter($request->all())
-            ->paginate();
+            ->paginate($request->input('per_page'));
     }
 
     public function store($request){
