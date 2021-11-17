@@ -109,6 +109,7 @@ $app->register(\Barryvdh\DomPDF\ServiceProvider::class);
 $app->register(Irazasyed\Larasupport\Providers\ArtisanServiceProvider::class);
 $app->register(App\Providers\BroadcastServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Chuckrincon\LumenConfigDiscover\DiscoverServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
