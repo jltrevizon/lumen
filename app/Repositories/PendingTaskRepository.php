@@ -193,6 +193,7 @@ class PendingTaskRepository extends Repository {
                                 return $query->where('state_pending_task_id', null)
                                         ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
                             })
+                            ->where('approved', true)
                             ->orderBy('order','asc')
                             ->first();
         $pending_task->state_pending_task_id = StatePendingTask::PENDING;
@@ -372,7 +373,7 @@ class PendingTaskRepository extends Repository {
         $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
             ->where('task_id', $request->input('task_id'))
             ->first();
-        $this->realignPendingTask($pendingTask);
+        return $this->realignPendingTask($pendingTask);
         return [
             'message' => 'Pending task update'
         ];
