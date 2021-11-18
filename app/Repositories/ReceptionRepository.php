@@ -8,7 +8,7 @@ use App\Models\SubState;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
-class ReceptionRepository {
+class ReceptionRepository extends Repository {
 
     public function __construct(
         UserRepository $userRepository,
@@ -19,6 +19,12 @@ class ReceptionRepository {
         $this->userRepository = $userRepository;
         $this->vehiclePictureRepository = $vehiclePictureRepository;
         $this->vehicleRepository = $vehicleRepository;
+    }
+
+    public function index($request){
+        return Reception::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate();
     }
 
     public function create($request){
