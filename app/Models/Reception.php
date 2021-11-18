@@ -13,6 +13,7 @@ class Reception extends Model
     protected $fillable = [
         'campa_id',
         'vehicle_id',
+        'finished',
         'has_accessories'
     ];
 

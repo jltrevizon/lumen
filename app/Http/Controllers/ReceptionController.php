@@ -25,4 +25,8 @@ class ReceptionController extends Controller
     public function getById($id){
         return $this->getDataResponse($this->receptionRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function updateReception(Request $request, $id){  
+        return $this->updateDataResponse($this->receptionRepository->updateReception($request, $id), HttpFoundationResponse::HTTP_OK);
+    }
 }

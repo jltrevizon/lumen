@@ -367,6 +367,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->post('/reception', 'ReceptionController@create');
         $router->get('/reception/{id}','ReceptionController@getById');
+        $router->put('reception/{id}', 'ReceptionController@updateReception');
 
         /**
          * Type User App

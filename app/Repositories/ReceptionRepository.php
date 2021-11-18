@@ -35,6 +35,7 @@ class ReceptionRepository {
         $reception = new Reception();
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
         $reception->vehicle_id = $request->input('vehicle_id');
+        $reception->finished = false;
         $reception->has_accessories = false;
         $reception->save();
     
@@ -57,6 +58,12 @@ class ReceptionRepository {
         $reception = Reception::findOrFail($reception_id);
         $reception->has_accessories = true;
         $reception->save();
+        return $reception;
+    }
+
+    public function updateReception($request, $id){
+        $reception = Reception::findOrFail($id);
+        $reception->update($request->all());
         return $reception;
     }
 
