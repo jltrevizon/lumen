@@ -21,7 +21,7 @@ class Controller extends BaseController
             'token' => $token,
             'token_type' => 'bearer',
             'user' => $user,
-            'expires_in' => Carbon::now()->addHours(24)->timestamp,
+            'expires_in' => null,
             'code' => Response::HTTP_OK
         ], Response::HTTP_OK);
     }
