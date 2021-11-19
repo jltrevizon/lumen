@@ -13,6 +13,10 @@ class ReceptionController extends Controller
         $this->receptionRepository = $receptionRepository;
     }
 
+    public function index(Request $request){
+        return $this->getDataResponse($this->receptionRepository->index($request), HttpFoundationResponse::HTTP_OK);
+    }
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -24,5 +28,9 @@ class ReceptionController extends Controller
 
     public function getById($id){
         return $this->getDataResponse($this->receptionRepository->getById($id), HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function updateReception(Request $request, $id){  
+        return $this->updateDataResponse($this->receptionRepository->updateReception($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 }
