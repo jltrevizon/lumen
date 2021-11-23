@@ -23,6 +23,12 @@ class ReceptionFilter extends ModelFilter
         return $this->whereDate('created_at', $date);
     }
 
+    public function brandIds($ids){
+        return $this->whereHas('vehicle.vehicleModel', function($query) use($ids) {
+            return $query->whereIn('brand_id', $ids);
+        });
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
