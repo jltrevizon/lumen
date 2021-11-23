@@ -29,6 +29,12 @@ class ReceptionFilter extends ModelFilter
         });
     }
 
+    public function typeModelOrderIds($ids){
+        return $this->whereHas('vehicle', function($query) use($ids) {
+            return $query->whereIn('type_model_order_id', $ids);
+        });
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
