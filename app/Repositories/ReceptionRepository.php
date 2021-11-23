@@ -24,7 +24,7 @@ class ReceptionRepository extends Repository {
     public function index($request){
         return Reception::with($this->getWiths($request->with))
             ->filter($request->all())
-            ->paginate();
+            ->paginate($request->input('per_page'));
     }
 
     public function create($request){

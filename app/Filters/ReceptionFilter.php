@@ -15,6 +15,14 @@ class ReceptionFilter extends ModelFilter
         return $this->whereIn('vehicle_id', $ids);
     }
 
+    public function finished($value){
+        return $this->where('finished', $value);
+    }
+
+    public function createdAt($date){
+        return $this->whereDate('created_at', $date);
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
