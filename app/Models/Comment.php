@@ -25,6 +25,10 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function incidenceImages(){
+        return $this->hasMany(IncidenceImage::class);
+    }
+
     public function damageImages(){
         return $this->hasMany(DamageImage::class);
     }
