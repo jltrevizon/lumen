@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Campa;
 use App\Models\Damage;
 use App\Models\DamageImage;
 use App\Models\SeverityDamage;
@@ -24,6 +25,13 @@ class DamageTest extends TestCase
     {
         parent::setUp();
         $this->damage = Damage::factory()->create();
+    }
+
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damage->campa());
+        $this->assertInstanceOf(Campa::class, $this->damage->campa()->getModel());
     }
 
     /** @test */

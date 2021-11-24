@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Comment;
 use App\Models\Damage;
 use App\Models\DamageImage;
 use App\Models\User;
@@ -27,6 +28,13 @@ class DamageImageTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->damageImage->damage());
         $this->assertInstanceOf(Damage::class, $this->damageImage->damage()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_comment()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damageImage->comment());
+        $this->assertInstanceOf(Comment::class, $this->damageImage->comment()->getModel());
     }
 
     /** @test */

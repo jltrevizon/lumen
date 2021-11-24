@@ -11,12 +11,12 @@ class CommentFilter extends ModelFilter
         return $this->byIds($ids);
     }
 
-    public function incidenceIds($ids){
-        return $this->byIncidenceIds($ids);
+    public function damageIds($ids){
+        return $this->byDamageIds($ids);
     }
 
     public function userIds($ids){
-        return $this->byUseriDS($ids);
+        return $this->byUserIds($ids);
     }
 
     /**

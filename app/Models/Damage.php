@@ -6,6 +6,7 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Damage extends Model
 {
@@ -13,6 +14,7 @@ class Damage extends Model
     use HasFactory, Filterable;
 
     protected $fillable = [
+        'campa_id',
         'user_id',
         'vehicle_id',
         'task_id',
@@ -20,6 +22,10 @@ class Damage extends Model
         'status_damage_id',
         'description'
     ];
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
+    }
 
     public function user(){
         return $this->belongsTo(User::class);
