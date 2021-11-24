@@ -3,6 +3,7 @@
 use App\Models\Accessory;
 use App\Models\Reception;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -25,5 +26,11 @@ class AccessoryTest extends TestCase
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->accessory->vehicles());
         $this->assertInstanceOf(Vehicle::class, $this->accessory->vehicles()->getModel());
+    }
+
+    /** @test */
+    public function should_return_accessories_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->accessory->byIds([]));
     }
 }

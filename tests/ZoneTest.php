@@ -48,4 +48,10 @@ class ZoneTest extends TestCase
         $this->assertInstanceOf(Builder::class, $this->zone->byName(''));
     }
 
+    /** @test */
+    public function should_return_zones_by_campa_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->zone->byCampaIds([]));
+    }
+
 }

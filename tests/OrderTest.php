@@ -64,6 +64,12 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function should_return_order_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->order->byIds([]));
+    }
+
+    /** @test */
     public function should_return_orders_by_vehicle_plate()
     {
         $this->assertInstanceOf(Builder::class, $this->order->byVehiclePlate(''));

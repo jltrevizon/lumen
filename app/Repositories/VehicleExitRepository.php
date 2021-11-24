@@ -9,7 +9,8 @@ class VehicleExitRepository extends Repository {
 
     public function getAll($request){
         return VehicleExit::with($this->getWiths($request->with))
-                ->get();
+            ->filter($request->all())
+            ->get();
     }
 
     public function getById($request, $id){

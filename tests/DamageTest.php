@@ -34,7 +34,7 @@ class DamageTest extends TestCase
     }
 
     /** @test */
-    public function it_belongs_to_vehicles()
+    public function it_belongs_to_vehicle()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->damage->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->damage->vehicle()->getModel());
@@ -55,6 +55,20 @@ class DamageTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_severity_damage()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damage->severityDamage());
+        $this->assertInstanceOf(SeverityDamage::class, $this->damage->severityDamage()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_damage_image()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->damage->damageImages());
+        $this->assertInstanceOf(DamageImage::class, $this->damage->damageImages()->getModel());
+    }
+    
+    /** @test */
     public function should_return_damages_by_ids()
     {
         $this->assertInstanceOf(Builder::class, $this->damage->byIds([]));
@@ -72,19 +86,6 @@ class DamageTest extends TestCase
         $this->assertInstanceOf(Builder::class, $this->damage->byTaskIds([]));
     }
 
-    /** @test */
-    public function it_belongs_to_severity_damage()
-    {
-        $this->assertInstanceOf(BelongsTo::class, $this->damage->severityDamage());
-        $this->assertInstanceOf(SeverityDamage::class, $this->damage->severityDamage()->getModel());
-    }
-
-    /** @test */
-    public function it_has_many_damage_image()
-    {
-        $this->assertInstanceOf(HasMany::class, $this->damage->damageImages());
-        $this->assertInstanceOf(DamageImage::class, $this->damage->damageImages()->getModel());
-    }
 
     /** @test */
     public function should_return_damages_by_status_damage_ids()
