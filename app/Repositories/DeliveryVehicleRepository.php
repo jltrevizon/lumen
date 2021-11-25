@@ -2,12 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\DefleetVariable;
 use App\Models\DeliveryVehicle;
-use App\Repositories\UserRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
-
 class DeliveryVehicleRepository {
 
     public function __construct()
