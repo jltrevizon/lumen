@@ -3,11 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\DeliveryVehicle;
-class DeliveryVehicleRepository {
+class DeliveryVehicleRepository extends Repository {
 
     public function __construct()
     {
 
+    }
+
+    public function index($request){
+        return DeliveryVehicle::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function createDeliveryVehicles($vehicleId, $data){
