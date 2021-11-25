@@ -81,8 +81,27 @@ class PendingTaskRepository extends Repository {
 
 
     public function pendingTasksFilter($request){
-        return PendingTask::with($this->getWiths($request->with))
-                        ->filter($request->all())
+        $q = PendingTask::with($this->getWiths($request->with));
+        
+        if (!empty($request->input('vehiclePlate'))) {
+            $q->byVehiclePlate($request->input('vehiclePlate'));             
+        }
+
+        if (!empty($request->input('datetimeStartBetween'))) {
+            $dates = explode('|', $request->input('datetimeStartBetween'));
+            if (count($dates) === 2) {
+                $q->whereDateBetween('datetime_start', $dates[0], $dates[1]);         
+            }
+        }
+
+        if (!empty($request->input('datetimeFinishBetween'))) {
+            $dates = explode('|', $request->input('datetimeFinishBetween'));
+            if (count($dates) === 2) {
+                $q->whereDateBetween('datetime_finish', $dates[0], $dates[1]);         
+            }
+        }
+
+        return $q->filter($request->all())
                         ->paginate($request->input('per_page'));
     }
 

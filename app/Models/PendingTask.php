@@ -106,6 +106,12 @@ class PendingTask extends Model
         return $query->whereIn('vehicle_id', $ids);
     }
 
+    public function scopeByVehiclePlate($query, string $plate){
+        return $query->whereHas('vehicle', function(Builder $builder) use($plate){
+            return $builder->where('plate','like',"%$plate%");
+        });
+    }
+
     public function scopeByTaskIds($query, array $ids){
         return $query->whereIn('task_id', $ids);
     }
@@ -120,5 +126,16 @@ class PendingTask extends Model
 
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
+    }
+
+    /**
+     * Scope a query to only include the last n days records
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereDateBetween($query,$fieldName,$fromDate,$todate)
+    {
+        return $query->whereDate($fieldName,'>=',$fromDate)->whereDate($fieldName,'<=',$todate);
     }
 }

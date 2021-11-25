@@ -39,6 +39,10 @@ class Damage extends Model
         return $this->belongsTo(Task::class);
     }
 
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
     public function statusDamage(){
         return $this->belongsTo(StatusDamage::class);
     }
