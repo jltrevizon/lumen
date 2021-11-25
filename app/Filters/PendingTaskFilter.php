@@ -67,4 +67,14 @@ class PendingTaskFilter extends ModelFilter
         return $this->whereDate('datetime_pending','<=', $dateTime);
     }
 
+    public function userStartIds($ids)
+    {
+        return $this->whereIn('user_start_id', $ids);
+    }
+
+    public function userEndIds($ids)
+    {
+        return $this->whereIn('user_end_id', $ids);
+    }
+
 }
