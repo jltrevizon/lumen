@@ -106,12 +106,6 @@ class PendingTask extends Model
         return $query->whereIn('vehicle_id', $ids);
     }
 
-    public function scopeByVehiclePlate($query, string $plate){
-        return $query->whereHas('vehicle', function(Builder $builder) use($plate){
-            return $builder->where('plate','like',"%$plate%");
-        });
-    }
-
     public function scopeByTaskIds($query, array $ids){
         return $query->whereIn('task_id', $ids);
     }
