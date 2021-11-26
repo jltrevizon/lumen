@@ -2,17 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Models\DefleetVariable;
 use App\Models\DeliveryVehicle;
-use App\Repositories\UserRepository;
-use Exception;
-use Illuminate\Support\Facades\Auth;
-
-class DeliveryVehicleRepository {
+class DeliveryVehicleRepository extends Repository {
 
     public function __construct()
     {
 
+    }
+
+    public function index($request){
+        return DeliveryVehicle::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function createDeliveryVehicles($vehicleId, $data){

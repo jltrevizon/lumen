@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
+use App\Models\VehicleExit;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class VehicleRepository extends Repository {
         VehicleModelRepository $vehicleModelRepository,
         TypeModelOrderRepository $typeModelOrderRepository,
         DeliveryVehicleRepository $deliveryVehicleRepository,
+        VehicleExitRepository $vehicleExitRepository,
         CampaRepository $campaRepository)
     {
         $this->userRepository = $userRepository;
@@ -41,6 +43,7 @@ class VehicleRepository extends Repository {
         $this->campaRepository = $campaRepository;
         $this->typeModelOrderRepository = $typeModelOrderRepository;
         $this->deliveryVehicleRepository = $deliveryVehicleRepository;
+        $this->vehicleExitRepository = $vehicleExitRepository;
     }
 
     public function getAll($request){
@@ -267,6 +270,9 @@ public function verifyPlateReception($request){
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'));
+                        }
+                        if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
+                            $this->vehicleExitRepository->registerExit($vehicle['id']);
                         }
                         $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
                     }

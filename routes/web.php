@@ -533,5 +533,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * History Location
          */
         $router->get('/history-locations', 'HistoryLocationController@index');
+
+        /**
+         * Delivery vehicles
+         */
+        $router->get('/delivery-vehicles','DeliveryVehicleController@index');
     });
 });
