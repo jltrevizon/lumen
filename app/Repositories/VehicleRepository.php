@@ -233,9 +233,9 @@ public function verifyPlateReception($request){
             ->get();
     }
 
-    public function vehicleTotalsState($request){
-        return Vehicle::with(['subState.state'])
-            ->whereIn('campa_id', $request->input('campas'))
+    public function vehicleTotalsState($request) {
+        return Vehicle::with($this->getWiths($request->with))
+            ->filter($request->all())
             ->select(DB::raw('sub_state_id, COUNT(*) AS count'))
             ->groupBy('sub_state_id')
             ->get();

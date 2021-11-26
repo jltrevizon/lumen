@@ -106,11 +106,6 @@ class VehicleController extends Controller
     }
 
     public function vehicleTotalsState(Request $request){
-
-        $this->validate($request, [
-            'campas' => 'required'
-        ]);
-
         return $this->getDataResponse($this->vehicleRepository->vehicleTotalsState($request), HttpFoundationResponse::HTTP_OK);
     }
 
