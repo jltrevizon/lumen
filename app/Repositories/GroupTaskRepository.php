@@ -9,9 +9,9 @@ use Exception;
 
 class GroupTaskRepository extends Repository {
 
-    public function __construct(PendingTaskRepository $pendingTaskRepository)
+    public function __construct()
     {
-        $this->pendingTaskRepository = $pendingTaskRepository;
+
     }
 
     public function getAll($request){
@@ -78,7 +78,6 @@ class GroupTaskRepository extends Repository {
         $group_task->approved = 1;
         $group_task->datetime_approved = date('Y-m-d H:i:s');
         $group_task->save();
-        $this->pendingTaskRepository->updateSubStateFromValidation($request->input('group_task_id'));
         return ['message' => 'Solicitud aprobada!'];
     }
 
