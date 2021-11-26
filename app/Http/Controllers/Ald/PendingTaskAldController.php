@@ -68,7 +68,7 @@ class PendingTaskAldController extends Controller
             }
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
-            $task['approved'] ? $order : null;
+            $pending_task->order = $task['approved'] ? $order : null;
             $pending_task->save();
             $order++;
         }
