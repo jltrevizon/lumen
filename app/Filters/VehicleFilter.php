@@ -96,4 +96,46 @@ class VehicleFilter extends ModelFilter
         return $this->byTaskIds($ids);
     }
 
+    public function pendingTaskDateTimeStartFrom($dateTime)
+    {
+        return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
+            return $query->whereDate('datetime_start','>=', $dateTime); 
+        });
+    }
+
+    public function pendingTaskDateTimeStartTo($dateTime)
+    {
+        return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
+            return $query->whereDate('datetime_start','<=', $dateTime); 
+        });
+    }
+
+    public function pendingTaskDateTimeEndFrom($dateTime)
+    {
+        return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
+            return $query->whereDate('datetime_end','>=', $dateTime); 
+        });
+    }
+
+    public function pendingTaskDateTimeEndTo($dateTime)
+    {
+        return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
+            return $query->whereDate('datetime_end','<=', $dateTime); 
+        });
+    }
+
+    public function pendingTaskDateTimePendingFrom($dateTime)
+    {
+        return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
+            return $query->whereDate('datetime_pending','>=', $dateTime); 
+        });
+    }
+
+    public function pendingTaskDateTimePendingTo($dateTime)
+    {
+        return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
+            return $query->whereDate('datetime_pending','<=', $dateTime); 
+        });
+    }
+
 }
