@@ -4,19 +4,15 @@ namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
 
-class CommentFilter extends ModelFilter
+class DeliveryVehicleFilter extends ModelFilter
 {
 
-    public function ids($ids){
-        return $this->byIds($ids);
+    public function vehicleIds($ids){
+        return $this->whereIn('vehicle_id', $ids);
     }
 
-    public function damageIds($ids){
-        return $this->byDamageIds($ids);
-    }
-
-    public function userIds($ids){
-        return $this->byUserIds($ids);
+    public function createdAt($date){
+        return $this->whereDate('created_at', $date);
     }
 
     /**

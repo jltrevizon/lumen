@@ -121,4 +121,15 @@ class PendingTask extends Model
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
+
+    /**
+     * Scope a query to only include the last n days records
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereDateBetween($query,$fieldName,$fromDate,$todate)
+    {
+        return $query->whereDate($fieldName,'>=',$fromDate)->whereDate($fieldName,'<=',$todate);
+    }
 }

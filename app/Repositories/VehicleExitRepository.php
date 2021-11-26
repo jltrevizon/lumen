@@ -2,14 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
+use App\Models\Vehicle;
 use App\Models\VehicleExit;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleExitRepository extends Repository {
 
-
     public function getAll($request){
         return VehicleExit::with($this->getWiths($request->with))
-                ->get();
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function getById($request, $id){
@@ -27,5 +30,14 @@ class VehicleExitRepository extends Repository {
         $vehicleExit = VehicleExit::findOrFail($id);
         $vehicleExit->update($request->all());
         return $vehicleExit;
+    }
+
+    public function registerExit($vehicle_id){
+        $user = User::findOrFail(Auth::id());
+        $vehicleExit = new VehicleExit();
+        $vehicleExit->vehicle_id = $vehicle_id;
+        $vehicleExit->delivery_by = $user->name;
+        $vehicleExit->date_delivery = date('Y-m-d');
+        $vehicleExit->save();
     }
 }

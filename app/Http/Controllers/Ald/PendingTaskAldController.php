@@ -54,6 +54,7 @@ class PendingTaskAldController extends Controller
 
     private function createTasks($tasks, $vehicleId, $groupTaskId){
         $isPendingTaskAssign = false;
+        $order = 1;
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
@@ -67,7 +68,10 @@ class PendingTaskAldController extends Controller
             }
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
-            $pending_task->order = $task['task_order'];
+            if($task['approved'] == true){
+                $pending_task->order = $order;
+                $order++;
+            }
             $pending_task->save();
         }
     }

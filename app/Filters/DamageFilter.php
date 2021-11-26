@@ -11,6 +11,10 @@ class DamageFilter extends ModelFilter
         return $this->byIds($ids);
     }
 
+    public function campaIds($ids){
+        return $this->whereIn('campa_id', $ids);
+    }
+
     public function vehicleIds($ids){
         return $this->byVehicleIds($ids);
     }

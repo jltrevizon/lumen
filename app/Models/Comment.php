@@ -12,13 +12,13 @@ class Comment extends Model
     use HasFactory, Filterable;
 
     protected $fillable = [
-        'incidence_id',
+        'damage_id',
         'user_id',
         'description'
     ];
 
-    public function incidence(){
-        return $this->belongsTo(Incidence::class);
+    public function damage(){
+        return $this->belongsTo(Damage::class);
     }
 
     public function user(){
@@ -29,12 +29,16 @@ class Comment extends Model
         return $this->hasMany(IncidenceImage::class);
     }
 
+    public function damageImages(){
+        return $this->hasMany(DamageImage::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
 
-    public function scopeByIncidenceIds($query, array $ids){
-        return $query->whereIn('incidence_id', $ids);
+    public function scopeByDamageIds($query, array $ids){
+        return $query->whereIn('damage_id', $ids);
     }
 
     public function scopeByUserIds($query, array $ids){

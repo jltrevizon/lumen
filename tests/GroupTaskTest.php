@@ -42,7 +42,6 @@ class GroupTaskTest extends TestCase
         $this->assertInstanceOf(Questionnaire::class, $this->groupTask->questionnaire()->getModel());
     }
 
-
     /** @test */
     public function should_return_group_tasks_by_ids(){
         $this->assertInstanceOf(Builder::class, $this->groupTask->byIds([]));

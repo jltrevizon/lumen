@@ -14,11 +14,16 @@ class DamageImage extends Model
 
     protected $fillable = [
         'damage_id',
+        'comment_id',
         'url',
     ];
 
     public function damage(){
         return $this->belongsTo(Damage::class);
+    }
+
+    public function comment(){
+        return $this->belongsTo(Comment::class);
     }
 
     public function scopeByIds($query, array $ids){

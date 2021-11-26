@@ -16,6 +16,7 @@ use App\Models\Questionnaire;
 use App\Models\Reception;
 use App\Models\Request;
 use App\Models\Reservation;
+use App\Models\Role;
 use App\Models\Square;
 use App\Models\SubState;
 use App\Models\TradeState;
@@ -80,12 +81,12 @@ class VehicleTest extends TestCase
         $this->assertInstanceOf(Request::class, $this->vehicle->requests()->getModel());
     }
 
-       /** @test */
-       public function it_belongs_to_company()
-       {
-           $this->assertInstanceOf(BelongsTo::class, $this->vehicle->company());
-           $this->assertInstanceOf(Company::class, $this->vehicle->company()->getModel());
-       }
+    /** @test */
+    public function it_belongs_to_company()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->vehicle->company());
+        $this->assertInstanceOf(Company::class, $this->vehicle->company()->getModel());
+    }
 
     /** @test */
     public function it_has_many_pending_tasks()
@@ -94,14 +95,14 @@ class VehicleTest extends TestCase
         $this->assertInstanceOf(PendingTask::class, $this->vehicle->pendingTasks()->getModel());
     }
 
-     /** @test */
-     public function it_has_many_group_task()
-     {
-         $this->assertInstanceOf(HasMany::class, $this->vehicle->groupTasks());
-         $this->assertInstanceOf(GroupTask::class, $this->vehicle->groupTasks()->getModel());
-     }
+    /** @test */
+    public function it_has_many_group_task()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->groupTasks());
+        $this->assertInstanceOf(GroupTask::class, $this->vehicle->groupTasks()->getModel());
+    }
 
-      /** @test */
+    /** @test */
     public function it_has_many_vehicle_pictures()
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->vehiclePictures());
@@ -234,6 +235,12 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function should_return_vehicles_by_role_id()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byRole(Role::MANAGER_MECHANIC));
+    }
+
+    /** @test */
     public function should_search_where_has_budget_pending_task()
     {
         $this->assertInstanceOf(Builder::class, $this->vehicle->whereHasBudgetPendingTask([]));
@@ -341,6 +348,18 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(HasOne::class, $this->vehicle->lastUnapprovedGroupTask());
         $this->assertInstanceOf(GroupTask::class, $this->vehicle->lastUnapprovedGroupTask()->getModel());
+    }
+
+    /** @test */
+    public function should_return_vehicles_with_group_task_unapproved()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byHasGroupTaskUnapproved(''));
+    }
+
+    /** @test */
+    public function should_return_vehicles_has_order_not_finish()
+    {
+        $this->assertInstanceOf(Builder::class, $this->vehicle->byHasOrderNotFinish(''));
     }
 
     /** @test */

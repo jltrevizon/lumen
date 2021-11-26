@@ -79,11 +79,10 @@ class PendingTaskRepository extends Repository {
         }
     }
 
-
     public function pendingTasksFilter($request){
         return PendingTask::with($this->getWiths($request->with))
-                        ->filter($request->all())
-                        ->paginate($request->input('per_page'));
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function getById($request, $id){

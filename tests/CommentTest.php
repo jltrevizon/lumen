@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Comment;
-use App\Models\Incidence;
-use App\Models\IncidenceImage;
+use App\Models\Damage;
+use App\Models\DamageImage;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,10 +22,10 @@ class CommentTest extends TestCase
     }
 
     /** @test */
-    public function it_belongs_to_incidence()
+    public function it_belongs_to_damage()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->comment->incidence());
-        $this->assertInstanceOf(Incidence::class, $this->comment->incidence()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->comment->damage());
+        $this->assertInstanceOf(Damage::class, $this->comment->damage()->getModel());
     }
 
     /** @test */
@@ -36,10 +36,10 @@ class CommentTest extends TestCase
     }
 
     /** @test */
-    public function it_has_many_incidence_images()
+    public function it_has_many_damage_images()
     {
-        $this->assertInstanceOf(HasMany::class, $this->comment->incidenceImages());
-        $this->assertInstanceOf(IncidenceImage::class, $this->comment->incidenceImages()->getModel());
+        $this->assertInstanceOf(HasMany::class, $this->comment->damageImages());
+        $this->assertInstanceOf(DamageImage::class, $this->comment->damageImages()->getModel());
     }
 
     /** @test */
@@ -49,9 +49,9 @@ class CommentTest extends TestCase
     }
 
     /** @test */
-    public function should_return_comments_by_incidence_ids()
+    public function should_return_comments_by_damage_ids()
     {
-        $this->assertInstanceOf(Builder::class, $this->comment->byIncidenceIds([]));
+        $this->assertInstanceOf(Builder::class, $this->comment->byDamageIds([]));
     }
 
     /** @test */
