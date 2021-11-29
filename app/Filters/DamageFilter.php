@@ -35,6 +35,16 @@ class DamageFilter extends ModelFilter
         return $this->bySeverityDamageIds($ids);
     }
 
+    public function createdAtFrom($dateTime)
+    {
+        return $this->whereDate('created_at','>=', $dateTime);
+    }
+
+    public function createdAtTo($dateTime)
+    {
+        return $this->whereDate('created_at','<=', $dateTime); 
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
