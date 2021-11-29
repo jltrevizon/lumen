@@ -5,6 +5,7 @@ use App\Models\GroupTask;
 use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
+use App\Models\StatePendingTask;
 use Exception;
 
 class GroupTaskRepository extends Repository {
@@ -73,11 +74,22 @@ class GroupTaskRepository extends Repository {
     }
 
     public function approvedGroupTaskToAvailable($request){
-        $group_task = GroupTask::findOrFail($request->input('group_task_id'));
-        $group_task->approved_available = 1;
+        $group_task = GroupTask::findOrFail($request->input('group_task_id'));    
+        $group_task->approved_available = 1; 
         $group_task->approved = 1;
         $group_task->datetime_approved = date('Y-m-d H:i:s');
         $group_task->save();
+
+        $pandind_task = PendingTask::with('task')
+            ->where('group_task_id', $request->input('group_task_id'))
+            ->where('vehicle_id', $request->input('vehicle_id'))
+            ->where('state_pending_task_id', StatePendingTask::PENDING)
+            ->first();
+        
+        $vehicle = $pandind_task->vehicle;
+        $vehicle->sub_state_id = $pandind_task->task->sub_state_id;
+        $vehicle->save();
+
         return ['message' => 'Solicitud aprobada!'];
     }
 
