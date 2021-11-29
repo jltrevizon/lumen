@@ -21,7 +21,7 @@ class DeliveryVehicleController extends Controller
      */
     public function index(Request $request)
     {
-        $this->getDataResponse($this->deliveryVehicleRepository->index($request), Response::HTTP_OK);
+        return $this->getDataResponse($this->deliveryVehicleRepository->index($request), Response::HTTP_OK);
     }
 
     /**
