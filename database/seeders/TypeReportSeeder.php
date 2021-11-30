@@ -32,6 +32,9 @@ class TypeReportSeeder extends Seeder
             ],
             [
                 'name' => 'Stock de vehículos'
+            ],
+            [
+                'name' => 'Estadísticas'
             ]
         ];
     }

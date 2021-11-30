@@ -13,6 +13,7 @@ class TypeReport extends Model
     const ENTRY = 1;
     const EXITS = 2;
     const STOCK = 3;
+    const STATISTICS = 4;
 
     protected $fillable = [
         'name'

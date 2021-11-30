@@ -4,7 +4,9 @@ namespace App\Mail;
 
 use App\Models\BudgetPendingTask;
 use App\Models\PendingTask;
+use App\Models\PeopleForReport;
 use App\Models\Reception;
+use App\Models\TypeReport;
 use App\Models\Vehicle;
 use App\Models\VehiclePicture;
 use Illuminate\Bus\Queueable;
@@ -83,10 +85,15 @@ class StatisticsMail extends Mailable
             'total_images' => $totals['images'],
             'total_budget_pending_task' => $totals['budgets'] 
         ];
-        Mail::send('statistics', $data, function($message){
-            $message->to('anelvin.mejia@grupomobius.com')->subject('Prueba de reporte');
-            $message->from('inout@mkdautomotive.com', 'Focus');
-        });
+        $peoples = PeopleForReport::with(['user'])
+            ->where('type_report_id', TypeReport::STATISTICS)
+            ->get();
+        foreach($peoples as $people){
+            Mail::send('statistics', $data, function($message) use($people){
+                $message->to($people['user']['email'])->subject('Estadísticas de Focus');
+                $message->from('inout@mkdautomotive.com', 'Focus');
+            });
+        }
     }
 
     private function receptionLastWeek(){
@@ -99,7 +106,8 @@ class StatisticsMail extends Mailable
             if($nonWorking != 6 && $nonWorking != 7){
                 $receptions = Reception::whereDate('created_at', $date)
                     ->get();
-                array_push($labels, date("d-m-Y",strtotime(date('d-m-Y') . "- $days days")));
+                $dateToConvert = date("d-m-Y",strtotime(date('d-m-Y') . "- $days days"));
+                array_push($labels, str_replace('-','/', $dateToConvert));
                 array_push($values, count($receptions));
             }
             $days++;
@@ -141,7 +149,8 @@ class StatisticsMail extends Mailable
             if($nonWorking != 6 && $nonWorking != 7){
                 $pendingTasks = PendingTask::whereDate('datetime_start', $date)
                     ->get();
-                array_push($labels, date("d-m-Y",strtotime(date('d-m-Y') . "- $days days")));
+                $dateToConvert = date("d-m-Y",strtotime(date('d-m-Y') . "- $days days"));
+                array_push($labels, str_replace('-','/', $dateToConvert));
                 array_push($values, count($pendingTasks));
             }
             $days++;
@@ -184,7 +193,8 @@ class StatisticsMail extends Mailable
             if($nonWorking != 6 && $nonWorking != 7){
                 $pendingTasks = PendingTask::whereDate('datetime_finish', $date)
                     ->get();
-                array_push($labels, date("d-m-Y",strtotime(date('d-m-Y') . "- $days days")));
+                $dateToConvert = date("d-m-Y",strtotime(date('d-m-Y') . "- $days days"));
+                array_push($labels, str_replace('-','/', $dateToConvert));
                 array_push($values, count($pendingTasks));
             }
             $days++;
@@ -227,7 +237,8 @@ class StatisticsMail extends Mailable
             if($nonWorking != 6 && $nonWorking != 7){
                 $pendingTasks = VehiclePicture::whereDate('created_at', $date)
                     ->get();
-                array_push($labels, date("d-m-Y",strtotime(date('d-m-Y') . "- $days days")));
+                $dateToConvert = date("d-m-Y",strtotime(date('d-m-Y') . "- $days days"));
+                array_push($labels, str_replace('-','/', $dateToConvert));
                 array_push($values, count($pendingTasks));
             }
             $days++;
@@ -270,7 +281,8 @@ class StatisticsMail extends Mailable
             if($nonWorking != 6 && $nonWorking != 7){
                 $pendingTasks = BudgetPendingTask::whereDate('created_at', $date)
                     ->get();
-                array_push($labels, date("d-m-Y",strtotime(date('d-m-Y') . "- $days days")));
+                $dateToConvert = date("d-m-Y",strtotime(date('d-m-Y') . "- $days days"));
+                array_push($labels, str_replace('-','/', $dateToConvert));
                 array_push($values, count($pendingTasks));
             }
             $days++;
