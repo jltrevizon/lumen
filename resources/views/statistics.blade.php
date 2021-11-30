@@ -10,6 +10,7 @@
 </head>
 <body>
     <img src="https://api.focus.grupomobius.com/images/focus.jpg" style="margin-left: 350px" alt="" width="375px" height="auto">
+    <h3>Fecha: {{date('d/m/Y')}}</h3>
     <table border="1">
         <thead>
             <tr>
