@@ -419,12 +419,4 @@ class PendingTaskRepository extends Repository {
         }
     }
 
-    public function updateSubStateFromValidation($groupTaskId){
-        $pendingTask = PendingTask::with(['task'])
-            ->where('group_task_id', $groupTaskId)
-            ->where('state_pending_task_id', StatePendingTask::PENDING)
-            ->first();
-        $this->vehicleRepository->updateSubState($pendingTask['vehicle_id'], $pendingTask['task']['sub_state_id']);
-    }
-
 }
