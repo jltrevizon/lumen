@@ -258,6 +258,10 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeByCompanies($query, array $ids){
+        return $query->whereIn('company_id', $ids);
+    }
+
     public function scopeByPlate($query, string $plate){
         return $query->where('plate','like',"%" . $plate . "%");
     }
