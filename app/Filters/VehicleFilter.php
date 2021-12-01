@@ -19,6 +19,10 @@ class VehicleFilter extends ModelFilter
         return $this->campasIds($ids);
     }
 
+    public function companyIds($ids){
+        return $this->byCompanies($ids);
+    }
+
     public function subStates($ids)
     {
         return $this->subStateIds($ids);
