@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class VehicleExitFilter extends ModelFilter
 {
