@@ -45,7 +45,7 @@ class VehicleRepository extends Repository {
         $this->deliveryVehicleRepository = $deliveryVehicleRepository;
         $this->vehicleExitRepository = $vehicleExitRepository;
     }
-
+    
     public function getAll($request){
         $user = $this->userRepository->getById($request, Auth::id());
         $vehicles = Vehicle::with($this->getWiths($request->with))

@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use App\Models\State;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -13,6 +14,25 @@ class PendingTaskFilter extends ModelFilter
 
     public function tasks($ids){
         return $this->byTaskIds($ids);
+    }
+
+    public function campasIds($ids)
+    {
+        return $this->whereHas('vehicle', function(Builder $builder) use($ids){
+            return $builder->whereIn('campa_id', $ids);
+        });
+    }
+
+    public function withoutOrderOrOrderFinished($value) {
+        return $this->whereHas('vehicle.orders', function(Builder $builder) {
+            return $builder->where('state_id', State::FINISHED);
+        })->orWhereDoesntHave('vehicle.orders');
+    }
+
+    public function withWorkshop($value) {
+        return $this->whereHas('vehicle.orders', function(Builder $builder) use ($value) {
+            return $builder->where('workshop_id', $value);
+        });
     }
 
     public function statePendingTasks($ids){

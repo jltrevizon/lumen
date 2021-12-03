@@ -258,6 +258,10 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeByCompanies($query, array $ids){
+        return $query->whereIn('company_id', $ids);
+    }
+
     public function scopeByPlate($query, string $plate){
         return $query->where('plate','like',"%" . $plate . "%");
     }
@@ -406,7 +410,7 @@ class Vehicle extends Model
             ->where(function($query){
                 return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
-            });
+            })->orderBy('order');
     }
 
     public function scopeByTaskIds($query, $ids){
