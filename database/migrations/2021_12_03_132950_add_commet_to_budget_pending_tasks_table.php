@@ -14,7 +14,7 @@ class AddCommetToBudgetPendingTasksTable extends Migration
     public function up()
     {
         Schema::table('budget_pending_tasks', function (Blueprint $table) {
-            $table->text('comment');
+            $table->text('comment')->default(null)->nullable();
         });
     }
 
