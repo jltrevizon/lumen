@@ -116,6 +116,10 @@ class Vehicle extends Model
         return $this->hasMany(Incidence::class);
     }
 
+    public function damages(){
+        return $this->hasMany(Damage::class);
+    }
+
     public function accessories(){
         return $this->belongsToMany(Accessory::class);
     }
