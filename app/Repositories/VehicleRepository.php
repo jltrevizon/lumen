@@ -120,8 +120,8 @@ class VehicleRepository extends Repository {
         Square::where('vehicle_id', $vehicle->id)->update([
             'vehicle_id' => null
         ]);
-        if (!is_null($data['square_id'])) {
-            $square = Square::find($data['square_id']);
+        if (!is_null($data['ubication'])) {
+            $square = Square::find($data['ubication']);
             $square->vehicle_id = $vehicle->id;
             $square->save();
         }
