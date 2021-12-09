@@ -193,6 +193,7 @@ class PendingTaskRepository extends Repository {
                                         ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
                             })
                             ->where('approved', true)
+                            ->where('group_task_id', $request->input('group_task_id'))
                             ->orderBy('order','asc')
                             ->first();
         $pending_task->state_pending_task_id = StatePendingTask::PENDING;
