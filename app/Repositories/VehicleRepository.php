@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
+use App\Models\Square;
 use App\Models\VehicleExit;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
@@ -115,7 +116,16 @@ class VehicleRepository extends Repository {
     public function update($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        return $vehicle->update($request->all());
+        $data = $request->all();
+        Square::where('vehicle_id', $vehicle->id)->update([
+            'vehicle_id' => null
+        ]);
+        if (isset($data['ubication'])) {
+            $square = Square::find($data['ubication']);
+            $square->vehicle_id = $vehicle->id;
+            $square->save();
+        }
+        return $vehicle->update($data);
     }
 
     public function updateBack($request)

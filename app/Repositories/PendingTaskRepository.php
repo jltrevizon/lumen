@@ -98,6 +98,7 @@ class PendingTaskRepository extends Repository {
         }
         return PendingTask::with($this->getWiths($request->with))
                 ->byCampas($user->campas->pluck('id')->toArray())
+                ->filter($request->all())
                 ->pendingOrInProgress()
                 ->canSeeHomework($user['type_user_app_id'])
                 ->where('approved', true)
@@ -108,6 +109,7 @@ class PendingTaskRepository extends Repository {
         $user = $this->userRepository->getById($request, Auth::id());
         return PendingTask::with($this->getWiths($request->with))
                 ->byCampas($user->campas->pluck('id')->toArray())
+                ->filter($request->all())
                 ->pendingOrInProgress()
                 ->where('approved', true)
                 ->get();

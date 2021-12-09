@@ -116,8 +116,12 @@ class Vehicle extends Model
         return $this->hasMany(Incidence::class);
     }
 
+    public function damages(){
+        return $this->hasMany(Damage::class);
+    }
+
     public function accessories(){
-        return $this->belongsToMany(Accessory::class);
+        return $this->belongsToMany(Accessory::class)->withTimestamps();
     }
 
     public function lastQuestionnaire(){
@@ -256,6 +260,10 @@ class Vehicle extends Model
         return $query->whereHas('subState', function (Builder $builder) use ($ids) {
             return $builder->whereIn('state_id', $ids);
         });
+    }
+
+    public function scopeByCompanies($query, array $ids){
+        return $query->whereIn('company_id', $ids);
     }
 
     public function scopeByPlate($query, string $plate){
@@ -406,7 +414,7 @@ class Vehicle extends Model
             ->where(function($query){
                 return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
-            });
+            })->orderBy('order');
     }
 
     public function scopeByTaskIds($query, $ids){

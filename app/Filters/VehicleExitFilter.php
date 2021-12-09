@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class VehicleExitFilter extends ModelFilter
 {
@@ -21,6 +22,12 @@ class VehicleExitFilter extends ModelFilter
 
     public function createdAt($date){
         return $this->whereDate('created_at', $date);
+    }
+
+    public function vehiclePlate($plate){
+        return $this->whereHas('vehicle', function(Builder $builder) use($plate){
+            return $builder->where('plate','like',"%$plate%");
+        });
     }
 
     /**
