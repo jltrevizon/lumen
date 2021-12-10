@@ -30,6 +30,18 @@ class VehicleExitFilter extends ModelFilter
         });
     }
 
+    public function vehicleBrandIds($ids){
+        return $this->whereHas('vehicle.vehicleModel', function(Builder $builder) use($ids){
+            return $builder->whereIn('brand_id', $ids);
+        });
+    }
+
+    public function vehicleTypeModelOrderIds($ids){
+        return $this->whereHas('vehicle', function(Builder $builder) use($ids){
+            return $builder->whereIn('type_model_order_id', $ids);
+        });
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
