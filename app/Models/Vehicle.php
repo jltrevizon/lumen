@@ -313,6 +313,12 @@ class Vehicle extends Model
         ]);
     }
 
+    public function lastOrders(){
+        return $this->hasOne(Order::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
     public function lastUnapprovedGroupTask(){
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'
