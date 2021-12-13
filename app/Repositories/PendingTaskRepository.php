@@ -93,6 +93,13 @@ class PendingTaskRepository extends Repository {
 
     public function getPendingOrNextTask($request){
         $user = $this->userRepository->getById($request, Auth::id());
+        if ($user->workshop_id != null) {
+            return PendingTask::with($this->getWiths($request->with))
+                ->filter($request->all())
+                ->pendingOrInProgress()
+                ->where('approved', true)
+                ->get();
+        }
         if($user['type_user_app_id'] == null && ($user['role_id'] == 1 || $user['role_id'] == 2 || $user['role_id'] == 3)){
             return $this->getPendingOrNextTaskByRole($request);
         }
