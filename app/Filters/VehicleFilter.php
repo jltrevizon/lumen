@@ -96,6 +96,10 @@ class VehicleFilter extends ModelFilter
         return $this->byHasOrderNotFinish($value);
     }
 
+    public function hasOrdersStateIds($value){
+        return $this->byHasOrdersStateIds($value);
+    }
+
     public function taskIds($ids){
         return $this->byTaskIds($ids);
     }

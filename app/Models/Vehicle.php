@@ -341,6 +341,12 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeByHasOrdersStateIds($query, $value){
+         return $query->whereHas('orders', function (Builder $builder)  use ($value){
+            return $builder->whereIn('state_id', $value);
+        });
+    }
+
     public function scopeNoActiveOrPendingRequest($query){
         return $query->whereHas('requests', function(Builder $builder) {
             return $builder->where('state_request_id', StateRequest::DECLINED);
