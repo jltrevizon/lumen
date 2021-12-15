@@ -122,6 +122,10 @@ class PendingTask extends Model
         return $query->whereIn('id', $ids);
     }
 
+    public function scopeByApproved($query, int $approved){
+        return $query->where('approved', $approved);
+    }
+
     /**
      * Scope a query to only include the last n days records
      *

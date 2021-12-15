@@ -93,6 +93,13 @@ class PendingTaskRepository extends Repository {
 
     public function getPendingOrNextTask($request){
         $user = $this->userRepository->getById($request, Auth::id());
+        if ($user->workshop_id != null) {
+            return PendingTask::with($this->getWiths($request->with))
+                ->filter($request->all())
+                ->pendingOrInProgress()
+                ->where('approved', true)
+                ->get();
+        }
         if($user['type_user_app_id'] == null && ($user['role_id'] == 1 || $user['role_id'] == 2 || $user['role_id'] == 3)){
             return $this->getPendingOrNextTaskByRole($request);
         }
@@ -185,9 +192,9 @@ class PendingTaskRepository extends Repository {
             if($update_pending_task->state_pending_task_id != StatePendingTask::IN_PROGRESS && $update_pending_task->state_pending_task_id != StatePendingTask::FINISHED){
                 $update_pending_task->state_pending_task_id = null;
                 $update_pending_task->datetime_pending = null;
-                $update_pending_task->order = $pending_task['order'];
-                $update_pending_task->save();
             }
+            $update_pending_task->order = $pending_task['order'];
+            $update_pending_task->save();
         }
         $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
                             ->where(function ($query) {
@@ -195,6 +202,7 @@ class PendingTaskRepository extends Repository {
                                         ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
                             })
                             ->where('approved', true)
+                            ->where('group_task_id', $request->input('group_task_id'))
                             ->orderBy('order','asc')
                             ->first();
         $pending_task->state_pending_task_id = StatePendingTask::PENDING;

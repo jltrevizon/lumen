@@ -97,4 +97,8 @@ class PendingTaskFilter extends ModelFilter
         return $this->whereIn('user_end_id', $ids);
     }
 
+    public function approved($approved){
+        return $this->byApproved($approved);
+    }
+
 }

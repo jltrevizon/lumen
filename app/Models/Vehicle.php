@@ -116,8 +116,12 @@ class Vehicle extends Model
         return $this->hasMany(Incidence::class);
     }
 
+    public function damages(){
+        return $this->hasMany(Damage::class);
+    }
+
     public function accessories(){
-        return $this->belongsToMany(Accessory::class);
+        return $this->belongsToMany(Accessory::class)->withTimestamps();
     }
 
     public function lastQuestionnaire(){
@@ -309,6 +313,12 @@ class Vehicle extends Model
         ]);
     }
 
+    public function lastOrders(){
+        return $this->hasOne(Order::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
     public function lastUnapprovedGroupTask(){
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'
@@ -328,6 +338,12 @@ class Vehicle extends Model
     public function scopeByHasOrderNotFinish($query, $value){
         return $query->whereHas('orders', function (Builder $builder) {
             return $builder->where('state_id','!=', State::FINISHED);
+        });
+    }
+
+    public function scopeByHasOrdersStateIds($query, $value){
+         return $query->whereHas('orders', function (Builder $builder)  use ($value){
+            return $builder->whereIn('state_id', $value);
         });
     }
 

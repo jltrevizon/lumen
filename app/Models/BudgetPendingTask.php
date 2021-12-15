@@ -15,7 +15,8 @@ class BudgetPendingTask extends Model
     protected $fillable = [
         'pending_task_id',
         'state_budget_pending_task_id',
-        'url'
+        'url',
+        'comment'
     ];
 
     public function pendingTask(){

@@ -6,6 +6,7 @@ use App\Models\AccessoryVehicle;
 use App\Models\Vehicle;
 use App\Repositories\Repository;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AccessoryVehicleRepository extends Repository {
 
@@ -19,7 +20,9 @@ class AccessoryVehicleRepository extends Repository {
         foreach ($accessories as $accessory) {
             DB::table('accessory_vehicle')->insert([
                 'accessory_id' => $accessory,
-                'vehicle_id' => $request->input('vehicle_id')
+                'vehicle_id' => $request->input('vehicle_id'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]);
         }
         return Vehicle::with('accessories')
