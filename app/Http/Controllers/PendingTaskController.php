@@ -134,6 +134,7 @@ class PendingTaskController extends Controller
     public function orderPendingTask(Request $request){
 
         $this->validate($request, [
+            'group_task_id' => 'required|integer',
             'pending_tasks' => 'required',
             'vehicle_id' => 'required|integer'
         ]);

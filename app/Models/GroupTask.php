@@ -23,6 +23,10 @@ class GroupTask extends Model
         return $this->hasMany(PendingTask::class, 'group_task_id');
     }
 
+    public function approvedPendingTasks(){
+        return $this->hasMany(PendingTask::class, 'group_task_id')->where('approved', 1)->orderBy('order');
+    }
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'group_task_id');
     }
