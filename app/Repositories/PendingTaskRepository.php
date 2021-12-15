@@ -192,9 +192,9 @@ class PendingTaskRepository extends Repository {
             if($update_pending_task->state_pending_task_id != StatePendingTask::IN_PROGRESS && $update_pending_task->state_pending_task_id != StatePendingTask::FINISHED){
                 $update_pending_task->state_pending_task_id = null;
                 $update_pending_task->datetime_pending = null;
-                $update_pending_task->order = $pending_task['order'];
-                $update_pending_task->save();
             }
+            $update_pending_task->order = $pending_task['order'];
+            $update_pending_task->save();
         }
         $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
                             ->where(function ($query) {
@@ -205,6 +205,7 @@ class PendingTaskRepository extends Repository {
                             ->where('group_task_id', $request->input('group_task_id'))
                             ->orderBy('order','asc')
                             ->first();
+        return $pending_task;
         $pending_task->state_pending_task_id = StatePendingTask::PENDING;
         $pending_task->datetime_pending = date("Y-m-d H:i:s");
         $pending_task->save();
