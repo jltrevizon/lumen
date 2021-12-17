@@ -233,7 +233,7 @@ class Vehicle extends Model
     }
 
     public function scopeByWhereHasBudgetPendingTask($query){
-        return $query->whereHas('pendingtasks.budgetPendingTasks');
+        return $query->whereHas('pendingTasks.budgetPendingTasks');
     }
 
     public function scopeByCampasOfUser($query, array $campasIds){
@@ -428,6 +428,31 @@ class Vehicle extends Model
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             })->orderBy('order');
     }
+
+    public function withLastPendingTaskOrProgress(){
+        return $this->hasOne(PendingTask::class)
+            ->where(function($query){
+                return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            })->ofMany([
+            'order' => 'min'
+        ]);
+    }
+
+
+    public function scopeByTaskSubStatesIds($query, $ids){
+        return $query->whereHas('withLastPendingTaskOrProgress.task', function(Builder $builder) use ($ids){
+            return $builder->whereIn('sub_state_id', $ids);
+        });
+    }
+
+    public function scopeByTaskStatesIds($query, $ids){
+        return $query->whereHas('withLastPendingTaskOrProgress.task.subState', function(Builder $builder) use ($ids){
+            return $builder->whereIn('state_id', $ids);
+        });
+
+    }
+
 
     public function scopeByTaskIds($query, $ids){
         return $query->whereHas('pendingTasks', function(Builder $builder) use ($ids){

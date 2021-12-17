@@ -104,6 +104,14 @@ class VehicleFilter extends ModelFilter
         return $this->byTaskIds($ids);
     }
 
+    public function taskSubStatesIds($ids){
+        return $this->byTaskSubStatesIds($ids);
+    }
+
+    public function taskStatesIds($ids){
+        return $this->byTaskStatesIds($ids);
+    }
+
     public function pendingTaskDateTimeStartFrom($dateTime)
     {
         return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
