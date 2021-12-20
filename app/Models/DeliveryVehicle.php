@@ -16,6 +16,11 @@ class DeliveryVehicle extends Model
         'data_delivery'
     ];
 
+    protected $casts = [
+    	'vehicle_id' => 'integer',
+    	'data_delivery' => 'json'
+    ];
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
     }
