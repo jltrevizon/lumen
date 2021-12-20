@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Campa;
 use App\Models\Category;
 use App\Models\State;
+use App\Models\DeliveryVehicle;
 use App\Models\Request;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
@@ -153,6 +154,12 @@ class Vehicle extends Model
 
     public function deliveryVehicles(){
         return $this->hasMany(DeliveryVehicle::class);
+    }
+
+    public function lastDeliveryVehicle(){
+        return $this->hasOne(DeliveryVehicle::class)->ofMany([
+            'id' => 'max'
+        ]); 
     }
 
     public function scopeByIds($query, $ids){
