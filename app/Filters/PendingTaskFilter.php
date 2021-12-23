@@ -24,9 +24,10 @@ class PendingTaskFilter extends ModelFilter
     }
 
     public function withoutOrderOrOrderFinished($value) {
-        return $this->whereHas('vehicle.orders', function(Builder $builder) {
+        return $this->whereDoesntHave('vehicle.orders')
+            ->orWhereHas('vehicle.orders', function(Builder $builder) {
             return $builder->where('state_id', State::FINISHED);
-        })->orWhereDoesntHave('vehicle.orders');
+        });
     }
 
     public function withWorkshop($value) {

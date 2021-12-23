@@ -77,6 +77,16 @@ class Vehicle extends Model
         return $this->hasMany(PendingTask::class, 'vehicle_id');
     }
 
+    public function pendingTasksBudget(){
+        return $this->hasMany(PendingTask::class, 'vehicle_id')
+            ->where('approved', 1)
+            ->where('order', 1)
+            ->where(function($query){
+                return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            })->whereHas('budgetPendingTasks');
+    }
+
     public function groupTasks(){
         return $this->hasMany(GroupTask::class, 'vehicle_id');
     }
@@ -289,6 +299,12 @@ class Vehicle extends Model
 
     public function scopeByTypeModelOrderIds($query, array $ids){
         return $query->whereIn('type_model_order_id', $ids);
+    }
+
+    public function scopeByBudgetPendingTaskIds($query, array $ids){
+        return $query->whereHas('pendingTasksBudget.budgetPendingTasks', function (Builder $builder) use($ids) {
+            return $builder->whereIn('state_budget_pending_task_id', $ids);
+        });
     }
 
     public function scopeVehicleModelIds($query, array $ids){
