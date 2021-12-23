@@ -330,6 +330,12 @@ class Vehicle extends Model
         ->whereHas('lastGroupTask');
     }
 
+    public function scopeBySubStatePendingTasks($query, array $ids){
+        return $query->whereHas('lastGroupTask.approvedPendingTasks.task', function (Builder $builder) use($ids) {
+            return $builder->whereIn('sub_state_id', $ids);
+        });
+    }
+
     public function lastGroupTask(){
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'
