@@ -156,8 +156,10 @@ class PendingTaskRepository extends Repository {
                     ->where('approved', true)
                     ->orderBy('order', 'ASC')
                     ->first();
-            $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
-            $firstPendingTask->save();
+            if (!is_null($firstPendingTask)) {
+                $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+                $firstPendingTask->save();
+            }
         }
     }
 
