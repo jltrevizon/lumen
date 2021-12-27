@@ -60,9 +60,15 @@ class VehicleRepository extends Repository {
     }
 
     public function filterVehicle($request) {
-        $vehicles = Vehicle::with($this->getWiths($request->with))
-                    ->filter($request->all())
-                    ->paginate($request->input('per_page'));
+        $query = Vehicle::with($this->getWiths($request->with))
+                    ->filter($request->all());
+        if ($request->input('noPaginate')) {
+            $vehicles = [
+                'data' => $query->get()
+            ];
+        } else {
+            $vehicles =  $query->paginate($request->input('per_page'));
+        }
         return [ 'vehicles' => $vehicles ];
     }
 

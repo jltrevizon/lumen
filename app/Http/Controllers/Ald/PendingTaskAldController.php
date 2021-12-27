@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ald;
 
 use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
+use App\Models\GroupTask;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
@@ -38,9 +39,17 @@ class PendingTaskAldController extends Controller
 
     public function createFromArray(Request $request){
         try {
-            $groupTask = $this->groupTaskRepository->create($request);
+            $groupTask = null;
+            if ($request->input('group_task_id')) {
+                $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
+            }
+            else {
+                $groupTask = $this->groupTaskRepository->create($request);
+            }
             $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
-            $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
+            if (!$request->input('without_task_washed')) {
+                $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
+            }
             $this->vehicleRepository->updateBack($request);
 
             $user = $this->userRepository->getById($request, Auth::id());
@@ -62,7 +71,9 @@ class PendingTaskAldController extends Controller
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
             if($task['approved'] == true && $isPendingTaskAssign == false){
-                $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                if (!isset($task['without_state_pending_task'])) {
+                    $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                }
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
                 $isPendingTaskAssign = true;
             }

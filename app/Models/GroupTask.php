@@ -20,11 +20,20 @@ class GroupTask extends Model
     ];
 
     public function pendingTasks(){
-        return $this->hasMany(PendingTask::class, 'group_task_id');
+        return $this->hasMany(PendingTask::class, 'group_task_id')
+        ->where('approved', 1)
+        ->orderBy('order')
+        ->orderBy('state_pending_task_id');
     }
 
     public function approvedPendingTasks(){
-        return $this->hasMany(PendingTask::class, 'group_task_id')->where('approved', 1)->orderBy('order');
+        return $this->hasMany(PendingTask::class, 'group_task_id')
+        ->where('approved', 1)
+        ->whereNotNull('state_pending_task_id')
+        ->where('state_pending_task_id', '<', 3)
+        ->orderBy('order')
+        ->orderBy('state_pending_task_id');
+
     }
 
     public function vehicle(){
