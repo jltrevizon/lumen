@@ -222,8 +222,10 @@ public function verifyPlateReception($request){
     }
 
     public function delete($id) {
-        Vehicle::where('id', $id)
-            ->delete();
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->deleted_user_id = Auth::id();
+        $vehicle->save();
+        $vehicle->delete();
         return ['message' => 'Vehicle deleted'];
     }
 

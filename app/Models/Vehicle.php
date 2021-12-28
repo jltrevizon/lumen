@@ -20,10 +20,12 @@ use EloquentFilter\Filterable;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Vehicle extends Model
 {
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
         'remote_id',
@@ -46,7 +48,8 @@ class Vehicle extends Model
         'longitude',
         'trade_state_id',
         'documentation',
-        'ready_to_delivery'
+        'ready_to_delivery',
+        'deleted_user_id'
     ];
 
     public function category(){
