@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
 use App\Models\Vehicle;
+use App\Models\GroupTask;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskRepository;
 use Exception;
@@ -58,7 +59,12 @@ class AldController extends Controller
 
     public function createTaskVehiclesAvalible(Request $request){
         try {
-            $groupTask = $this->groupTaskRepository->createGroupTaskApproved($request);
+            $groupTask = null;
+            if ($request->input('group_task_id')) {
+                $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
+            } else {
+                $groupTask = $this->groupTaskRepository->createGroupTaskApproved($request);                
+            }      
             if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
                 $this->createPendingTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             } else if($request->input('state_pending_task_id') == StatePendingTask::FINISHED){
