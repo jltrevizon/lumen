@@ -83,7 +83,9 @@ class AldController extends Controller
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = true;
             if($task['task_order'] == 1) {
-                $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                 if (!isset($task['without_state_pending_task'])) {
+                    $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                }
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
             }
             $pending_task->group_task_id = $groupTaskId;
