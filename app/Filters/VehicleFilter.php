@@ -23,6 +23,10 @@ class VehicleFilter extends ModelFilter
         return $this->byCompanies($ids);
     }
 
+    public function createdAt($date){
+        return $this->whereDate('created_at', $date);
+    }
+
     public function subStates($ids)
     {
         return $this->subStateIds($ids);
