@@ -64,7 +64,7 @@ class VehicleRepository extends Repository {
                     ->filter($request->all());
 
         // TODO: review this, maybe it shouldn't act
-        if ($request->input('approvedPendingTasksNotNull')) {
+       /* if ($request->input('approvedPendingTasksNotNull')) {
             $data = $query;
             $query = [];
             foreach ($data as $vehicle) {
@@ -72,7 +72,7 @@ class VehicleRepository extends Repository {
                     array_push($query, $vehicle);
                 }
             }
-        }         
+        }*/         
 
         if ($request->input('noPaginate')) {
             $vehicles = [
