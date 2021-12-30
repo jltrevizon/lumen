@@ -64,14 +64,46 @@ class AldController extends Controller
                 $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
             } else {
                 $groupTask = $this->groupTaskRepository->createGroupTaskApproved($request);                
-            }      
+            } 
+
             if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
                 $this->createPendingTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             } else if($request->input('state_pending_task_id') == StatePendingTask::FINISHED){
                 $this->createFinishedTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             }
+
+            $lastGroupTask = GroupTask::find($groupTask->id);
+            $pending_tasks = $lastGroupTask->pendingTasks;
+            $order = 1;
+            foreach($pending_tasks as $pending_task)
+            {
+                $update_pending_task = PendingTask::where('id', $pending_task['id'])
+                                            ->first();
+                if($update_pending_task->state_pending_task_id != StatePendingTask::IN_PROGRESS && $update_pending_task->state_pending_task_id != StatePendingTask::FINISHED)
+                {
+                    $update_pending_task->state_pending_task_id = null;
+                    $update_pending_task->datetime_pending = null;
+                }
+                $update_pending_task->order = $order;
+                $update_pending_task->save();
+                $order++;
+            }
+            $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
+                            ->where(function ($query) {
+                                return $query->where('state_pending_task_id', null)
+                                        ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
+                            })
+                            ->where('approved', true)
+                            ->where('group_task_id',  $groupTask->id)
+                            ->orderBy('order','asc')
+                            ->first();
+            $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+            $pending_task->datetime_pending = date("Y-m-d H:i:s");
+            $pending_task->save();
+
+
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage(), ], 400);
         }
     }
 
