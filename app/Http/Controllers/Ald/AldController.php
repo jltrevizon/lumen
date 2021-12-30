@@ -66,38 +66,31 @@ class AldController extends Controller
                 $groupTask = $this->groupTaskRepository->createGroupTaskApproved($request);                
             } 
 
-            if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
+           if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
                 $this->createPendingTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             } else if($request->input('state_pending_task_id') == StatePendingTask::FINISHED){
                 $this->createFinishedTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             }
+
+            $is_pending_task = false;
 
             $lastGroupTask = GroupTask::find($groupTask->id);
             $pending_tasks = $lastGroupTask->pendingTasks;
             $order = 1;
             foreach($pending_tasks as $pending_task)
             {
-                $update_pending_task = PendingTask::where('id', $pending_task['id'])
-                                            ->first();
-                if($update_pending_task->state_pending_task_id != StatePendingTask::IN_PROGRESS && $update_pending_task->state_pending_task_id != StatePendingTask::FINISHED)
-                {
-                    $update_pending_task->state_pending_task_id = null;
-                    $update_pending_task->datetime_pending = null;
+                $update_pending_task = PendingTask::find($pending_task['id']);
+                if ($update_pending_task->state_pending_task_id === StatePendingTask::PENDING) {
+                    $is_pending_task = true;
+                }
+                if (is_null($update_pending_task->state_pending_task_id) && !$is_pending_task) {
+                    $is_pending_task = true;
+                    $update_pending_task->state_pending_task_id = StatePendingTask::PENDING;
                 }
                 $update_pending_task->order = $order;
                 $update_pending_task->save();
                 $order++;
             }
-            $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
-                            ->where(function ($query) {
-                                return $query->where('state_pending_task_id', null)
-                                        ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
-                            })
-                            ->where('approved', true)
-                            ->where('group_task_id',  $groupTask->id)
-                            ->orderBy('order','asc')
-                            ->first();
-            $pending_task->state_pending_task_id = StatePendingTask::PENDING;
             $pending_task->datetime_pending = date("Y-m-d H:i:s");
             $pending_task->save();
 
@@ -108,6 +101,12 @@ class AldController extends Controller
     }
 
     private function createPendingTask($vehicleId, $tasks, $groupTaskId){
+        PendingTask::where('vehicle_id', $vehicleId)
+            ->where('group_task_id', $groupTaskId)
+            ->where('state_pending_task_id', StatePendingTask::PENDING)
+            ->update([
+                'state_pending_task_id' => null
+            ]);
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
@@ -115,9 +114,7 @@ class AldController extends Controller
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = true;
             if($task['task_order'] == 1) {
-                 if (!isset($task['without_state_pending_task'])) {
-                    $pending_task->state_pending_task_id = StatePendingTask::PENDING;
-                }
+                $pending_task->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
             }
             $pending_task->group_task_id = $groupTaskId;
