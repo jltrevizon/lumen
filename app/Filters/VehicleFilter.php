@@ -166,4 +166,15 @@ class VehicleFilter extends ModelFilter
         });
     }
 
+    public function approvedPendingTasksNotNull($value)
+    {
+        if ($value) {
+            return $this->whereHas('groupTasks', function($query) {
+                return $query->whereHas('approvedPendingTasks'); 
+            });
+        }
+
+        return;
+    }
+
 }
