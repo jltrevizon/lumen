@@ -14,7 +14,7 @@ class AddCommentStateToPendingTasksTable extends Migration
     public function up()
     {
         Schema::table('pending_tasks', function (Blueprint $table) {
-            $table->text('comment_state')->default(null);
+            $table->text('comment_state')->nullable();
         });
     }
 
