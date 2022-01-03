@@ -26,13 +26,19 @@ class GroupTask extends Model
         ->orderBy('order');
     }
 
+    public function allPendingTasks() {
+        return $this->hasMany(PendingTask::class, 'group_task_id')
+        ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
+        ->orderBy('order');
+    }
+
     public function approvedPendingTasks(){
         return $this->hasMany(PendingTask::class, 'group_task_id')
         ->where('approved', 1)
-        ->whereNotNull('state_pending_task_id')
+    //    ->whereNotNull('state_pending_task_id')
         ->where('state_pending_task_id', '<', 3)
-        ->orderBy('order')
-        ->orderBy('state_pending_task_id');
+        ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
+        ->orderBy('order');
 
     }
 
