@@ -32,7 +32,8 @@ class PendingTask extends Model
         'status_color',
         'datetime_pending',
         'datetime_start',
-        'datetime_finish'
+        'datetime_finish',
+        'comment_state'
     ];
 
     public function vehicle(){
