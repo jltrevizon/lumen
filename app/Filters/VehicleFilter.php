@@ -6,6 +6,8 @@ use App\Filters\Base\BaseFilter\BaseFilter;
 use App\Models\Role;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Vehicle;
+
 
 class VehicleFilter extends ModelFilter
 {
@@ -169,12 +171,14 @@ class VehicleFilter extends ModelFilter
     public function approvedPendingTasksNotNull($value)
     {
         if ($value) {
-            return $this->whereHas('groupTasks', function($query) {
-                return $query->whereHas('approvedPendingTasks'); 
+            $vehicle = Vehicle::whereHas('lastGroupTask', function($query) { 
+                return $query->whereDoesntHave('approvedPendingTasks');
+            })->get('id');
+            $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
+            return $this->whereHas('pendingTasks', function($query) use ($value) {
+                return $query->whereNotIn('vehicle_id', $value); 
             });
         }
-
-        return;
     }
 
 }
