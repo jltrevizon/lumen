@@ -63,17 +63,6 @@ class VehicleRepository extends Repository {
         $query = Vehicle::with($this->getWiths($request->with))
                     ->filter($request->all());
 
-        // TODO: review this, maybe it shouldn't act
-       /* if ($request->input('approvedPendingTasksNotNull')) {
-            $data = $query;
-            $query = [];
-            foreach ($data as $vehicle) {
-                if (!empty($vehicle->groupTasks->approvedPendingTasks)) {
-                    array_push($query, $vehicle);
-                }
-            }
-        }*/         
-
         if ($request->input('noPaginate')) {
             $vehicles = [
                 'data' => $query->get()
