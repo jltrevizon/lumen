@@ -487,12 +487,8 @@ class Vehicle extends Model
 
 
     public function scopeByTaskIds($query, $ids){
-        return $query->whereHas('pendingTasks', function(Builder $builder) use ($ids){
-            return $builder->whereIn('task_id', $ids)
-                ->where(function($query){
-                    return $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
-                });
+        return $query->whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($ids){
+            return $builder->whereIn('task_id', $ids);
         });
     }
 }
