@@ -175,7 +175,7 @@ class VehicleFilter extends ModelFilter
                 return $query->whereDoesntHave('approvedPendingTasks');
             })->get('id');
             $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
-            return $this->whereHas('pendingTasks', function($query) use ($value) {
+            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
                 return $query->whereNotIn('vehicle_id', $value); 
             });
         }
@@ -188,8 +188,8 @@ class VehicleFilter extends ModelFilter
                 return $builder->whereNotIn('task_id', $value);
             })->get('id');
             $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
-            return $this->whereHas('pendingTasks', function($query) use ($value) {
-                return $query->whereNotIn('vehicle_id', $value); 
+            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
+                return $query->whereIn('vehicle_id', $value); 
             });
         }
     }
