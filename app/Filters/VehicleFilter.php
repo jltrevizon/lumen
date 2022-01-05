@@ -6,6 +6,8 @@ use App\Filters\Base\BaseFilter\BaseFilter;
 use App\Models\Role;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Vehicle;
+
 
 class VehicleFilter extends ModelFilter
 {
@@ -169,12 +171,27 @@ class VehicleFilter extends ModelFilter
     public function approvedPendingTasksNotNull($value)
     {
         if ($value) {
-            return $this->whereHas('groupTasks', function($query) {
-                return $query->whereHas('approvedPendingTasks'); 
+            $vehicle = Vehicle::whereHas('lastGroupTask', function($query) { 
+                return $query->whereDoesntHave('approvedPendingTasks');
+            })->get('id');
+            $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
+            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
+                return $query->whereNotIn('vehicle_id', $value); 
             });
         }
+    }
 
-        return;
+    public function lastGroupTaskFirstPendingTaskIds($value)
+    {
+        if ($value) {
+            $vehicle = Vehicle::whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($value){
+                return $builder->whereNotIn('task_id', $value);
+            })->get('id');
+            $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
+            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
+                return $query->whereIn('vehicle_id', $value); 
+            });
+        }
     }
 
 }

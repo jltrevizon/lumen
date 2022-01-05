@@ -473,13 +473,13 @@ class Vehicle extends Model
 
 
     public function scopeByTaskSubStatesIds($query, $ids){
-        return $query->whereHas('withLastPendingTaskOrProgress.task', function(Builder $builder) use ($ids){
+        return $query->whereHas('lastGroupTask.approvedPendingTasks.task', function(Builder $builder) use ($ids){
             return $builder->whereIn('sub_state_id', $ids);
         });
     }
 
     public function scopeByTaskStatesIds($query, $ids){
-        return $query->whereHas('withLastPendingTaskOrProgress.task.subState', function(Builder $builder) use ($ids){
+        return $query->whereHas('lastGroupTask.approvedPendingTasks.task.subState', function(Builder $builder) use ($ids){
             return $builder->whereIn('state_id', $ids);
         });
 
@@ -487,12 +487,8 @@ class Vehicle extends Model
 
 
     public function scopeByTaskIds($query, $ids){
-        return $query->whereHas('pendingTasks', function(Builder $builder) use ($ids){
-            return $builder->whereIn('task_id', $ids)
-                ->where(function($query){
-                    return $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
-                });
+        return $query->whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($ids){
+            return $builder->whereIn('task_id', $ids);
         });
     }
 }
