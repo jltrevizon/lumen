@@ -181,4 +181,17 @@ class VehicleFilter extends ModelFilter
         }
     }
 
+    public function lastGroupTaskFirstPendingTaskIds($value)
+    {
+        if ($value) {
+            $vehicle = Vehicle::whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($value){
+                return $builder->whereNotIn('task_id', $value);
+            })->get('id');
+            $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
+            return $this->whereHas('pendingTasks', function($query) use ($value) {
+                return $query->whereNotIn('vehicle_id', $value); 
+            });
+        }
+    }
+
 }
