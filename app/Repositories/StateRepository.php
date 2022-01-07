@@ -13,7 +13,7 @@ class StateRepository {
 
     }
 
-    public function getAll(){
+    public function getAll($request){
         return State::with($this->getWiths($request->with))
                     ->filter($request->all())
                     ->get();

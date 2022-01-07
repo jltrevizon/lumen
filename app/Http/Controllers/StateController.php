@@ -15,8 +15,8 @@ class StateController extends Controller
         $this->stateRepository = $stateRepository;
     }
 
-    public function getAll(){
-        return $this->getDataResponse(State::all(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse(State::all($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){
