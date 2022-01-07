@@ -43,4 +43,8 @@ class State extends Model
     public function orders(){
         return $this->hasMany(Order::class);
     }
+
+    public function scopeByCompany($query, array $ids){
+        return $query->whereIn('company_id', $ids);
+    }
 }
