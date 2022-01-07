@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use App\Models\SubState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use EloquentFilter\Filterable;
+
 
 class State extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     const AVAILABLE = 1;
     const WORKSHOP = 2;
