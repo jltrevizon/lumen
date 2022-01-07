@@ -44,7 +44,8 @@ class StateRepositoryTest extends TestCase
     {
         State::factory()->create();
         State::factory()->create();
-        $result = $this->repository->getAll();
+        $request = new Request();
+        $result = $this->repository->getAll($request);
         $this->assertCount(2, $result);
     }
 
