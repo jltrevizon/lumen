@@ -14,7 +14,9 @@ class StateRepository {
     }
 
     public function getAll(){
-        return State::all();
+        return State::with($this->getWiths($request->with))
+                    ->filter($request->all())
+                    ->get();
     }
 
     public function getById($id){
