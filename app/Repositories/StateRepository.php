@@ -6,7 +6,7 @@ use App\Models\State;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 
-class StateRepository {
+class StateRepository extends Repository  {
 
     public function __construct()
     {
