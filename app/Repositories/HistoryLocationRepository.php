@@ -16,11 +16,11 @@ class HistoryLocationRepository extends Repository {
             ->paginate($request->input('per_page'));
     }
 
-    public function saveFromBack($vehicleId, $squareId){
+    public function saveFromBack($vehicleId, $squareId, $userId){
         HistoryLocation::create([
             'vehicle_id' => $vehicleId,
             'square_id' => $squareId,
-            'user_id' => Auth::id()
+            'user_id' => $userId
         ]);
     }
 
