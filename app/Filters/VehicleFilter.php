@@ -168,6 +168,27 @@ class VehicleFilter extends ModelFilter
         });
     }
 
+    public function lastReceptionCreatedAtFrom($dateTime)
+    {
+        return $this->whereHas('lastReception', function($query) use ($dateTime) {
+            return $query->whereDate('created_at', '>=',$dateTime); 
+        });
+    }
+
+    public function lastReceptionCreatedAtTo($dateTime)
+    {
+        return $this->whereHas('lastReception', function($query) use ($dateTime) {
+            return $query->whereDate('created_at', '<=',$dateTime); 
+        });
+    }
+
+    public function lastReceptionCreatedAt($dateTime)
+    {
+        return $this->whereHas('lastReception', function($query) use ($dateTime) {
+            return $query->whereDate('created_at', $dateTime); 
+        });
+    }
+
     public function approvedPendingTasksNotNull($value)
     {
         if ($value) {
