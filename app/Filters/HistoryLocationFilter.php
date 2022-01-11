@@ -15,6 +15,10 @@ class HistoryLocationFilter extends ModelFilter
         return $this->whereIn('square_id', $ids);
     }
 
+    public function userIds($ids){
+        return $this->whereIn('user_id', $ids);
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
