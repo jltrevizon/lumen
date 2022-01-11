@@ -13,7 +13,8 @@ class HistoryLocation extends Model
 
     protected $fillable = [
         'vehicle_id',
-        'square_id'
+        'square_id',
+        'user_id'
     ];
 
     protected $dates = [
@@ -26,6 +27,10 @@ class HistoryLocation extends Model
 
     public function square(){
         return $this->belongsTo(Square::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 
 }
