@@ -13,6 +13,7 @@ class HistoryLocationRepository extends Repository {
     public function index($request){
         return HistoryLocation::with($this->getWiths($request->with))
             ->filter($request->all())
+            ->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page'));
     }
 
