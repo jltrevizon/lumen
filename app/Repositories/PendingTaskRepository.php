@@ -126,6 +126,13 @@ class PendingTaskRepository extends Repository {
         return PendingTask::create($request->all());
     }
 
+    public function finishAll($request) {
+        $pending_task_ids = $request->input('pending_task_ids');
+        PendingTask::whereIn($pending_task_ids)->updated([
+            'state_pending_task_id' => StatePendingTask::FINISHED
+        ]);
+    }
+
     public function update($request, $id){
         $pending_task = PendingTask::findOrFail($id);
         $pending_task->update($request->all());
