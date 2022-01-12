@@ -3,6 +3,8 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class HistoryLocationFilter extends ModelFilter
 {
