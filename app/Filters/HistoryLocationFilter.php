@@ -15,6 +15,18 @@ class HistoryLocationFilter extends ModelFilter
         return $this->whereIn('square_id', $ids);
     }
 
+    public function streetIds($ids){
+        return $this->whereHas('square', function($query) use ($ids) {
+            return $query->whereIn('street_id', $ids); 
+        });
+    }
+
+    public function zoneIds($ids){
+        return $this->whereHas('square.street', function($query) use ($ids) {
+            return $query->whereIn('zone_id', $ids); 
+        });
+    }
+
     public function userIds($ids){
         return $this->whereIn('user_id', $ids);
     }
