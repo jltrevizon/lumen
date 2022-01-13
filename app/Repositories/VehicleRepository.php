@@ -8,9 +8,11 @@ use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\Square;
 use App\Models\VehicleExit;
+use App\Models\StatePendingTask;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\PendingTaskRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\DefleetVariableRepository;
 use App\Repositories\GroupTaskRepository;
@@ -22,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 class VehicleRepository extends Repository {
 
     public function __construct(
+        PendingTaskRepository $pendingTaskRepository,
         UserRepository $userRepository,
         CategoryRepository $categoryRepository,
         DefleetVariableRepository $defleetVariableRepository,
@@ -45,6 +48,7 @@ class VehicleRepository extends Repository {
         $this->typeModelOrderRepository = $typeModelOrderRepository;
         $this->deliveryVehicleRepository = $deliveryVehicleRepository;
         $this->vehicleExitRepository = $vehicleExitRepository;
+        $this->pendingTaskRepository = $pendingTaskRepository;
     }
     
     public function getAll($request){
@@ -289,6 +293,10 @@ public function verifyPlateReception($request){
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'));
+                            foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pendingTasks) {
+                                $pendingTasks->state_pending_task_id = StatePendingTask::FINISHED;
+                                $pendingTasks->save();
+                            }
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
                             $this->vehicleExitRepository->registerExit($vehicle['id']);
