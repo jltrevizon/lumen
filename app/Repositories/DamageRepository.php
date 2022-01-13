@@ -25,7 +25,7 @@ class DamageRepository extends Repository {
 
     public function store($request){
         $damage = Damage::create($request->all());
-        $damage->user_id = 1;
+        $damage->user_id = Auth::id();
         $damage->save();
 
         if ($request->input('notificable_invarat') || $request->input('notificable_taller')) {
