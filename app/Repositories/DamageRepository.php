@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Mail\DamageVehicleMail;
 use App\Models\Damage;
 use App\Models\StatusDamage;
 use Exception;
@@ -9,9 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
 
-    public function __construct(PendingTaskRepository $pendingTaskRepository)
+    public function __construct(PendingTaskRepository $pendingTaskRepository, DamageVehicleMail $damageVehicleMail)
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
+        $this->damageVehicleMail = $damageVehicleMail;
     }
 
     public function index($request){
@@ -23,8 +25,13 @@ class DamageRepository extends Repository {
 
     public function store($request){
         $damage = Damage::create($request->all());
-        $damage->user_id = Auth::id();
+        $damage->user_id = 1;
         $damage->save();
+
+        if ($request->input('notificable_invarat') || $request->input('notificable_taller')) {
+            $this->damageVehicleMail->SendDamage($request);
+        }
+
         return $damage;
     }
 
