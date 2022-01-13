@@ -290,9 +290,24 @@ public function verifyPlateReception($request){
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'));
-                            foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pendingTasks) {
-                                $pendingTasks->state_pending_task_id = StatePendingTask::FINISHED;
-                                $pendingTasks->save();
+                            foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
+                                $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+                                if (is_null($pending_task->datetime_pending)) {
+                                    $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                                }
+                                if (is_null($pending_task->datetime_start)) {                                
+                                    $pending_task->datetime_start = date('Y-m-d H:i:s');
+                                }
+                                if (is_null($pending_task->datetime_finish)) {
+                                    $pending_task->datetime_finish = date('Y-m-d H:i:s');                                
+                                }
+                                if (is_null($pending_task->user_start_id)) {
+                                    $pending_task->user_start_id = Auth::id();
+                                }
+                                if (is_null($pending_task->user_end_id)) {
+                                    $pending_task->user_end_id = Auth::id();
+                                }
+                                $pending_task->save();
                             }
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
