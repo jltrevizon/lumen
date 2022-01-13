@@ -12,7 +12,6 @@ use App\Models\StatePendingTask;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use App\Repositories\PendingTaskRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\DefleetVariableRepository;
 use App\Repositories\GroupTaskRepository;
@@ -24,7 +23,6 @@ use Illuminate\Support\Facades\DB;
 class VehicleRepository extends Repository {
 
     public function __construct(
-        PendingTaskRepository $pendingTaskRepository,
         UserRepository $userRepository,
         CategoryRepository $categoryRepository,
         DefleetVariableRepository $defleetVariableRepository,
@@ -48,7 +46,6 @@ class VehicleRepository extends Repository {
         $this->typeModelOrderRepository = $typeModelOrderRepository;
         $this->deliveryVehicleRepository = $deliveryVehicleRepository;
         $this->vehicleExitRepository = $vehicleExitRepository;
-        $this->pendingTaskRepository = $pendingTaskRepository;
     }
     
     public function getAll($request){
