@@ -28,7 +28,7 @@ class DamageRepository extends Repository {
         $damage->user_id = Auth::id();
         $damage->save();
 
-        if ($request->input('notificable_invarat') || $request->input('notificable_taller')) {
+        if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);
         }
 

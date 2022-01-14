@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\NotifyDamage;
 use App\Models\SeverityDamage;
 use App\Models\Vehicle;
 use Illuminate\Bus\Queueable;
@@ -46,15 +45,20 @@ class DamageVehicleMail extends Mailable
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         $severity = SeverityDamage::findOrFail($request->input('severity_damage_id'));
 
-        if ($request->input('notificable_taller')) {
-            $emails = NotifyDamage::where('task_id', $request->input('task_id'))
-                ->select('email', 'name')
-                ->get()
-                ->toArray();
-        }
-
         if ($request->input('notificable_invarat')) {
             array_push($emails, ['email' => $request->input('notificable_invarat'), 'name' => 'Finalizaciones Carflex']);
+        }
+
+        if ($request->input('notificable_taller1')) {
+            foreach ($request->input('notificable_taller1') as $taller1) {
+                array_push($emails, ['email' => $taller1, 'name' => 'Taller']);
+            }
+        }
+
+        if ($request->input('notificable_taller2')) {
+            foreach ($request->input('notificable_taller2') as $taller2) {
+                array_push($emails, ['email' => $taller2, 'name' => 'Taller']);
+            }
         }
 
         $data = [
