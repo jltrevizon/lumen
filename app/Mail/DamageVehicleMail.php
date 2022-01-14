@@ -54,7 +54,7 @@ class DamageVehicleMail extends Mailable
         }
 
         if ($request->input('notificable_invarat')) {
-            array_push($emails, ['email' => 'finalizacionescarflex@invarat.com', 'name' => 'Finalizaciones Carflex']);
+            array_push($emails, ['email' => $request->input('notificable_invarat'), 'name' => 'Finalizaciones Carflex']);
         }
 
         $data = [
