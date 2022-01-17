@@ -26,7 +26,7 @@ class SquareRepository extends Repository {
         if($request->input('vehicle_id')) $this->freeSquare($request->input('vehicle_id'));
         $square = Square::findOrFail($id);
         $square->update($request->all());
-        $this->historyLocationRepository->saveFromBack($request->input('vehicle_id'), $id);
+        $this->historyLocationRepository->saveFromBack($request->input('vehicle_id'), $id, $request->input('user_id'));
         return $square;
     }
 

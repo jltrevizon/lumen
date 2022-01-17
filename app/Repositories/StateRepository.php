@@ -6,15 +6,17 @@ use App\Models\State;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 
-class StateRepository {
+class StateRepository extends Repository  {
 
     public function __construct()
     {
 
     }
 
-    public function getAll(){
-        return State::all();
+    public function getAll($request){
+        return State::with($this->getWiths($request->with))
+                    ->filter($request->all())
+                    ->get();
     }
 
     public function getById($id){

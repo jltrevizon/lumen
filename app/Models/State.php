@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use App\Models\SubState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use EloquentFilter\Filterable;
+
 
 class State extends Model
 {
 
-    use HasFactory;
+    use HasFactory, Filterable;
 
     const AVAILABLE = 1;
     const WORKSHOP = 2;
@@ -42,5 +44,9 @@ class State extends Model
 
     public function orders(){
         return $this->hasMany(Order::class);
+    }
+
+    public function scopeByCompany($query, array $ids){
+        return $query->whereIn('company_id', $ids);
     }
 }

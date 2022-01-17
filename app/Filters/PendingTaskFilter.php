@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use App\Models\State;
+use App\Models\Vehicle;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -96,6 +97,17 @@ class PendingTaskFilter extends ModelFilter
     public function userEndIds($ids)
     {
         return $this->whereIn('user_end_id', $ids);
+    }
+
+    public function alreadyGroupTask($ids)
+    {
+        $vehicles = Vehicle::with('lastGroupTask')->get();
+        foreach ($vehicles as $key => $value) {
+            if ($value->lastGroupTask) {
+                $ids[] = $value->lastGroupTask->id;                
+            }
+        }
+        return $this->whereIn('group_task_id', $ids);
     }
 
     public function approved($approved){

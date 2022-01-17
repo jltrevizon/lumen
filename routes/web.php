@@ -157,6 +157,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pending-tasks/filter', 'PendingTaskController@pendingTasksFilter');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
+        $router->post('/pending-tasks/finish-all', 'PendingTaskController@finishAll');
+
         /**
          * Purchase operations
          */

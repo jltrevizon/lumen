@@ -3,6 +3,8 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class HistoryLocationFilter extends ModelFilter
 {
@@ -13,6 +15,32 @@ class HistoryLocationFilter extends ModelFilter
 
     public function squareIds($ids){
         return $this->whereIn('square_id', $ids);
+    }
+
+    public function streetIds($ids){
+        return $this->whereHas('square', function($query) use ($ids) {
+            return $query->whereIn('street_id', $ids); 
+        });
+    }
+
+    public function zoneIds($ids){
+        return $this->whereHas('square.street', function($query) use ($ids) {
+            return $query->whereIn('zone_id', $ids); 
+        });
+    }
+
+    public function userIds($ids){
+        return $this->whereIn('user_id', $ids);
+    }
+
+    public function createdAt($date){
+        return $this->whereDate('created_at', $date);
+    }
+
+    public function vehiclePlate($plate){
+        return $this->whereHas('vehicle', function(Builder $builder) use($plate){
+            return $builder->where('plate','like',"%$plate%");
+        });
     }
 
     /**
