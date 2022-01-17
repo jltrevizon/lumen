@@ -20,6 +20,7 @@ class DamageRepository extends Repository {
         return Damage::with($this->getWiths($request->with))
             ->filter($request->all())
             ->orderBy('severity_damage_id', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page'));
     }
 
