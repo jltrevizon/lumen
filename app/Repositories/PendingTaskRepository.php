@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\PendingTaskCanceledRepository;
 use App\Repositories\AccessoryRepository;
 use App\Repositories\IncidencePendingTaskRepository;
+
 use Exception;
 
 class PendingTaskRepository extends Repository {
@@ -75,6 +76,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->order = $task['order'];
+            $pending_task->user_id = Auth::id();
             $pending_task->save();
         }
     }

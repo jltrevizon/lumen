@@ -78,6 +78,7 @@ class PendingTaskAldController extends Controller
                 $isPendingTaskAssign = true;
             }
             $pending_task->group_task_id = $groupTaskId;
+            $pending_task->user_id = Auth::id();
             $pending_task->duration = $taskDescription['duration'];
             if($task['approved'] == true){
                 $pending_task->order = $order;
