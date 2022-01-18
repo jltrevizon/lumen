@@ -46,7 +46,7 @@
                 <p class="lead" style="font-size: 1.25rem; font-weight: 300; line-height: 1.7; margin-top: 1.5rem;">
                     Para más información del vehículo, acceda al siguiente link:
                     <br>
-                    <a href="{{env('APP_WEB')}}/#/incidences/{{$vehicle->id}}">Ver vehículo</a>
+                    <a href="{{env('APP_WEB')}}/#/incidences/{{$vehicle->id}}">{{env('APP_WEB')}}/#/incidences/{{$vehicle->id}}</a>
                 </p>
 
                 <p class="lead" style="font-size: 1.25rem; font-weight: 300; line-height: 1.7; margin-top: 1.5rem;">
