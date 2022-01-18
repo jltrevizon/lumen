@@ -14,6 +14,8 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\Auth;
+
 
 class AldController extends Controller
 {
@@ -88,6 +90,7 @@ class AldController extends Controller
                     $update_pending_task->state_pending_task_id = StatePendingTask::PENDING;
                 }
                 $update_pending_task->order = $order;
+                $update_pending_task->user_id = Auth::id();
                 $update_pending_task->save();
                 $order++;
             }
