@@ -7,6 +7,10 @@ use EloquentFilter\ModelFilter;
 class SubStateFilter extends ModelFilter
 {
 
+    public function ids($ids){
+        return $this->byIds($ids);
+    }
+
     public function stateIds($ids){
         return $this->byStateIds($ids);
     }

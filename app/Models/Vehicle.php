@@ -327,10 +327,9 @@ class Vehicle extends Model
     }
 
     public function scopeByStatePendingTasks($query, array $ids){
-        return $query->whereHas('pendingTasks', function (Builder $builder) use($ids) {
-            return $builder->whereIn('state_pending_task_id', $ids);
-        })
-        ->whereHas('lastGroupTask');
+        return $query->whereHas('lastGroupTask.approvedPendingTasks.task.subState', function (Builder $builder) use($ids) {
+            return $builder->whereIn('state_id', $ids);
+        });
     }
 
     public function scopeBySubStatePendingTasks($query, array $ids){
