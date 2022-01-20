@@ -14,6 +14,7 @@ class RepairSubStateVehicleSeeder extends Seeder
      */
     public function run()
     {
+        /*
     	$sub_state_ids = [10, 11, 12, 1, 2];
 
 
@@ -28,5 +29,20 @@ class RepairSubStateVehicleSeeder extends Seeder
         Vehicle::whereNotIn('sub_state_id', $sub_state_ids)->whereHas('lastGroupTask.allPendingTasks')->whereNotIn('id', $ids)->update(['sub_state_id' => 1]);
         
         Vehicle::whereIn('sub_state_id', $sub_state_ids)->whereDoesntHave('lastGroupTask')->update(['sub_state_id' => null]);
+        */
+
+        $vehicles = Vehicle::with('lastGroupTask.approvedPendingTasks')->get();
+        foreach ($vehicles as $key => $vehicle) {
+            if (is_null($vehicle->lastGroupTask)) {
+                $vehicle->sub_state_id = null;
+            } else {
+                if (count($vehicle->lastGroupTask->approvedPendingTasks) === 0) {
+                    $vehicle->sub_state_id = null;
+                } else if ($vehicle->sub_state_id != 10) {
+                    $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+                }
+            }
+            $vehicle->save();
+        }
     }
 }
