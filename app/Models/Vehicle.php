@@ -264,6 +264,10 @@ class Vehicle extends Model
         return $query->whereNull('campa_id');
     }
 
+    public function scopeBySubStateNull($query){
+        return $query->whereNull('sub_state_id');
+    }
+
     public function scopeByCampaId($query, int $id){
         return $query->where('campa_id', $id);
     }

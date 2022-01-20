@@ -17,36 +17,43 @@ class StateSeeder extends Seeder
     {
         $states = $this->data();
         foreach($states as $state){
-            State::create([
-                'company_id' => $state['company_id'],
-                'name' => $state['name']
-            ]);
+            State::updateOrCreate([
+                'id' => $state['id'],
+            ], $state);
         }
     }
 
     public function data(){
         return [
             [
+                'id' => 1,
                 'name' => 'Disponible',
-                'company_id' => Company::ALD
+                'company_id' => Company::ALD,
+                'type' => 2
             ],
             [
+                'id' => 2,
                 'name' => 'Taller',
                 'company_id' => Company::ALD
             ],
             [
+                'id' => 3,
                 'name' => 'Pendiente Venta V.O.',
                 'company_id' => Company::ALD
             ],
             [
+                'id' => 4,
                 'name' => 'No disponible',
                 'company_id' => Company::ALD
             ],
             [
+                'id' => 5,
                 'name' => 'Entregado',
-                'company_id' => Company::ALD
+                'company_id' => Company::ALD,
+                'type' => 2
             ],
             [
+                'id' => 6,
                 'name' => 'Pre-disponible',
                 'company_id' => Company::ALD
             ]
