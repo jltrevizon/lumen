@@ -155,15 +155,14 @@ class VehicleRepository extends Repository {
         //$vehicle->sub_state_id = $sub_state_id;
         if (is_null($vehicle->lastGroupTask)) {
                 $vehicle->sub_state_id = null;
-            } else {
-                if (count($vehicle->lastGroupTask->approvedPendingTasks) === 0) {
-                    $vehicle->sub_state_id = null;
-                } else if ($vehicle->sub_state_id != 10) {
-                    $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
-                }
+        } else {
+            if (count($vehicle->lastGroupTask->approvedPendingTasks) === 0) {
+                $vehicle->sub_state_id = null;
+            } else if ($vehicle->sub_state_id != 10) {
+                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }
-            $vehicle->save();
         }
+        $vehicle->save();
         return response()->json(['vehicle' => $vehicle]);
     }
 
