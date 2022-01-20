@@ -152,8 +152,18 @@ class VehicleRepository extends Repository {
 
     public function updateSubState($vehicle_id, $sub_state_id) {
         $vehicle = Vehicle::findOrFail($vehicle_id);
-        $vehicle->sub_state_id = $sub_state_id;
-        $vehicle->save();
+        //$vehicle->sub_state_id = $sub_state_id;
+        if (is_null($vehicle->lastGroupTask)) {
+                $vehicle->sub_state_id = null;
+            } else {
+                if (count($vehicle->lastGroupTask->approvedPendingTasks) === 0) {
+                    $vehicle->sub_state_id = null;
+                } else if ($vehicle->sub_state_id != 10) {
+                    $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+                }
+            }
+            $vehicle->save();
+        }
         return response()->json(['vehicle' => $vehicle]);
     }
 
@@ -309,11 +319,12 @@ public function verifyPlateReception($request){
                                 }
                                 $pending_task->save();
                             }
+                            $vehicle->update(['sub_state_id' => SubState::ALQUILADO]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
                             $this->vehicleExitRepository->registerExit($vehicle['id']);
+                            $vehicle->update(['sub_state_id' => SubState::WORKSHOP_EXTERNAL]);
                         }
-                        $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
                     }
                 });
         return [
