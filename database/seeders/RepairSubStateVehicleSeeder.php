@@ -35,10 +35,10 @@ class RepairSubStateVehicleSeeder extends Seeder
         $vehicles = Vehicle::with('lastGroupTask.approvedPendingTasks')->get();
         foreach ($vehicles as $key => $vehicle) {
             if (is_null($vehicle->lastGroupTask)) {
-                $vehicle->sub_state_id = null;
+                $vehicle->sub_state_id = SubState::CAMPA;
             } else {
                 if (count($vehicle->lastGroupTask->approvedPendingTasks) === 0) {
-                    $vehicle->sub_state_id = null;
+                    $vehicle->sub_state_id = SubState::CAMPA;
                 } else if ($vehicle->sub_state_id != SubState::ALQUILADO && $vehicle->sub_state_id != SubState::WORKSHOP_EXTERNAL) {
                     $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
                 }
