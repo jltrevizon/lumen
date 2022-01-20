@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Vehicle;
+use App\Models\SubState;
 
 class RepairSubStateVehicleSeeder extends Seeder
 {
@@ -38,7 +39,7 @@ class RepairSubStateVehicleSeeder extends Seeder
             } else {
                 if (count($vehicle->lastGroupTask->approvedPendingTasks) === 0) {
                     $vehicle->sub_state_id = null;
-                } else if ($vehicle->sub_state_id != 10) {
+                } else if ($vehicle->sub_state_id != SubState::ALQUILADO && $vehicle->sub_state_id != SubState::WORKSHOP_EXTERNAL) {
                     $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
                 }
             }

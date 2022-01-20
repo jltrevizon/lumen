@@ -232,7 +232,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->user_start_id = Auth::id();
             $pending_task->save();
             $detail_task = $this->taskRepository->getById([], $pending_task['task_id']);
-        //    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
+            $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
             $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
         } else {
