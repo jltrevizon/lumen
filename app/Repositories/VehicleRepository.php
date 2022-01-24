@@ -322,6 +322,11 @@ public function verifyPlateReception($request){
                                     $pending_task->save();
                                 }    
                             }
+                            $square = $vehicle->square()->first();
+                            if (!is_null($square)) {
+                                $square->vehicle_id = null;
+                                $square->save();
+                            }
                             $vehicle->update(['sub_state_id' => SubState::ALQUILADO]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
