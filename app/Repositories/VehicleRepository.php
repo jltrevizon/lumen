@@ -152,7 +152,18 @@ class VehicleRepository extends Repository {
 
     public function updateSubState($vehicle_id, $sub_state_id) {
         $vehicle = Vehicle::findOrFail($vehicle_id);
-        $vehicle->sub_state_id = $sub_state_id;
+        //$vehicle->sub_state_id = $sub_state_id;
+        $enc = $vehicle->sub_state_id == SubState::ALQUILADO || $vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL;
+        $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+        if (is_null($vehicle->lastGroupTask)) {
+            $vehicle->sub_state_id = null;
+        } else {
+            if (!$enc && $count == 0) {
+                $vehicle->sub_state_id = SubState::CAMPA;
+            } else if ($count > 0) {
+                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+            }
+        }
         $vehicle->save();
         return response()->json(['vehicle' => $vehicle]);
     }
@@ -290,30 +301,33 @@ public function verifyPlateReception($request){
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'));
-                            foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
-                                $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
-                                if (is_null($pending_task->datetime_pending)) {
-                                    $pending_task->datetime_pending = date('Y-m-d H:i:s');
-                                }
-                                if (is_null($pending_task->datetime_start)) {                                
-                                    $pending_task->datetime_start = date('Y-m-d H:i:s');
-                                }
-                                if (is_null($pending_task->datetime_finish)) {
-                                    $pending_task->datetime_finish = date('Y-m-d H:i:s');                                
-                                }
-                                if (is_null($pending_task->user_start_id)) {
-                                    $pending_task->user_start_id = Auth::id();
-                                }
-                                if (is_null($pending_task->user_end_id)) {
-                                    $pending_task->user_end_id = Auth::id();
-                                }
-                                $pending_task->save();
+                            if (!is_null($vehicle->lastGroupTask)) {
+                                foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
+                                    $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+                                    if (is_null($pending_task->datetime_pending)) {
+                                        $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                                    }
+                                    if (is_null($pending_task->datetime_start)) {                                
+                                        $pending_task->datetime_start = date('Y-m-d H:i:s');
+                                    }
+                                    if (is_null($pending_task->datetime_finish)) {
+                                        $pending_task->datetime_finish = date('Y-m-d H:i:s');                                
+                                    }
+                                    if (is_null($pending_task->user_start_id)) {
+                                        $pending_task->user_start_id = Auth::id();
+                                    }
+                                    if (is_null($pending_task->user_end_id)) {
+                                        $pending_task->user_end_id = Auth::id();
+                                    }
+                                    $pending_task->save();
+                                }    
                             }
+                            $vehicle->update(['sub_state_id' => SubState::ALQUILADO]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
                             $this->vehicleExitRepository->registerExit($vehicle['id']);
+                            $vehicle->update(['sub_state_id' => SubState::WORKSHOP_EXTERNAL]);
                         }
-                        $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
                     }
                 });
         return [

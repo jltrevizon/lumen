@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\PendingTaskCanceledRepository;
 use App\Repositories\AccessoryRepository;
 use App\Repositories\IncidencePendingTaskRepository;
+
 use Exception;
 
 class PendingTaskRepository extends Repository {
@@ -75,6 +76,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->order = $task['order'];
+            $pending_task->user_id = Auth::id();
             $pending_task->save();
         }
     }
@@ -282,7 +284,7 @@ class PendingTaskRepository extends Repository {
                 $pending_task_next->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
                 $pending_task_next->save();
-                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $pending_task_next['task']['sub_state_id']);
+                // $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $pending_task_next['task']['sub_state_id']);
                 return $this->getPendingOrNextTask($request);
             } else {
                 $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar

@@ -31,7 +31,7 @@ class State extends Model
     const FINISHED = 15;
 
     protected $fillable = [
-        'name'
+        'name', 'type'
     ];
 
     public function vehicles(){
@@ -48,5 +48,9 @@ class State extends Model
 
     public function scopeByCompany($query, array $ids){
         return $query->whereIn('company_id', $ids);
+    }
+
+    public function scopeByType($query, array $ids){
+        return $query->whereIn('type', $ids);
     }
 }

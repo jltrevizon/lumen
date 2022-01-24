@@ -57,4 +57,8 @@ class SubState extends Model
     public function scopeByStateIds($query, array $ids){
         return $query->whereIn('state_id', $ids);
     }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
 }

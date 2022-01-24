@@ -264,6 +264,10 @@ class Vehicle extends Model
         return $query->whereNull('campa_id');
     }
 
+    public function scopeBySubStateNull($query){
+        return $query->whereNull('sub_state_id');
+    }
+
     public function scopeByCampaId($query, int $id){
         return $query->where('campa_id', $id);
     }
@@ -327,10 +331,9 @@ class Vehicle extends Model
     }
 
     public function scopeByStatePendingTasks($query, array $ids){
-        return $query->whereHas('pendingTasks', function (Builder $builder) use($ids) {
-            return $builder->whereIn('state_pending_task_id', $ids);
-        })
-        ->whereHas('lastGroupTask');
+        return $query->whereHas('lastGroupTask.approvedPendingTasks.task.subState', function (Builder $builder) use($ids) {
+            return $builder->whereIn('state_id', $ids);
+        });
     }
 
     public function scopeBySubStatePendingTasks($query, array $ids){

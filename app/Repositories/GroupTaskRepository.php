@@ -87,7 +87,7 @@ class GroupTaskRepository extends Repository {
             ->first();
         
         $vehicle = $pandind_task->vehicle;
-        $vehicle->sub_state_id = $pandind_task->task->sub_state_id;
+        $vehicle->sub_state_id = SubState::CAMPA;//$pandind_task->task->sub_state_id;
         $vehicle->save();
 
         return ['message' => 'Solicitud aprobada!'];

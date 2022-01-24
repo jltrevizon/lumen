@@ -33,11 +33,16 @@ class PendingTask extends Model
         'datetime_pending',
         'datetime_start',
         'datetime_finish',
-        'comment_state'
+        'comment_state',
+        'user_id'
     ];
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 
     public function task(){

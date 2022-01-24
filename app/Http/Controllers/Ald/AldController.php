@@ -14,6 +14,8 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\Auth;
+
 
 class AldController extends Controller
 {
@@ -120,6 +122,7 @@ class AldController extends Controller
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->order = $task['task_order'];
+            $pending_task->user_id = Auth::id();
             $pending_task->save();
         }
     }
