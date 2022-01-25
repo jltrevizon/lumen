@@ -61,6 +61,12 @@ class DamageVehicleMail extends Mailable
             }
         }
 
+        if ($request->input('notificable_taller3')) {
+            foreach ($request->input('notificable_taller3') as $taller3) {
+                array_push($emails, ['email' => $taller3, 'name' => 'Lunas']);
+            }
+        }
+
         $data = [
             'vehicle' => $vehicle,
             'severity' => $severity,

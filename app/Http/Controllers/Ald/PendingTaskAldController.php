@@ -47,9 +47,10 @@ class PendingTaskAldController extends Controller
                 $groupTask = $this->groupTaskRepository->create($request);
             }
             $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
-            if (!$request->input('without_task_washed')) {
-                $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
-            }
+            // Se quita la tarea de lavado automática porque se va a agregar manualmentr
+            // if (!$request->input('without_task_washed')) {
+            //     $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
+            // }
             $this->vehicleRepository->updateBack($request);
 
             $user = $this->userRepository->getById($request, Auth::id());
