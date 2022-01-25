@@ -7,12 +7,12 @@ use App\Models\Vehicle;
 use App\Models\SubState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class State extends Model
 {
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes;
 
     const AVAILABLE = 1;
     const WORKSHOP = 2;

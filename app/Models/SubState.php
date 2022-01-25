@@ -7,11 +7,12 @@ use App\Models\State;
 use App\Models\Task;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SubState extends Model
 {
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes;
 
     const CAMPA = 1;
     const PENDIENTE_LAVADO = 2;
