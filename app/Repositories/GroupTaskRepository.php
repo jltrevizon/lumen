@@ -85,6 +85,10 @@ class GroupTaskRepository extends Repository {
             ->where('vehicle_id', $request->input('vehicle_id'))
             ->where('state_pending_task_id', StatePendingTask::PENDING)
             ->first();
+
+        if (is_null($pandind_task)) {
+            return $pandind_task;
+        }
         
         $vehicle = $pandind_task->vehicle;
         $vehicle->sub_state_id = SubState::CAMPA;//$pandind_task->task->sub_state_id;

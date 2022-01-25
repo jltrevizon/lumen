@@ -45,7 +45,12 @@ class GroupTaskController extends Controller
     }
 
     public function approvedGroupTaskToAvailable(Request $request){
-        return $this->updateDataResponse($this->groupTaskRepository->approvedGroupTaskToAvailable($request), HttpFoundationResponse::HTTP_OK);
+        $data = $this->groupTaskRepository->approvedGroupTaskToAvailable($request);
+        if (!is_null($data)) {
+            return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
+        } else {
+            return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     public function declineGroupTask(Request $request){
