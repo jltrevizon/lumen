@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\DeliveryVehicle;
+use Illuminate\Support\Facades\Auth;
+
 class DeliveryVehicleRepository extends Repository {
 
     public function __construct()
@@ -19,6 +21,7 @@ class DeliveryVehicleRepository extends Repository {
     public function createDeliveryVehicles($vehicleId, $data){
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
+            'campa_id' => Auth::id(),
             'data_delivery' => json_encode($data)
         ]);
     }
