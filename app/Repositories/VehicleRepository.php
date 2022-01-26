@@ -340,4 +340,18 @@ public function verifyPlateReception($request){
         ];
     }
 
+    public function setVehicleRented($request){
+        $vehicles = $request->input('vehicles');
+        foreach($vehicles as $vehicle){
+            $updateVehicle = Vehicle::where('plate', $vehicle)
+                ->first();
+            if($updateVehicle){
+                $updateVehicle->sub_state_id = SubState::ALQUILADO;
+                $updateVehicle->save();
+            }
+        }
+        
+        return response()->json(['message' => 'Done!']);
+    }
+
 }
