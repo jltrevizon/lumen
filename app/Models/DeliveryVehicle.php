@@ -13,6 +13,7 @@ class DeliveryVehicle extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'campa_id',
         'data_delivery'
     ];
 
