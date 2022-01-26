@@ -24,7 +24,7 @@ class DeliveryVehicleRepository extends Repository {
             ->findOrFail(Auth::id());
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
-            'campa_id' => $user->campas[0]->id,
+            'campa_id' => 1,
             'data_delivery' => json_encode($data)
         ]);
     }
