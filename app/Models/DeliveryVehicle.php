@@ -25,4 +25,8 @@ class DeliveryVehicle extends Model
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
     }
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
+    }
 }
