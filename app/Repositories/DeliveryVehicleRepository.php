@@ -20,11 +20,8 @@ class DeliveryVehicleRepository extends Repository {
     }
 
     public function createDeliveryVehicles($vehicleId, $data){
-        $user = User::with('campas')
-            ->findOrFail(Auth::id());
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
-            'campa_id' => 1,
             'data_delivery' => json_encode($data)
         ]);
     }
