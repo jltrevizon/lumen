@@ -219,6 +219,7 @@ class PendingTaskRepository extends Repository {
         $pending_task->state_pending_task_id = StatePendingTask::PENDING;
         $pending_task->datetime_pending = date("Y-m-d H:i:s");
         $pending_task->save();
+        $this->vehicleRepository->updateSubState($pending_task->vehicle_id, null);
         return $pending_task;
     }
 
