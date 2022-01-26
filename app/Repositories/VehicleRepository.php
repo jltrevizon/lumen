@@ -154,10 +154,10 @@ class VehicleRepository extends Repository {
         $vehicle = Vehicle::findOrFail($vehicle_id);
         //$vehicle->sub_state_id = $sub_state_id;
         // $enc = $vehicle->sub_state_id == SubState::ALQUILADO || $vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL;
-        $count = count($vehicle->lastGroupTask->approvedPendingTasks);
         if (is_null($vehicle->lastGroupTask)) {
             $vehicle->sub_state_id = null;
         } else {
+            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 0) {
