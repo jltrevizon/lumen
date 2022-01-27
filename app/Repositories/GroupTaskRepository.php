@@ -10,9 +10,11 @@ use Exception;
 
 class GroupTaskRepository extends Repository {
 
-    public function __construct()
+    public function __construct(
+        VehicleRepository $vehicleRepository
+    )
     {
-
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function getAll($request){
@@ -80,19 +82,7 @@ class GroupTaskRepository extends Repository {
         $group_task->datetime_approved = date('Y-m-d H:i:s');
         $group_task->save();
 
-        $pandind_task = PendingTask::with('task')
-            ->where('group_task_id', $request->input('group_task_id'))
-            ->where('vehicle_id', $request->input('vehicle_id'))
-            ->where('state_pending_task_id', StatePendingTask::PENDING)
-            ->first();
-
-        if (is_null($pandind_task)) {
-            return $pandind_task;
-        }
-        
-        $vehicle = $pandind_task->vehicle;
-        $vehicle->sub_state_id = SubState::CAMPA;//$pandind_task->task->sub_state_id;
-        $vehicle->save();
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
 
         return ['message' => 'Solicitud aprobada!'];
     }
