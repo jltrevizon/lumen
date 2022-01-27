@@ -16,7 +16,9 @@ class StatusDamageSeeder extends Seeder
     {
         $statuses = $this->data();
         foreach($statuses as $status){
-            StatusDamage::create([
+            StatusDamage::updateOrCreate([
+                'id' => $status['id']
+            ],[
                 'description' => $status['description']
             ]);
         }
@@ -24,9 +26,18 @@ class StatusDamageSeeder extends Seeder
 
     public function data(){
         return [
-            [ 'description' => 'Pendiente' ],
-            [ 'description' => 'Aprobado' ],
-            [ 'description' => 'Declinado' ]
+            [
+                'id' => 1, 
+                'description' => 'Pendiente' 
+            ],
+            [ 
+                'id' => 2,
+                'description' => 'Cerrado' 
+            ],
+            [ 
+                'id' => 3,
+                'description' => 'Declinado' 
+            ]
         ];
     }
 }
