@@ -6,17 +6,14 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
-use App\Repositories\VehicleRepository;
 
 use Exception;
 
 class GroupTaskRepository extends Repository {
 
     public function __construct(
-        VehicleRepository $vehicleRepository
     )
     {
-        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function getAll($request){
@@ -84,7 +81,19 @@ class GroupTaskRepository extends Repository {
         $group_task->datetime_approved = date('Y-m-d H:i:s');
         $group_task->save();
 
-        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        if (is_null($vehicle->lastGroupTask)) {
+            $vehicle->sub_state_id = null;
+        } else {
+            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+            if ($count == 0) {
+                $vehicle->sub_state_id = SubState::CAMPA;
+            } else if ($count > 0) {
+                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+            }
+        }
+        $vehicle->save();
+    //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
 
         return ['message' => 'Solicitud aprobada!'];
     }
