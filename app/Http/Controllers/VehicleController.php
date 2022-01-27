@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
 class VehicleController extends Controller
 {
@@ -140,5 +141,9 @@ class VehicleController extends Controller
 
     public function changeSubState(Request $request){
         return $this->updateDataResponse($this->vehicleRepository->changeSubState($request), HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function setVehicleRented(Request $request){
+        return $this->updateDataResponse($this->vehicleRepository->setVehicleRented($request), HttpFoundationResponse::HTTP_OK);
     }
 }

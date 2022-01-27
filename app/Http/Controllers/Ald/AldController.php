@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 use App\Models\GroupTask;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskRepository;
+use App\Repositories\VehicleRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -22,11 +23,13 @@ class AldController extends Controller
 
     public function __construct(
         TaskRepository $taskRepository,
-        GroupTaskRepository $groupTaskRepository
+        GroupTaskRepository $groupTaskRepository,
+        VehicleRepository $vehicleRepository
     )
     {
         $this->taskRepository = $taskRepository;
         $this->groupTaskRepository = $groupTaskRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function unapprovedTask(Request $request){
@@ -124,6 +127,13 @@ class AldController extends Controller
             $pending_task->order = $task['task_order'];
             $pending_task->user_id = Auth::id();
             $pending_task->save();
+            $this->vehicleRepository->updateSubState($pending_task->vehicle_id, null);
+            /*
+            if($task['task_order'] == 1) {   
+                $vehicle = $pending_task->vehicle;
+                $vehicle->sub_state_id = $pending_task->task->sub_state_id;
+                $vehicle->save();
+            }*/
         }
     }
 

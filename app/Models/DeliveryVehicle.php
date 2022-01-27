@@ -13,6 +13,7 @@ class DeliveryVehicle extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'campa_id',
         'data_delivery'
     ];
 
@@ -23,5 +24,9 @@ class DeliveryVehicle extends Model
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
     }
 }

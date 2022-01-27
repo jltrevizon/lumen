@@ -18,6 +18,11 @@ use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\VehicleModelRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\TypeModelOrderRepository;
+use App\Repositories\DeliveryVehicleRepository;
+use App\Repositories\VehicleExitRepository;
+use App\Repositories\CampaRepository;
 use Illuminate\Support\Facades\DB;
 
 class VehicleRepository extends Repository {
@@ -153,12 +158,12 @@ class VehicleRepository extends Repository {
     public function updateSubState($vehicle_id, $sub_state_id) {
         $vehicle = Vehicle::findOrFail($vehicle_id);
         //$vehicle->sub_state_id = $sub_state_id;
-        $enc = $vehicle->sub_state_id == SubState::ALQUILADO || $vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL;
-        $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+        // $enc = $vehicle->sub_state_id == SubState::ALQUILADO || $vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL;
         if (is_null($vehicle->lastGroupTask)) {
             $vehicle->sub_state_id = null;
         } else {
-            if (!$enc && $count == 0) {
+            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+            if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 0) {
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
@@ -338,6 +343,20 @@ public function verifyPlateReception($request){
         return [
             'message' => 'Vehicles updated!'
         ];
+    }
+
+    public function setVehicleRented($request){
+        $vehicles = $request->input('vehicles');
+        foreach($vehicles as $vehicle){
+            $updateVehicle = Vehicle::where('plate', $vehicle)
+                ->first();
+            if($updateVehicle){
+                $updateVehicle->sub_state_id = SubState::ALQUILADO;
+                $updateVehicle->save();
+            }
+        }
+        
+        return response()->json(['message' => 'Done!']);
     }
 
 }
