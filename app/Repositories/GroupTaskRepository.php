@@ -6,6 +6,8 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
+use App\Repositories\VehicleRepository;
+
 use Exception;
 
 class GroupTaskRepository extends Repository {
