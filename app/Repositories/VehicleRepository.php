@@ -18,6 +18,11 @@ use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\VehicleModelRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\TypeModelOrderRepository;
+use App\Repositories\DeliveryVehicleRepository;
+use App\Repositories\VehicleExitRepository;
+use App\Repositories\CampaRepository;
 use Illuminate\Support\Facades\DB;
 
 class VehicleRepository extends Repository {
