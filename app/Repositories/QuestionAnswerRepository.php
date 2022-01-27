@@ -37,7 +37,10 @@ class QuestionAnswerRepository {
         }
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
 
-        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), SubState::CHECK);
+        $vehicle = $reception->vehicle;
+        $vehicle->sub_state_id = SubState::CHECK;
+        $vehicle->save();
+
         return [
             'questionnaire' => $questionnaire
         ];
