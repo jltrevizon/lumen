@@ -39,7 +39,7 @@ class DamageRepository extends Repository {
     public function update($request, $id){
         $damage = Damage::findOrFail($id);
         $damage->update($request->all());
-        if($request->input('status_damage_id') == StatusDamage::APPROVED){
+        if($request->input('status_damage_id') == StatusDamage::APPROVED && !is_null($damage['task_id'])){
             $this->pendingTaskRepository->createPendingTaskFromDamage($damage);
         }
         return $damage;
