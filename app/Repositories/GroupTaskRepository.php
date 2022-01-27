@@ -6,6 +6,7 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
+use Illuminate\Support\Facades\Auth;
 
 use Exception;
 
@@ -91,6 +92,10 @@ class GroupTaskRepository extends Repository {
             } else if ($count > 0) {
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }
+        }
+        if (is_null($vehicle->company_id)) {
+            $user = Auth::user();
+            $vehicle->company_id = $user->company_id;
         }
         $vehicle->save();
     //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
