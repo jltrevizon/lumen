@@ -18,6 +18,11 @@ use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateRepository;
 use App\Repositories\BrandRepository;
 use App\Repositories\VehicleModelRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\TypeModelOrderRepository;
+use App\Repositories\DeliveryVehicleRepository;
+use App\Repositories\VehicleExitRepository;
+use App\Repositories\CampaRepository;
 use Illuminate\Support\Facades\DB;
 
 class VehicleRepository extends Repository {
@@ -117,6 +122,10 @@ class VehicleRepository extends Repository {
             return response()->json(['message' => 'Esta matrícula ya está registrada']);
         }
         $vehicle = Vehicle::create($request->all());
+        if (is_null($vehicle->company_id)) {
+            $user = Auth::user();
+            $vehicle->company_id = $user->company_id;
+        }
         $vehicle->save();
         return response()->json(['vehicle' => $vehicle], 200);
     }
@@ -154,10 +163,10 @@ class VehicleRepository extends Repository {
         $vehicle = Vehicle::findOrFail($vehicle_id);
         //$vehicle->sub_state_id = $sub_state_id;
         // $enc = $vehicle->sub_state_id == SubState::ALQUILADO || $vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL;
-        $count = count($vehicle->lastGroupTask->approvedPendingTasks);
         if (is_null($vehicle->lastGroupTask)) {
             $vehicle->sub_state_id = null;
         } else {
+            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 0) {

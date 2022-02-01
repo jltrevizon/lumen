@@ -6,13 +6,15 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
+use Illuminate\Support\Facades\Auth;
+
 use Exception;
 
 class GroupTaskRepository extends Repository {
 
-    public function __construct()
+    public function __construct(
+    )
     {
-
     }
 
     public function getAll($request){
@@ -80,19 +82,23 @@ class GroupTaskRepository extends Repository {
         $group_task->datetime_approved = date('Y-m-d H:i:s');
         $group_task->save();
 
-        $pandind_task = PendingTask::with('task')
-            ->where('group_task_id', $request->input('group_task_id'))
-            ->where('vehicle_id', $request->input('vehicle_id'))
-            ->where('state_pending_task_id', StatePendingTask::PENDING)
-            ->first();
-
-        if (is_null($pandind_task)) {
-            return $pandind_task;
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        if (is_null($vehicle->lastGroupTask)) {
+            $vehicle->sub_state_id = null;
+        } else {
+            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+            if ($count == 0) {
+                $vehicle->sub_state_id = SubState::CAMPA;
+            } else if ($count > 0) {
+                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+            }
         }
-        
-        $vehicle = $pandind_task->vehicle;
-        $vehicle->sub_state_id = SubState::CAMPA;//$pandind_task->task->sub_state_id;
+        if (is_null($vehicle->company_id)) {
+            $user = Auth::user();
+            $vehicle->company_id = $user->company_id;
+        }
         $vehicle->save();
+    //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
 
         return ['message' => 'Solicitud aprobada!'];
     }
