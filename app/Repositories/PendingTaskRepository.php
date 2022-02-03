@@ -365,11 +365,14 @@ class PendingTaskRepository extends Repository {
 
     public function updateApprovedPendingTaskFromValidation($request){
         $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
+        $pendingTasksApproved = PendingTask::where('group_task_id', $groupTask['id'])
+            ->where('approved', true)
+            ->count();
         PendingTask::where('group_task_id', $groupTask['id'])
             ->where('task_id', $request->input('task_id'))
-            ->chunk(200, function($pendingTasks) use($request) {
+            ->chunk(200, function($pendingTasks) use($request, $pendingTasksApproved) {
                 foreach($pendingTasks as $pendingTask) {
-                    $pendingTask->update(['approved' => $request->input('approved')]);
+                    $pendingTask->update(['approved' => $request->input('approved'), 'order' => $pendingTasksApproved + 1]);
                 }
             });
         $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
