@@ -197,30 +197,11 @@ class PendingTaskRepository extends Repository {
     }
 
     public function orderPendingTask($request){
-        foreach($request->input('pending_tasks') as $pending_task){
-            $update_pending_task = PendingTask::where('id', $pending_task['id'])
-                                            ->first();
-            if($update_pending_task->state_pending_task_id != StatePendingTask::IN_PROGRESS && $update_pending_task->state_pending_task_id != StatePendingTask::FINISHED){
-                $update_pending_task->state_pending_task_id = null;
-                $update_pending_task->datetime_pending = null;
-            }
-            $update_pending_task->order = $pending_task['order'];
-            $update_pending_task->save();
-        }
-        $pending_task = PendingTask::where('vehicle_id', $request->input('vehicle_id'))
-                            ->where(function ($query) {
-                                return $query->where('state_pending_task_id', null)
-                                        ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
-                            })
-                            ->where('approved', true)
-                            ->where('group_task_id', $request->input('group_task_id'))
-                            ->orderBy('order','asc')
-                            ->first();
-        $pending_task->state_pending_task_id = StatePendingTask::PENDING;
-        $pending_task->datetime_pending = date("Y-m-d H:i:s");
-        $pending_task->save();
-        $this->vehicleRepository->updateSubState($pending_task->vehicle_id, null);
-        return $pending_task;
+        foreach($request->input('pending_tasks') as $pending_task)
+        {
+            PendingTask::where('id', $pending_task['id'])->update($pending_task);
+        }        
+        return $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
     }
 
     public function startPendingTask($request){
@@ -384,11 +365,14 @@ class PendingTaskRepository extends Repository {
 
     public function updateApprovedPendingTaskFromValidation($request){
         $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
+        $pendingTasksApproved = PendingTask::where('group_task_id', $groupTask['id'])
+            ->where('approved', true)
+            ->count();
         PendingTask::where('group_task_id', $groupTask['id'])
             ->where('task_id', $request->input('task_id'))
-            ->chunk(200, function($pendingTasks) use($request) {
+            ->chunk(200, function($pendingTasks) use($request, $pendingTasksApproved) {
                 foreach($pendingTasks as $pendingTask) {
-                    $pendingTask->update(['approved' => $request->input('approved')]);
+                    $pendingTask->update(['approved' => $request->input('approved'), 'order' => $pendingTasksApproved + 1]);
                 }
             });
         $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])

@@ -122,6 +122,10 @@ class VehicleRepository extends Repository {
             return response()->json(['message' => 'Esta matrícula ya está registrada']);
         }
         $vehicle = Vehicle::create($request->all());
+        if (is_null($vehicle->company_id)) {
+            $user = Auth::user();
+            $vehicle->company_id = $user->company_id;
+        }
         $vehicle->save();
         return response()->json(['vehicle' => $vehicle], 200);
     }

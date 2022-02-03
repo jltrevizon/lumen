@@ -67,6 +67,12 @@ class VehicleFilter extends ModelFilter
         return $this->categoriesIds($ids);
     }
 
+    public function groupTaskIds($ids){
+        return $this->whereHas('groupTasks', function(Builder $builder) use($ids){
+            return $builder->whereIn('id', $ids);
+        });
+    }
+
     public function tradeStates($ids)
     {
         return $this->byTradeStateIds($ids);
