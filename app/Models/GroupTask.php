@@ -35,8 +35,10 @@ class GroupTask extends Model
     public function approvedPendingTasks(){
         return $this->hasMany(PendingTask::class, 'group_task_id')
         ->where('approved', 1)
-    //    ->whereNotNull('state_pending_task_id')
-        ->where('state_pending_task_id', '<>', 3)
+        ->where(function ($query) {
+            $query->where('state_pending_task_id', '<>', 3)
+                ->orWhereNull('state_pending_task_id');
+        })
         ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
         ->orderBy('order');
 

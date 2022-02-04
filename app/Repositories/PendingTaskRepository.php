@@ -250,18 +250,18 @@ class PendingTaskRepository extends Repository {
 
     public function finishPendingTask($request){
         $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
-        $vehicle = $this->vehicleRepository->getById($request, $pending_task['vehicle_id']);
+        $vehicle = $pending_task->vehicle;
         if($pending_task->state_pending_task_id == StatePendingTask::IN_PROGRESS){
             $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
             $pending_task->user_end_id = Auth::id();
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->save();
-            $pending_task_next = PendingTask::with(['task'])
-                                    ->where('group_task_id', $pending_task->group_task_id)
-                                    ->where('order','>',$pending_task->order)
-                                    ->where('approved', true)
-                                    ->orderBy('order', 'asc')
-                                    ->first();
+
+            $pending_task_next = null;
+            if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) 
+            {
+                $pending_task_next = $vehicle->lastGroupTask->approvedPendingTasks[0];         
+            }
             if($pending_task_next){
                 $pending_task_next->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
