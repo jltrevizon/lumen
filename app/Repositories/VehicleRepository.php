@@ -38,7 +38,8 @@ class VehicleRepository extends Repository {
         TypeModelOrderRepository $typeModelOrderRepository,
         DeliveryVehicleRepository $deliveryVehicleRepository,
         VehicleExitRepository $vehicleExitRepository,
-        CampaRepository $campaRepository)
+        CampaRepository $campaRepository,
+        SquareRepository $squareRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -51,6 +52,7 @@ class VehicleRepository extends Repository {
         $this->typeModelOrderRepository = $typeModelOrderRepository;
         $this->deliveryVehicleRepository = $deliveryVehicleRepository;
         $this->vehicleExitRepository = $vehicleExitRepository;
+        $this->squareRepository = $squareRepository;
     }
     
     public function getAll($request){
@@ -99,6 +101,7 @@ class VehicleRepository extends Repository {
                 $new_vehicle->company_id = Company::ALD;
                 $new_vehicle->save();
             } else {
+                $this->squareRepository->assignVehicle($vehicle['street'], $vehicle['square'], $vehicle['id']);
                 if($vehicle['channel'] !== 'ALD Flex' && $vehicle['campa'] == 'Leganés') $existVehicle->sub_state_id = SubState::CAMPA;
                 if($vehicle['channel'] === 'ALD Flex' && $vehicle['sub_state'] === 'Alquilado') $existVehicle->sub_state_id = SubState::ALQUILADO;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;

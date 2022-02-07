@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Square;
+use Illuminate\Database\Eloquent\Builder;
 
 class SquareRepository extends Repository {
 
@@ -37,6 +38,18 @@ class SquareRepository extends Repository {
                     $square->update(['vehicle_id' => null]);
                 }
             });
+    }
+
+    public function assignVehicle($street, $square, $vehicle_id){
+        $square = Square::whereHas('street', function(Builder $builder) use($street){
+            return $builder->where('name', $street);
+        })->where('name', $square)
+        ->whereNull('vehicle_id')
+        ->first();
+        if($square) {
+            $square->vehicle_id = $vehicle_id;
+            $square->save();
+        }
     }
 
 }
