@@ -43,12 +43,12 @@ class SquareRepository extends Repository {
     public function assignVehicle($street, $square, $vehicle_id){
         $squareUpdate = Square::whereHas('street', function(Builder $builder) use($street){
             return $builder->where('name', $street);
-        })->where('name', intval($square))
+        })->where('name', $square)
         ->whereNull('vehicle_id')
         ->first();
         if($squareUpdate) {
-            $square->vehicle_id = $vehicle_id;
-            $square->save();
+            $squareUpdate->vehicle_id = $vehicle_id;
+            $squareUpdate->save();
         }
     }
 
