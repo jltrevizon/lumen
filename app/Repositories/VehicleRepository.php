@@ -101,7 +101,7 @@ class VehicleRepository extends Repository {
                 $new_vehicle->company_id = Company::ALD;
                 $new_vehicle->save();
             } else {
-                $this->squareRepository->assignVehicle($vehicle['street'], $vehicle['square'], $existVehicle['id']);
+                $vehicle['square'] ? $this->squareRepository->assignVehicle($vehicle['street'], intval($vehicle['square']), $existVehicle['id']) : null;
                 if($vehicle['channel'] !== 'ALD Flex' && $vehicle['campa'] == 'Leganés') $existVehicle->sub_state_id = SubState::CAMPA;
                 //if($vehicle['channel'] === 'ALD Flex' && $vehicle['sub_state'] === 'Alquilado') $existVehicle->sub_state_id = SubState::ALQUILADO;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
