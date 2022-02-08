@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Mail\DownloadVehicles;
 use App\Models\PendingDownload;
+use App\Models\SubState;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use App\Repositories\VehicleRepository;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +22,18 @@ class VehicleController extends Controller
     {
         $this->vehicleRepository = $vehicleRepository;
         $this->downloadVehicles = $downloadVehicles;
+    }
+
+    public function getVehiclesWithPendingTashDelivered(){
+        return Vehicle::whereHas('pendingTasks', function (Builder $builder){
+            return $builder->where(function($query) {
+                return $query->where('state_pending_task_id','!=', 3)
+                ->orWhereNull('state_pending_task_id');
+            })
+            ->where('approved', true);
+        })
+        ->where('sub_state_id', SubState::ALQUILADO)
+        ->paginate(25);
     }
 
     public function download(Request $request){

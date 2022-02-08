@@ -41,6 +41,13 @@ class PendingtaskTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_user()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->user());
+        $this->assertInstanceOf(User::class, $this->pendingTask->user()->getModel());
+    }
+
+    /** @test */
     public function it_belongs_to_task()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->task());
@@ -159,5 +166,17 @@ class PendingtaskTest extends TestCase
     /** @test */
     public function should_search_by_ids(){
         $this->assertInstanceOf(Builder::class, $this->pendingTask->byIds([]));
+    }
+
+    /** @test */
+    public function should_return_by_approved()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->byApproved(true));
+    }
+
+    /** @test */
+    public function should_return_where_date_between()
+    {
+        $this->assertInstanceOf(Builder::class, $this->pendingTask->whereDateBetween('created_at','2021-01-01','2021-01-01'));
     }
 }
