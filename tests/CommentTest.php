@@ -3,6 +3,7 @@
 use App\Models\Comment;
 use App\Models\Damage;
 use App\Models\DamageImage;
+use App\Models\IncidenceImage;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,6 +34,13 @@ class CommentTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->comment->user());
         $this->assertInstanceOf(User::class, $this->comment->user()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_incidence_images()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->comment->incidenceImages());
+        $this->assertInstanceOf(IncidenceImage::class, $this->comment->incidenceImages()->getModel());
     }
 
     /** @test */

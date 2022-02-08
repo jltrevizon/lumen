@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Campa;
+use App\Models\Comment;
 use App\Models\Damage;
 use App\Models\DamageImage;
 use App\Models\SeverityDamage;
@@ -53,6 +54,13 @@ class DamageTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->damage->task());
         $this->assertInstanceOf(Task::class, $this->damage->task()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_comments()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->damage->comments());
+        $this->assertInstanceOf(Comment::class, $this->damage->comments()->getModel());
     }
 
     /** @test */

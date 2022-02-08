@@ -2,6 +2,7 @@
 
 use App\Models\HistoryLocation;
 use App\Models\Square;
+use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -32,6 +33,13 @@ class HistoryLocationTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->historyLocation->square());
         $this->assertInstanceOf(Square::class, $this->historyLocation->square()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_user()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->historyLocation->user());
+        $this->assertInstanceOf(User::class, $this->historyLocation->user()->getModel());
     }
 
 }

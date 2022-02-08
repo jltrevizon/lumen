@@ -31,6 +31,20 @@ class GroupTaskTest extends TestCase
     }
 
     /** @test */
+    public function it_has_many_all_pending_task()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->groupTask->allPendingTasks());
+        $this->assertInstanceOf(PendingTask::class, $this->groupTask->allPendingTasks()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_approved_pending_task()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->groupTask->approvedPendingTasks());
+        $this->assertInstanceOf(PendingTask::class, $this->groupTask->approvedPendingTasks()->getModel());
+    }
+
+    /** @test */
     public function it_belongs_to_vehicle(){
         $this->assertInstanceOf(BelongsTo::class, $this->groupTask->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->groupTask->vehicle()->getModel());
