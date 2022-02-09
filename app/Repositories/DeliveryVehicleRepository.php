@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class DeliveryVehicleRepository extends Repository {
 
-    public function __construct()
+    public function __construct(SquareRepository $squareRepository)
     {
-
+        $this->squareRepository = $squareRepository;
     }
 
     public function index($request){
@@ -20,6 +20,7 @@ class DeliveryVehicleRepository extends Repository {
     }
 
     public function createDeliveryVehicles($vehicleId, $data){
+        $this->squareRepository->freeSquare($vehicleId);
         $user = User::with('campas')
             ->findOrFail(Auth::id());
         DeliveryVehicle::create([
