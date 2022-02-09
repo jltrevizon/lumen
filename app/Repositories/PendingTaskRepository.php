@@ -146,8 +146,13 @@ class PendingTaskRepository extends Repository {
     private function isPause($request, $pending_task){
         if($request->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->datetime_pause = new DateTime();
+            $pending_task->total_paused = $this->diffDateTimes($pending_task->datetime_pending);
             $pending_task->save();
         }
+    }
+
+    private function diffDateTimes($datetime){
+        return date_diff($datetime, new DateTime());
     }
 
     private function realignPendingTask($pendingTask){
