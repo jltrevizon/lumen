@@ -31,7 +31,7 @@ class SquareRepository extends Repository {
         return $square;
     }
 
-    private function freeSquare($vehicleId){
+    public function freeSquare($vehicleId){
         Square::where('vehicle_id', $vehicleId)
             ->chunk(200, function ($squares){
                 foreach($squares as $square){
