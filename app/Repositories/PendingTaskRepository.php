@@ -137,7 +137,7 @@ class PendingTaskRepository extends Repository {
 
     public function update($request, $id){
         $pending_task = PendingTask::findOrFail($id);
-        empty($request->state_pending_task_id) ? true : $this->isPause($request, $$pending_task);
+        empty($request->state_pending_task_id) ? true : $this->isPause($request, $pending_task);
         $pending_task->update($request->all());
         $this->realignPendingTask($pending_task);
         return ['pending_task' => $pending_task];
