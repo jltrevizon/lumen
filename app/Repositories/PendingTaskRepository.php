@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\PendingTaskCanceledRepository;
 use App\Repositories\AccessoryRepository;
 use App\Repositories\IncidencePendingTaskRepository;
-
+use DateTime;
+use Doctrine\DBAL\Types\DateImmutableType;
 use Exception;
 
 class PendingTaskRepository extends Repository {
@@ -137,9 +138,27 @@ class PendingTaskRepository extends Repository {
 
     public function update($request, $id){
         $pending_task = PendingTask::findOrFail($id);
+        empty($request->state_pending_task_id) ? true : $this->isPause($request, $pending_task);
         $pending_task->update($request->all());
         $this->realignPendingTask($pending_task);
         return ['pending_task' => $pending_task];
+    }
+
+    private function isPause($request, $pending_task){
+        if($request->state_pending_task_id == StatePendingTask::PENDING){
+            $pending_task->datetime_pause = new DateTime();
+            $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);   
+            $pending_task->save();
+        }
+    }
+
+    private function diffDateTimes($datetime){
+        $datetime1 = new DateTime($datetime);
+        $diference = date_diff($datetime1, new DateTime());
+        $minutes = $diference->days * 24 * 60;
+        $minutes += $diference->h * 60;
+        $minutes += $diference->i;
+        return $minutes;
     }
 
     private function realignPendingTask($pendingTask){
@@ -255,6 +274,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
             $pending_task->user_end_id = Auth::id();
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
+            $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
             $pending_task->save();
 
             $pending_task_next = null;

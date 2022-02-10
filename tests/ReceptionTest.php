@@ -2,6 +2,7 @@
 
 use App\Models\Accessory;
 use App\Models\Campa;
+use App\Models\GroupTask;
 use App\Models\Reception;
 use App\Models\Vehicle;
 use App\Models\VehiclePicture;
@@ -49,5 +50,12 @@ class ReceptionTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->reception->campa());
         $this->assertInstanceOf(Campa::class, $this->reception->campa()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_group_task()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->reception->groupTask());
+        $this->assertInstanceOf(GroupTask::class, $this->reception->groupTask()->getModel());
     }
 }

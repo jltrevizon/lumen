@@ -14,6 +14,7 @@ class Reception extends Model
     protected $fillable = [
         'campa_id',
         'vehicle_id',
+        'group_task_id',
         'finished',
         'has_accessories'
     ];
@@ -32,5 +33,9 @@ class Reception extends Model
 
     public function campa(){
         return $this->belongsTo(Campa::class);
+    }
+
+    public function groupTask(){
+        return $this->belongsTo(GroupTask::class);
     }
 }

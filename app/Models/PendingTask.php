@@ -32,6 +32,7 @@ class PendingTask extends Model
         'status_color',
         'datetime_pending',
         'datetime_start',
+        'datetime_pause',
         'datetime_finish',
         'comment_state',
         'user_id'
