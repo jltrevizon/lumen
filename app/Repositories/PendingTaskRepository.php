@@ -162,7 +162,7 @@ class PendingTaskRepository extends Repository {
     }
 
     private function realignPendingTask($pendingTask){
-        $pending_tasks = PendingTask::where('group_task_id', $pendingTask['group_task_id'])
+        PendingTask::where('group_task_id', $pendingTask['group_task_id'])
                     ->where(function ($query){
                         return $query->whereNull('state_pending_task_id')
                                 ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
@@ -188,7 +188,8 @@ class PendingTaskRepository extends Repository {
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $firstPendingTask->save();
             } else {
-                $this->vehicleRepository->updateSubState($pending_tasks[0]->vehicle_id, null);
+                $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();
+                $this->vehicleRepository->updateSubState($pendingTaskOld->vehicle_id, null);
             }
         }
     }
