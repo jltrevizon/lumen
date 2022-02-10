@@ -82,8 +82,7 @@ class Vehicle extends Model
 
     public function pendingTasksBudget(){
         return $this->hasMany(PendingTask::class, 'vehicle_id')
-            ->where('approved', 1)
-            ->where('order', 1)
+            ->where('approved', true)
             ->where(function($query){
                 return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
