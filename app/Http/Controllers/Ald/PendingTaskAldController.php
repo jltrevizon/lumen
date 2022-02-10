@@ -45,17 +45,15 @@ class PendingTaskAldController extends Controller
             }
             else {
                 $groupTask = $this->groupTaskRepository->create($request);
+                $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
+                $reception->group_task_id = $groupTask->id;
+                $reception->save();
             }
             $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
-            // Se quita la tarea de lavado automática porque se va a agregar manualmentr
-            // if (!$request->input('without_task_washed')) {
-            //     $this->createTaskWashed($request->input('vehicle_id'), $groupTask, $request->input('tasks'));
-            // }
             $this->vehicleRepository->updateBack($request);
 
             $user = $this->userRepository->getById($request, Auth::id());
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-            $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
             return [ 'message' => 'OK' ];
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
