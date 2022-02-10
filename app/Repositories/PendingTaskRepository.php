@@ -187,6 +187,9 @@ class PendingTaskRepository extends Repository {
             if (!is_null($firstPendingTask)) {
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $firstPendingTask->save();
+            } else {
+                $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();
+                $this->vehicleRepository->updateSubState($pendingTaskOld->vehicle_id, null);
             }
         }
     }
