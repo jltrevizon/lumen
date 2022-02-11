@@ -308,8 +308,11 @@ class Vehicle extends Model
     }
 
     public function scopeByBudgetPendingTaskIds($query, array $ids){
-        return $query->whereHas('pendingTasksBudget.budgetPendingTasks', function (Builder $builder) use($ids) {
-            return $builder->whereIn('state_budget_pending_task_id', $ids);
+        return $query->whereHas('pendingTasks', function(Builder $builder) use($ids){
+            return $builder->whereHas('budgetPendingTasks', function ($query) use ($ids){
+                return $query->whereIn('state_budget_pending_task_id', $ids);
+            })
+            ->where('approved', true);
         });
     }
 
