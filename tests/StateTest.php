@@ -4,6 +4,7 @@ use App\Models\Order;
 use App\Models\State;
 use App\Models\SubState;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -40,5 +41,17 @@ class StateTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->state->orders());
         $this->assertInstanceOf(Order::class, $this->state->orders()->getModel());
+    }
+
+    /** @test */
+    public function should_return_by_company_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->state->byCompany([]));
+    }
+
+    /** @test */
+    public function should_return_by_type_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->state->byType([]));
     }
 }
