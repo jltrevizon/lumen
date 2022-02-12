@@ -242,7 +242,8 @@ class Vehicle extends Model
             return $builder->where('approved', true)
                 ->where(function($query){
                     $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+                        ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                        ->orWhereNull('state_pending_task_id');
                 })
                 ->whereHas('task', function(Builder $builder){
                     return $builder->where('sub_state_id', SubState::CHAPA);
