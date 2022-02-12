@@ -199,7 +199,7 @@ class Vehicle extends Model
     private function mechanic($query){
         return $query->with(['vehicleModel.brand','lastGroupTask.approvedPendingTasks.task.subState','lastGroupTask.approvedPendingTasks.incidences','lastGroupTask.approvedPendingTasks.vehicle.vehicleModel.brand',
             'lastGroupTask.approvedPendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
-            'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.task','typeModelOrder','lastGroupTask.approvedPendingTasks.statePendingTask',
+            'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.task','lastGroupTask.pendingTasks.statePendingTask','typeModelOrder','lastGroupTask.approvedPendingTasks.statePendingTask',
             'lastGroupTask.approvedPendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
@@ -225,7 +225,7 @@ class Vehicle extends Model
     private function chapa($query){
         return $query->with(['vehicleModel.brand','lastGroupTask.approvedPendingTasks.task.subState','lastGroupTask.approvedPendingTasks.incidences','lastGroupTask.approvedPendingTasks.vehicle.vehicleModel.brand',
         'lastGroupTask.approvedPendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
-        'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.task','typeModelOrder','lastGroupTask.approvedPendingTasks.statePendingTask',
+        'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.task','lastGroupTask.pendingTasks.statePendingTask','typeModelOrder','lastGroupTask.approvedPendingTasks.statePendingTask',
         'lastGroupTask.approvedPendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
