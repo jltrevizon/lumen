@@ -3,12 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\Company;
+use App\Models\DeliveryNote;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\Square;
 use App\Models\VehicleExit;
 use App\Models\StatePendingTask;
+use App\Models\TypeDeliveryNote;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -39,6 +41,7 @@ class VehicleRepository extends Repository {
         DeliveryVehicleRepository $deliveryVehicleRepository,
         VehicleExitRepository $vehicleExitRepository,
         CampaRepository $campaRepository,
+        DeliveryNoteRepository $deliveryNoteRepository,
         SquareRepository $squareRepository)
     {
         $this->userRepository = $userRepository;
@@ -53,6 +56,7 @@ class VehicleRepository extends Repository {
         $this->deliveryVehicleRepository = $deliveryVehicleRepository;
         $this->vehicleExitRepository = $vehicleExitRepository;
         $this->squareRepository = $squareRepository;
+        $this->deliveryNoteRepository = $deliveryNoteRepository;
     }
     
     public function getAll($request){
@@ -309,11 +313,13 @@ public function verifyPlateReception($request){
 
     public function changeSubState($request){
         $vehicles = $request->input('vehicles');
+        $deliveryNote = null;
         Vehicle::whereIn('id', collect($vehicles)->pluck('id')->toArray())
                 ->chunk(200, function ($vehicles) use($request) {
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
-                            $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'));
+                            $deliveryNote = $this->deliveryNoteRepository->create($request->input('data'), TypeDeliveryNote::DELIVERY);
+                            $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id);
                             if (!is_null($vehicle->lastGroupTask)) {
                                 foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
                                     $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
@@ -343,13 +349,14 @@ public function verifyPlateReception($request){
                             $vehicle->update(['sub_state_id' => SubState::ALQUILADO]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
-                            $this->vehicleExitRepository->registerExit($vehicle['id']);
+                            $deliveryNote = $this->deliveryNoteRepository->create($request->input('data'), TypeDeliveryNote::EXIT);
+                            $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id);
                             $vehicle->update(['sub_state_id' => SubState::WORKSHOP_EXTERNAL]);
                         }
                     }
                 });
         return [
-            'message' => 'Vehicles updated!'
+            'data' => $deliveryNote
         ];
     }
 

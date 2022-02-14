@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\DeliveryNote;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
 use App\Models\VehicleExist;
@@ -33,5 +34,12 @@ class VehicleExitTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicleExit->pendingTask());
         $this->assertInstanceOf(PendingTask::class, $this->vehicleExit->pendingTask()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_delivery_vehicle()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->vehicleExit->deliveryNote());
+        $this->assertInstanceOf(DeliveryNote::class, $this->vehicleExit->deliveryNote()->getModel());
     }
 }
