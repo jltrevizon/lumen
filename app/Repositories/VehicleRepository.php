@@ -259,6 +259,14 @@ public function verifyPlateReception($request){
         return ['message' => 'Vehicle deleted'];
     }
 
+    public function deleteMassive($request){
+        $plates = $request->get('plates');
+        foreach($plates as $plate){
+            Vehicle::where('plate', $plate)->delete();
+        }
+        return response()->json(['message' => 'Vehicles deleted!']);
+    }
+
 
     public function getVehiclesWithReservationWithoutOrderCampa($request) {
         $vehicles = Vehicle::with($this->getWiths($request->with))

@@ -90,6 +90,10 @@ class VehicleController extends Controller
         return $this->deleteDataResponse($this->vehicleRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    public function deleteMassive(Request $request){
+        return $this->deleteDataResponse($this->vehicleRepository->deleteMassive($request), HttpFoundationResponse::HTTP_OK);
+    }
+
     public function createFromExcel(Request $request){
 
         $this->validate($request, [
