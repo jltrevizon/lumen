@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Console\Commands\DeliveryVehicles;
+use App\Exports\DeliveryVehiclesExport;
+use App\Exports\VehiclesExport;
 use App\Models\DeliveryNote;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DownloadController extends Controller
 {
     public function deliveryNoteAld(Request $request){
-
+        return Excel::download(new VehiclesExport(1), 'vehicles-' . date('Y-m-d') . '.xlsx');
         $vehicles = Vehicle::with(['vehicleModel'])
                             ->whereIn('id', explode(',', $request->input('vehicles')))
                             ->get();

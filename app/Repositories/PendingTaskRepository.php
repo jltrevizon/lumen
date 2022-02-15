@@ -448,4 +448,20 @@ class PendingTaskRepository extends Repository {
         }
     }
 
+    public function approvedFalse($vehicleId){
+        PendingTask::where('vehicle_id', $vehicleId)
+            ->where('approved', true)
+            ->where(function ($query){
+                return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                    ->orWhereNull('state_pending_task_id');
+            })
+            ->chunk(200, function($pendingTasks){
+                foreach($pendingTasks as $pendingTask){
+                    $pendingTask->update(['approved' => false]);
+                }
+            });
+
+    }
+
 }

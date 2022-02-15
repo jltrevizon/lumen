@@ -13,6 +13,7 @@ class VehicleExit extends Model
     protected $fillable = [
         'vehicle_id',
         'pending_task_id',
+        'delivery_note_id',
         'delivery_by',
         'delivery_to',
         'name_place',
@@ -26,5 +27,9 @@ class VehicleExit extends Model
 
     public function pendingTask(){
         return $this->belongsTo(PendingTask::class);
+    }
+
+    public function deliveryNote(){
+        return $this->belongsTo(DeliveryNote::class);
     }
 }
