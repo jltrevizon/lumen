@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Company;
 use App\Models\DeliveryNote;
+use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
@@ -380,6 +381,33 @@ public function verifyPlateReception($request){
         }
         
         return response()->json(['message' => 'Done!']);
+    }
+
+    public function setSubStateNull($request){
+        $plates = $request->get('plates');
+        foreach($plates as $plate){
+            $vehicle = Vehicle::where('plate', $plate)->first();
+            if($vehicle){
+                $vehicle->sub_state_id = null;
+                $vehicle->save();
+                $this->deletePendingTasks($vehicle->id);
+            }
+        }
+    }
+
+    private function deletePendingTasks($vehicleId){
+        PendingTask::where('vehicle_id', $vehicleId)
+            ->where('approved', true)
+            ->where(function ($query){
+                return $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                    ->orWhereNull('state_pending_task_id');
+            })
+            ->chunk(200, function($pendingTasks){
+                foreach($pendingTasks as $pendingTask){
+                    $pendingTask->update(['approved' => false]);
+                }
+            });
     }
 
 }

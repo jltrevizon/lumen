@@ -165,4 +165,8 @@ class VehicleController extends Controller
     public function setVehicleRented(Request $request){
         return $this->updateDataResponse($this->vehicleRepository->setVehicleRented($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function setSubStateNull(Request $request){
+        return $this->updateDataResponse($this->vehicleRepository->setSubStateNull($request), HttpFoundationResponse::HTTP_OK);
+    }
 }
