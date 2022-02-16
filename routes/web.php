@@ -545,5 +545,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Delivery vehicles
          */
         $router->get('/delivery-vehicles','DeliveryVehicleController@index');
+
+        /**
+         * Type delivery note
+         */
+        $router->get('/type-delivery-note', 'TypeDeliveryNoteController@index');
     });
 });
