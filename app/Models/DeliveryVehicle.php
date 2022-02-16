@@ -32,4 +32,8 @@ class DeliveryVehicle extends Model
     public function campa(){
         return $this->belongsTo(Campa::class);
     }
+
+    public function deliveryNote(){
+        return $this->belongsTo(DeliveryNote::class);
+    }
 }
