@@ -325,7 +325,7 @@ public function verifyPlateReception($request){
         $deliveryNote = null;   
         Vehicle::whereIn('id', collect($vehicles)->pluck('id')->toArray())
                 ->chunk(200, function ($vehicles) use($request) {
-                    $deliveryNote = $this->deliveryNoteRepository->create($request->input('data'), $request->input('sub_state_id'));
+                    $deliveryNote = $this->deliveryNoteRepository->create($request->input('data'), $request->input('type_delivery_note_id'));
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id);
