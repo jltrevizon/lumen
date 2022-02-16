@@ -101,14 +101,14 @@ class VehicleRepository extends Repository {
                 $brand = $vehicle['brand'] ? $this->brandRepository->getByNameFromExcel($vehicle['brand']) : null;
                 $vehicle_model = $brand ? $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']) : null;
                 $new_vehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
-                $new_vehicle->sub_state_id = $vehicle['ubication'] ? SubState::CAMPA : null;
+                $new_vehicle->sub_state_id = $campa ? SubState::CAMPA : null;
                 $new_vehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
                 $new_vehicle->company_id = Company::ALD;
                 $new_vehicle->save();
             } else {
-                $vehicle['square'] ? $this->squareRepository->assignVehicle($vehicle['street'], intval($vehicle['square']), $existVehicle['id']) : null;
-                if($vehicle['channel'] !== 'ALD Flex' && $vehicle['campa'] == 'Campa Leganes') $existVehicle->sub_state_id = SubState::CAMPA;
-                if($vehicle['campa'] === 'Campa Leganes' && $vehicle['sub_state'] === null) $existVehicle->sub_state_id = SubState::ALQUILADO;
+                //$vehicle['square'] ? $this->squareRepository->assignVehicle($vehicle['street'], intval($vehicle['square']), $existVehicle['id']) : null;
+                //if($vehicle['channel'] !== 'ALD Flex' && $vehicle['campa'] == 'Campa Leganes') $existVehicle->sub_state_id = SubState::CAMPA;
+                //if($vehicle['campa'] === 'Campa Leganes' && $vehicle['sub_state'] === null) $existVehicle->sub_state_id = SubState::ALQUILADO;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
                 if($category) $existVehicle->category_id = $category['id'];
@@ -322,12 +322,12 @@ public function verifyPlateReception($request){
 
     public function changeSubState($request){
         $vehicles = $request->input('vehicles');
-        $deliveryNote = null;
+        $deliveryNote = null;   
         Vehicle::whereIn('id', collect($vehicles)->pluck('id')->toArray())
                 ->chunk(200, function ($vehicles) use($request) {
+                    $deliveryNote = $this->deliveryNoteRepository->create($request->input('data'), $request->input('sub_state_id'));
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
-                            $deliveryNote = $this->deliveryNoteRepository->create($request->input('data'), TypeDeliveryNote::DELIVERY);
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id);
                             if (!is_null($vehicle->lastGroupTask)) {
                                 foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
@@ -358,7 +358,6 @@ public function verifyPlateReception($request){
                             $vehicle->update(['sub_state_id' => SubState::ALQUILADO]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
-                            $deliveryNote = $this->deliveryNoteRepository->create($request->input('data'), TypeDeliveryNote::EXIT);
                             $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id);
                             $vehicle->update(['sub_state_id' => SubState::WORKSHOP_EXTERNAL]);
                         }
