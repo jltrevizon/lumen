@@ -6,6 +6,7 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
+use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 
 use Exception;
@@ -117,5 +118,31 @@ class GroupTaskRepository extends Repository {
     public function groupTaskByQuestionnaireId($questionnaireId){
         return GroupTask::where('questionnaire_id', $questionnaireId)
             ->first();
+    }
+
+    public function disablePendingTasks($group_task){
+        PendingTask::where('group_task_id', $group_task->id)
+        ->chunk(200, function ($pendingTasks) {
+            foreach($pendingTasks as $pendingTask){
+                $pendingTask->update([
+                    'approved' => false,
+                    'order' => null
+                ]);
+            }
+        });
+        $groupTask = GroupTask::findOrFail($group_task->id);
+        $groupTask->datetime_defleeting = date('Y-m-d H:i:s');
+        $groupTask->save();
+        
+        $pendingTask = new PendingTask();
+        $pendingTask->vehicle_id = $group_task->vehicle_id;
+        $pendingTask->task_id = Task::UBICATION;
+        $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
+        $pendingTask->group_task_id = $group_task->id;
+        $pendingTask->duration = 1;
+        $pendingTask->order = 1;
+        $pendingTask->datetime_pending = date('Y-m-d H:i:s');
+        $pendingTask->user_id = Auth::id();
+        $pendingTask->save();
     }
 }
