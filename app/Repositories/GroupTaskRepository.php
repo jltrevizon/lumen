@@ -131,6 +131,8 @@ class GroupTaskRepository extends Repository {
             }
         });
         $groupTask = GroupTask::findOrFail($group_task->id);
+        $groupTask->approved = true;
+        $groupTask->approved_available = true;
         $groupTask->datetime_defleeting = date('Y-m-d H:i:s');
         $groupTask->save();
         
