@@ -408,4 +408,16 @@ public function verifyPlateReception($request){
             });
     }
 
+    public function defleet($request){
+        $vehicle = Vehicle::findOrFail($request->get('id'));
+        $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+        $vehicle->save();
+        if($vehicle->lastGroupTask){
+            $this->groupTaskRepository->disablePendingTasks($vehicle->lastGroupTask);
+        }
+        return response()->json([
+            'message' => 'Vehicle defleeted!'
+        ]);
+    }
+
 }
