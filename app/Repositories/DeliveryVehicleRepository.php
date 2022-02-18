@@ -11,12 +11,10 @@ use Illuminate\Support\Facades\Auth;
 class DeliveryVehicleRepository extends Repository {
 
     public function __construct(
-        SquareRepository $squareRepository,
-        VehicleRepository $vehicleRepository
+        SquareRepository $squareRepository
         )
     {
         $this->squareRepository = $squareRepository;
-        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function index($request){
