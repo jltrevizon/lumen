@@ -13,7 +13,7 @@ class IncidenceTypeFactory extends Factory
     public function definition(): array
     {
     	return [
-    	    'description' => $this->faker->randomElement(['Sin tareas', 'Con tareas'])
+    	    'description' => $this->faker->randomElement(['Tarea', 'Anotación'])
     	];
     }
 }
