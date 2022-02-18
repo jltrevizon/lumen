@@ -153,7 +153,9 @@ class GroupTaskRepository extends Repository {
             ->chunk(200, function($pendingTasks){
                 foreach($pendingTasks as $pendingTask){
                     $pendingTask->update([
-                        'approved' => false
+                        'approved' => false,
+                        'order' => null, 
+                        'state_pending_task_id' => null,
                     ]);
                 }
             });
