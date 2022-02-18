@@ -275,6 +275,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/set-sub-state-null', 'VehicleController@setSubStateNull');
         $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
         $router->get('/vehicles/defleet/{id}', 'VehicleController@defleet');
+        $router->get('/vehicles/undefleet/{id}', 'VehicleController@unDefleet');
         $router->get('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->get('/vehicles/filter', 'VehicleController@filterVehicle');

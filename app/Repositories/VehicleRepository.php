@@ -420,4 +420,16 @@ public function verifyPlateReception($request){
         ]);
     }
 
+    public function unDefleet($id){
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->sub_state_id = SubState::CHECK;
+        $vehicle->save();
+        if($vehicle->lastGroupTask){
+            $this->groupTaskRepository->enablePendingTasks($vehicle->lastGroupTask);
+        }
+        return response()->json([
+            'message' => 'Vehicle defleeted!'
+        ]);
+    }
+
 }

@@ -125,8 +125,7 @@ class GroupTaskRepository extends Repository {
         ->chunk(200, function ($pendingTasks) {
             foreach($pendingTasks as $pendingTask){
                 $pendingTask->update([
-                    'approved' => false,
-                    'order' => null
+                    'approved' => false
                 ]);
             }
         });
@@ -145,6 +144,44 @@ class GroupTaskRepository extends Repository {
         $pendingTask->order = 1;
         $pendingTask->datetime_pending = date('Y-m-d H:i:s');
         $pendingTask->user_id = Auth::id();
+        $pendingTask->save();
+    }
+
+    public function enablePendingTasks($group_task){
+        PendingTask::where('group_task_id', $group_task->id)
+            ->where('task_id', Task::UBICATION)
+            ->chunk(200, function($pendingTasks){
+                foreach($pendingTasks as $pendingTask){
+                    $pendingTask->update([
+                        'approved' => false
+                    ]);
+                }
+            });
+
+        PendingTask::where('group_task_id', $group_task->id)
+            ->whereNotNull('order')
+            ->chunk(200, function ($pendingTasks) {
+                foreach($pendingTasks as $pendingTask){
+                    $pendingTask->update([
+                        'approved' => true
+                    ]);
+                }
+            });
+        
+        $groupTask = GroupTask::findOrFail($group_task->id);
+        $groupTask->approved = false;
+        $groupTask->approved_available = false;
+        $groupTask->datetime_defleeting = null;
+        $groupTask->save();
+        $this->orderPendingTask($groupTask);
+    }
+
+    private function orderPendingTask($group_task){
+        $pendingTask = PendingTask::where('group_task_id', $group_task->id)
+            ->orderBy('order', 'ASC')
+            ->first();
+        $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
+        $pendingTask->datetime_pending = date('Y-m-d H:i:s');
         $pendingTask->save();
     }
 }

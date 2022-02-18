@@ -173,4 +173,8 @@ class VehicleController extends Controller
     public function defleet($id){
         return $this->updateDataResponse($this->vehicleRepository->defleet($id), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function unDefleet($id){
+        return $this->updateDataResponse($this->vehicleRepository->unDefleet($id), HttpFoundationResponse::HTTP_OK);
+    }
 }

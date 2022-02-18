@@ -15,6 +15,7 @@ class Incidence extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'incidence_type_id',
         'description',
         'read',
         'resolved'
@@ -22,6 +23,10 @@ class Incidence extends Model
 
     public function pending_tasks(){
         return $this->belongsToMany(PendingTask::class);
+    }
+
+    public function incidenceType(){
+        return $this->belongsTo(IncidenceType::class);
     }
 
     public function vehicle(){

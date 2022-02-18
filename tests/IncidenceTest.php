@@ -3,13 +3,13 @@
 use App\Models\Comment;
 use App\Models\Incidence;
 use App\Models\IncidenceImage;
+use App\Models\IncidenceType;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class IncidenceTest extends TestCase
@@ -32,11 +32,18 @@ class IncidenceTest extends TestCase
         $this->assertInstanceOf(PendingTask::class, $this->incidence->pending_tasks()->getModel());
     }
 
-    /** @tes */
+    /** @test */
     public function it_belongs_to_vehicle()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->incidence->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->incidence->vehicle()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_incidence_type()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->incidence->incidenceType());
+        $this->assertInstanceOf(IncidenceType::class, $this->incidence->incidenceType()->getModel());
     }
 
     /** @test */
