@@ -25,6 +25,10 @@ class DeliveryVehicle extends Model
     	'data_delivery' => 'array'
     ];
 
+    protected $dates = [
+        'deleted_at'
+    ];
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
     }

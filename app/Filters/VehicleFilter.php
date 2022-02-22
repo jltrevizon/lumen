@@ -225,4 +225,13 @@ class VehicleFilter extends ModelFilter
         }
     }
 
+    public function isDefleeting($value)
+    {
+        if($value){
+            return $this->whereHas('lastReception.groupTask', fn ($builder) => $builder->whereNotNull('datetime_defleeting'));
+        } else {
+            return $this->whereHas('lastReception.groupTask', fn ($builder) => $builder->whereNull('datetime_defleeting'));
+        }
+    }
+
 }

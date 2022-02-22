@@ -92,7 +92,7 @@ class VehicleRepository extends Repository {
             $existVehicle = Vehicle::where('plate', $vehicle['plate'])
                         ->first();
             if(!$existVehicle){
-                $new_vehicle = Vehicle::create($vehicle);
+                /*$new_vehicle = Vehicle::create($vehicle);
                 $campa = $vehicle['campa'] ? $this->campaRepository->getByName($vehicle['campa']) : null;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
                 $new_vehicle->campa_id = $campa ? $campa['id'] : null;
@@ -104,14 +104,16 @@ class VehicleRepository extends Repository {
                 $new_vehicle->sub_state_id = $campa ? SubState::CAMPA : null;
                 $new_vehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
                 $new_vehicle->company_id = Company::ALD;
-                $new_vehicle->save();
+                $new_vehicle->save();*/
             } else {
                 //$vehicle['square'] ? $this->squareRepository->assignVehicle($vehicle['street'], intval($vehicle['square']), $existVehicle['id']) : null;
                 //if($vehicle['channel'] !== 'ALD Flex' && $vehicle['campa'] == 'Campa Leganes') $existVehicle->sub_state_id = SubState::CAMPA;
                 //if($vehicle['campa'] === 'Campa Leganes' && $vehicle['sub_state'] === null) $existVehicle->sub_state_id = SubState::ALQUILADO;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
-                $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-                if($category) $existVehicle->category_id = $category['id'];
+                //$category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
+                //if($category) $existVehicle->category_id = $category['id'];
+                $existVehicle->campa_id = 3;
+                $existVehicle->sub_state_id = SubState::CAMPA;
                 $existVehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
                 $existVehicle->save();
             }
@@ -414,6 +416,18 @@ public function verifyPlateReception($request){
         $vehicle->save();
         if($vehicle->lastGroupTask){
             $this->groupTaskRepository->disablePendingTasks($vehicle->lastGroupTask);
+        }
+        return response()->json([
+            'message' => 'Vehicle defleeted!'
+        ]);
+    }
+
+    public function unDefleet($id){
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->sub_state_id = SubState::CHECK;
+        $vehicle->save();
+        if($vehicle->lastGroupTask){
+            $this->groupTaskRepository->enablePendingTasks($vehicle->lastGroupTask);
         }
         return response()->json([
             'message' => 'Vehicle defleeted!'
