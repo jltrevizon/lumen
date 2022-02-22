@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStatePendingAuthorizationTasksTable extends Migration
+class CreateStateAuthorizationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateStatePendingAuthorizationTasksTable extends Migration
      */
     public function up()
     {
-        Schema::create('state_pending_authorization_tasks', function (Blueprint $table) {
+        Schema::create('state_authorizations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -28,6 +27,6 @@ class CreateStatePendingAuthorizationTasksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('state_pending_authorization_tasks');
+        Schema::dropIfExists('state_authorizations');
     }
 }
