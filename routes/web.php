@@ -113,11 +113,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Incidences
          */
-        $router->get('/incidences/getall', 'IncidenceController@getall');
+        $router->get('/incidences/getall', 'IncidenceController@getAll');
         $router->get('/incidences/{id}', 'IncidenceController@getById');
         $router->post('/incidences', 'IncidenceController@create');
         $router->put('/incidences/update/{id}', 'IncidenceController@update');
         $router->delete('/incidences/delete/{id}', 'IncidenceController@delete');
+
+        /**
+         * Incidence-type
+         */
+        $router->get('/incidence-types/getall', 'IncidenceController@getAllTypes');
 
         /**
          * Regions
