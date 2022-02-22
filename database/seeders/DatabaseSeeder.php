@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\StateAuthorization;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -45,6 +46,6 @@ class DatabaseSeeder extends Seeder
         $this->call(VehicleSeeder::class);
         $this->call(TypeReportSeeder::class);
         $this->call(IncidenceTypeSeeder::class);
-        $this->call(StatePendingAuthorizationTaskSeeder::class);
+        $this->call(StateAuthorization::class);
     }
 }

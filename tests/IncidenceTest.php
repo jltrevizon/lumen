@@ -4,6 +4,7 @@ use App\Models\Comment;
 use App\Models\Incidence;
 use App\Models\IncidenceImage;
 use App\Models\IncidenceType;
+use App\Models\PendingAuthorization;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
@@ -58,6 +59,13 @@ class IncidenceTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->incidence->incidenceImages());
         $this->assertInstanceOf(IncidenceImage::class, $this->incidence->incidenceImages()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_pending_authorizations()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->incidence->pendingAuthorizations());
+        $this->assertInstanceOf(PendingAuthorization::class, $this->incidence->pendingAuthorizations()->getModel());
     }
 
     /** @test */

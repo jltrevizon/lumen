@@ -37,6 +37,10 @@ class Incidence extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function pendingAuthorizations(){
+        return $this->hasMany(PendingAuthorization::class);
+    }
+
     public function incidenceImages(){
         return $this->hasMany(IncidenceImage::class);
     }
