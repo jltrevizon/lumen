@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Incidence;
+use App\Models\IncidenceType;
+
 use Exception;
 
 class IncidenceRepository extends Repository {
@@ -16,6 +18,10 @@ class IncidenceRepository extends Repository {
         return Incidence::with($this->getWiths($request->with)) 
             ->filter($request->all())
             ->paginate($request->input('per_page'));
+    }
+
+    public function getAllTypes($request){
+        return IncidenceType::all();
     }
 
     public function getById($id){
