@@ -180,7 +180,7 @@ class VehicleRepository extends Repository {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
-            } else if ($count > 0) {
+            } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }
         }
