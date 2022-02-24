@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\PendingAuthorization;
+use AWS\CRT\HTTP\Response;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class PendingAuthorizationController extends Controller
 {
@@ -20,7 +22,11 @@ class PendingAuthorizationController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->getDataResponse($this->pendingAuthorization->index($request));
+        return $this->getDataResponse($this->pendingAuthorization->index($request), HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function approvedAuthorization(Request $request){
+        return $this->updateDataResponse($this->pendingAuthorization->approvedAuthorization($request), HttpFoundationResponse::HTTP_OK);
     }
 
     /**

@@ -508,7 +508,6 @@ class PendingTaskRepository extends Repository {
         } else {
             $this->pendingAuthorizationRepository->create($vehicle->id, $task->id, $damage->id);
         }
-
     }
 
 }
