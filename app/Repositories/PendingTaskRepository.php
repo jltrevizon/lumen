@@ -10,19 +10,15 @@ use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Models\VehiclePicture;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskReservationRepository;
 use App\Repositories\TaskRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\PendingTaskCanceledRepository;
-use App\Repositories\AccessoryRepository;
 use App\Repositories\IncidencePendingTaskRepository;
+use App\Repositories\PendingAuthorizationRepository as RepositoriesPendingAuthorizationRepository;
 use DateTime;
-use Doctrine\DBAL\Types\DateImmutableType;
-use Exception;
-use PendingAuthorizationRepository;
 
 class PendingTaskRepository extends Repository {
 
@@ -36,7 +32,7 @@ class PendingTaskRepository extends Repository {
         ReceptionRepository $receptionRepository,
         PendingTaskCanceledRepository $pendingTaskCanceledRepository,
         IncidencePendingTaskRepository $incidencePendingTaskRepository,
-        PendingAuthorizationRepository $pendingAuthorizationRepository
+        RepositoriesPendingAuthorizationRepository $pendingAuthorizationRepository
         )
     {
         $this->groupTaskRepository = $groupTaskRepository;

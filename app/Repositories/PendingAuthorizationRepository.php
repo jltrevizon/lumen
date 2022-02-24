@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Repositories;
+
 use App\Models\PendingAuthorization;
 use App\Models\StateAuthorization;
 use App\Repositories\Repository;
