@@ -558,5 +558,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Type delivery note
          */
         $router->get('/type-delivery-note', 'TypeDeliveryNoteController@index');
+
+        /** 
+         * Damage Type
+         */
+        $router->get('/damage-type', 'DamageTypeController@index');
     });
 });

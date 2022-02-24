@@ -489,9 +489,9 @@ class PendingTaskRepository extends Repository {
         $groupTask = null;
         $totalPendingTaskActives = count($vehicle->lastGroupTask->pendingTasks);
         
-        if($totalPendingTaskActives > 0) $groupTask = $vehicle->lastGroupTask;
-        else $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
         if($task->need_authorization === false){
+            if($totalPendingTaskActives > 0) $groupTask = $vehicle->lastGroupTask;
+            else $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
             PendingTask::create([
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
