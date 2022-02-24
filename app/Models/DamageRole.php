@@ -17,4 +17,12 @@ class DamageRole extends Model
         'damage_id',
         'role_id'
     ];
+
+    public function damage(){
+        return $this->belongsTo(Damage::class);
+    }
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
 }
