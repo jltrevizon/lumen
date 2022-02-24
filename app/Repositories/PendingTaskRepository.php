@@ -489,8 +489,13 @@ class PendingTaskRepository extends Repository {
         }
         
         if($task->need_authorization == false){
-            if($totalPendingTaskActives > 0) $groupTask = $vehicle->lastGroupTask;
-            else $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
+            if($totalPendingTaskActives > 0) {
+                $groupTask = $vehicle->lastGroupTask;
+            }
+            else {
+                $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
+                $this->vehicleRepository->updateSubState($vehicle->id, $task->sub_state_id);
+            };
             PendingTask::create([
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
