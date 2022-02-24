@@ -47,5 +47,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TypeReportSeeder::class);
         $this->call(IncidenceTypeSeeder::class);
         $this->call(StateAuthorization::class);
+        $this->call(DamageTypeSeeder::class);
     }
 }

@@ -17,6 +17,7 @@ class Damage extends Model
         'campa_id',
         'user_id',
         'vehicle_id',
+        'damage_type_id',
         'task_id',
         'severity_damage_id',
         'status_damage_id',
@@ -33,6 +34,10 @@ class Damage extends Model
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function damageType(){
+        return $this->belongsTo(DamageType::class);
     }
 
     public function task(){

@@ -13,11 +13,11 @@ class CreateTableDamageTask extends Migration
      */
     public function up()
     {
-        Schema::create('table_damage_task', function (Blueprint $table) {
+        Schema::create('damage_task', function (Blueprint $table) {
             $table->foreignId('damage_id')->constrained()->onDelete('cascade');
             $table->foreignId('task_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
+
             $table->primary(['damage_id','task_id']);
         });
     }

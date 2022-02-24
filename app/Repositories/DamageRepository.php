@@ -10,10 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
 
-    public function __construct(PendingTaskRepository $pendingTaskRepository, DamageVehicleMail $damageVehicleMail)
+    public function __construct(
+        PendingTaskRepository $pendingTaskRepository, 
+        DamageVehicleMail $damageVehicleMail,
+        DamageRoleRepository $damageRoleRepository
+    )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->damageVehicleMail = $damageVehicleMail;
+        $this->damageRoleRepository = $damageRoleRepository;
     }
 
     public function index($request){
@@ -28,7 +33,12 @@ class DamageRepository extends Repository {
         $damage = Damage::create($request->all());
         $damage->user_id = Auth::id();
         $damage->save();
-
+        foreach($request->input('tasks') as $task){
+            $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id', $task));
+        }
+        foreach($request->input('roles') as $role){
+            $this->damageRoleRepository->create($damage->id, $role);
+        }
         if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);
         }

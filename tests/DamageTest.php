@@ -4,6 +4,7 @@ use App\Models\Campa;
 use App\Models\Comment;
 use App\Models\Damage;
 use App\Models\DamageImage;
+use App\Models\DamageType;
 use App\Models\SeverityDamage;
 use App\Models\StatusDamage;
 use App\Models\Task;
@@ -47,6 +48,13 @@ class DamageTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->damage->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->damage->vehicle()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_damage_type()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damage->damageType());
+        $this->assertInstanceOf(DamageType::class, $this->damage->damageType()->getModel());
     }
 
     /** @test */

@@ -21,6 +21,7 @@ class Task extends Model
         'company_id',
         'sub_state_id',
         'type_task_id',
+        'need_authorization',
         'name',
         'duration'
     ];
