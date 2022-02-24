@@ -6,6 +6,11 @@ use App\Repositories\Repository;
 
 class PendingAuthorizationRepository extends Repository {
 
+    public function index($request){
+        return PendingAuthorization::with($this->getWiths($request->with))
+            ->get();
+    }
+    
     public function create($vehicleId, $taskId, $damageId){
         PendingAuthorization::create([
             'vehicle_id' => $vehicleId,

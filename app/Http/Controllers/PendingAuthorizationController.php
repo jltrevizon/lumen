@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PendingAuthorization;
 use Illuminate\Http\Request;
 
 class PendingAuthorizationController extends Controller
 {
+
+    public function __construct(PendingAuthorization $pendingAuthorization)
+    {
+        $this->pendingAuthorization = $pendingAuthorization;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return $this->getDataResponse($this->pendingAuthorization->index($request));
     }
 
     /**

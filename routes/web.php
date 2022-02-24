@@ -563,5 +563,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Damage Type
          */
         $router->get('/damage-type', 'DamageTypeController@index');
+
+        /**
+         * Pending Authorization
+         */
+        $router->get('/pending-authorization','PendingAuthorizationController@index');
     });
 });
