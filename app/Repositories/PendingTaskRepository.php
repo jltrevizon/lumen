@@ -485,7 +485,7 @@ class PendingTaskRepository extends Repository {
         $groupTask = null;
         $totalPendingTaskActives = 0;
         if($vehicle->lastGroupTask){
-            $totalPendingTaskActives = count($vehicle->lastGroupTask->approvedPendingTasks);
+            $totalPendingTaskActives = count($vehicle->lastGroupTask->allApprovedPendingTasks);
         }
         
         if($task->need_authorization == false){
