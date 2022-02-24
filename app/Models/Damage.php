@@ -48,12 +48,12 @@ class Damage extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function damageRoles(){
-        return $this->hasMany(DamageRole::class);
+    public function roles(){
+        return $this->belongsToMany(Role::class);
     }
 
-    public function damageTasks(){
-        return $this->hasMany(DamageTask::class);
+    public function tasks(){
+        return $this->belongsToMany(Task::class);
     }
 
     public function statusDamage(){

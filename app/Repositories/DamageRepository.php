@@ -14,13 +14,15 @@ class DamageRepository extends Repository {
         PendingTaskRepository $pendingTaskRepository, 
         DamageVehicleMail $damageVehicleMail,
         DamageRoleRepository $damageRoleRepository,
-        VehicleRepository $vehicleRepository
+        VehicleRepository $vehicleRepository,
+        DamageTaskRepository $damageTaskRepository
     )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->damageVehicleMail = $damageVehicleMail;
         $this->damageRoleRepository = $damageRoleRepository;
         $this->vehicleRepository = $vehicleRepository;
+        $this->damageTaskRepository = $damageTaskRepository;
     }
 
     public function index($request){
@@ -37,6 +39,8 @@ class DamageRepository extends Repository {
         $damage->save();
         foreach($request->input('tasks') as $task){
             $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id'), $task);
+            $this->damageTaskRepository->create($damage->id, $task);
+
         }
         $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         foreach($request->input('roles') as $role){

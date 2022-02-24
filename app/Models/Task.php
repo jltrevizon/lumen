@@ -46,6 +46,10 @@ class Task extends Model
         return $this->hasMany(PendingAuthorization::class);
     }
 
+    public function damages(){
+        return $this->belongsToMany(Damage::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
