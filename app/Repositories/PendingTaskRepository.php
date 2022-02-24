@@ -495,6 +495,7 @@ class PendingTaskRepository extends Repository {
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
                 'group_task_id' => $groupTask->id,
+                'state_pending_task_id' => $totalPendingTaskActives > 0 ? null : StatePendingTask::PENDING,
                 'duration' => $task->duration,
                 'order' => $totalPendingTaskActives + 1,
                 'approved' => true,
