@@ -481,15 +481,11 @@ class PendingTaskRepository extends Repository {
 
     public function addPendingTaskFromIncidence($vehicleId, $taskId){
         $task = $this->taskRepository->getById([], $taskId);
-        $vehicle = Vehicle::with(['lastGroupTask.pendingTasks' => function ($query){
-            return $query->where('approved', true)
-                ->where('state_pending_task_id', '<>' , StatePendingTask::FINISHED)
-                ->whereNotNull('state_pending_task_id');
-        }])->findOrFail($vehicleId);
+        $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTask = null;
         $totalPendingTaskActives = 0;
         if($vehicle->lastGroupTask){
-            $totalPendingTaskActives = count($vehicle->lastGroupTask->pendingTasks);
+            $totalPendingTaskActives = count($vehicle->lastGroupTask->approvedPendingTasks);
         }
         
         if($task->need_authorization == false){
