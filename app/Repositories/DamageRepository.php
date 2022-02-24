@@ -34,7 +34,7 @@ class DamageRepository extends Repository {
         $damage->user_id = Auth::id();
         $damage->save();
         foreach($request->input('tasks') as $task){
-            $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id', $task));
+            $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id'), $task);
         }
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
