@@ -22,6 +22,7 @@ use App\Repositories\IncidencePendingTaskRepository;
 use DateTime;
 use Doctrine\DBAL\Types\DateImmutableType;
 use Exception;
+use PendingAuthorizationRepository;
 
 class PendingTaskRepository extends Repository {
 
@@ -34,7 +35,9 @@ class PendingTaskRepository extends Repository {
         VehicleRepository $vehicleRepository,
         ReceptionRepository $receptionRepository,
         PendingTaskCanceledRepository $pendingTaskCanceledRepository,
-        IncidencePendingTaskRepository $incidencePendingTaskRepository)
+        IncidencePendingTaskRepository $incidencePendingTaskRepository,
+        PendingAuthorizationRepository $pendingAuthorizationRepository
+        )
     {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
@@ -45,6 +48,7 @@ class PendingTaskRepository extends Repository {
         $this->receptionRepository = $receptionRepository;
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
         $this->incidencePendingTaskRepository = $incidencePendingTaskRepository;
+        $this->pendingAuthorizationRepository = $pendingAuthorizationRepository;
     }
 
     public function getAll($request){
@@ -479,7 +483,7 @@ class PendingTaskRepository extends Repository {
 
     }
 
-    public function addPendingTaskFromIncidence($vehicleId, $taskId){
+    public function addPendingTaskFromIncidence($vehicleId, $taskId, $damage){
         $task = $this->taskRepository->getById([], $taskId);
         $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTask = null;
@@ -505,7 +509,9 @@ class PendingTaskRepository extends Repository {
                 'approved' => true,
                 'user_id' => Auth::id()
             ]);
-        } 
+        } else {
+            $this->pendingAuthorizationRepository->create($vehicle->id, $task->id, $damage->id);
+        }
 
     }
 
