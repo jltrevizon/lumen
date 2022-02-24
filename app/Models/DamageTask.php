@@ -16,4 +16,12 @@ class DamageTask extends Model
         'damage_id',
         'task_id'
     ];
+
+    public function damage(){
+        return $this->belongsTo(Damage::class);
+    }
+
+    public function task(){
+        return $this->belongsTo(Task::class);
+    }
 }
