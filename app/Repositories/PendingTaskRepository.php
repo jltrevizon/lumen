@@ -487,7 +487,10 @@ class PendingTaskRepository extends Repository {
                 ->whereNotNull('state_pending_task_id');
         }])->findOrFail($vehicleId);
         $groupTask = null;
-        $totalPendingTaskActives = count($vehicle->lastGroupTask->pendingTasks);
+        $totalPendingTaskActives = 0;
+        if($vehicle->lastGroupTask){
+            $totalPendingTaskActives = count($vehicle->lastGroupTask->pendingTasks);
+        }
         
         if($task->need_authorization === false){
             if($totalPendingTaskActives > 0) $groupTask = $vehicle->lastGroupTask;
