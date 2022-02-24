@@ -33,23 +33,25 @@ class StockVehicles extends Mailable
      */
     public function build()
     {
-        $peopleForReport = PeopleForReport::with(['user'])
-                ->where('type_report_id', TypeReport::STOCK)
-                ->get();
+        // $peopleForReport = PeopleForReport::with(['user'])
+        //         ->where('type_report_id', TypeReport::STOCK)
+        //         ->get();
+        $peopleForReport = ['anelvin.mejia@grupomobius.com'];
         $data = [
             'title' => 'Stock de vehículos',
             'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d-m-Y')
         ];
         $receptions = new StockVehiclesExport();
         $file = Excel::download($receptions, 'entradas.xlsx')->getFile();
-        foreach($peopleForReport as $user){
-            Mail::send('report-generic', $data, function($message) use($user, $file){
-                $message->to($user['user']['email'], $user['user']['name']);
+        //foreach($peopleForReport as $user){
+            Mail::send('report-generic', $data, function($message) use($file){
+                //$message->to($user['user']['email'], $user['user']['name']);
+                $message->to('anelvin.mejia@grupomobius.com','Anelvin Mejía');
                 $message->subject('Stock de vehículos en campa');
                 $message->from('inout@mkdautomotive.com', 'Focus');
                 $message->attach($file, ['as => entradas.xlsx']);
             });
-        }
+        //}
         \unlink($file->getRealPath());
     }
 }
