@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use DamageTypeRepository;
+use App\Repositories\DamageTypeRepository;
 use Illuminate\Http\Request;
 
 class DamageTypeController extends Controller
