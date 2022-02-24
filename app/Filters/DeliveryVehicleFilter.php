@@ -16,6 +16,16 @@ class DeliveryVehicleFilter extends ModelFilter
         return $this->whereDate('created_at', $date);
     }
 
+    public function createdAtFrom($dateTime)
+    {
+        return $this->whereDate('created_at','>=', $dateTime);
+    }
+
+    public function createdAtTo($dateTime)
+    {
+        return $this->whereDate('created_at','<=', $dateTime);
+    }
+
     public function vehiclePlate($plate){
         return $this->whereHas('vehicle', function(Builder $builder) use($plate){
             return $builder->where('plate','like',"%$plate%");
