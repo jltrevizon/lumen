@@ -494,7 +494,6 @@ class PendingTaskRepository extends Repository {
             }
             else {
                 $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
-                $this->vehicleRepository->updateSubState($vehicle->id, $task->sub_state_id);
             };
             PendingTask::create([
                 'vehicle_id' => $vehicleId,
@@ -507,6 +506,7 @@ class PendingTaskRepository extends Repository {
                 'user_id' => Auth::id()
             ]);
         } 
+
     }
 
 }

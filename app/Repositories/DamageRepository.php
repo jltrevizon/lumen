@@ -13,12 +13,14 @@ class DamageRepository extends Repository {
     public function __construct(
         PendingTaskRepository $pendingTaskRepository, 
         DamageVehicleMail $damageVehicleMail,
-        DamageRoleRepository $damageRoleRepository
+        DamageRoleRepository $damageRoleRepository,
+        VehicleRepository $vehicleRepository
     )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->damageVehicleMail = $damageVehicleMail;
         $this->damageRoleRepository = $damageRoleRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function index($request){
@@ -36,6 +38,7 @@ class DamageRepository extends Repository {
         foreach($request->input('tasks') as $task){
             $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id'), $task);
         }
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
         }
