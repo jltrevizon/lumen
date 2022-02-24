@@ -1,12 +1,10 @@
 <?php
 
-use App\Models\Incidence;
 use App\Models\PendingAuthorization;
 use App\Models\StateAuthorization;
 use App\Models\Task;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class PendingAuthorizationTest extends TestCase
@@ -34,13 +32,6 @@ class PendingAuthorizationTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->pendingAuthorization->task());
         $this->assertInstanceOf(Task::class, $this->pendingAuthorization->task()->getModel());
-    }
-
-    /** @test */
-    public function it_belongs_to_incidence()
-    {
-        $this->assertInstanceOf(BelongsTo::class, $this->pendingAuthorization->incidence());
-        $this->assertInstanceOf(Incidence::class, $this->pendingAuthorization->incidence()->getModel());
     }
 
     /** @test */

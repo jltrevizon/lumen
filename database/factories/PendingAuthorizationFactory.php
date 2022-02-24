@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Model;
+use App\Models\Damage;
 use App\Models\Incidence;
 use App\Models\PendingAuthorization;
 use App\Models\StateAuthorization;
@@ -19,7 +20,7 @@ class PendingAuthorizationFactory extends Factory
     	return [
     	    'vehicle_id' => Vehicle::factory()->create()->id,
             'task_id' => Task::factory()->create()->id,
-            'incidence_id' => Incidence::factory()->create()->id,
+            'damage_id' => Damage::factory()->create()->id,
             'state_authorization_id' => StateAuthorization::factory()->create()->id
     	];
     }
