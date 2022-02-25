@@ -33,25 +33,24 @@ class StockVehicles extends Mailable
      */
     public function build()
     {
-        // $peopleForReport = PeopleForReport::with(['user'])
-        //         ->where('type_report_id', TypeReport::STOCK)
-        //         ->get();
-        $peopleForReport = ['anelvin.mejia@grupomobius.com'];
+        $peopleForReport = PeopleForReport::with(['user'])
+                ->where('type_report_id', TypeReport::STOCK)
+                ->get();
         $data = [
             'title' => 'Stock de vehículos',
-            'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d-m-Y')
+            'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d-m-Y H:i:s')
         ];
-        $receptions = new StockVehiclesExport();
-        $file = Excel::download($receptions, 'entradas.xlsx')->getFile();
-        //foreach($peopleForReport as $user){
-            Mail::send('report-generic', $data, function($message) use($file){
-                //$message->to($user['user']['email'], $user['user']['name']);
-                $message->to('anelvin.mejia@grupomobius.com','Anelvin Mejía');
-                $message->subject('Stock de vehículos en campa');
-                $message->from('inout@mkdautomotive.com', 'Focus');
-                $message->attach($file, ['as => entradas.xlsx']);
+        $file = Excel::download(new StockVehiclesExport, 'entradas.xlsx')->getFile();
+        rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
+        $fileRename = $file->getPath() . '/stock-vehículos.xlsx';
+        foreach($peopleForReport as $user){
+            Mail::send('report-generic', $data, function($message) use($user, $fileRename){
+                $message->to($user['user']['email'], $user['user']['name']);
+               $message->subject('Stock de vehículos');
+               $message->from('inout@mkdautomotive.com', 'Focus');
+               $message->attach($fileRename, ['as => entradas.xlsx']);
             });
-        //}
-        \unlink($file->getRealPath());
+        }
+        \unlink($file->getPath() . '/stock-vehículos.xlsx');
     }
 }
