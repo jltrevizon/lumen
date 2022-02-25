@@ -14,14 +14,14 @@ class PendingAuthorization extends Model
     protected $fillable = [
         'vehicle_id',
         'task_id',
-        'incidence_id',
+        'damage_id',
         'state_authorization_id'
     ];
 
     protected $casts = [
         'vehicle_id' => 'integer',
         'task_id' => 'integer',
-        'incidence_id' => 'integer',
+        'damage_id' => 'integer',
         'state_authorization_id' => 'integer'
     ];
 
@@ -37,8 +37,8 @@ class PendingAuthorization extends Model
         return $this->belongsTo(Task::class);
     }
 
-    public function incidence(){
-        return $this->belongsTo(Incidence::class);
+    public function damage(){
+        return $this->belongsTo(Damage::class);
     }
 
     public function stateAuthorization(){

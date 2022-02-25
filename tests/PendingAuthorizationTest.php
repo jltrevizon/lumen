@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Damage;
 use App\Models\PendingAuthorization;
 use App\Models\StateAuthorization;
 use App\Models\Task;
@@ -32,6 +33,13 @@ class PendingAuthorizationTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->pendingAuthorization->task());
         $this->assertInstanceOf(Task::class, $this->pendingAuthorization->task()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_damage()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingAuthorization->damage());
+        $this->assertInstanceOf(Damage::class, $this->pendingAuthorization->damage()->getModel());
     }
 
     /** @test */

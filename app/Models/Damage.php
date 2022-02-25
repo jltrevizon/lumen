@@ -68,6 +68,10 @@ class Damage extends Model
         return $this->hasMany(DamageImage::class);
     }
 
+    public function pendingAuthorizations(){
+        return $this->hasMany(PendingAuthorization::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }

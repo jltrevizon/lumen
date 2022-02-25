@@ -23,6 +23,8 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
+    $router->post('/defleeting', 'VehicleController@defleeting');
+
     $router->get('/test-vehicles', 'VehicleController@getVehiclesWithPendingTashDelivered');
 
     $router->post('/auth/signin', 'AuthController@login');
