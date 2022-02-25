@@ -22,7 +22,7 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
     public function collection()
     {
         return Vehicle::where('company_id', Company::ALD)
-                ->get();
+                ->paginate();
     }
 
     public function map($vehicle): array
