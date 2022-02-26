@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PendingAuthorization;
+use App\Repositories\PendingAuthorizationRepository;
 use AWS\CRT\HTTP\Response;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -10,9 +10,9 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 class PendingAuthorizationController extends Controller
 {
 
-    public function __construct(PendingAuthorization $pendingAuthorization)
+    public function __construct(PendingAuthorizationRepository $pendingAuthorizationRepository)
     {
-        $this->pendingAuthorization = $pendingAuthorization;
+        $this->pendingAuthorizationRepository = $pendingAuthorizationRepository;
     }
 
     /**
@@ -26,7 +26,7 @@ class PendingAuthorizationController extends Controller
     }
 
     public function approvedAuthorization(Request $request){
-        return $this->updateDataResponse($this->pendingAuthorization->approvedAuthorization($request), HttpFoundationResponse::HTTP_OK);
+        return $this->updateDataResponse($this->pendingAuthorizationRepository->approvedAuthorization($request), HttpFoundationResponse::HTTP_OK);
     }
 
     /**
