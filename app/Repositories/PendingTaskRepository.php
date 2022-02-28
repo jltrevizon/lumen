@@ -19,6 +19,7 @@ use App\Repositories\PendingTaskCanceledRepository;
 use App\Repositories\IncidencePendingTaskRepository;
 use App\Repositories\PendingAuthorizationRepository as RepositoriesPendingAuthorizationRepository;
 use DateTime;
+use Illuminate\Http\Request;
 
 class PendingTaskRepository extends Repository {
 
@@ -493,7 +494,7 @@ class PendingTaskRepository extends Repository {
                 $groupTask = $vehicle->lastGroupTask;
             }
             else {
-                $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
+                $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
             };
             PendingTask::create([
                 'vehicle_id' => $vehicleId,
