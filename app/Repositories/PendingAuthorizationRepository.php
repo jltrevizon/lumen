@@ -35,6 +35,7 @@ class PendingAuthorizationRepository extends Repository {
         $pendingAuthorization = PendingAuthorization::findOrFail($request->input('pending_authorization_id'));
         if($request->input('state_authorization_id') == StateAuthorization::APPROVED){
             $this->approvedPendingAuthorization($pendingAuthorization->vehicle_id, $pendingAuthorization->task_id);
+            $pendingAuthorization->state_authorization_id = StateAuthorization::APPROVED;
         }
     }
 
