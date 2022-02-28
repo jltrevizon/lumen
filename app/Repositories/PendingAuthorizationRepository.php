@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Auth;
 
 class PendingAuthorizationRepository extends Repository {
 
-
+    public function __construct(TaskRepository $taskRepository)
+    {
+        $this->taskRepository = $taskRepository;
+    }
 
     public function index($request){
         return PendingAuthorization::with($this->getWiths($request->with))

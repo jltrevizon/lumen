@@ -177,4 +177,15 @@ class VehicleController extends Controller
     public function unDefleet($id){
         return $this->updateDataResponse($this->vehicleRepository->unDefleet($id), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function defleeting(Request $request){
+        foreach($request->input('plates') as $plate){
+
+            $vehicle = Vehicle::where('plate', $plate)->first();
+            if($vehicle){
+                $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+                $vehicle->save();
+            }
+        }
+    }
 }
