@@ -136,6 +136,10 @@ class VehicleFilter extends ModelFilter
         return $this->byTaskStatesIds($ids);
     }
 
+    public function whereHasBudgetPendingTaskByState($stateId){
+        return $this->whereHas('pendingTask.budgetPendingTasks', fn (Builder $builder) => $builder->where('state_budget_pending_task_id', $stateId));
+    }
+
     public function pendingTaskDateTimeStartFrom($dateTime)
     {
         return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
