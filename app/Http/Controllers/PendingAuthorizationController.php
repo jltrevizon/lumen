@@ -22,7 +22,7 @@ class PendingAuthorizationController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->getDataResponse($this->pendingAuthorization->index($request), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->pendingAuthorizationRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function approvedAuthorization(Request $request){
