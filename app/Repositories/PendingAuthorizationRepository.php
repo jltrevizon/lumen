@@ -8,6 +8,7 @@ use App\Models\StateAuthorization;
 use App\Models\StatePendingTask;
 use App\Models\Vehicle;
 use App\Repositories\Repository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PendingAuthorizationRepository extends Repository {
@@ -54,7 +55,7 @@ class PendingAuthorizationRepository extends Repository {
             $groupTask = $vehicle->lastGroupTask;
         }
         else {
-            $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
+            $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
         };
         PendingTask::create([
             'vehicle_id' => $vehicleId,
