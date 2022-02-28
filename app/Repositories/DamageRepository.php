@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Mail\DamageVehicleMail;
+use App\Mail\NotificationMail;
 use App\Models\Damage;
 use App\Models\StatusDamage;
 use Exception;
@@ -15,7 +16,8 @@ class DamageRepository extends Repository {
         DamageVehicleMail $damageVehicleMail,
         DamageRoleRepository $damageRoleRepository,
         VehicleRepository $vehicleRepository,
-        DamageTaskRepository $damageTaskRepository
+        DamageTaskRepository $damageTaskRepository,
+        NotificationMail $notificationMail,
     )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
@@ -23,6 +25,7 @@ class DamageRepository extends Repository {
         $this->damageRoleRepository = $damageRoleRepository;
         $this->vehicleRepository = $vehicleRepository;
         $this->damageTaskRepository = $damageTaskRepository;
+        $this->notificationMail = $notificationMail;
     }
 
     public function index($request){
@@ -44,6 +47,7 @@ class DamageRepository extends Repository {
         $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
+            $this->notificationMail->build($role);
         }
         if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);

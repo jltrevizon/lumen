@@ -32,7 +32,7 @@ class SendCode
        $data = ['name' => $name, 'code' => $code];
         Mail::send('mail', $data, function($message) use($email, $name){
             $message->to($email, $name)->subject('Restablecer contraseña!');
-            $message->from('inout@mkdautomotive.com','Focus');
+            $message->from('no-reply.focus@grupomobius.com','Focus');
         });
     }
 }

@@ -47,7 +47,7 @@ class StockVehicles extends Mailable
             Mail::send('report-generic', $data, function($message) use($user, $fileRename){
                 $message->to($user['user']['email'], $user['user']['name']);
                $message->subject('Stock de vehículos');
-               $message->from('inout@mkdautomotive.com', 'Focus');
+               $message->from('no-reply.focus@grupomobius.com', 'Focus');
                $message->attach($fileRename, ['as => entradas.xlsx']);
             });
         }

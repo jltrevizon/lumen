@@ -47,7 +47,7 @@ class DownloadVehicles extends Mailable implements ShouldQueue
         $file = Excel::download($vehicles, 'vehicles.xlsx')->getFile();
         Mail::send('download-vehicles', $data, function($message) use($user, $vehicles, $file){
             $message->to($user->email, $user->name)->subject('Documento listo!');
-            $message->from('inout@mkdautomotive.com','Focus');
+            $message->from('no-reply.focus@grupomobius.com','Focus');
             $message->attach($file, ['as' => 'vehicles.xlsx']);
         });
 
