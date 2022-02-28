@@ -19,6 +19,7 @@ class PendingAuthorizationRepository extends Repository {
 
     public function index($request){
         return PendingAuthorization::with($this->getWiths($request->with))
+            ->filter($request->all())
             ->get();
     }
     
@@ -36,6 +37,7 @@ class PendingAuthorizationRepository extends Repository {
         if($request->input('state_authorization_id') == StateAuthorization::APPROVED){
             $this->approvedPendingAuthorization($pendingAuthorization->vehicle_id, $pendingAuthorization->task_id);
             $pendingAuthorization->state_authorization_id = StateAuthorization::APPROVED;
+            $pendingAuthorization->save();
         }
     }
 

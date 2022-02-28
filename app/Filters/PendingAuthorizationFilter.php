@@ -14,6 +14,11 @@ class PendingAuthorizationFilter extends ModelFilter
     */
     public $relations = [];
 
+    public function ids($ids)
+    {
+        return $this->whereIn('id', $ids);
+    }
+
     public function vehicleIds($ids)
     {   
         return $this->whereIn('vehicle_id', $ids);
