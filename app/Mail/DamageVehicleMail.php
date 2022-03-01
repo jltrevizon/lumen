@@ -77,7 +77,7 @@ class DamageVehicleMail extends Mailable
             Mail::send('damage-vehicle', $data, function($message) use ($email, $vehicle){
                 $message->to($email['email'], $email['name']);
                 $message->subject('Incidencia reportada Focus - ['.$vehicle->plate.']');
-                $message->from('inout@mkdautomotive.com', 'Focus');
+                $message->from('no-reply.focus@grupomobius.com', 'Focus');
             });
         }
     }

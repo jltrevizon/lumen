@@ -11,6 +11,7 @@ use App\Models\GroupTask;
 use App\Models\Incidence;
 use App\Models\Operation;
 use App\Models\Order;
+use App\Models\PendingAuthorization;
 use App\Models\PendingTask;
 use App\Models\Questionnaire;
 use App\Models\Reception;
@@ -170,6 +171,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->vehicle->accessories());
         $this->assertInstanceOf(Accessory::class, $this->vehicle->accessories()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_pending_authorization()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->pendingAuthorizations());
+        $this->assertInstanceOf(PendingAuthorization::class, $this->vehicle->pendingAuthorizations()->getModel());
     }
 
     /** @test */

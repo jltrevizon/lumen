@@ -4,6 +4,8 @@ use App\Models\Campa;
 use App\Models\Comment;
 use App\Models\Damage;
 use App\Models\DamageImage;
+use App\Models\DamageType;
+use App\Models\Role;
 use App\Models\SeverityDamage;
 use App\Models\StatusDamage;
 use App\Models\Task;
@@ -11,6 +13,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -50,6 +53,13 @@ class DamageTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_damage_type()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damage->damageType());
+        $this->assertInstanceOf(DamageType::class, $this->damage->damageType()->getModel());
+    }
+
+    /** @test */
     public function it_belongs_to_task()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->damage->task());
@@ -61,6 +71,20 @@ class DamageTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->damage->comments());
         $this->assertInstanceOf(Comment::class, $this->damage->comments()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_many_roles()
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->damage->roles());
+        $this->assertInstanceOf(Role::class, $this->damage->roles()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_many_tasks()
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->damage->tasks());
+        $this->assertInstanceOf(Task::class, $this->damage->tasks()->getModel());
     }
 
     /** @test */

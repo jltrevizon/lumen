@@ -180,7 +180,7 @@ class VehicleRepository extends Repository {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
-            } else if ($count > 0) {
+            } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }
         }
@@ -408,6 +408,30 @@ public function verifyPlateReception($request){
                     $pendingTask->update(['approved' => false]);
                 }
             });
+    }
+
+    public function defleet($id){
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+        $vehicle->save();
+        if($vehicle->lastGroupTask){
+            $this->groupTaskRepository->disablePendingTasks($vehicle->lastGroupTask);
+        }
+        return response()->json([
+            'message' => 'Vehicle defleeted!'
+        ]);
+    }
+
+    public function unDefleet($id){
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->sub_state_id = SubState::CHECK;
+        $vehicle->save();
+        if($vehicle->lastGroupTask){
+            $this->groupTaskRepository->enablePendingTasks($vehicle->lastGroupTask);
+        }
+        return response()->json([
+            'message' => 'Vehicle defleeted!'
+        ]);
     }
 
 }

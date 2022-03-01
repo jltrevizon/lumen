@@ -23,6 +23,8 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
+    $router->post('/defleeting', 'VehicleController@defleeting');
+
     $router->get('/test-vehicles', 'VehicleController@getVehiclesWithPendingTashDelivered');
 
     $router->post('/auth/signin', 'AuthController@login');
@@ -113,11 +115,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Incidences
          */
-        $router->get('/incidences/getall', 'IncidenceController@getall');
+        $router->get('/incidences/getall', 'IncidenceController@getAll');
         $router->get('/incidences/{id}', 'IncidenceController@getById');
         $router->post('/incidences', 'IncidenceController@create');
         $router->put('/incidences/update/{id}', 'IncidenceController@update');
         $router->delete('/incidences/delete/{id}', 'IncidenceController@delete');
+
+        /**
+         * Incidence-type
+         */
+        $router->get('/incidence-types/getall', 'IncidenceController@getAllTypes');
 
         /**
          * Regions
@@ -274,6 +281,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/delete-massive', 'VehicleController@deleteMassive');
         $router->post('/vehicles/set-sub-state-null', 'VehicleController@setSubStateNull');
         $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
+        $router->get('/vehicles/defleet/{id}', 'VehicleController@defleet');
+        $router->get('/vehicles/undefleet/{id}', 'VehicleController@unDefleet');
         $router->get('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->get('/vehicles/filter', 'VehicleController@filterVehicle');
@@ -545,10 +554,22 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Delivery vehicles
          */
         $router->get('/delivery-vehicles','DeliveryVehicleController@index');
+        $router->delete('/delivery-vehicles/{id}', 'DeliveryVehicleController@destroy');
 
         /**
          * Type delivery note
          */
         $router->get('/type-delivery-note', 'TypeDeliveryNoteController@index');
+
+        /** 
+         * Damage Type
+         */
+        $router->get('/damage-type', 'DamageTypeController@index');
+
+        /**
+         * Pending Authorization
+         */
+        $router->get('/pending-authorization','PendingAuthorizationController@index');
+        $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
     });
 });

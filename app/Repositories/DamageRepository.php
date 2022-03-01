@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Mail\DamageVehicleMail;
+use App\Mail\NotificationMail;
 use App\Models\Damage;
 use App\Models\StatusDamage;
 use Exception;
@@ -10,10 +11,21 @@ use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
 
-    public function __construct(PendingTaskRepository $pendingTaskRepository, DamageVehicleMail $damageVehicleMail)
+    public function __construct(
+        PendingTaskRepository $pendingTaskRepository, 
+        DamageVehicleMail $damageVehicleMail,
+        DamageRoleRepository $damageRoleRepository,
+        VehicleRepository $vehicleRepository,
+        DamageTaskRepository $damageTaskRepository,
+        NotificationMail $notificationMail,
+    )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->damageVehicleMail = $damageVehicleMail;
+        $this->damageRoleRepository = $damageRoleRepository;
+        $this->vehicleRepository = $vehicleRepository;
+        $this->damageTaskRepository = $damageTaskRepository;
+        $this->notificationMail = $notificationMail;
     }
 
     public function index($request){
@@ -28,7 +40,15 @@ class DamageRepository extends Repository {
         $damage = Damage::create($request->all());
         $damage->user_id = Auth::id();
         $damage->save();
-
+        foreach($request->input('tasks') as $task){
+            $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id'), $task, $damage);
+            $this->damageTaskRepository->create($damage->id, $task);
+        }
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
+        foreach($request->input('roles') as $role){
+            $this->damageRoleRepository->create($damage->id, $role);
+            $this->notificationMail->build($role);
+        }
         if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);
         }

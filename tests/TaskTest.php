@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\PendingAuthorization;
 use App\Models\PendingTask;
 use App\Models\PurchaseOperation;
 use App\Models\SubState;
@@ -50,6 +51,13 @@ class TaskTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->task->purchaseOperations());
         $this->assertInstanceOf(PurchaseOperation::class, $this->task->purchaseOperations()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_pending_authorizations()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->task->pendingAuthorizations());
+        $this->assertInstanceOf(PendingAuthorization::class, $this->task->pendingAuthorizations()->getModel());
     }
 
     /** @test */

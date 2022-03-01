@@ -91,7 +91,7 @@ class StatisticsMail extends Mailable
         foreach($peoples as $people){
             Mail::send('statistics', $data, function($message) use($people){
                 $message->to($people['user']['email'])->subject('Estadísticas de Focus');
-                $message->from('inout@mkdautomotive.com', 'Focus');
+                $message->from('no-reply.focus@grupomobius.com', 'Focus');
             });
         }
     }

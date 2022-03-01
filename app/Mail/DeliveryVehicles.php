@@ -46,7 +46,7 @@ class DeliveryVehicles extends Mailable
             Mail::send('report-generic', $data, function($message) use($user, $file){
                 $message->to($user['user']['email'], $user['user']['name']);
                 $message->subject('Salidas de vehículos de la campa');
-                $message->from('inout@mkdautomotive.com', 'Focus');
+                $message->from('no-reply.focus@grupomobius.com', 'Focus');
                 $message->attach($file, ['as => salidas.xlsx']);
             });
         }
