@@ -129,6 +129,9 @@ class GroupTaskRepository extends Repository {
                 ]);
             }
         });
+        $pendingTasks = PendingTask::where('group_task_id', $group_task->id)
+            ->whereNotNull('order')
+            ->count();
         $groupTask = GroupTask::findOrFail($group_task->id);
         $groupTask->approved = true;
         $groupTask->approved_available = true;
@@ -140,7 +143,7 @@ class GroupTaskRepository extends Repository {
         $pendingTask->task_id = Task::UBICATION;
         $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
         $pendingTask->group_task_id = $group_task->id;
-        $pendingTask->duration = 1;
+        $pendingTask->duration = $pendingTasks + 1;
         $pendingTask->order = 1;
         $pendingTask->datetime_pending = date('Y-m-d H:i:s');
         $pendingTask->user_id = Auth::id();
