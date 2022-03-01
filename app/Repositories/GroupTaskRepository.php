@@ -144,8 +144,8 @@ class GroupTaskRepository extends Repository {
         $pendingTask->task_id = Task::UBICATION;
         $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
         $pendingTask->group_task_id = $group_task->id;
-        $pendingTask->duration = $pendingTasks + 1;
-        $pendingTask->order = 1;
+        $pendingTask->duration = 1;
+        $pendingTask->order = $pendingTasks + 1;
         $pendingTask->datetime_pending = date('Y-m-d H:i:s');
         $pendingTask->user_id = Auth::id();
         $pendingTask->save();
