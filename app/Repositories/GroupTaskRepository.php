@@ -124,7 +124,7 @@ class GroupTaskRepository extends Repository {
         $pendingTasks = PendingTask::where('group_task_id', $group_task->id)
             ->whereNotNull('order')
             ->count();
-        dd($pendingTasks);
+
         PendingTask::where('group_task_id', $group_task->id)
         ->chunk(200, function ($pendingTasks) {
             foreach($pendingTasks as $pendingTask){
