@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Campa;
+use App\Models\DeliveryNote;
 use App\Models\DeliveryVehicle;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,5 +32,11 @@ class DeliveryVehicleTest extends TestCase
     public function it_belongs_to_campa(){
         $this->assertInstanceOf(BelongsTo::class, $this->deliveryVehicle->campa());
         $this->assertInstanceOf(Campa::class, $this->deliveryVehicle->campa()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_delivery_note(){
+        $this->assertInstanceOf(BelongsTo::class, $this->deliveryVehicle->deliveryNote());
+        $this->assertInstanceOf(DeliveryNote::class, $this->deliveryVehicle->deliveryNote()->getModel());
     }
 }

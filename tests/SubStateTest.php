@@ -50,4 +50,10 @@ class SubStateTest extends TestCase
     {
         $this->assertInstanceOf(Builder::class, $this->subState->byStateIds([]));
     }
+
+    /** @test */
+    public function should_return_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->subState->byIds([]));
+    }
 }

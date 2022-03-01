@@ -5,6 +5,7 @@ use App\Models\Comment;
 use App\Models\Damage;
 use App\Models\DamageImage;
 use App\Models\DamageType;
+use App\Models\PendingAuthorization;
 use App\Models\Role;
 use App\Models\SeverityDamage;
 use App\Models\StatusDamage;
@@ -106,6 +107,13 @@ class DamageTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->damage->damageImages());
         $this->assertInstanceOf(DamageImage::class, $this->damage->damageImages()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_pending_authorizations()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->damage->pendingAuthorizations());
+        $this->assertInstanceOf(PendingAuthorization::class, $this->damage->pendingAuthorizations()->getModel());
     }
     
     /** @test */
