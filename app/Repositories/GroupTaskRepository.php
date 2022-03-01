@@ -121,6 +121,10 @@ class GroupTaskRepository extends Repository {
     }
 
     public function disablePendingTasks($group_task){
+        $pendingTasks = PendingTask::where('group_task_id', $group_task->id)
+            ->whereNotNull('order')
+            ->count();
+        dd($pendingTasks);
         PendingTask::where('group_task_id', $group_task->id)
         ->chunk(200, function ($pendingTasks) {
             foreach($pendingTasks as $pendingTask){
@@ -129,9 +133,6 @@ class GroupTaskRepository extends Repository {
                 ]);
             }
         });
-        $pendingTasks = PendingTask::where('group_task_id', $group_task->id)
-            ->whereNotNull('order')
-            ->count();
         $groupTask = GroupTask::findOrFail($group_task->id);
         $groupTask->approved = true;
         $groupTask->approved_available = true;
