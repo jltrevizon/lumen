@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Square;
 use Illuminate\Database\Seeder;
 
-class SquareSeeder extends Seeder
+class SquareLeganesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
