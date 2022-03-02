@@ -37,8 +37,8 @@ class BudgetPendingTaskFilterTest extends TestCase
         $state1 = StateBudgetPendingTask::factory()->create();
         $state2 = StateBudgetPendingTask::factory()->create();
         BudgetPendingTask::query()->update(['state_budget_pending_task_id' => $state1->id]);
-        $budgetLine = BudgetPendingTask::factory()->create(['state_budget_pending_task_id' => $state2]);
-        $budgetLines = BudgetPendingTask::filter(['state_budget_penidng_tasks' => $budgetLine->state_budget_pending_task_id])->get();
+        $budgetLine = BudgetPendingTask::factory()->create(['state_budget_pending_task_id' => $state2->id]);
+        $budgetLines = BudgetPendingTask::filter(['state_budget_pending_tasks' => [$budgetLine->state_budget_pending_task_id]])->get();
         $this->assertCount(1, $budgetLines);
         $this->assertEquals($budgetLines[0]->id, $budgetLine->id);
     }
