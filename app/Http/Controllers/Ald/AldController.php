@@ -127,7 +127,6 @@ class AldController extends Controller
             $pending_task->order = $task['task_order'];
             $pending_task->user_id = Auth::id();
             $pending_task->save();
-            $this->vehicleRepository->updateSubState($pending_task->vehicle_id, null);
             /*
             if($task['task_order'] == 1) {   
                 $vehicle = $pending_task->vehicle;
@@ -135,6 +134,7 @@ class AldController extends Controller
                 $vehicle->save();
             }*/
         }
+        $this->vehicleRepository->updateSubState($vehicleId, null);
     }
 
     private function createFinishedTask($vehicleId, $tasks, $groupTaskId){
