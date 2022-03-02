@@ -107,7 +107,7 @@ class AldController extends Controller
 
     private function createPendingTask($groupTask, $vehicleId, $tasks, $groupTaskId){
         $tasksApproved = 0;
-        if ($groupTask->approvedPendingTask) {
+        if ($groupTask->approvedPendingTasks) {
             $tasksApproved = count($groupTask->approvedPendingTasks);
         }
         foreach($tasks as $task){
