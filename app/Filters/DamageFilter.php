@@ -51,7 +51,7 @@ class DamageFilter extends ModelFilter
     }
 
     public function notNullDamageTypeId($value){
-        return $this->whereNotNull('damege_type_id');
+        return $this->whereNotNull('damage_type_id');
     }
 
     /**
