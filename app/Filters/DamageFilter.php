@@ -50,6 +50,10 @@ class DamageFilter extends ModelFilter
         return $this->whereIn('user_id', $ids);
     }
 
+    public function notNullDamageTypeId($value){
+        return $this->whereNotNull('damege_type_id');
+    }
+
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
     * As [relationMethod => [input_key1, input_key2]].
