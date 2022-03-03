@@ -191,6 +191,7 @@ class PendingTaskRepository extends Repository {
                     ->first();
             if (!is_null($firstPendingTask)) {
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+                $firstPendingTask->datetime_pending = date('Y-m-d H:i:s');
                 $firstPendingTask->save();
             } else {
                 $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();

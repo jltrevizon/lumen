@@ -72,7 +72,7 @@ class AldController extends Controller
             } 
 
            if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
-                $this->createPendingTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
+                $this->createPendingTask($groupTask, $request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             } else if($request->input('state_pending_task_id') == StatePendingTask::FINISHED){
                 $this->createFinishedTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             }
@@ -91,6 +91,7 @@ class AldController extends Controller
                 if (is_null($update_pending_task->state_pending_task_id) && !$is_pending_task) {
                     $is_pending_task = true;
                     $update_pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                    $update_pending_task->datetime_pending = date('Y-m-d H:i:s');
                 }
                 $update_pending_task->order = $order;
                 $update_pending_task->save();
@@ -105,36 +106,30 @@ class AldController extends Controller
         }
     }
 
-    private function createPendingTask($vehicleId, $tasks, $groupTaskId){
-        PendingTask::where('vehicle_id', $vehicleId)
-            ->where('group_task_id', $groupTaskId)
-            ->where('state_pending_task_id', StatePendingTask::PENDING)
-            ->update([
-                'state_pending_task_id' => null
-            ]);
+    private function createPendingTask($groupTask, $vehicleId, $tasks, $groupTaskId){
+        $tasksApproved = 0;
+        if ($groupTask->approvedPendingTasks) {
+            $tasksApproved = count($groupTask->approvedPendingTasks);
+        }
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = true;
-            if($task['task_order'] == 1) {
+            if($tasksApproved == 0) {
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                $pending_task->order = 1;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
+            } else {
+                $pending_task->order = $tasksApproved + 1;
             }
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
-            $pending_task->order = $task['task_order'];
             $pending_task->user_id = Auth::id();
             $pending_task->save();
-            $this->vehicleRepository->updateSubState($pending_task->vehicle_id, null);
-            /*
-            if($task['task_order'] == 1) {   
-                $vehicle = $pending_task->vehicle;
-                $vehicle->sub_state_id = $pending_task->task->sub_state_id;
-                $vehicle->save();
-            }*/
         }
+        $this->vehicleRepository->updateSubState($vehicleId, null);
     }
 
     private function createFinishedTask($vehicleId, $tasks, $groupTaskId){

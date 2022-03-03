@@ -18,4 +18,8 @@ class StatusDamage extends Model
         'description'
     ];
 
+    public function damages(){
+        return $this->hasMany(Damage::class);
+    }
+
 }

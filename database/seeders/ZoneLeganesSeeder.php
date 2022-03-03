@@ -6,7 +6,7 @@ use App\Models\Campa;
 use App\Models\Zone;
 use Illuminate\Database\Seeder;
 
-class ZoneSeeder extends Seeder
+class ZoneLeganesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
