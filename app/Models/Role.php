@@ -32,4 +32,8 @@ class Role extends Model
     public function damages(){
         return $this->belongsToMany(Damage::class);
     }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
+    }
 }
