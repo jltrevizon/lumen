@@ -91,6 +91,7 @@ class AldController extends Controller
                 if (is_null($update_pending_task->state_pending_task_id) && !$is_pending_task) {
                     $is_pending_task = true;
                     $update_pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                    $update_pending_task->datetime_pending = date('Y-m-d H:i:s');
                 }
                 $update_pending_task->order = $order;
                 $update_pending_task->save();
@@ -106,7 +107,10 @@ class AldController extends Controller
     }
 
     private function createPendingTask($groupTask, $vehicleId, $tasks, $groupTaskId){
-        $tasksApproved = count($groupTask->approvedPendingTask);
+        $tasksApproved = 0;
+        if ($groupTask->approvedPendingTasks) {
+            $tasksApproved = count($groupTask->approvedPendingTasks);
+        }
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
