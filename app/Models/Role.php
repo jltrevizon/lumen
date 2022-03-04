@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use EloquentFilter\Filterable;
 
 class Role extends Model
 {
-    use HasFactory;
+    use HasFactory, Filterable;
 
     const ADMIN = 1;
     const GLOBAL_MANAGER = 2;
