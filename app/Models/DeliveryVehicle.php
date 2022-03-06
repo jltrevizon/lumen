@@ -29,6 +29,10 @@ class DeliveryVehicle extends Model
         'deleted_at'
     ];
 
+    public function scopeByIds($query, $ids){
+        return $query->whereIn('id', $ids);
+    }
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
     }
