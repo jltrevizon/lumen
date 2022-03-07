@@ -47,7 +47,7 @@ class DamageRepository extends Repository {
         $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
-            $this->notificationMail->build($role);
+            $this->notificationMail->build($role, $damage->id);
         }
         if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);
