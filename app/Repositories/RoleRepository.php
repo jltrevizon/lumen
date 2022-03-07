@@ -12,6 +12,12 @@ class RoleRepository extends Repository {
 
     }
 
+    public function index($request){
+        return Role::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->get();
+    }
+
     public function getById($id){
         return Role::findOrFail($id);
     }
