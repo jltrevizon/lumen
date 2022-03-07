@@ -353,7 +353,7 @@ public function verifyPlateReception($request){
                             }
                             $square = $vehicle->square()->first();
                             if (!is_null($square)) {
-                                $vehicle->ubication = $square->street->zone->name.', '.$square->street->name.', '$square->name;
+                                $vehicle->ubication = $square->street->zone->name.', '.$square->street->name.', '.$square->name;
                                 $vehicle->save;
                                 $square->vehicle_id = null;
                                 $square->save();
