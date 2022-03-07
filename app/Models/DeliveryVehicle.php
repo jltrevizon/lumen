@@ -22,7 +22,7 @@ class DeliveryVehicle extends Model
     	'vehicle_id' => 'integer',
         'campa_id' => 'integer',
         'delivery_note_id' => 'integer',
-    	'data_delivery' => 'array'
+    	'data_delivery' => 'json'
     ];
 
     protected $dates = [
