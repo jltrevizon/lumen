@@ -186,6 +186,10 @@ class Vehicle extends Model
         return $this->belongsTo(VehicleModel::class);
     }
 
+    public function subStateChangeHistories(){
+        return $this->hasMany(SubStateChangeHistory::class);
+    }
+
     public function square(){
         return $this->hasOne(Square::class);
     }

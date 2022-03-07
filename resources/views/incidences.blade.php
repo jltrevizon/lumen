@@ -9,6 +9,7 @@
 <body>
     <h1>Hola!</h1>
     <h2>Se ha creado una nueva incidencia para tu grupo</h2>
+    <p>Nota: Las tareas solicitadas se crearán automáticamente a excepción de las de tipo intervención carrocería y lunas que requerirán la validación previa</p>
     <a style="background-color: #03989e; padding: 10px; border-radius: 4px; color: #fff; font-weight: bold; text-decoration: none" href={{ env('APP_FRONT') }}>Ir a la aplicación</a>
     <div class="row justify-content-md-center" style="justify-content: center !important;">
         <div class="col-md-8">
