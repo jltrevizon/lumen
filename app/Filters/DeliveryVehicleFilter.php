@@ -51,6 +51,10 @@ class DeliveryVehicleFilter extends ModelFilter
 
     public function notNullId($value){
         return $this->whereNotNull('delivery_note_id');
+    }   
+
+    public function deliveryNoteIds($ids){
+        return $this->whereIn('delivery_note_id', $ids);
     }    
 
     /**
