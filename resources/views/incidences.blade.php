@@ -29,7 +29,7 @@
         @endforeach
     </ol>
     <p><strong>Nota: Las tareas solicitadas se crearán automáticamente.</strong></p>
-    <a style="background-color: #03989e; padding: 10px; border-radius: 4px; color: #fff; font-weight: bold; text-decoration: none" href={{ env('APP_FRONT') . '/#/incidences' }}>Ir a la aplicación</a>
+    <a style="background-color: #03989e; padding: 10px; border-radius: 4px; color: #fff; font-weight: bold; text-decoration: none" href={{ env('APP_FRONT') . '/#/incidences/' . $damage?->id }}>Ir a la aplicación</a>
     <div class="row justify-content-md-center" style="justify-content: center !important;">
         <div class="col-md-8">
             <p style="color: #8898aa !important; text-align: center !important;">
