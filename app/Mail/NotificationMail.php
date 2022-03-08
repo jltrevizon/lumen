@@ -32,7 +32,7 @@ class NotificationMail extends Mailable
     public function build($roleId, $damageId)
     {
         $users = User::where('role_id', $roleId)->get();
-        $damage = Damage::with(['vehicle.vehicleModel.brand','damageType','roles','tasks'])
+        $damage = Damage::with(['vehicle.vehicleModel.brand','damageType','roles','tasks','user'])
         ->findOrFail($damageId);
         $data = [
             'damage' => $damage,

@@ -10,6 +10,8 @@
     <h2>Hola!</h2>
     <h3>Se ha creado una nueva incidencia para tu grupo.</h3>
     <p><strong>{{date('d-m-Y H:i:s', strtotime($damage->created_at))}}</strong></p>
+    <p><strong>Creador: </strong></p>
+    <p>{{$damage?->user?->name}} {{$damage?->user?->surname}}</p>
     <p><strong>Datos del vehículo:</strong></p>
     <p><strong>Matrícula:</strong> {{$damage->vehicle->plate}} <strong>Marca:</strong> {{$damage?->vehicle?->vehicleModel?->brand?->name}} <strong>Modelo:</strong> {{$damage?->vehicle?->vehicleModel?->name}}</p>
     <p><strong>Tipo de incidencia</strong></p>
