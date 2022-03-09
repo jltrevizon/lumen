@@ -352,9 +352,12 @@ class PendingTaskRepository extends Repository {
 
     private function closeDamage($damageId){
         $pendingTasks = PendingTask::where('damage_id', $damageId)
-        ->where('state_pending_task_id','<>' , StatePendingTask::FINISHED)
-        ->count();
-        if($pendingTasks == 0){
+        ->where(function($builder){
+            return $builder->where('state_pending_task_id','<>',StatePendingTask::FINISHED)
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->get();
+        if(count($pendingTasks) == 0){
             $damage = Damage::findOrFail($damageId);
             $damage->update(['status_damage_id' => StatusDamage::CLOSED]);
         }
