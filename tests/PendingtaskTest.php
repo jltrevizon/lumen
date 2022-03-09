@@ -2,6 +2,7 @@
 
 use App\Models\BudgetPendingTask;
 use App\Models\Company;
+use App\Models\Damage;
 use App\Models\GroupTask;
 use App\Models\Incidence;
 use App\Models\Operation;
@@ -66,6 +67,12 @@ class PendingtaskTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->groupTask());
         $this->assertInstanceOf(GroupTask::class, $this->pendingTask->groupTask()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_damage(){
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->damage());
+        $this->assertInstanceOf(Damage::class, $this->pendingTask->damage()->getModel());
     }
 
     /** @test */
