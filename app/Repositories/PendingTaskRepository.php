@@ -508,13 +508,13 @@ class PendingTaskRepository extends Repository {
         $task = $this->taskRepository->getById([], $taskId);
         $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTask = null;
-        $totalPendingTaskActives = 0;
+        $orderLastPendingTask = 0;
         if($vehicle->lastGroupTask){
-            $totalPendingTaskActives = count($vehicle->lastGroupTask->allApprovedPendingTasks);
+            $orderLastPendingTask = $vehicle->lastGroupTask->lastPendingTaskApproved->order;
         }
         
         if($task->need_authorization == false){
-            if($totalPendingTaskActives > 0) {
+            if($orderLastPendingTask > 0) {
                 $groupTask = $vehicle->lastGroupTask;
             }
             else {
@@ -524,10 +524,10 @@ class PendingTaskRepository extends Repository {
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
                 'group_task_id' => $groupTask->id,
-                'state_pending_task_id' => $totalPendingTaskActives > 0 ? null : StatePendingTask::PENDING,
+                'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,
                 'damage_id' => $damage->id,
                 'duration' => $task->duration,
-                'order' => $totalPendingTaskActives + 1,
+                'order' => $orderLastPendingTask + 1,
                 'approved' => true,
                 'user_id' => Auth::id()
             ]);

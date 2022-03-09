@@ -48,6 +48,13 @@ class GroupTask extends Model
             ->where('approved', 1);
     }
 
+    public function lastPendingTaskApproved(){
+        return $this->hasMany(PendingTask::class)
+            ->where('approved', true)
+            ->orderBy('order', 'DESC')
+            ->first();
+    }
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'group_task_id');
     }
