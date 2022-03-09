@@ -52,6 +52,10 @@ class GroupTask extends Model
         return $this->belongsTo(Vehicle::class, 'group_task_id');
     }
 
+    public function damages(){
+        return $this->hasMany(Damage::class);
+    }
+
     public function questionnaire(){
         return $this->belongsTo(Questionnaire::class);
     }

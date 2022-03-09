@@ -238,4 +238,8 @@ class VehicleFilter extends ModelFilter
         }
     }
 
+    public function hasDamage($value){
+        return $this->whereHas('lastGroupTask.damages');
+    }
+
 }

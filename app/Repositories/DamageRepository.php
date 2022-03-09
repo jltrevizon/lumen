@@ -52,6 +52,11 @@ class DamageRepository extends Repository {
         if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);
         }
+        $groupTask = $damage->vehicle->lastGroupTask;
+        if($groupTask){
+            $damage->group_task_id = $groupTask->id;
+            $damage->save();
+        }
 
         return $damage;
     }

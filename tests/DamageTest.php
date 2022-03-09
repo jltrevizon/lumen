@@ -5,6 +5,7 @@ use App\Models\Comment;
 use App\Models\Damage;
 use App\Models\DamageImage;
 use App\Models\DamageType;
+use App\Models\GroupTask;
 use App\Models\PendingAuthorization;
 use App\Models\Role;
 use App\Models\SeverityDamage;
@@ -51,6 +52,13 @@ class DamageTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->damage->vehicle());
         $this->assertInstanceOf(Vehicle::class, $this->damage->vehicle()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_group_task()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->damage->groupTask());
+        $this->assertInstanceOf(GroupTask::class, $this->damage->groupTask()->getModel());
     }
 
     /** @test */
