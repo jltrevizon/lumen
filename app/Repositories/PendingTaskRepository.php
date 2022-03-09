@@ -154,7 +154,8 @@ class PendingTaskRepository extends Repository {
             $pending_task->datetime_pause = new DateTime();
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);   
             $oldOrder = $pending_task->order;
-            $nextPendingTask = PendingTask::where('approved', true)
+            $nextPendingTask = PendingTask::where('group_task_id', $pending_task->group_task_id)
+                ->where('approved', true)
                 ->whereNull('state_pending_task_id')
                 ->orderBy('order','ASC')
                 ->first();
