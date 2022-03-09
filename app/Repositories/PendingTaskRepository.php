@@ -153,7 +153,17 @@ class PendingTaskRepository extends Repository {
         if($request->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->datetime_pause = new DateTime();
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);   
+            $oldOrder = $pending_task->order;
+            $nextPendingTask = PendingTask::where('approved', true)
+                ->whereNull('state_pending_task_id')
+                ->orderBy('order','ASC')
+                ->first();
+            $pending_task->order = $nextPendingTask->order;
+            $pending_task->state_pending_task_id = null;
             $pending_task->save();
+            $nextPendingTask->order = $oldOrder;
+            $nextPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+            $nextPendingTask->save();
         }
     }
 
