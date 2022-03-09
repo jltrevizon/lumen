@@ -511,7 +511,7 @@ class PendingTaskRepository extends Repository {
         $orderLastPendingTask = 0;
         if($vehicle->lastGroupTask){
             $orderLastPendingTask = $vehicle->lastGroupTask->allApprovedPendingTasks;
-            $orderLastPendingTask = $orderLastPendingTask[0]['order'];
+            $orderLastPendingTask = $orderLastPendingTask[count($orderLastPendingTask) - 1]['order'];
         }
         
         if($task->need_authorization == false){
