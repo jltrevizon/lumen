@@ -6,7 +6,6 @@ use App\Mail\DamageVehicleMail;
 use App\Mail\NotificationMail;
 use App\Models\Damage;
 use App\Models\StatusDamage;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
@@ -64,7 +63,7 @@ class DamageRepository extends Repository {
     public function update($request, $id){
         $damage = Damage::findOrFail($id);
         $damage->update($request->all());
-        if($request->input('status_damage_id') == StatusDamage::APPROVED && !is_null($damage['task_id'])){
+        if($request->input('status_damage_id') == StatusDamage::CLOSED && !is_null($damage['task_id'])){
             // $this->pendingTaskRepository->createPendingTaskFromDamage($damage);
         }
         return $damage;

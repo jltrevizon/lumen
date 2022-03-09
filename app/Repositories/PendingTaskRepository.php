@@ -2,10 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Models\Damage;
 use App\Models\Order;
 use App\Models\PendingTask;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\StatusDamage;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
@@ -301,7 +303,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
             $pending_task->save();
-
+            $pending_task->damage_id ? $this->closeDamage($pending_task->damage_id) : null;
             $pending_task_next = null;
             if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) 
             {
@@ -345,6 +347,16 @@ class PendingTaskRepository extends Repository {
                 return [ 'message' => 'Tareas terminadas' ];
             }
             return [ 'message' => 'La tarea no está en estado iniciada' ];
+        }
+    }
+
+    private function closeDamage($damageId){
+        $pendingTasks = PendingTask::where('damage_id', $damageId)
+        ->where('state_pending_task_id','<>' , StatePendingTask::FINISHED)
+        ->count();
+        if($pendingTasks == 0){
+            $damage = Damage::findOrFail($damageId);
+            $damage->update(['status_damage_id' => StatusDamage::CLOSED]);
         }
     }
 
@@ -513,6 +525,7 @@ class PendingTaskRepository extends Repository {
                 'task_id' => $taskId,
                 'group_task_id' => $groupTask->id,
                 'state_pending_task_id' => $totalPendingTaskActives > 0 ? null : StatePendingTask::PENDING,
+                'damage_id' => $damage->id,
                 'duration' => $task->duration,
                 'order' => $totalPendingTaskActives + 1,
                 'approved' => true,
