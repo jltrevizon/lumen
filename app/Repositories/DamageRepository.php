@@ -6,7 +6,6 @@ use App\Mail\DamageVehicleMail;
 use App\Mail\NotificationMail;
 use App\Models\Damage;
 use App\Models\StatusDamage;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
@@ -47,10 +46,15 @@ class DamageRepository extends Repository {
         $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
-            $this->notificationMail->build($role);
+            $this->notificationMail->build($role, $damage->id);
         }
         if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);
+        }
+        $groupTask = $damage->vehicle->lastGroupTask;
+        if($groupTask){
+            $damage->group_task_id = $groupTask->id;
+            $damage->save();
         }
 
         return $damage;
@@ -59,7 +63,7 @@ class DamageRepository extends Repository {
     public function update($request, $id){
         $damage = Damage::findOrFail($id);
         $damage->update($request->all());
-        if($request->input('status_damage_id') == StatusDamage::APPROVED && !is_null($damage['task_id'])){
+        if($request->input('status_damage_id') == StatusDamage::CLOSED && !is_null($damage['task_id'])){
             // $this->pendingTaskRepository->createPendingTaskFromDamage($damage);
         }
         return $damage;

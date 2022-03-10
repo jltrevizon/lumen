@@ -2,10 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Models\Damage;
 use App\Models\Order;
 use App\Models\PendingTask;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\StatusDamage;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
@@ -153,7 +155,18 @@ class PendingTaskRepository extends Repository {
         if($request->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->datetime_pause = new DateTime();
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);   
+            $oldOrder = $pending_task->order;
+            $nextPendingTask = PendingTask::where('group_task_id', $pending_task->group_task_id)
+                ->where('approved', true)
+                ->whereNull('state_pending_task_id')
+                ->orderBy('order','ASC')
+                ->first();
+            $pending_task->order = $nextPendingTask->order;
+            $pending_task->state_pending_task_id = null;
             $pending_task->save();
+            $nextPendingTask->order = $oldOrder;
+            $nextPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+            $nextPendingTask->save();
         }
     }
 
@@ -290,7 +303,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
             $pending_task->save();
-
+            $pending_task->damage_id ? $this->closeDamage($pending_task->damage_id) : null;
             $pending_task_next = null;
             if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) 
             {
@@ -334,6 +347,19 @@ class PendingTaskRepository extends Repository {
                 return [ 'message' => 'Tareas terminadas' ];
             }
             return [ 'message' => 'La tarea no está en estado iniciada' ];
+        }
+    }
+
+    private function closeDamage($damageId){
+        $pendingTasks = PendingTask::where('damage_id', $damageId)
+        ->where(function($builder){
+            return $builder->where('state_pending_task_id','<>',StatePendingTask::FINISHED)
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->get();
+        if(count($pendingTasks) == 0){
+            $damage = Damage::findOrFail($damageId);
+            $damage->update(['status_damage_id' => StatusDamage::CLOSED]);
         }
     }
 
@@ -485,13 +511,14 @@ class PendingTaskRepository extends Repository {
         $task = $this->taskRepository->getById([], $taskId);
         $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTask = null;
-        $totalPendingTaskActives = 0;
+        $orderLastPendingTask = 0;
         if($vehicle->lastGroupTask){
-            $totalPendingTaskActives = count($vehicle->lastGroupTask->allApprovedPendingTasks);
+            $orderLastPendingTask = $vehicle->lastGroupTask->allApprovedPendingTasks;
+            $orderLastPendingTask = $orderLastPendingTask[count($orderLastPendingTask) - 1]['order'];
         }
         
         if($task->need_authorization == false){
-            if($totalPendingTaskActives > 0) {
+            if($orderLastPendingTask > 0) {
                 $groupTask = $vehicle->lastGroupTask;
             }
             else {
@@ -501,9 +528,10 @@ class PendingTaskRepository extends Repository {
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
                 'group_task_id' => $groupTask->id,
-                'state_pending_task_id' => $totalPendingTaskActives > 0 ? null : StatePendingTask::PENDING,
+                'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,
+                'damage_id' => $damage->id,
                 'duration' => $task->duration,
-                'order' => $totalPendingTaskActives + 1,
+                'order' => $orderLastPendingTask + 1,
                 'approved' => true,
                 'user_id' => Auth::id()
             ]);

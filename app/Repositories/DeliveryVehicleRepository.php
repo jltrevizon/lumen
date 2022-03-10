@@ -20,6 +20,7 @@ class DeliveryVehicleRepository extends Repository {
     public function index($request){
         return DeliveryVehicle::with($this->getWiths($request->with))
             ->filter($request->all())
+            ->orderBy('delivery_note_id', 'DESC')
             ->paginate($request->input('per_page'));
     }
 

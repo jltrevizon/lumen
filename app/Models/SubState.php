@@ -56,6 +56,10 @@ class SubState extends Model
         return $this->belongsToMany(TypeUserApp::class);
     }
 
+    public function subStateChangeHistories(){
+        return $this->hasMany(SubStateChangeHistory::class);
+    }
+
     public function scopeByStateIds($query, array $ids){
         return $query->whereIn('state_id', $ids);
     }

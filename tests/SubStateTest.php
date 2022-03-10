@@ -2,6 +2,7 @@
 
 use App\Models\State;
 use App\Models\SubState;
+use App\Models\SubStateChangeHistory;
 use App\Models\Task;
 use App\Models\TypeUserApp;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,6 +44,13 @@ class SubStateTest extends TestCase
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->subState->type_users_app());
         $this->assertInstanceOf(TypeUserApp::class, $this->subState->type_users_app()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_sub_state_change_histories()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->subState->subStateChangeHistories());
+        $this->assertInstanceOf(SubStateChangeHistory::class, $this->subState->subStateChangeHistories()->getModel());
     }
 
     /** @test */

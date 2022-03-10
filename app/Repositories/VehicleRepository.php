@@ -43,7 +43,8 @@ class VehicleRepository extends Repository {
         VehicleExitRepository $vehicleExitRepository,
         CampaRepository $campaRepository,
         DeliveryNoteRepository $deliveryNoteRepository,
-        SquareRepository $squareRepository)
+        SquareRepository $squareRepository,
+        SubStateChangeHistoryRepository $subStateChangeHistoryRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -58,6 +59,7 @@ class VehicleRepository extends Repository {
         $this->vehicleExitRepository = $vehicleExitRepository;
         $this->squareRepository = $squareRepository;
         $this->deliveryNoteRepository = $deliveryNoteRepository;
+        $this->subStateChangeHistoryRepository = $subStateChangeHistoryRepository;
     }
     
     public function getAll($request){
@@ -185,6 +187,7 @@ class VehicleRepository extends Repository {
             }
         }
         $vehicle->save();
+        $this->subStateChangeHistoryRepository->store($vehicle->id, $vehicle->sub_state_id);
         return response()->json(['vehicle' => $vehicle]);
     }
 

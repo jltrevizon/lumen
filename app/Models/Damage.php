@@ -18,6 +18,7 @@ class Damage extends Model
         'campa_id',
         'user_id',
         'vehicle_id',
+        'group_task_id',
         'damage_type_id',
         'task_id',
         'severity_damage_id',
@@ -35,6 +36,10 @@ class Damage extends Model
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function groupTask(){
+        return $this->belongsTo(GroupTask::class);
     }
 
     public function damageType(){
@@ -83,6 +88,10 @@ class Damage extends Model
 
     public function scopeByTaskIds($query, array $ids){
         return $query->whereIn('task_id', $ids);
+    }
+
+    public function scopeByGroupTaskIds($query, array $ids){
+        return $query->whereIn('group_task_id', $ids);
     }
 
     public function scopeByStatusDamageIds($query, array $ids){

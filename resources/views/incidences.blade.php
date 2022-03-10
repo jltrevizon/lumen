@@ -7,9 +7,29 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Hola!</h1>
-    <h2>Se ha creado una nueva incidencia para tu grupo</h2>
-    <a style="background-color: #03989e; padding: 10px; border-radius: 4px; color: #fff; font-weight: bold; text-decoration: none" href={{ env('APP_FRONT') }}>Ir a la aplicación</a>
+    <h2>Hola!</h2>
+    <h3>Se ha creado una nueva incidencia para tu grupo.</h3>
+    <p><strong>{{date('d-m-Y H:i:s', strtotime($damage->created_at))}}</strong></p>
+    <p><strong>Creador: </strong></p>
+    <p>{{$damage?->user?->name}} {{$damage?->user?->surname}}</p>
+    <p><strong>Datos del vehículo:</strong></p>
+    <p><strong>Matrícula:</strong> {{$damage->vehicle->plate}} <strong>Marca:</strong> {{$damage?->vehicle?->vehicleModel?->brand?->name}} <strong>Modelo:</strong> {{$damage?->vehicle?->vehicleModel?->name}}</p>
+    <p><strong>Tipo de incidencia</strong></p>
+    <p>{{$damage?->damageType?->description}}</p>
+    <p><strong>Notificado a:</strong></p>
+    <ol>
+        @foreach($damage->roles as $role)
+        <li>{{$role->description}}</li>
+        @endforeach
+    </ol>
+    <p><strong>Tareas:</strong></p>
+    <ol>
+        @foreach($damage->tasks as $task)
+        <li>{{$task->name}}</li>
+        @endforeach
+    </ol>
+    <p><strong>Nota: Las tareas solicitadas se crearán automáticamente.</strong></p>
+    <a style="background-color: #03989e; padding: 10px; border-radius: 4px; color: #fff; font-weight: bold; text-decoration: none" href={{ env('APP_FRONT') . '/#/incidences/' . $damage?->id }}>Ir a la aplicación</a>
     <div class="row justify-content-md-center" style="justify-content: center !important;">
         <div class="col-md-8">
             <p style="color: #8898aa !important; text-align: center !important;">

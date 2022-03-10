@@ -24,6 +24,7 @@ class PendingTask extends Model
         'user_start_id',
         'user_end_id',
         'group_task_id',
+        'damage_id',
         'duration',
         'order',
         'approved',
@@ -56,6 +57,10 @@ class PendingTask extends Model
 
     public function groupTask(){
         return $this->belongsTo(GroupTask::class);
+    }
+
+    public function damage(){
+        return $this->belongsTo(Damage::class);
     }
 
     public function incidences(){
