@@ -146,7 +146,7 @@ class PendingTaskRepository extends Repository {
     public function update($request, $id){
         $pending_task = PendingTask::findOrFail($id);
         empty($request->state_pending_task_id) ? true : $this->isPause($request, $pending_task);
-        if($request->input('approved') && $request->input('approved') == false && $pending_task->damage_id != null){
+        if($request->input('approved') && $request->input('approved') == 0 && $pending_task->damage_id != null){
             $this->closeDamage($pending_task->damage_id);
         }
         $pending_task->update($request->all());
