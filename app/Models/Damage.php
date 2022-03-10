@@ -90,6 +90,10 @@ class Damage extends Model
         return $query->whereIn('task_id', $ids);
     }
 
+    public function scopeByGroupTaskIds($query, array $ids){
+        return $query->whereIn('group_task_id', $ids);
+    }
+
     public function scopeByStatusDamageIds($query, array $ids){
         return $query->whereIn('status_damage_id', $ids);
     }
