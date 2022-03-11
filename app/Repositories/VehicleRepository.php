@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Company;
+use App\Models\Damage;
 use App\Models\DeliveryNote;
 use App\Models\PendingTask;
 use App\Models\SubState;
@@ -11,6 +12,7 @@ use App\Models\Vehicle;
 use App\Models\Square;
 use App\Models\VehicleExit;
 use App\Models\StatePendingTask;
+use App\Models\StatusDamage;
 use App\Models\TypeDeliveryNote;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
@@ -332,6 +334,7 @@ public function verifyPlateReception($request){
                 ->chunk(200, function ($vehicles) use($request, $deliveryNote) {
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
+                            $this->closeDamage($vehicle['id']);
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id);
                             if (!is_null($vehicle->lastGroupTask)) {
                                 foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
@@ -435,6 +438,18 @@ public function verifyPlateReception($request){
         return response()->json([
             'message' => 'Vehicle defleeted!'
         ]);
+    }
+
+    private function closeDamage($vehicleId){
+        Damage::where('vehicle_id', $vehicleId)
+            ->where('status_damage_id','!=', StatusDamage::CLOSED)
+            ->chunk(200, function ($damages) {
+                foreach($damages as $damage){
+                    $damage->update([
+                        'status_damage_id' => StatusDamage::CLOSED
+                    ]);
+                }
+            });
     }
 
 }
