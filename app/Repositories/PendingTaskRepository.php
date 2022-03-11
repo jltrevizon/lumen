@@ -519,7 +519,7 @@ class PendingTaskRepository extends Repository {
         if($vehicle->lastGroupTask){
             $totalApproved = $vehicle->lastGroupTask->allApprovedPendingTasks;
             if(count($totalApproved) > 0){
-                $orderLastPendingTask = $orderLastPendingTask[count($totalApproved) - 1]['order'];
+                $orderLastPendingTask = $totalApproved[count($totalApproved) - 1]['order'];
             }
         }
         
