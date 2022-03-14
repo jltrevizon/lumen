@@ -508,7 +508,6 @@ class PendingTaskRepository extends Repository {
                     $pendingTask->update(['approved' => false]);
                 }
             });
-
     }
 
     public function addPendingTaskFromIncidence($vehicleId, $taskId, $damage){

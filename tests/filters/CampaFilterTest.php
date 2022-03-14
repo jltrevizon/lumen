@@ -4,7 +4,6 @@ use App\Models\Campa;
 use App\Models\Company;
 use App\Models\Province;
 use App\Models\Region;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CampaFilterTest extends TestCase
@@ -49,6 +48,27 @@ class CampaFilterTest extends TestCase
         $campas = Campa::filter(['provinces' => [$campa->province_id]])->get();
         $this->assertCount(1, $campas);
         $this->assertEquals($campa->id, $campas[0]->id);
+    }
+
+    /** @test */
+    public function it_can_filter_by_region()
+    {
+        $region1 = Region::factory()->create();
+        $region2 = Region::factory()->create();
+        $campa = Campa::factory()->create();
+        Province::query()->update(['region_id' => $region1->id]);
+        Province::query()->where('id', $campa->province_id)->update(['region_id' => $region2->id]);
+        $campas = Campa::filter(['regions' => [$region2->id]])->get();
+        $this->assertCount(1, $campas);
+    }
+
+    /** @test */
+    public function it_can_filter_by_name()
+    {
+        Campa::query()->update(['name' => 'Campa 1']);
+        $campa = Campa::factory()->create(['name' => 'Campa 2']);
+        $campas = Campa::filter(['name' => $campa->name])->get();
+        $this->assertCount(1, $campas);
     }
 
 }
