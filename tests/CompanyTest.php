@@ -99,6 +99,6 @@ class CompanyTest extends TestCase
     /** @test */
     public function should_return_companies_by_phone()
     {
-        $this->assertInstanceOf(Builder::class, $this->company->byPhone(''));
+        $this->assertInstanceOf(Builder::class, $this->company->byPhone(0));
     }
 }

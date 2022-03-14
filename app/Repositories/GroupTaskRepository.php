@@ -82,7 +82,7 @@ class GroupTaskRepository extends Repository {
         $group_task->approved = 1;
         $group_task->datetime_approved = date('Y-m-d H:i:s');
         $group_task->save();
-
+        
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         if (is_null($vehicle->lastGroupTask)) {
             $vehicle->sub_state_id = null;
@@ -99,8 +99,9 @@ class GroupTaskRepository extends Repository {
             $vehicle->company_id = $user->company_id;
         }
         $vehicle->save();
-    //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
-
+        //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
+        
+        return ['message' => 'Solicitud aprobada!'];
         return ['message' => 'Solicitud aprobada!'];
     }
 
