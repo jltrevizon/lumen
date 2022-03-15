@@ -571,5 +571,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
         $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
+    
+        /**
+         * Statistics
+         */
+        $router->get('/statistics/stock-by-state','StatisticsController@getStockByState');
+        $router->get('/statistics/stock-by-month','StatisticsController@getStockByMonth');
+
     });
 });

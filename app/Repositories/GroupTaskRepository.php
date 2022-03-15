@@ -102,7 +102,6 @@ class GroupTaskRepository extends Repository {
         //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         
         return ['message' => 'Solicitud aprobada!'];
-        return ['message' => 'Solicitud aprobada!'];
     }
 
     public function declineGroupTask($request){
