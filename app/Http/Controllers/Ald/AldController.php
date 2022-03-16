@@ -129,7 +129,8 @@ class AldController extends Controller
             $pending_task->user_id = Auth::id();
             $pending_task->save();
         }
-        $this->vehicleRepository->updateSubState($vehicleId, null);
+        $vehicle = $this->vehicleRepository->pendingOrInProgress($vehicleId);
+        $this->vehicleRepository->updateSubState($vehicleId, $vehicle?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
     }
 
     private function createFinishedTask($vehicleId, $tasks, $groupTaskId){

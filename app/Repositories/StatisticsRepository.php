@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\StatusDamage;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +28,7 @@ class StatisticsRepository extends Repository {
     }
 
     public function getStockByMonth(){
-            $vehicles = Vehicle::withTrashed()
+        $vehicles = Vehicle::withTrashed()
             ->select(
                 DB::raw('count(id) as `total`'), 
                 DB::raw('count(deleted_at) as `deleted`'),
