@@ -15,7 +15,7 @@ class StateChangeRepository extends Repository {
             ->first();
         if($stateChange && $lastPendingTask?->task?->sub_state_id != $currentPendingTask?->task?->sub_state_id){
             $stateChange->update([
-                'datetime_finish_sub_state' => date('Ym-d H:i:s'),
+                'datetime_finish_sub_state' => date('Y-m-d H:i:s'),
                 'total_time' => $stateChange->total_time + $this->diffDateTimes($lastPendingTask->created_at)
             ]);
         } else {
