@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\StateChange;
+use DateTime;
 
 class StateChangeRepository extends Repository {
 
@@ -14,7 +15,8 @@ class StateChangeRepository extends Repository {
             ->first();
         if($stateChange && $lastPendingTask->sub_state_id != $currentPendingTask->sub_state_id){
             $stateChange->update([
-                'datetime_finish_sub_state' => date('Ym-d H:i:s')
+                'datetime_finish_sub_state' => date('Ym-d H:i:s'),
+                'total_time' => $stateChange->total_time + $this->diffDateTimes($lastPendingTask->created_at)
             ]);
         } else {
             StateChange::create([
@@ -24,6 +26,15 @@ class StateChangeRepository extends Repository {
             ]);
         }
 
+    }
+
+    private function diffDateTimes($datetime){
+        $datetime1 = new DateTime($datetime);
+        $diference = date_diff($datetime1, new DateTime());
+        $minutes = $diference->days * 24 * 60;
+        $minutes += $diference->h * 60;
+        $minutes += $diference->i;
+        return $minutes;
     }
 
 }
