@@ -11,6 +11,7 @@ class StateChange extends Model
         'vehicle_id',
         'group_task_id',
         'sub_state_id',
+        'total_time',
         'datetime_finish_sub_state'
     ];
 
