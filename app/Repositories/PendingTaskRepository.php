@@ -35,7 +35,8 @@ class PendingTaskRepository extends Repository {
         ReceptionRepository $receptionRepository,
         PendingTaskCanceledRepository $pendingTaskCanceledRepository,
         IncidencePendingTaskRepository $incidencePendingTaskRepository,
-        RepositoriesPendingAuthorizationRepository $pendingAuthorizationRepository
+        RepositoriesPendingAuthorizationRepository $pendingAuthorizationRepository,
+        StateChangeRepository $stateChangeRepository
         )
     {
         $this->groupTaskRepository = $groupTaskRepository;
@@ -48,6 +49,7 @@ class PendingTaskRepository extends Repository {
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
         $this->incidencePendingTaskRepository = $incidencePendingTaskRepository;
         $this->pendingAuthorizationRepository = $pendingAuthorizationRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function getAll($request){
@@ -318,11 +320,13 @@ class PendingTaskRepository extends Repository {
                 $pending_task_next->save();
                 if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
                     $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $pending_task_next['task']['sub_state_id']);
+                    $this->stateChangeRepository->createOrUpdate($pending_task->vehicle_id, $pending_task, $pending_task_next);
                 }
                 return $this->getPendingOrNextTask($request);
             } else {
                 if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
                     $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                    $this->stateChangeRepository->createOrUpdate($pending_task->vehicle_id, $pending_task, null);
                 }
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){
                     $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], TradeState::RESERVED); // Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)

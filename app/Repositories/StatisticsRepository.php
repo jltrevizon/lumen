@@ -29,7 +29,7 @@ class StatisticsRepository extends Repository {
     }
 
     public function getStockByMonth(){
-        $vehicles = Vehicle::withTrashed()
+            $vehicles = Vehicle::withTrashed()
             ->select(
                 DB::raw('count(id) as `total`'), 
                 DB::raw('count(deleted_at) as `deleted`'),
