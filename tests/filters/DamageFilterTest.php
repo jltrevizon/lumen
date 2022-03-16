@@ -19,7 +19,7 @@ class DamageFilterTest extends TestCase
     public function it_can_filter_by_ids()
     {
         $damage = Damage::factory()->create();
-        $damages = Damage::filter(['ids' => [$damage->id]]);
+        $damages = Damage::filter(['ids' => [$damage->id]])->get();
         $this->assertCount(1, $damages);
     }
 
