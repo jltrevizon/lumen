@@ -17,7 +17,7 @@ class StateChangeRepository extends Repository {
                 'datetime_finish_sub_state' => date('Ym-d H:i:s')
             ]);
         } else {
-            $stateChange->create([
+            StateChange::create([
                 'vehicle_id' => $vehicleId,
                 'group_task_id' => $currentPendingTask->group_task_id,
                 'sub_state_id' => $currentPendingTask->sub_state_id,
