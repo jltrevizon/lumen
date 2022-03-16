@@ -323,7 +323,7 @@ class PendingTaskRepository extends Repository {
                 $pending_task_next->save();
                 if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
                     $vehicle = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
-                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], null, $vehicle?->lastGroupTask?->pendingTasks[0]);
+                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], null, $pending_task_next);
                 }
                 return $this->getPendingOrNextTask($request);
             } else {
