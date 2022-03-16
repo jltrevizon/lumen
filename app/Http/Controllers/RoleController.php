@@ -16,8 +16,8 @@ class RoleController extends Controller
         $this->roleRepository = $roleRepository;
     }
 
-    public function getAll(){
-        return $this->getDataResponse(Role::all(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->roleRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getById($id){

@@ -41,11 +41,25 @@ class GroupTask extends Model
         })
         ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
         ->orderBy('order');
+    }
 
+    public function allApprovedPendingTasks(){
+        return $this->hasMany(PendingTask::class)
+            ->where('approved', 1);
+    }
+
+    public function lastPendingTaskApproved(){
+        return $this->hasMany(PendingTask::class)
+            ->where('approved', true)
+            ->orderBy('order', 'DESC');
     }
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'group_task_id');
+    }
+
+    public function damages(){
+        return $this->hasMany(Damage::class);
     }
 
     public function questionnaire(){

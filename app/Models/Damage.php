@@ -7,16 +7,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Damage extends Model
 {
     
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
         'campa_id',
         'user_id',
         'vehicle_id',
+        'group_task_id',
+        'damage_type_id',
         'task_id',
         'severity_damage_id',
         'status_damage_id',
@@ -35,12 +38,28 @@ class Damage extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function groupTask(){
+        return $this->belongsTo(GroupTask::class);
+    }
+
+    public function damageType(){
+        return $this->belongsTo(DamageType::class);
+    }
+
     public function task(){
         return $this->belongsTo(Task::class);
     }
 
     public function comments(){
         return $this->hasMany(Comment::class);
+    }
+
+    public function roles(){
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function tasks(){
+        return $this->belongsToMany(Task::class);
     }
 
     public function statusDamage(){
@@ -55,6 +74,10 @@ class Damage extends Model
         return $this->hasMany(DamageImage::class);
     }
 
+    public function pendingAuthorizations(){
+        return $this->hasMany(PendingAuthorization::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
@@ -64,7 +87,13 @@ class Damage extends Model
     }
 
     public function scopeByTaskIds($query, array $ids){
-        return $query->whereIn('task_id', $ids);
+        return $query->whereHas('tasks', function($builder) use($ids) {
+            return $builder->whereIn('task_id', $ids);
+        });
+    }
+
+    public function scopeByGroupTaskIds($query, array $ids){
+        return $query->whereIn('group_task_id', $ids);
     }
 
     public function scopeByStatusDamageIds($query, array $ids){

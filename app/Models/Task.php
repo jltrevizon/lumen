@@ -21,6 +21,7 @@ class Task extends Model
         'company_id',
         'sub_state_id',
         'type_task_id',
+        'need_authorization',
         'name',
         'duration'
     ];
@@ -39,6 +40,14 @@ class Task extends Model
 
     public function purchaseOperations(){
         return $this->hasMany(PurchaseOperation::class);
+    }
+
+    public function pendingAuthorizations(){
+        return $this->hasMany(PendingAuthorization::class);
+    }
+
+    public function damages(){
+        return $this->belongsToMany(Damage::class);
     }
 
     public function scopeByIds($query, array $ids){

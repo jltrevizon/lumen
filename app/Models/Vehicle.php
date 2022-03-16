@@ -137,6 +137,10 @@ class Vehicle extends Model
         return $this->belongsToMany(Accessory::class)->withTimestamps();
     }
 
+    public function pendingAuthorizations(){
+        return $this->hasMany(PendingAuthorization::class);
+    }
+
     public function lastQuestionnaire(){
         return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
             'id' => 'max'
@@ -180,6 +184,10 @@ class Vehicle extends Model
 
     public function vehicleModel(){
         return $this->belongsTo(VehicleModel::class);
+    }
+
+    public function subStateChangeHistories(){
+        return $this->hasMany(SubStateChangeHistory::class);
     }
 
     public function square(){

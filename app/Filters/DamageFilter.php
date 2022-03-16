@@ -23,6 +23,10 @@ class DamageFilter extends ModelFilter
         return $this->byTaskIds($ids);
     }
 
+    public function groupTaskIds($ids){
+        return $this->byGroupTaskIds($ids);
+    }
+
     public function statusDamageIds($ids){
         return $this->byStatusDamageIds($ids);
     }
@@ -48,6 +52,10 @@ class DamageFilter extends ModelFilter
     public function userIds($ids)
     {
         return $this->whereIn('user_id', $ids);
+    }
+
+    public function notNullDamageTypeId($value){
+        return $this->whereNotNull('damage_type_id');
     }
 
     /**

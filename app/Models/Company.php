@@ -67,7 +67,7 @@ class Company extends Model
         return $query->where('nif','like',"%$nif%");
     }
 
-    public function scopeByPhone($query, string $phone){
+    public function scopeByPhone($query, int $phone){
         return $query->where('phone','like',"%$phone%");
     }
 }

@@ -22,8 +22,16 @@ class DeliveryVehicle extends Model
     	'vehicle_id' => 'integer',
         'campa_id' => 'integer',
         'delivery_note_id' => 'integer',
-    	'data_delivery' => 'array'
+    	'data_delivery' => 'json'
     ];
+
+    protected $dates = [
+        'deleted_at'
+    ];
+
+    public function scopeByIds($query, $ids){
+        return $query->whereIn('id', $ids);
+    }
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);

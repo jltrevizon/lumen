@@ -37,6 +37,7 @@ class SubState extends Model
     const FINISHED = 21;
     const WORKSHOP_EXTERNAL = 22;
     const PRE_AVAILABLE = 23;
+    const WORKSHOP_MOON = 24;
 
     protected $fillable = [
         'state_id',
@@ -53,6 +54,10 @@ class SubState extends Model
 
     public function type_users_app(){
         return $this->belongsToMany(TypeUserApp::class);
+    }
+
+    public function subStateChangeHistories(){
+        return $this->hasMany(SubStateChangeHistory::class);
     }
 
     public function scopeByStateIds($query, array $ids){

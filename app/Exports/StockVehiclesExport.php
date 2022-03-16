@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Company;
+use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -21,53 +22,54 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
     public function collection()
     {
         return Vehicle::where('company_id', Company::ALD)
-                    ->where('sub_state_id', '<>', SubState::SOLICITUD_DEFLEET)
-                    ->where('sub_state_id', '<>', SubState::ALQUILADO)
-                    ->whereNotNull('sub_state_id')
-                    ->get();
+                ->get();
     }
 
     public function map($vehicle): array
     {
         return [
-            $vehicle->remote_id,
-            $vehicle->company ? $vehicle->company->name : null,
-            $vehicle->campa ? $vehicle->campa->name : null,
             $vehicle->plate,
-            $vehicle->category ? $vehicle->category->name : null,
-            $vehicle->subState ? $vehicle->subState->name : null,
-            $vehicle->subState ? ($vehicle->subState->state ? $vehicle->subState->state->name : null) : null,
-            $vehicle->ubication,
-            $vehicle->vehicleModel ? $vehicle->vehicleModel->name : null,
-            $vehicle->vehicleModel ? ($vehicle->VehicleModel->brand ? $vehicle->vehicleModel->brand->name : null) : null,
+            $vehicle->category->name ?? null,
+            $vehicle->vehicleModel->brand->name ?? null,
+            $vehicle->vehicleModel->name ?? null,
+            $vehicle->typeModelOrder->name ?? null,
             $vehicle->kms,
-            $vehicle->version,
-            $vehicle->vin,
-            $vehicle->first_plate,
-            $vehicle->latitude,
-            $vehicle->longitude
+            $vehicle->color->name ?? null,
+            $vehicle->accessories->pluck('name')->implode(', ') ?? null,
+            $vehicle->campa->name ?? null,
+            $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at ?? null)) : null,
+            $vehicle->subState->state->name ?? null,
+            $vehicle->subState->name ?? null,
+            $vehicle->lastGroupTask->pendingTasks[0]->task->name ?? null,
+            $vehicle->lastGroupTask->pendingTasks[0]->statePendingTask->name ?? null,
+            $vehicle->lastGroupTask->pendingTasks[0]->start_datetime ?? null,
+            $vehicle->square ? ($vehicle->square->street->zone->name . ' ' . $vehicle->square->street->name . ' ' . $vehicle->square->name) : null,
+            $vehicle->lastDeliveryVehicle ? ($vehicle->sub_state_id == SubState::ALQUILADO ? date('d-m-Y', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null) : null,
+            $vehicle->lastGroupTask->pendingTasks[0]->observations ?? null
         ];
     }
 
     public function headings(): array
     {
         return [
-            'REMOTE ID',
-            'EMPRESA',
-            'CAMPA',
-            'MATRÍCULA',
-            'CATEGORÍA',
-            'SUB ESTADO',
-            'ESTADO',
-            'UBICACIÓN',
-            'MODELO',
-            'MARCA',
-            'KILÓMETROS',
-            'VERSIÓN',
-            'VIN',
-            'PRIMERA MATRÍCULA',
-            'LATITUDE',
-            'LONGITUDE'
+            'Matrícula',
+            'Categoría',
+            'Marca',
+            'Modelo',
+            'Negocio',
+            'Kilómetros',
+            'Color',
+            'Accesorios',
+            'Campa',
+            'Fecha de recepción',
+            'Estado',
+            'Sub-estado',
+            'Tarea',
+            'Estado',
+            'Fecha Inicio Tarea',
+            'Ubicación',
+            'Fecha de Salida',
+            'Observaciones'
         ];
     }
 }

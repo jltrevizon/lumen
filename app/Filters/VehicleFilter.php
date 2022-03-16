@@ -136,6 +136,10 @@ class VehicleFilter extends ModelFilter
         return $this->byTaskStatesIds($ids);
     }
 
+    public function whereHasBudgetPendingTaskByState($stateId){
+        return $this->whereHas('pendingTask.budgetPendingTasks', fn (Builder $builder) => $builder->where('state_budget_pending_task_id', $stateId));
+    }
+
     public function pendingTaskDateTimeStartFrom($dateTime)
     {
         return $this->whereHas('pendingTasks', function($query) use ($dateTime) {
@@ -223,6 +227,19 @@ class VehicleFilter extends ModelFilter
                 return $query->whereIn('vehicle_id', $value); 
             });
         }
+    }
+
+    public function isDefleeting($value)
+    {
+        if($value){
+            return $this->whereHas('lastReception.groupTask', fn ($builder) => $builder->whereNotNull('datetime_defleeting'));
+        } else {
+            return $this->whereHas('lastReception.groupTask', fn ($builder) => $builder->whereNull('datetime_defleeting'));
+        }
+    }
+
+    public function hasDamage($value){
+        return $this->whereHas('lastGroupTask.damages');
     }
 
 }

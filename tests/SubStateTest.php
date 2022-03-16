@@ -2,6 +2,7 @@
 
 use App\Models\State;
 use App\Models\SubState;
+use App\Models\SubStateChangeHistory;
 use App\Models\Task;
 use App\Models\TypeUserApp;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,8 +47,21 @@ class SubStateTest extends TestCase
     }
 
     /** @test */
+    public function it_has_many_sub_state_change_histories()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->subState->subStateChangeHistories());
+        $this->assertInstanceOf(SubStateChangeHistory::class, $this->subState->subStateChangeHistories()->getModel());
+    }
+
+    /** @test */
     public function should_return_sub_states_by_state_id()
     {
         $this->assertInstanceOf(Builder::class, $this->subState->byStateIds([]));
+    }
+
+    /** @test */
+    public function should_return_by_ids()
+    {
+        $this->assertInstanceOf(Builder::class, $this->subState->byIds([]));
     }
 }

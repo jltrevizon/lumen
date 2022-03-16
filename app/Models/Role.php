@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use EloquentFilter\Filterable;
 
 class Role extends Model
 {
-    use HasFactory;
+    use HasFactory, Filterable;
 
     const ADMIN = 1;
     const GLOBAL_MANAGER = 2;
@@ -26,5 +27,13 @@ class Role extends Model
 
     public function users(){
         return $this->hasMany(User::class, 'user_id');
+    }
+
+    public function damages(){
+        return $this->belongsToMany(Damage::class);
+    }
+
+    public function scopeByIds($query, array $ids){
+        return $query->whereIn('id', $ids);
     }
 }

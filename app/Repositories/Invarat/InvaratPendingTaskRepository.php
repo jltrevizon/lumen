@@ -39,7 +39,6 @@ class InvaratPendingTaskRepository extends Repository {
             if($order == 1) {
                 $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $pendingTask->datetime_pending = date('Y-m-d H:i:s');
-                $this->vehicleRepository->updateSubState($vehicleId, SubState::CAMPA);
             }
             $pendingTask->group_task_id = $groupTask['id'];
             $pendingTask->duration = $task['duration'];
@@ -47,6 +46,7 @@ class InvaratPendingTaskRepository extends Repository {
             $pendingTask->save();
             $order++;
         }
+         $this->vehicleRepository->updateSubState($vehicleId, SubState::CAMPA);
     }
 
 }

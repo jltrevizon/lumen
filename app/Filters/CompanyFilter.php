@@ -15,11 +15,11 @@ class CompanyFilter extends ModelFilter
         return $this->byName($name);
     }
 
-    public function byNif($nif){
+    public function nif($nif){
         return $this->byNif($nif);
     }
 
-    public function byPhone($phone){
+    public function phone($phone){
         return $this->byPhone($phone);
     }
 

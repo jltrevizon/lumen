@@ -6,6 +6,7 @@ use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
+use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 
 use Exception;
@@ -81,7 +82,7 @@ class GroupTaskRepository extends Repository {
         $group_task->approved = 1;
         $group_task->datetime_approved = date('Y-m-d H:i:s');
         $group_task->save();
-
+        
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         if (is_null($vehicle->lastGroupTask)) {
             $vehicle->sub_state_id = null;
@@ -98,8 +99,8 @@ class GroupTaskRepository extends Repository {
             $vehicle->company_id = $user->company_id;
         }
         $vehicle->save();
-    //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
-
+        //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
+        
         return ['message' => 'Solicitud aprobada!'];
     }
 
@@ -117,5 +118,76 @@ class GroupTaskRepository extends Repository {
     public function groupTaskByQuestionnaireId($questionnaireId){
         return GroupTask::where('questionnaire_id', $questionnaireId)
             ->first();
+    }
+
+    public function disablePendingTasks($group_task){
+        $pendingTasks = PendingTask::where('group_task_id', $group_task->id)
+            ->whereNotNull('order')
+            ->count();
+
+        PendingTask::where('group_task_id', $group_task->id)
+        ->chunk(200, function ($pendingTasks) {
+            foreach($pendingTasks as $pendingTask){
+                $pendingTask->update([
+                    'approved' => false
+                ]);
+            }
+        });
+        $groupTask = GroupTask::findOrFail($group_task->id);
+        $groupTask->approved = true;
+        $groupTask->approved_available = true;
+        $groupTask->datetime_defleeting = date('Y-m-d H:i:s');
+        $groupTask->save();
+        
+        $pendingTask = new PendingTask();
+        $pendingTask->vehicle_id = $group_task->vehicle_id;
+        $pendingTask->task_id = Task::UBICATION;
+        $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
+        $pendingTask->group_task_id = $group_task->id;
+        $pendingTask->duration = 1;
+        $pendingTask->order = $pendingTasks + 1;
+        $pendingTask->datetime_pending = date('Y-m-d H:i:s');
+        $pendingTask->user_id = Auth::id();
+        $pendingTask->save();
+    }
+
+    public function enablePendingTasks($group_task){
+        PendingTask::where('group_task_id', $group_task->id)
+            ->where('task_id', Task::UBICATION)
+            ->chunk(200, function($pendingTasks){
+                foreach($pendingTasks as $pendingTask){
+                    $pendingTask->update([
+                        'approved' => false,
+                        'order' => null, 
+                        'state_pending_task_id' => null,
+                    ]);
+                }
+            });
+
+        PendingTask::where('group_task_id', $group_task->id)
+            ->whereNotNull('order')
+            ->chunk(200, function ($pendingTasks) {
+                foreach($pendingTasks as $pendingTask){
+                    $pendingTask->update([
+                        'approved' => true
+                    ]);
+                }
+            });
+        
+        $groupTask = GroupTask::findOrFail($group_task->id);
+        $groupTask->approved = false;
+        $groupTask->approved_available = false;
+        $groupTask->datetime_defleeting = null;
+        $groupTask->save();
+        $this->orderPendingTask($groupTask);
+    }
+
+    private function orderPendingTask($group_task){
+        $pendingTask = PendingTask::where('group_task_id', $group_task->id)
+            ->orderBy('order', 'ASC')
+            ->first();
+        $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
+        $pendingTask->datetime_pending = date('Y-m-d H:i:s');
+        $pendingTask->save();
     }
 }

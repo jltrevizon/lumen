@@ -8,12 +8,27 @@ use Illuminate\Database\Eloquent\Builder;
 class DeliveryVehicleFilter extends ModelFilter
 {
 
+    public function ids($ids)
+    {
+        return $this->byIds($ids);
+    }
+
     public function vehicleIds($ids){
         return $this->whereIn('vehicle_id', $ids);
     }
 
     public function createdAt($date){
         return $this->whereDate('created_at', $date);
+    }
+
+    public function createdAtFrom($dateTime)
+    {
+        return $this->whereDate('created_at','>=', $dateTime);
+    }
+
+    public function createdAtTo($dateTime)
+    {
+        return $this->whereDate('created_at','<=', $dateTime);
     }
 
     public function vehiclePlate($plate){
@@ -33,6 +48,14 @@ class DeliveryVehicleFilter extends ModelFilter
             return $builder->whereIn('type_model_order_id', $ids);
         });
     }
+
+    public function notNullId($value){
+        return $this->whereNotNull('delivery_note_id');
+    }   
+
+    public function deliveryNoteIds($ids){
+        return $this->whereIn('delivery_note_id', $ids);
+    }    
 
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter

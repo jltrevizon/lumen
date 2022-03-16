@@ -3,17 +3,28 @@
 namespace App\Repositories;
 
 use App\Mail\DamageVehicleMail;
+use App\Mail\NotificationMail;
 use App\Models\Damage;
 use App\Models\StatusDamage;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
 
-    public function __construct(PendingTaskRepository $pendingTaskRepository, DamageVehicleMail $damageVehicleMail)
+    public function __construct(
+        PendingTaskRepository $pendingTaskRepository, 
+        DamageVehicleMail $damageVehicleMail,
+        DamageRoleRepository $damageRoleRepository,
+        VehicleRepository $vehicleRepository,
+        DamageTaskRepository $damageTaskRepository,
+        NotificationMail $notificationMail,
+    )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->damageVehicleMail = $damageVehicleMail;
+        $this->damageRoleRepository = $damageRoleRepository;
+        $this->vehicleRepository = $vehicleRepository;
+        $this->damageTaskRepository = $damageTaskRepository;
+        $this->notificationMail = $notificationMail;
     }
 
     public function index($request){
@@ -28,9 +39,22 @@ class DamageRepository extends Repository {
         $damage = Damage::create($request->all());
         $damage->user_id = Auth::id();
         $damage->save();
-
+        foreach($request->input('tasks') as $task){
+            $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id'), $task, $damage);
+            $this->damageTaskRepository->create($damage->id, $task);
+        }
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
+        foreach($request->input('roles') as $role){
+            $this->damageRoleRepository->create($damage->id, $role);
+            $this->notificationMail->build($role, $damage->id);
+        }
         if ($request->input('notificable_invarat') || $request->input('notificable_taller1') || $request->input('notificable_taller2')) {
             $this->damageVehicleMail->SendDamage($request);
+        }
+        $groupTask = $damage->vehicle->lastGroupTask;
+        if($groupTask){
+            $damage->group_task_id = $groupTask->id;
+            $damage->save();
         }
 
         return $damage;
@@ -39,7 +63,7 @@ class DamageRepository extends Repository {
     public function update($request, $id){
         $damage = Damage::findOrFail($id);
         $damage->update($request->all());
-        if($request->input('status_damage_id') == StatusDamage::APPROVED && !is_null($damage['task_id'])){
+        if($request->input('status_damage_id') == StatusDamage::CLOSED && !is_null($damage['task_id'])){
             // $this->pendingTaskRepository->createPendingTaskFromDamage($damage);
         }
         return $damage;

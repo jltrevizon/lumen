@@ -33,6 +33,10 @@ class SubState2Seeder extends Seeder
             [
                 'name' => 'Pre-disponible',
                 'state_id' => State::PRE_AVAILABLE
+            ],
+            [
+                'name' => 'Taller lunas',
+                'state_id' => State::WORKSHOP
             ]
         ];
     }

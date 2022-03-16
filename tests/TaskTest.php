@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Damage;
+use App\Models\PendingAuthorization;
 use App\Models\PendingTask;
 use App\Models\PurchaseOperation;
 use App\Models\SubState;
@@ -7,6 +9,7 @@ use App\Models\Task;
 use App\Models\TypeTask;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -50,6 +53,20 @@ class TaskTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->task->purchaseOperations());
         $this->assertInstanceOf(PurchaseOperation::class, $this->task->purchaseOperations()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_pending_authorizations()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->task->pendingAuthorizations());
+        $this->assertInstanceOf(PendingAuthorization::class, $this->task->pendingAuthorizations()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_many_damages()
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->task->damages());
+        $this->assertInstanceOf(Damage::class, $this->task->damages()->getModel());
     }
 
     /** @test */

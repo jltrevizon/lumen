@@ -2,26 +2,26 @@
 
 namespace App\Repositories;
 
+use App\Models\Damage;
 use App\Models\Order;
 use App\Models\PendingTask;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\StatusDamage;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Models\VehiclePicture;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskReservationRepository;
 use App\Repositories\TaskRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\PendingTaskCanceledRepository;
-use App\Repositories\AccessoryRepository;
 use App\Repositories\IncidencePendingTaskRepository;
+use App\Repositories\PendingAuthorizationRepository as RepositoriesPendingAuthorizationRepository;
 use DateTime;
-use Doctrine\DBAL\Types\DateImmutableType;
-use Exception;
+use Illuminate\Http\Request;
 
 class PendingTaskRepository extends Repository {
 
@@ -34,7 +34,10 @@ class PendingTaskRepository extends Repository {
         VehicleRepository $vehicleRepository,
         ReceptionRepository $receptionRepository,
         PendingTaskCanceledRepository $pendingTaskCanceledRepository,
-        IncidencePendingTaskRepository $incidencePendingTaskRepository)
+        IncidencePendingTaskRepository $incidencePendingTaskRepository,
+        RepositoriesPendingAuthorizationRepository $pendingAuthorizationRepository,
+        StateChangeRepository $stateChangeRepository
+        )
     {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
@@ -45,6 +48,8 @@ class PendingTaskRepository extends Repository {
         $this->receptionRepository = $receptionRepository;
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
         $this->incidencePendingTaskRepository = $incidencePendingTaskRepository;
+        $this->pendingAuthorizationRepository = $pendingAuthorizationRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function getAll($request){
@@ -136,10 +141,17 @@ class PendingTaskRepository extends Repository {
         ]);
     }
 
+    public function getVehicleById($vehicleId){
+        return Vehicle::findOrFail($vehicleId);
+    }
+
     public function update($request, $id){
         $pending_task = PendingTask::findOrFail($id);
         empty($request->state_pending_task_id) ? true : $this->isPause($request, $pending_task);
         $pending_task->update($request->all());
+        if($request->input('approved') == 0 && $pending_task->damage_id != null){
+           $this->closeDamage($pending_task->damage_id);
+        }
         $this->realignPendingTask($pending_task);
         return ['pending_task' => $pending_task];
     }
@@ -148,7 +160,18 @@ class PendingTaskRepository extends Repository {
         if($request->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->datetime_pause = new DateTime();
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);   
+            $oldOrder = $pending_task->order;
+            $nextPendingTask = PendingTask::where('group_task_id', $pending_task->group_task_id)
+                ->where('approved', true)
+                ->whereNull('state_pending_task_id')
+                ->orderBy('order','ASC')
+                ->first();
+            $pending_task->order = $nextPendingTask->order;
+            $pending_task->state_pending_task_id = null;
             $pending_task->save();
+            $nextPendingTask->order = $oldOrder;
+            $nextPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+            $nextPendingTask->save();
         }
     }
 
@@ -186,10 +209,14 @@ class PendingTaskRepository extends Repository {
                     ->first();
             if (!is_null($firstPendingTask)) {
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+                $firstPendingTask->datetime_pending = date('Y-m-d H:i:s');
                 $firstPendingTask->save();
             } else {
                 $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();
-                $this->vehicleRepository->updateSubState($pendingTaskOld->vehicle_id, null);
+                $vehicle = $this->getVehicleById($pendingTaskOld->vehicle_id);
+                if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
+                    $this->vehicleRepository->updateSubState($pendingTaskOld->vehicle_id, null);
+                }
             }
         }
     }
@@ -229,14 +256,16 @@ class PendingTaskRepository extends Repository {
     public function startPendingTask($request){
         $pending_task = PendingTask::with($this->getWiths($request->with))
                         ->findOrFail($request->input('pending_task_id'));
-
+        $vehicle = $this->getVehicleById($pending_task->vehicle_id);
         if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->state_pending_task_id = StatePendingTask::IN_PROGRESS;
             $pending_task->datetime_start = date('Y-m-d H:i:s');
             $pending_task->user_start_id = Auth::id();
             $pending_task->save();
             $detail_task = $this->taskRepository->getById([], $pending_task['task_id']);
-            $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
+            if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
+                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $detail_task['sub_state_id']);
+            }
             $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
         } else {
@@ -279,7 +308,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
             $pending_task->save();
-
+            $pending_task->damage_id ? $this->closeDamage($pending_task->damage_id) : null;
             $pending_task_next = null;
             if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) 
             {
@@ -289,10 +318,16 @@ class PendingTaskRepository extends Repository {
                 $pending_task_next->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task_next->datetime_pending= date('Y-m-d H:i:s');
                 $pending_task_next->save();
-                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $pending_task_next['task']['sub_state_id']);
+                if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
+                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $pending_task_next['task']['sub_state_id']);
+                    $this->stateChangeRepository->createOrUpdate($pending_task->vehicle_id, $pending_task, $pending_task_next);
+                }
                 return $this->getPendingOrNextTask($request);
             } else {
-                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
+                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                    $this->stateChangeRepository->createOrUpdate($pending_task->vehicle_id, $pending_task, null);
+                }
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){
                     $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], TradeState::RESERVED); // Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)
                     $vehicle->ready_to_delivery = true;
@@ -310,13 +345,29 @@ class PendingTaskRepository extends Repository {
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
                 $pending_task->user_end_id = Auth::id();
                 $pending_task->save();
-                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); //Cuando el vehículo se ubica cambia el estado a disponible
+                if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
+                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], SubState::CAMPA); //Cuando el vehículo se ubica cambia el estado a disponible
+                }
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){
                     $this->vehicleRepository->updateTradeState($vehicle->id, TradeState::RESERVED); //Si el vehículo ha sido pre-reservado pasa a reservado (sin tareas pendientes)
                 }
                 return [ 'message' => 'Tareas terminadas' ];
             }
             return [ 'message' => 'La tarea no está en estado iniciada' ];
+        }
+    }
+
+    private function closeDamage($damageId){
+        $pendingTasks = PendingTask::where('damage_id', $damageId)
+        ->where('approved', true)
+        ->where(function($builder){
+            return $builder->where('state_pending_task_id','<>',StatePendingTask::FINISHED)
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->get();
+        if(count($pendingTasks) == 0){
+            $damage = Damage::findOrFail($damageId);
+            $damage->update(['status_damage_id' => StatusDamage::CLOSED]);
         }
     }
 
@@ -461,7 +512,41 @@ class PendingTaskRepository extends Repository {
                     $pendingTask->update(['approved' => false]);
                 }
             });
+    }
 
+    public function addPendingTaskFromIncidence($vehicleId, $taskId, $damage){
+        $task = $this->taskRepository->getById([], $taskId);
+        $vehicle = Vehicle::findOrFail($vehicleId);
+        $groupTask = null;
+        $orderLastPendingTask = 0;
+        if($vehicle->lastGroupTask){
+            $totalApproved = $vehicle->lastGroupTask->allApprovedPendingTasks;
+            if(count($totalApproved) > 0){
+                $orderLastPendingTask = $totalApproved[count($totalApproved) - 1]['order'];
+            }
+        }
+        
+        if($task->need_authorization == false){
+            if($orderLastPendingTask > 0) {
+                $groupTask = $vehicle->lastGroupTask;
+            }
+            else {
+                $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
+            };
+            PendingTask::create([
+                'vehicle_id' => $vehicleId,
+                'task_id' => $taskId,
+                'group_task_id' => $groupTask->id,
+                'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,
+                'damage_id' => $damage->id,
+                'duration' => $task->duration,
+                'order' => $orderLastPendingTask + 1,
+                'approved' => true,
+                'user_id' => Auth::id()
+            ]);
+        } else {
+            $this->pendingAuthorizationRepository->create($vehicle->id, $task->id, $damage->id);
+        }
     }
 
 }

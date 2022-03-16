@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Company;
+use App\Models\Damage;
 use App\Models\DeliveryNote;
 use App\Models\PendingTask;
 use App\Models\SubState;
@@ -11,6 +12,7 @@ use App\Models\Vehicle;
 use App\Models\Square;
 use App\Models\VehicleExit;
 use App\Models\StatePendingTask;
+use App\Models\StatusDamage;
 use App\Models\TypeDeliveryNote;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,7 +45,8 @@ class VehicleRepository extends Repository {
         VehicleExitRepository $vehicleExitRepository,
         CampaRepository $campaRepository,
         DeliveryNoteRepository $deliveryNoteRepository,
-        SquareRepository $squareRepository)
+        SquareRepository $squareRepository,
+        SubStateChangeHistoryRepository $subStateChangeHistoryRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -58,6 +61,7 @@ class VehicleRepository extends Repository {
         $this->vehicleExitRepository = $vehicleExitRepository;
         $this->squareRepository = $squareRepository;
         $this->deliveryNoteRepository = $deliveryNoteRepository;
+        $this->subStateChangeHistoryRepository = $subStateChangeHistoryRepository;
     }
     
     public function getAll($request){
@@ -96,24 +100,24 @@ class VehicleRepository extends Repository {
                 $campa = $vehicle['campa'] ? $this->campaRepository->getByName($vehicle['campa']) : null;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
                 $new_vehicle->campa_id = $campa ? $campa['id'] : null;
-                $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-                if($category) $new_vehicle->category_id = $category['id'];
-                $brand = $vehicle['brand'] ? $this->brandRepository->getByNameFromExcel($vehicle['brand']) : null;
-                $vehicle_model = $brand ? $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']) : null;
                 $new_vehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
                 $new_vehicle->sub_state_id = $campa ? SubState::CAMPA : null;
-                $new_vehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
                 $new_vehicle->company_id = Company::ALD;
                 $new_vehicle->save();*/
             } else {
                 //$vehicle['square'] ? $this->squareRepository->assignVehicle($vehicle['street'], intval($vehicle['square']), $existVehicle['id']) : null;
                 //if($vehicle['channel'] !== 'ALD Flex' && $vehicle['campa'] == 'Campa Leganes') $existVehicle->sub_state_id = SubState::CAMPA;
                 //if($vehicle['campa'] === 'Campa Leganes' && $vehicle['sub_state'] === null) $existVehicle->sub_state_id = SubState::ALQUILADO;
+                $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
+                if($category) $existVehicle->category_id = $category['id'];
+                $brand = $vehicle['brand'] ? $this->brandRepository->getByNameFromExcel($vehicle['brand']) : null;
+                $vehicle_model = $brand ? $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']) : null;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
+                $existVehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
                 //$category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
                 //if($category) $existVehicle->category_id = $category['id'];
-                $existVehicle->campa_id = 3;
-                $existVehicle->sub_state_id = SubState::CAMPA;
+                //$existVehicle->campa_id = 3;
+                //$existVehicle->sub_state_id = SubState::CAMPA;
                 $existVehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
                 $existVehicle->save();
             }
@@ -180,11 +184,12 @@ class VehicleRepository extends Repository {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
-            } else if ($count > 0) {
+            } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }
         }
         $vehicle->save();
+        $this->subStateChangeHistoryRepository->store($vehicle->id, $vehicle->sub_state_id);
         return response()->json(['vehicle' => $vehicle]);
     }
 
@@ -329,6 +334,7 @@ public function verifyPlateReception($request){
                 ->chunk(200, function ($vehicles) use($request, $deliveryNote) {
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
+                            $this->closeDamage($vehicle['id']);
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id);
                             if (!is_null($vehicle->lastGroupTask)) {
                                 foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
@@ -406,6 +412,42 @@ public function verifyPlateReception($request){
             ->chunk(200, function($pendingTasks){
                 foreach($pendingTasks as $pendingTask){
                     $pendingTask->update(['approved' => false]);
+                }
+            });
+    }
+
+    public function defleet($id){
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+        $vehicle->save();
+        if($vehicle->lastGroupTask){
+            $this->groupTaskRepository->disablePendingTasks($vehicle->lastGroupTask);
+        }
+        return response()->json([
+            'message' => 'Vehicle defleeted!'
+        ]);
+    }
+
+    public function unDefleet($id){
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->sub_state_id = SubState::CHECK;
+        $vehicle->save();
+        if($vehicle->lastGroupTask){
+            $this->groupTaskRepository->enablePendingTasks($vehicle->lastGroupTask);
+        }
+        return response()->json([
+            'message' => 'Vehicle defleeted!'
+        ]);
+    }
+
+    private function closeDamage($vehicleId){
+        Damage::where('vehicle_id', $vehicleId)
+            ->where('status_damage_id','!=', StatusDamage::CLOSED)
+            ->chunk(200, function ($damages) {
+                foreach($damages as $damage){
+                    $damage->update([
+                        'status_damage_id' => StatusDamage::CLOSED
+                    ]);
                 }
             });
     }

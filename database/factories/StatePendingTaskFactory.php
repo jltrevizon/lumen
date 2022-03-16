@@ -13,7 +13,7 @@ class StatePendingTaskFactory extends Factory
     public function definition(): array
     {
     	return [
-    	    'name' => $this->faker->unique()->randomElement(['Pendiente','En Curso','Terminada'])
+    	    'name' => $this->faker->randomElement(['Pendiente','En Curso','Terminada'])
     	];
     }
 }
