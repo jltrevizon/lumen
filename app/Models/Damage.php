@@ -87,7 +87,9 @@ class Damage extends Model
     }
 
     public function scopeByTaskIds($query, array $ids){
-        return $query->whereIn('task_id', $ids);
+        return $query->whereHas('tasks', function($builder) use($ids) {
+            return $builder->whereIn('task_id', $ids);
+        });
     }
 
     public function scopeByGroupTaskIds($query, array $ids){
