@@ -6,9 +6,7 @@ use App\Models\Company;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
-use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 

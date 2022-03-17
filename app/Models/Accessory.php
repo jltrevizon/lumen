@@ -11,8 +11,13 @@ class Accessory extends Model
     use HasFactory, Filterable;
 
     protected $fillable = [
+        'accessory_type_id',
         'name'
     ];
+
+    public function accessoryTypes(){
+        return $this->belongsTo(AccessoryType::class);
+    }
 
     public function vehicles(){
         return $this->belongsToMany(Vehicle::class);
