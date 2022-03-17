@@ -9,6 +9,7 @@ class StateChangeRepository extends Repository {
 
     public function createOrUpdate($vehicleId, $lastPendingTask, $currentPendingTask){
         $stateChange = StateChange::where('vehicle_id', $vehicleId)
+            ->where('sub_state_id', $lastPendingTask?->task?->sub_state_id)
             ->whereNull('datetime_finish_sub_state')
             ->orderBy('id','desc')
             ->first();
@@ -16,6 +17,11 @@ class StateChangeRepository extends Repository {
             $stateChange->update([
                 'datetime_finish_sub_state' => date('Y-m-d H:i:s'),
                 'total_time' => $stateChange->total_time + $this->diffDateTimes($stateChange->created_at)
+            ]);
+            StateChange::create([
+                'vehicle_id' => $vehicleId,
+                'group_task_id' => $currentPendingTask->group_task_id,
+                'sub_state_id' => $currentPendingTask->task->sub_state_id,
             ]);
         } 
         if(!$stateChange){

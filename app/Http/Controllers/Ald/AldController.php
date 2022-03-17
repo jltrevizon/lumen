@@ -111,6 +111,7 @@ class AldController extends Controller
         if ($groupTask->approvedPendingTasks) {
             $tasksApproved = count($groupTask->approvedPendingTasks);
         }
+        $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($vehicleId);
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
@@ -130,7 +131,7 @@ class AldController extends Controller
             $pending_task->save();
         }
         $vehicle = $this->vehicleRepository->pendingOrInProgress($vehicleId);
-        $this->vehicleRepository->updateSubState($vehicleId, $vehicle?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
+        $this->vehicleRepository->updateSubState($vehicleId, $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
     }
 
     private function createFinishedTask($vehicleId, $tasks, $groupTaskId){

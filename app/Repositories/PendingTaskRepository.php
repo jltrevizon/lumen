@@ -185,6 +185,7 @@ class PendingTaskRepository extends Repository {
     }
 
     private function realignPendingTask($pendingTask){
+        
         PendingTask::where('group_task_id', $pendingTask['group_task_id'])
                     ->where(function ($query){
                         return $query->whereNull('state_pending_task_id')
@@ -258,6 +259,7 @@ class PendingTaskRepository extends Repository {
     public function startPendingTask($request){
         $pending_task = PendingTask::with($this->getWiths($request->with))
                         ->findOrFail($request->input('pending_task_id'));
+        $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($pending_task->vehicle_id);
         $vehicle = $this->getVehicleById($pending_task->vehicle_id);
         if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
             $pending_task->state_pending_task_id = StatePendingTask::IN_PROGRESS;
@@ -267,7 +269,7 @@ class PendingTaskRepository extends Repository {
             $detail_task = $this->taskRepository->getById([], $pending_task['task_id']);
             if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
                 $vehicle = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
-                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], null, $vehicle?->lastGroupTask?->pendingTasks[0]);
+                $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
             }
             $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
@@ -305,6 +307,7 @@ class PendingTaskRepository extends Repository {
     public function finishPendingTask($request){
         $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
         $vehicle = $pending_task->vehicle;
+        $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
         if($pending_task->state_pending_task_id == StatePendingTask::IN_PROGRESS){
             $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
             $pending_task->user_end_id = Auth::id();
@@ -323,13 +326,13 @@ class PendingTaskRepository extends Repository {
                 $pending_task_next->save();
                 if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
                     $vehicle = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
-                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], null, $pending_task_next);
+                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
                 }
                 return $this->getPendingOrNextTask($request);
             } else {
                 if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
                     $vehicle = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
-                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], null, $vehicle?->lastGroupTask?->pendingTasks[0]); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
+                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
                 }
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){
                     $this->vehicleRepository->updateTradeState($pending_task['vehicle_id'], TradeState::RESERVED); // Si no hay más tareas el estado comercial pasa a reservado (sin tareas pendientes)
@@ -350,7 +353,7 @@ class PendingTaskRepository extends Repository {
                 $pending_task->save();
                 if($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET){
                     $vehicle = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
-                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], null, $vehicle?->lastGroupTasks[0]); //Cuando el vehículo se ubica cambia el estado a disponible
+                    $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]); // Si el vehículo ha sido reservado se actualiza para saber que está listo para entregar
                 }
                 if($vehicle->trade_state_id == TradeState::PRE_RESERVED){
                     $this->vehicleRepository->updateTradeState($vehicle->id, TradeState::RESERVED); //Si el vehículo ha sido pre-reservado pasa a reservado (sin tareas pendientes)

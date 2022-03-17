@@ -43,6 +43,8 @@ class DamageRepository extends Repository {
         $damage->user_id = Auth::id();
         $damage->save();
 
+        $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($request->input('vehicle_id'));
+
         foreach($request->input('tasks') as $task){
             $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id'), $task, $damage);
             $this->damageTaskRepository->create($damage->id, $task);
@@ -50,7 +52,7 @@ class DamageRepository extends Repository {
 
         $vehicle = $this->vehicleRepository->pendingOrInProgress($request->input('vehicle_id'));
 
-        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null, $vehicle?->lastGroupTask?->pendingTasks[0]);
+        $this->vehicleRepository->updateSubState($request->input('vehicle_id'), $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
         
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
