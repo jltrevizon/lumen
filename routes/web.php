@@ -518,6 +518,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/accessories/{id}', 'AccessoryController@update');
 
         /**
+         * Accessory type
+         */
+        $router->get('/accessory-type','AccessoryTypeController@index')
+
+        /**
          * Accessory vehicle
          */
         $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');

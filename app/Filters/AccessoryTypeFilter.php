@@ -3,17 +3,12 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
-use Illuminate\Database\Eloquent\Builder;
 
-class AccessoryFilter extends ModelFilter
+class AccessoryTypeFilter extends ModelFilter
 {
 
     public function ids($ids){
-        return $this->byIds($ids);
-    }
-
-    public function accessoryTypeIds($ids){
-        return $this->whereIn('accessory_type_id', $ids);
+        return $this->whereIn('id', $ids);
     }
 
     /**
