@@ -520,7 +520,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Accessory type
          */
-        $router->get('/accessory-type','AccessoryTypeController@index')
+        $router->get('/accessory-type','AccessoryTypeController@index');
 
         /**
          * Accessory vehicle
