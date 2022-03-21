@@ -582,6 +582,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/statistics/stock-by-state','StatisticsController@getStockByState');
         $router->get('/statistics/stock-by-month','StatisticsController@getStockByMonth');
-
+        $router->get('/statistics/average-by-substate', 'StatisticsController@getAverageSubState');
     });
 });
