@@ -25,4 +25,8 @@ class StatisticsController extends Controller
         return $this->statisticsRepository->getAverageSubState($request);
     }
 
+    public function getAverageTypeModelOrder(){
+        return $this->statisticsRepository->getAverageTypeModelOrder();   
+    }
+
 }

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\StateChange;
 use App\Models\SubState;
+use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -63,6 +64,25 @@ class StatisticsRepository extends Repository {
                 $object->average = $total_time / count($changes);
                 array_push($array, $object);
             }
+        }
+        return $array;
+    }
+
+    public function getAverageTypeModelOrder(){
+        $typeModelOrders = Vehicle::select('id','type_model_order_id')
+        ->get()
+        ->groupBy('type_model_order_id');
+        $array = [];
+        foreach($typeModelOrders as $key => $vehicles){
+            $object = new stdClass();
+            if($key == ''){
+                $object->type_model_order = 'Sin canal';
+            } else {
+                $typeModelOrder = TypeModelOrder::findOrFail($key);
+                $object->type_model_order = $typeModelOrder->name;
+            }
+            $object->total = count($vehicles);
+            array_push($array, $object);
         }
         return $array;
     }
