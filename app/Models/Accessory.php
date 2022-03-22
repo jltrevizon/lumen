@@ -15,7 +15,7 @@ class Accessory extends Model
         'name'
     ];
 
-    public function accessoryTypes(){
+    public function accessoryType(){
         return $this->belongsTo(AccessoryType::class);
     }
 
