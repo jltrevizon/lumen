@@ -23,10 +23,10 @@ class AccessoryTest extends TestCase
     }
 
     /** @test */
-    public function it_belongs_to_accessory_types()
+    public function it_belongs_to_accessory_type()
     {
-        $this->assertInstanceOf(BelongsTo::class, $this->accessory->accessoryTypes());
-        $this->assertInstanceOf(AccessoryType::class, $this->accessory->accessoryTypes()->getModel());
+        $this->assertInstanceOf(BelongsTo::class, $this->accessory->accessoryType());
+        $this->assertInstanceOf(AccessoryType::class, $this->accessory->accessoryType()->getModel());
     }
 
     /** @test */
