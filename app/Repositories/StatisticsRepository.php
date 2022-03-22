@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Models\PendingTask;
 use App\Models\StateChange;
 use App\Models\SubState;
+use App\Models\Task;
 use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use DateTime;
@@ -83,6 +85,29 @@ class StatisticsRepository extends Repository {
             }
             $object->total = count($vehicles);
             array_push($array, $object);
+        }
+        return $array;
+    }
+
+    public function getAveragePendingTask(){
+        $totalPendingTask = PendingTask::where('approved', true)->count();
+        $pendingTasks = PendingTask::select(
+            DB::raw('id'),
+            DB::raw('task_id')
+        )
+        ->where('approved',true)
+        ->get()
+        ->groupBy('task_id');
+        $array = [];
+        foreach($pendingTasks as $key => $pendingTask){
+            $task = Task::findOrFail($key);
+            if($task) {
+                $object = new stdClass();
+                $object->task = $task->name;
+                $object->total = count($pendingTask);
+                $object->average = round((count($pendingTask) / $totalPendingTask) * 100, 2);
+                array_push($array, $object);
+            }
         }
         return $array;
     }

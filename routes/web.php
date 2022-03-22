@@ -584,5 +584,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/statistics/stock-by-month','StatisticsController@getStockByMonth');
         $router->get('/statistics/average-by-substate', 'StatisticsController@getAverageSubState');
         $router->get('/statistics/stock-by-channel','StatisticsController@getAverageTypeModelOrder');
+        $router->get('/statistics/average-by-task','StatisticsController@getAveragePendingTask');
     });
 });

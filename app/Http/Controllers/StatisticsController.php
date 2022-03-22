@@ -29,4 +29,8 @@ class StatisticsController extends Controller
         return $this->statisticsRepository->getAverageTypeModelOrder();   
     }
 
+    public function getAveragePendingTask(){
+        return $this->statisticsRepository->getAveragePendingTask();
+    }
+
 }
