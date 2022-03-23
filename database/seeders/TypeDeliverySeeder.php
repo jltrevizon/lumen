@@ -24,8 +24,8 @@ class TypeDeliverySeeder extends Seeder
 
     private function data(){
         return [
-            ['description' => 'Entrega'],
-            ['description' => 'Salida a taller externo']
+            ['description' => 'Entrega de vehículos'],
+            ['description' => 'Traslado de vehículos']
         ];
     }
 }
