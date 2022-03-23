@@ -52,11 +52,11 @@ class RequestRepository extends Repository {
                     $this->taskReservationRepository->create($request_vehicle->id, $request->input('tasks'), $vehicle['vehicle_id']);
                     $tasks = $this->taskReservationRepository->getByRequest($request_vehicle->id);
                     if(count($tasks) > 0) {
-                        $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::PRE_RESERVED);
-                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::NOT_AVAILABLE);
+                        //$this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::PRE_RESERVED);
+                        //$this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::NOT_AVAILABLE);
                     } else {
-                        $this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::RESERVED);
-                        $this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::NOT_AVAILABLE);
+                        //$this->vehicleRepository->updateTradeState($vehicle['vehicle_id'], TradeState::RESERVED);
+                        //$this->vehicleRepository->updateSubState($vehicle['vehicle_id'], SubState::NOT_AVAILABLE);
                     }
                     $this->reservationRepository->create($request_vehicle['id'], $vehicle['vehicle_id'], $request->input('reservation_time'), $request->input('planned_reservation'), $request->input('campa_id'), 1, $request->input('type_reservation_id'));
                 }
@@ -129,7 +129,7 @@ class RequestRepository extends Repository {
             return $this->pendingTaskRepository->createPendingTaskFromReservation($request_vehicle['vehicle_id'], $request_vehicle['id']);
         }
         $this->vehicleRepository->updateTradeState($request_vehicle['vehicle_id'], TradeState::REQUEST_DEFLEET);
-        $this->vehicleRepository->updateSubState($request_vehicle['vehicle_id'], SubState::SOLICITUD_DEFLEET);
+       // $this->vehicleRepository->updateSubState($request_vehicle['vehicle_id'], SubState::SOLICITUD_DEFLEET);
         return [ 'message' => 'Ok' ];
     }
 

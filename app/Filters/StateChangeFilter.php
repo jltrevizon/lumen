@@ -3,17 +3,16 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
-use Illuminate\Database\Eloquent\Builder;
 
-class AccessoryFilter extends ModelFilter
+class StateChangeFilter extends ModelFilter
 {
 
-    public function ids($ids){
-        return $this->byIds($ids);
+    public function startDate($date){
+        return $this->whereDate('created_at','>=',$date);
     }
 
-    public function accessoryTypeIds($ids){
-        return $this->whereIn('accessory_type_id', $ids);
+    public function endDate($date){
+        return $this->whereDate('created_at','<=' , $date);
     }
 
     /**

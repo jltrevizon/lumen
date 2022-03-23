@@ -21,4 +21,16 @@ class StatisticsController extends Controller
         return $this->statisticsRepository->getStockByMonth();
     }
 
+    public function getAverageSubState(Request $request){
+        return $this->statisticsRepository->getAverageSubState($request);
+    }
+
+    public function getAverageTypeModelOrder(){
+        return $this->statisticsRepository->getAverageTypeModelOrder();   
+    }
+
+    public function getAveragePendingTask(){
+        return $this->statisticsRepository->getAveragePendingTask();
+    }
+
 }

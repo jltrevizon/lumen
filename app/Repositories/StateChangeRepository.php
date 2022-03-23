@@ -9,16 +9,22 @@ class StateChangeRepository extends Repository {
 
     public function createOrUpdate($vehicleId, $lastPendingTask, $currentPendingTask){
         $stateChange = StateChange::where('vehicle_id', $vehicleId)
-            ->where('sub_state_id', $lastPendingTask->task->sub_state_id)
+            ->where('sub_state_id', $lastPendingTask?->task?->sub_state_id)
             ->whereNull('datetime_finish_sub_state')
             ->orderBy('id','desc')
             ->first();
-        if($stateChange && $lastPendingTask?->task?->sub_state_id != $currentPendingTask?->task?->sub_state_id){
+        if($stateChange && $stateChange->sub_state_id != $currentPendingTask?->task?->sub_state_id){
             $stateChange->update([
                 'datetime_finish_sub_state' => date('Y-m-d H:i:s'),
-                'total_time' => $stateChange->total_time + $this->diffDateTimes($lastPendingTask->created_at)
+                'total_time' => $stateChange->total_time + $this->diffDateTimes($stateChange->created_at)
             ]);
-        } else {
+            StateChange::create([
+                'vehicle_id' => $vehicleId,
+                'group_task_id' => $currentPendingTask->group_task_id,
+                'sub_state_id' => $currentPendingTask->task->sub_state_id,
+            ]);
+        } 
+        if(!$stateChange){
             StateChange::create([
                 'vehicle_id' => $vehicleId,
                 'group_task_id' => $currentPendingTask->group_task_id,

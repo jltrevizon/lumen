@@ -2,9 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\StatusDamage;
+use App\Models\PendingTask;
+use App\Models\StateChange;
 use App\Models\SubState;
+use App\Models\Task;
+use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -29,7 +33,7 @@ class StatisticsRepository extends Repository {
     }
 
     public function getStockByMonth(){
-            $vehicles = Vehicle::withTrashed()
+        $vehicles = Vehicle::withTrashed()
             ->select(
                 DB::raw('count(id) as `total`'), 
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -39,6 +43,82 @@ class StatisticsRepository extends Repository {
             ->groupBy('year','month')
             ->get();
         return $vehicles;
+    }
+
+    public function getAverageSubState($request){
+        $stateChanges = StateChange::filter($request->all())
+            ->get()
+            ->groupBy('sub_state_id');
+        $array = [];
+        foreach($stateChanges as $key => $changes){
+            if($key != ''){
+                $subState = SubState::findOrFail($key);
+                $total_time = 0;
+                foreach($changes as $change){
+                    if($change->datetime_finish_sub_state == null){
+                        $total_time += $this->diffDateTimes($change->created_at);
+                    } else {
+                        $total_time += $change->total_time;
+                    }
+                }
+                $object = new stdClass();
+                $object->sub_state = $subState->name;
+                $object->average = $total_time / count($changes);
+                array_push($array, $object);
+            }
+        }
+        return $array;
+    }
+
+    public function getAverageTypeModelOrder(){
+        $typeModelOrders = Vehicle::select('id','type_model_order_id')
+        ->get()
+        ->groupBy('type_model_order_id');
+        $array = [];
+        foreach($typeModelOrders as $key => $vehicles){
+            $object = new stdClass();
+            if($key == ''){
+                $object->type_model_order = 'Sin canal';
+            } else {
+                $typeModelOrder = TypeModelOrder::findOrFail($key);
+                $object->type_model_order = $typeModelOrder->name;
+            }
+            $object->total = count($vehicles);
+            array_push($array, $object);
+        }
+        return $array;
+    }
+
+    public function getAveragePendingTask(){
+        $totalPendingTask = PendingTask::where('approved', true)->count();
+        $pendingTasks = PendingTask::select(
+            DB::raw('id'),
+            DB::raw('task_id')
+        )
+        ->where('approved',true)
+        ->get()
+        ->groupBy('task_id');
+        $array = [];
+        foreach($pendingTasks as $key => $pendingTask){
+            $task = Task::findOrFail($key);
+            if($task) {
+                $object = new stdClass();
+                $object->task = $task->name;
+                $object->total = count($pendingTask);
+                $object->average = round((count($pendingTask) / $totalPendingTask) * 100, 2);
+                array_push($array, $object);
+            }
+        }
+        return $array;
+    }
+
+    private function diffDateTimes($datetime){
+        $datetime1 = new DateTime($datetime);
+        $diference = date_diff($datetime1, new DateTime());
+        $minutes = $diference->days * 24 * 60;
+        $minutes += $diference->h * 60;
+        $minutes += $diference->i;
+        return $minutes;
     }
 
 }
