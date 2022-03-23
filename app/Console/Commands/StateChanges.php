@@ -39,6 +39,8 @@ class StateChanges extends Command
      */
     public function handle()
     {
-        Excel::store(new StateChangeExport, 'vehiclesgg.xlsx', 's3');
+        $date = microtime(true);
+        $array = explode('.', $date);
+        Excel::store(new StateChangeExport, 'vehicles-' . date('Y-m-d'). '-' . $array[0] . '.xlsx', 's3');
     }
 }
