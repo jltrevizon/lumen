@@ -11,12 +11,17 @@ class StateChange extends Model
     use Filterable;
     
     protected $fillable = [
+        'campa_id',
         'vehicle_id',
         'group_task_id',
         'sub_state_id',
         'total_time',
         'datetime_finish_sub_state'
     ];
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
+    }
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);

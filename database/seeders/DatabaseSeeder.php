@@ -58,5 +58,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TypeBudgetLineSeeder::class);
         $this->call(TypeDeliverySeeder::class);
         $this->call(TypeModelOrderSeeder::class);
+        $this->call(TypeDeliverySeeder::class);
     }
 }
