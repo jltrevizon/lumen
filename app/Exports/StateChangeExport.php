@@ -36,7 +36,7 @@ class StateChangeExport implements FromCollection, WithMapping, WithHeadings
             $stateChange->vehicle->subState->name ?? null,
             $stateChange->vehicle->obervations,
             $stateChange->vehicle->accessories->pluck('name')->implode(', ') ?? null,
-            $stateChange->vheicle->has_environment_label,
+            $stateChange->vehicle->has_environment_label == true ? 'Si' : 'No',
             $stateChange->campa->name ?? null,
             '',
             $stateChange->vehicle->category->name ?? null,
