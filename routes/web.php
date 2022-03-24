@@ -518,6 +518,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/accessories/{id}', 'AccessoryController@update');
 
         /**
+         * Accessory type
+         */
+        $router->get('/accessory-type','AccessoryTypeController@index');
+
+        /**
          * Accessory vehicle
          */
         $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
@@ -571,5 +576,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
         $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
+    
+        /**
+         * Statistics
+         */
+        $router->get('/statistics/stock-by-state','StatisticsController@getStockByState');
+        $router->get('/statistics/stock-by-month','StatisticsController@getStockByMonth');
+        $router->get('/statistics/average-by-substate', 'StatisticsController@getAverageSubState');
+        $router->get('/statistics/stock-by-channel','StatisticsController@getAverageTypeModelOrder');
+        $router->get('/statistics/average-by-task','StatisticsController@getAveragePendingTask');
     });
 });

@@ -24,6 +24,7 @@ return [
     ],
     'connections' => [
         'mysql' => [
+            'strict' => false,
             'driver' => 'mysql',
             'host' => env('DB_HOST'),
             'database' => env('DB_DATABASE'),
@@ -33,6 +34,7 @@ return [
             'collation' => 'utf8_unicode_ci',
         ],
         'mysql2' => [
+            'strict' => false,
             'driver' => 'mysql',
             'host' => 'localhost',
             'database' => 'focus_testing',

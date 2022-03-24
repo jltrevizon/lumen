@@ -7,7 +7,6 @@ use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
@@ -22,24 +21,30 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
     public function collection()
     {
         return Vehicle::where('company_id', Company::ALD)
-                ->get();
+                ->whereHas('campa')
+                ->where('sub_state_id', '!=', SubState::ALQUILADO)
+                ->paginate();
     }
 
     public function map($vehicle): array
     {
         return [
             $vehicle->plate,
-            $vehicle->category->name ?? null,
+            $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at ?? null)) : null,
+            $vehicle->kms,
             $vehicle->vehicleModel->brand->name ?? null,
             $vehicle->vehicleModel->name ?? null,
-            $vehicle->typeModelOrder->name ?? null,
-            $vehicle->kms,
             $vehicle->color->name ?? null,
-            $vehicle->accessories->pluck('name')->implode(', ') ?? null,
-            $vehicle->campa->name ?? null,
-            $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at ?? null)) : null,
             $vehicle->subState->state->name ?? null,
             $vehicle->subState->name ?? null,
+            $vehicle->observations,
+            $vehicle->accessories->pluck('name')->implode(', ') ?? null,
+            $vehicle->has_environment_label == true ? 'Si' : 'No',
+            $vehicle->campa->name ?? null,
+            '',
+            '',
+            $vehicle->category->name ?? null,
+            $vehicle->typeModelOrder->name ?? null,
             $vehicle->lastGroupTask->pendingTasks[0]->task->name ?? null,
             $vehicle->lastGroupTask->pendingTasks[0]->statePendingTask->name ?? null,
             $vehicle->lastGroupTask->pendingTasks[0]->start_datetime ?? null,
@@ -53,17 +58,21 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
     {
         return [
             'Matrícula',
-            'Categoría',
+            'Fecha de recepción',
+            'Kilómetros',
             'Marca',
             'Modelo',
-            'Negocio',
-            'Kilómetros',
             'Color',
-            'Accesorios',
-            'Campa',
-            'Fecha de recepción',
             'Estado',
             'Sub-estado',
+            'Observaciones',
+            'Accesorios',
+            'Etiqueta M.A.',
+            'Campa',
+            'Código campa',
+            'Próxima ITV',
+            'Categoría',
+            'Negocio',
             'Tarea',
             'Estado',
             'Fecha Inicio Tarea',

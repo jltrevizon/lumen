@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 class AccessoryRepository extends Repository {
 
     public function index($request){
-        return Accessory::with($this->getWiths($request->all()))
+        return Accessory::with($this->getWiths($request->with))
             ->filter($request->all())
             ->get();
     }

@@ -2,16 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\Company;
-use App\Models\DeliveryNote;
+use App\Models\Damage;
 use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\Square;
-use App\Models\VehicleExit;
 use App\Models\StatePendingTask;
-use App\Models\TypeDeliveryNote;
+use App\Models\StatusDamage;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +42,8 @@ class VehicleRepository extends Repository {
         CampaRepository $campaRepository,
         DeliveryNoteRepository $deliveryNoteRepository,
         SquareRepository $squareRepository,
-        SubStateChangeHistoryRepository $subStateChangeHistoryRepository)
+        SubStateChangeHistoryRepository $subStateChangeHistoryRepository,
+        StateChangeRepository $stateChangeRepository)
     {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -60,6 +59,7 @@ class VehicleRepository extends Repository {
         $this->squareRepository = $squareRepository;
         $this->deliveryNoteRepository = $deliveryNoteRepository;
         $this->subStateChangeHistoryRepository = $subStateChangeHistoryRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
     
     public function getAll($request){
@@ -172,8 +172,9 @@ class VehicleRepository extends Repository {
         return $vehicle;
     }
 
-    public function updateSubState($vehicle_id, $sub_state_id) {
-        $vehicle = Vehicle::findOrFail($vehicle_id);
+    public function updateSubState($vehicleId, $lastPendingTask, $currentPendingTask) {
+        $this->stateChangeRepository->createOrUpdate($vehicleId, $lastPendingTask, $currentPendingTask);
+        $vehicle = Vehicle::findOrFail($vehicleId);
         //$vehicle->sub_state_id = $sub_state_id;
         // $enc = $vehicle->sub_state_id == SubState::ALQUILADO || $vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL;
         if (is_null($vehicle->lastGroupTask)) {
@@ -332,6 +333,7 @@ public function verifyPlateReception($request){
                 ->chunk(200, function ($vehicles) use($request, $deliveryNote) {
                     foreach($vehicles as $vehicle){
                         if($request->input('sub_state_id') == SubState::ALQUILADO){
+                            $this->closeDamage($vehicle['id']);
                             $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id);
                             if (!is_null($vehicle->lastGroupTask)) {
                                 foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
@@ -417,8 +419,8 @@ public function verifyPlateReception($request){
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
         $vehicle->save();
-        if($vehicle->lastGroupTask){
-            $this->groupTaskRepository->disablePendingTasks($vehicle->lastGroupTask);
+        if($vehicle->lastUnapprovedGroupTask){
+            $this->groupTaskRepository->disablePendingTasks($vehicle->lastUnapprovedGroupTask);
         }
         return response()->json([
             'message' => 'Vehicle defleeted!'
@@ -435,6 +437,27 @@ public function verifyPlateReception($request){
         return response()->json([
             'message' => 'Vehicle defleeted!'
         ]);
+    }
+
+    private function closeDamage($vehicleId){
+        Damage::where('vehicle_id', $vehicleId)
+            ->where('status_damage_id','!=', StatusDamage::CLOSED)
+            ->chunk(200, function ($damages) {
+                foreach($damages as $damage){
+                    $damage->update([
+                        'status_damage_id' => StatusDamage::CLOSED
+                    ]);
+                }
+            });
+    }
+
+    public function pendingOrInProgress($vehicleId){
+        return Vehicle::where('id', $vehicleId)
+            ->with(['lastGroupTask.pendingTasks' => function($builder){
+                return $builder->where('state_pending_task_id', StatePendingTask::PENDING)
+                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            }])
+            ->first();
     }
 
 }

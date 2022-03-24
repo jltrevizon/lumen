@@ -40,6 +40,8 @@ class Vehicle extends Model
         'color',
         'type_model_order_id',
         'kms',
+        'has_environment_label',
+        'observations',
         'priority',
         'version',
         'vin',

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Accessory;
+use App\Models\AccessoryType;
 use App\Models\Reception;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,6 +20,13 @@ class AccessoryTest extends TestCase
     {
         parent::setUp();
         $this->accessory = Accessory::factory()->create();
+    }
+
+    /** @test */
+    public function it_belongs_to_accessory_type()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->accessory->accessoryType());
+        $this->assertInstanceOf(AccessoryType::class, $this->accessory->accessoryType()->getModel());
     }
 
     /** @test */

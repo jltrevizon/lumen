@@ -19,6 +19,7 @@ class DamageTypeTest extends TestCase
         $this->damageType = DamageType::factory()->create();
     }
 
+    /** @test */
     public function it_has_many_damages()
     {
         $this->assertInstanceOf(HasMany::class, $this->damageType->damages());
