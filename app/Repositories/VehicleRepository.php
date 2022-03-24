@@ -419,8 +419,8 @@ public function verifyPlateReception($request){
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
         $vehicle->save();
-        if($vehicle->lastGroupTask){
-            $this->groupTaskRepository->disablePendingTasks($vehicle->lastGroupTask);
+        if($vehicle->lastUnapprovedGroupTask){
+            $this->groupTaskRepository->disablePendingTasks($vehicle->lastUnapprovedGroupTask);
         }
         return response()->json([
             'message' => 'Vehicle defleeted!'
