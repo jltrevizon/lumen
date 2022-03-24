@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Company;
 use App\Models\StateChange;
+use App\Models\SubState;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -30,12 +31,23 @@ class StateChangeExport implements FromCollection, WithMapping, WithHeadings
             $stateChange->vehicle->kms,
             $stateChange->vehicle->vehicleModel->brand->name ?? null,
             $stateChange->vehicle->vehicleModel->name ?? null,
+            $stateChange->vehicle->color->name ?? null,
             $stateChange->vehicle->subState->state->name ?? null,
             $stateChange->vehicle->subState->name ?? null,
+            $stateChange->vehicle->obervations,
+            $stateChange->vehicle->accessories->pluck('name')->implode(', ') ?? null,
+            $stateChange->vheicle->has_environment_label,
             $stateChange->campa->name ?? null,
+            '',
+            $stateChange->vehicle->category->name ?? null,
+            $stateChange->pendingTak->task->name ?? null,
+            $stateChange->square->street->zone->name ?? null,
+            $stateChange->square->street->name ?? null,
+            $stateChange->square->name ?? null,
             $stateChange->vehicle->typeModelOrder->name ?? null,
             $stateChange->created_at ? date('d-m-Y H:i:s', strtotime($stateChange->created_at ?? null)) : null,
-            $stateChange->datetime_finish_sub_state ? date('d-m-Y H:i:s', strtotime($stateChange->datetime_finish_sub_state ?? null)) : null
+            $stateChange->datetime_finish_sub_state ? date('d-m-Y H:i:s', strtotime($stateChange->datetime_finish_sub_state ?? null)) : null,
+            $stateChange->vehicle->lastDeliveryVehicle ? ($stateChange->vehicle->sub_state_id == SubState::ALQUILADO ? date('d-m-Y', strtotime($stateChange->vehicle->lastDeliveryVehicle->created_at)) : null) : null,
         ];
     }
 
@@ -47,12 +59,23 @@ class StateChangeExport implements FromCollection, WithMapping, WithHeadings
             'Kilómetros',
             'Marca',
             'Modelo',
+            'color',
             'Estado',
             'Sub-estado',
+            'Observaciones',
+            'Accesorios',
+            'Etiqueta M.A.',
             'Campa',
+            'Próxima ITV',
+            'Categoría',
+            'Tarea',
+            'Zona',
+            'Calle',
+            'Plaza',
             'Negocio',
             'Inicio sub-estado',
-            'Fin sub-estado'
+            'Fin sub-estado',
+            'Fecha de salida'
         ];
     }
 }

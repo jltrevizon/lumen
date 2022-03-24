@@ -13,6 +13,7 @@ class StateChange extends Model
     protected $fillable = [
         'campa_id',
         'vehicle_id',
+        'pending_task_id',
         'group_task_id',
         'sub_state_id',
         'total_time',
@@ -33,6 +34,10 @@ class StateChange extends Model
 
     public function subState(){
         return $this->belongsTo(SubState::class);
+    }
+
+    public function pendingTask(){
+        return $this->belongsTo(PendingTask::class);
     }
 
 }

@@ -23,6 +23,7 @@ class StateChangeRepository extends Repository {
             StateChange::create([
                 'campa_id' => $vehicle->campa_id ?? null, 
                 'vehicle_id' => $vehicleId,
+                'pending_task_id' => $currentPendingTask->id,
                 'group_task_id' => $currentPendingTask->group_task_id,
                 'sub_state_id' => $currentPendingTask->task->sub_state_id,
             ]);
@@ -31,6 +32,7 @@ class StateChangeRepository extends Repository {
             StateChange::create([
                 'campa_id' => $vehicle->campa_id ?? null, 
                 'vehicle_id' => $vehicleId,
+                'pending_task_id' => $currentPendingTask->id,
                 'group_task_id' => $currentPendingTask->group_task_id,
                 'sub_state_id' => $currentPendingTask->task->sub_state_id,
             ]);
