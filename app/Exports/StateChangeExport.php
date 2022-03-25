@@ -47,6 +47,7 @@ class StateChangeExport implements FromCollection, WithMapping, WithHeadings
             $stateChange->vehicle->typeModelOrder->name ?? null,
             $stateChange->created_at ? date('d-m-Y H:i:s', strtotime($stateChange->created_at ?? null)) : null,
             $stateChange->datetime_finish_sub_state ? date('d-m-Y H:i:s', strtotime($stateChange->datetime_finish_sub_state ?? null)) : null,
+            $stateChange->total_time ? round($stateChange->total_time / 60, 2) : null,
             $stateChange->vehicle->lastDeliveryVehicle ? ($stateChange->vehicle->sub_state_id == SubState::ALQUILADO ? date('d-m-Y', strtotime($stateChange->vehicle->lastDeliveryVehicle->created_at)) : null) : null,
         ];
     }
@@ -75,6 +76,7 @@ class StateChangeExport implements FromCollection, WithMapping, WithHeadings
             'Negocio',
             'Inicio sub-estado',
             'Fin sub-estado',
+            'Tiempo (horas)',
             'Fecha de salida'
         ];
     }
