@@ -36,7 +36,8 @@ class PendingTaskRepository extends Repository {
         PendingTaskCanceledRepository $pendingTaskCanceledRepository,
         IncidencePendingTaskRepository $incidencePendingTaskRepository,
         RepositoriesPendingAuthorizationRepository $pendingAuthorizationRepository,
-        StateChangeRepository $stateChangeRepository
+        StateChangeRepository $stateChangeRepository,
+        SquareRepository $squareRepository
         )
     {
         $this->groupTaskRepository = $groupTaskRepository;
@@ -50,6 +51,7 @@ class PendingTaskRepository extends Repository {
         $this->incidencePendingTaskRepository = $incidencePendingTaskRepository;
         $this->pendingAuthorizationRepository = $pendingAuthorizationRepository;
         $this->stateChangeRepository = $stateChangeRepository;
+        $this->squareRepository = $squareRepository;
     }
 
     public function getAll($request){
@@ -271,6 +273,7 @@ class PendingTaskRepository extends Repository {
                 $vehicle = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
                 $this->vehicleRepository->updateSubState($pending_task['vehicle_id'], $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
             }
+            $this->squareRepository->freeSquare($vehicle->id);
             $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
         } else {
