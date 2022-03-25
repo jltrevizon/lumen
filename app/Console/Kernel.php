@@ -19,7 +19,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\StockVehicles::class,
         \App\Console\Commands\DeliveryVehicles::class,
         \App\Console\Commands\StatisticsCommand::class,
-        \App\Console\Commands\StateChanges::class
+        \App\Console\Commands\StateChanges::class,
+        \App\Console\Commands\AllVehicles::class
     ];
 
     /**
