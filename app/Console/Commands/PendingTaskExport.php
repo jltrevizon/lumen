@@ -40,6 +40,6 @@ class PendingTaskExport extends Command
     {
         $date = microtime(true);
         $array = explode('.', $date);
-        Excel::store(new PendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . 'csv', 's3');
+        Excel::store(new PendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.csv', 's3');
     }
 }
