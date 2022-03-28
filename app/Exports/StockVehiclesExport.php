@@ -38,7 +38,7 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->subState->state->name ?? null,
             $vehicle->subState->name ?? null,
             $vehicle->observations,
-            $vehicle->accessories->pluck('name')->implode(', ') ?? null,
+            $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
             $vehicle->has_environment_label == true ? 'Si' : 'No',
             $vehicle->campa->name ?? null,
             '',
