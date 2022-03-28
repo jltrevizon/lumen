@@ -17,7 +17,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
     public function collection()
     {
         return PendingTask::whereHas('vehicle', function (Builder $builder){
-            return $builder->where('company',Company::ALD);
+            return $builder->where('company_id',Company::ALD);
         })
         ->get();
     }
