@@ -26,6 +26,7 @@ class QuestionAnswerRepository {
     public function create($request){
         $questionnaire = $this->questionnaireRepository->create($request);
         $questions = $request->input('questions');
+        $has_environment_label = null;
         foreach($questions as $question){
             $questionAnswer = new QuestionAnswer();
             $questionAnswer->questionnaire_id = $questionnaire['id'];
@@ -34,11 +35,15 @@ class QuestionAnswerRepository {
             $questionAnswer->response = $question['response'];
             $questionAnswer->description = $question['description'];
             $questionAnswer->save();
+            if ($questionAnswer->question_id === 9) {
+                $has_environment_label = $question['response'];
+            }
         }
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
 
         $vehicle = $reception->vehicle;
         $vehicle->sub_state_id = SubState::CHECK;
+        $vehicle->has_environment_label = $has_environment_label;
         $vehicle->save();
 
         return [

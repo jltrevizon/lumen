@@ -17,9 +17,6 @@ use App\Models\TradeState;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
-use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Vehicle extends Model
@@ -137,6 +134,11 @@ class Vehicle extends Model
 
     public function accessories(){
         return $this->belongsToMany(Accessory::class)->withTimestamps();
+    }
+
+    public function accessoriesTypeAccessory(){
+        return $this->belongsToMany(Accessory::class)
+            ->where('accessory_type_id', Accessory::ACCESSORY);
     }
 
     public function pendingAuthorizations(){
