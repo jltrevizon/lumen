@@ -41,6 +41,6 @@ class StateChanges extends Command
     {
         $date = microtime(true);
         $array = explode('.', $date);
-        Excel::store(new StateChangeExport, 'vehicles-' . date('Y-m-d'). '-' . $array[0] . '.xlsx', 's3');
+        Excel::store(new StateChangeExport, 'vehículos-cambios-sub-estados-' . date('Y-m-d'). '-' . $array[0] . '.xlsx', 's3');
     }
 }
