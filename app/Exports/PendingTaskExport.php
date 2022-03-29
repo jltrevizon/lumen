@@ -25,7 +25,6 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             return $builder->whereIn('state_id', [State::AVAILABLE, State::WORKSHOP, State::PENDING_SALE_VO, State::PRE_AVAILABLE]);
         })
         ->where('company_id', Company::ALD)
-        ->where('sub_state_id', '<>',SubState::ALQUILADO)
         ->get();
     }
 
