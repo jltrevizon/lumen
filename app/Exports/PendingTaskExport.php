@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Company;
 use App\Models\PendingTask;
+use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -16,35 +17,64 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
     */
     public function collection()
     {
-        return PendingTask::whereHas('vehicle', function (Builder $builder){
-            return $builder->where('company_id', Company::ALD);
-        })
-        ->where('approved', true)
-        ->get();
+        return Vehicle::with(['pendingTasks' => function($query){
+            return $query->where('approved', true);
+        }])
+        ->paginate();
     }
 
-    public function map($pendingTask): array
+    public function map($vehicle): array
     {
-        return [
-            $pendingTask->vehicle->plate,
-            $pendingTask->vehicle->lastReception ? date('d-m-Y', strtotime($pendingTask->vehicle->lastReception->created_at)) : null,
-            $pendingTask->vehicle->kms,
-            $pendingTask->vehicle->vehicleModel->brand->name ?? null,
-            $pendingTask->vehicle->vehicleModel->name ?? null,
-            $pendingTask->vehicle->color->name ?? null,
-            $pendingTask->task->subState->state->name ?? null,
-            $pendingTask->task->subState->name ?? null,
-            $pendingTask->observations,
-            $pendingTask->vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
-            $pendingTask->vehicle->has_environment_label == true ? 'Si' : 'No',
-            $pendingTask->vehicle->campa->name ?? null,
-            $pendingTask->vehicle->category->name ?? null,
-            $pendingTask->vehicle->task->name ?? null,
-            $pendingTask->datetime_start,
-            $pendingTask->datetime_finish,
-            $pendingTask->total_paused,
-            $pendingTask->vehicle->typeModelOrder->name ?? null
-        ];
+        $array = [];
+        if(count($vehicle->pendingTasks) > 0) {
+            foreach($vehicle->pendingTasks as $pendingTask){
+                $line = [
+                    $vehicle->plate,
+                    $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at)) : null,
+                    $vehicle->kms,
+                    $vehicle->vehicleModel->brand->name ?? null,
+                    $vehicle->vehicleModel->name ?? null,
+                    $vehicle->color->name ?? null,
+                    $pendingTask->task->subState->state->name ?? null,
+                    $pendingTask->task->subState->name ?? null,
+                    $pendingTask->observations,
+                    $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
+                    $vehicle->has_environment_label == true ? 'Si' : 'No',
+                    $vehicle->campa->name ?? null,
+                    $vehicle->category->name ?? null,
+                    $pendingTask->task->name ?? null,
+                    $pendingTask->datetime_start,
+                    $pendingTask->datetime_finish,
+                    $pendingTask->total_paused,
+                    $vehicle->typeModelOrder->name ?? null
+                ];
+                array_push($array, $line);
+            }
+        } else {
+            $line = [
+                $vehicle->plate,
+                $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at)) : null,
+                $vehicle->kms,
+                $vehicle->vehicleModel->brand->name ?? null,
+                $vehicle->vehicleModel->name ?? null,
+                $vehicle->color->name ?? null,
+                $vehicle->subState->state->name ?? null,
+                $vehicle->subState->name ?? null,
+                null,
+                $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
+                $vehicle->has_environment_label == true ? 'Si' : 'No',
+                $vehicle->campa->name ?? null,
+                $vehicle->category->name ?? null,
+                $vehicle->task->name ?? null,
+                null,
+                null,
+                null,
+                $vehicle->typeModelOrder->name ?? null
+            ];
+            array_push($array, $line);
+        }
+
+        return $array;
     }
 
     public function headings(): array
