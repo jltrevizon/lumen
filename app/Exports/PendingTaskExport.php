@@ -3,8 +3,10 @@
 namespace App\Exports;
 
 use App\Models\Company;
+use App\Models\State;
 use App\Models\SubState;
 use App\Models\Vehicle;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -19,6 +21,9 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
         return Vehicle::with(['pendingTasks' => function($query){
             return $query->where('approved', true);
         }])
+        ->whereHas('subState', function(Builder $builder){
+            return $builder->whereIn('state_id', [State::AVAILABLE, State::WORKSHOP, State::PENDING_SALE_VO, State::PRE_AVAILABLE]);
+        })
         ->where('company_id', Company::ALD)
         ->where('sub_state_id', '<>',SubState::ALQUILADO)
         ->get();
