@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Vehicle;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -27,11 +28,16 @@ class NotificationDAMail extends Mailable
      *
      * @return $this
      */
-    public function build()
+    public function build($vehicleId)
     {
+        $vehicle = Vehicle::with(['vehicleModel.brand'])
+            ->findOrFail($vehicleId);
+            $data = [
+                'vehicle' => $vehicle
+            ];
         if(env('APP_ENV') != 'production'){
-            Mail::send('notificationDA', [], function ($message) {
-                $message->to('anelvin.mejia@grupomobius.com', 'Anelvin');
+            Mail::send('notificationDA', $data, function ($message) {
+                $message->to(env('EMAIL_FLOTA'), env('NAME_FLOTA'));
                 $message->subject('Incidencia Distintivo Ambiental');
                 $message->from(env('MAIL_FROM_NAME'));
             });
