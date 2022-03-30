@@ -35,7 +35,7 @@ class NotificationDAMail extends Mailable
             $data = [
                 'vehicle' => $vehicle
             ];
-        if(env('APP_ENV') != 'production'){
+        if(env('APP_ENV') == 'production'){
             Mail::send('notificationDA', $data, function ($message) {
                 $message->to(env('EMAIL_FLOTA'), env('NAME_FLOTA'));
                 $message->subject('Incidencia Distintivo Ambiental');
