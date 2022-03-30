@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\StateChange;
+use App\Models\SubState;
 use App\Models\Vehicle;
 use DateTime;
 
@@ -25,7 +26,7 @@ class StateChangeRepository extends Repository {
                 'vehicle_id' => $vehicleId,
                 'pending_task_id' => $currentPendingTask->id,
                 'group_task_id' => $currentPendingTask->group_task_id,
-                'sub_state_id' => $currentPendingTask->task->sub_state_id,
+                'sub_state_id' => $currentPendingTask == null ? SubState::CAMPA : $currentPendingTask->task->sub_state_id,
             ]);
         } 
         if(!$stateChange){
