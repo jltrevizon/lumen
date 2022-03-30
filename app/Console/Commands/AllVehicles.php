@@ -2,18 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Exports\StateChangeExport;
+use App\Mail\AllVehiclesMail;
 use Illuminate\Console\Command;
-use Maatwebsite\Excel\Facades\Excel;
 
-class StateChanges extends Command
+class AllVehicles extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'state:change';
+    protected $signature = 'all:vehicles';
 
     /**
      * The console command description.
@@ -37,10 +36,8 @@ class StateChanges extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(AllVehiclesMail $allVehiclesMail)
     {
-        $date = microtime(true);
-        $array = explode('.', $date);
-        Excel::store(new StateChangeExport, 'vehículos-cambios-sub-estados-' . date('d-m-Y'). '-' . $array[0] . '.xlsx', 's3');
+        $allVehiclesMail->build();
     }
 }

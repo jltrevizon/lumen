@@ -12,6 +12,17 @@ class ColorRepository extends Repository {
         return Color::all();
     }
 
+    public function getOrCreateColor($color){
+        $newColor = Color::where('name', $color)->first();
+        if($newColor){
+            return $newColor;
+        } else {
+            return Color::create([
+                'name' => $color
+            ]);
+        }
+    }
+
     public function store($request){
         $color = Color::create($request->all());
         return $color;

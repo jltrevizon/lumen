@@ -3,27 +3,21 @@
 namespace App\Exports;
 
 use App\Models\Company;
-use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
+class AllVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
-
-    public function __construct()
-    {
-
-    }
-
+    /**
+    * @return \Illuminate\Support\Collection
+    */
     public function collection()
     {
         return Vehicle::where('company_id', Company::ALD)
-                ->whereHas('campa')
-                ->where('sub_state_id', '!=', SubState::ALQUILADO)
-                ->get();
+            ->get();
     }
 
     public function map($vehicle): array
@@ -38,7 +32,7 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->subState->state->name ?? null,
             $vehicle->subState->name ?? null,
             $vehicle->observations,
-            $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
+            $vehicle->accessories->pluck('name')->implode(', ') ?? null,
             $vehicle->has_environment_label == true ? 'Si' : 'No',
             $vehicle->campa->name ?? null,
             '',

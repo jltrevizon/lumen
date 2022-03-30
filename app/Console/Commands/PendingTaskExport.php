@@ -2,18 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\Exports\StateChangeExport;
+use App\Exports\PendingTaskExport as ExportsPendingTaskExport;
 use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 
-class StateChanges extends Command
+class PendingTaskExport extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'state:change';
+    protected $signature = 'pendingtask:export';
 
     /**
      * The console command description.
@@ -41,6 +41,6 @@ class StateChanges extends Command
     {
         $date = microtime(true);
         $array = explode('.', $date);
-        Excel::store(new StateChangeExport, 'vehículos-cambios-sub-estados-' . date('d-m-Y'). '-' . $array[0] . '.xlsx', 's3');
+        Excel::store(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', 's3');
     }
 }

@@ -10,6 +10,9 @@ class Accessory extends Model
 {
     use HasFactory, Filterable;
 
+    const ACCESSORY = 1;
+    const DOCUMENTATION = 2;
+
     protected $fillable = [
         'accessory_type_id',
         'name'

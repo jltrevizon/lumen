@@ -191,6 +191,13 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_many_accessories_type_accessory()
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->vehicle->accessoriesTypeAccessory());
+        $this->assertInstanceOf(Accessory::class, $this->vehicle->accessoriesTypeAccessory()->getModel());
+    }
+
+    /** @test */
     public function it_has_many_pending_authorization()
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->pendingAuthorizations());
