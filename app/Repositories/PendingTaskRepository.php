@@ -218,7 +218,7 @@ class PendingTaskRepository extends Repository {
                 $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();
                 $vehicle = $this->vehicleRepository->pendingOrInProgress($pendingTaskOld->vehicle_id);
                 if($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET){
-                    $this->vehicleRepository->updateSubState($vehicle->id, null, count($vehicle?->lastGroupTask) > 0 ? $vehicle?->lastGroupTask->pendingTasks[0] : null);
+                    $this->vehicleRepository->updateSubState($vehicle->id, null, count($vehicle?->lastGroupTask->pendingTasks) > 0 ? $vehicle?->lastGroupTask->pendingTasks[0] : null);
                 }
             }
         }
