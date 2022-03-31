@@ -319,6 +319,7 @@ class PendingTaskRepository extends Repository {
             $pending_task->save();
             $pending_task->damage_id ? $this->closeDamage($pending_task->damage_id) : null;
             $pending_task_next = null;
+            dd($vehicle->lastGroupTask->approvedPendingTasks);
             if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) 
             {
                 $pending_task_next = $vehicle->lastGroupTask->approvedPendingTasks[0];         
