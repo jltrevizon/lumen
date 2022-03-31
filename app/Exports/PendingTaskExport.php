@@ -23,10 +23,6 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             return $query->where('approved', true)
                 ->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED]);
         }])
-        ->whereHas('subState', function(Builder $builder){
-            return $builder->whereIn('state_id', [State::AVAILABLE, State::WORKSHOP, State::PENDING_SALE_VO, State::PRE_AVAILABLE]);
-        })
-        ->whereHas('campa')
         ->where('company_id', Company::ALD)
         ->paginate();
     }
