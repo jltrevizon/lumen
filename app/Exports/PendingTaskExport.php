@@ -24,7 +24,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 ->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED]);
         }])
         ->where('company_id', Company::ALD)
-        ->paginate();
+        ->get();
     }
 
     public function map($vehicle): array
