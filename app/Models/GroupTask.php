@@ -66,6 +66,10 @@ class GroupTask extends Model
         return $this->belongsTo(Questionnaire::class);
     }
 
+    public function reception(){
+        return $this->hasOne(Reception::class);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
     }
