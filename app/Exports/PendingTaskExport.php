@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Company;
 use App\Models\State;
+use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,12 +20,9 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
     public function collection()
     {
         return Vehicle::with(['pendingTasks' => function($query){
-            return $query->where('approved', true);
+            return $query->where('approved', true)
+                ->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED]);
         }])
-        ->whereHas('subState', function(Builder $builder){
-            return $builder->whereIn('state_id', [State::AVAILABLE, State::WORKSHOP, State::PENDING_SALE_VO, State::PRE_AVAILABLE]);
-        })
-        ->whereHas('campa')
         ->where('company_id', Company::ALD)
         ->get();
     }
@@ -36,7 +34,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             foreach($vehicle->pendingTasks as $pendingTask){
                 $line = [
                     $vehicle->plate,
-                    $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at)) : null,
+                    $pendingTask->groupTask->reception ? date('d-m-Y', strtotime($pendingTask->groupTask->reception->created_at)) : null,
                     $vehicle->kms,
                     $vehicle->vehicleModel->brand->name ?? null,
                     $vehicle->vehicleModel->name ?? null,
@@ -49,9 +47,10 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     $vehicle->campa->name ?? null,
                     $vehicle->category->name ?? null,
                     $pendingTask->task->name ?? null,
+                    $pendingTask->statePendingTask->name ?? null,
                     $pendingTask->datetime_start,
                     $pendingTask->datetime_finish,
-                    $pendingTask->total_paused,
+                    round(($pendingTask->total_paused / 60), 2),
                     $vehicle->typeModelOrder->name ?? null
                 ];
                 array_push($array, $line);
@@ -72,6 +71,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $vehicle->campa->name ?? null,
                 $vehicle->category->name ?? null,
                 $vehicle->task->name ?? null,
+                null,
                 null,
                 null,
                 null,
@@ -100,6 +100,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Campa',
             'Categoría',
             'Tarea',
+            'Estado tarea',
             'Fecha inicio tarea',
             'Fecha fin tarea',
             'Tiempo (horas)',

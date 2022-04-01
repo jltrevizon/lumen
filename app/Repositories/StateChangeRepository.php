@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\StateChange;
+use App\Models\SubState;
 use App\Models\Vehicle;
 use DateTime;
 
@@ -15,7 +16,7 @@ class StateChangeRepository extends Repository {
             ->whereNull('datetime_finish_sub_state')
             ->orderBy('id','desc')
             ->first();
-        if($stateChange && $stateChange->sub_state_id != $currentPendingTask?->task?->sub_state_id){
+        if($stateChange && $currentPendingTask != null && $stateChange->sub_state_id != $currentPendingTask?->task?->sub_state_id){
             $stateChange->update([
                 'datetime_finish_sub_state' => date('Y-m-d H:i:s'),
                 'total_time' => $stateChange->total_time + $this->diffDateTimes($stateChange->created_at)
@@ -25,17 +26,29 @@ class StateChangeRepository extends Repository {
                 'vehicle_id' => $vehicleId,
                 'pending_task_id' => $currentPendingTask->id,
                 'group_task_id' => $currentPendingTask->group_task_id,
-                'sub_state_id' => $currentPendingTask->task->sub_state_id,
+                'sub_state_id' => $currentPendingTask == null ? SubState::CAMPA : $currentPendingTask->task->sub_state_id,
             ]);
+            return;
         } 
-        if(!$stateChange){
+        if($currentPendingTask == null){
             StateChange::create([
                 'campa_id' => $vehicle->campa_id ?? null, 
                 'vehicle_id' => $vehicleId,
-                'pending_task_id' => $currentPendingTask->id,
-                'group_task_id' => $currentPendingTask->group_task_id,
-                'sub_state_id' => $currentPendingTask->task->sub_state_id,
+                'pending_task_id' => null,
+                'group_task_id' => null,
+                'sub_state_id' => SubState::CAMPA,
             ]);
+            return;
+        }
+        if(!$stateChange && $currentPendingTask != null){
+            StateChange::create([
+                'campa_id' => $vehicle->campa_id ?? null, 
+                'vehicle_id' => $vehicleId,
+                'pending_task_id' => $currentPendingTask->id ?? null,
+                'group_task_id' => $currentPendingTask->group_task_id ?? null,
+                'sub_state_id' => $currentPendingTask->task->sub_state_id ?? null,
+            ]);
+            return;
         }
 
     }

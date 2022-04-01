@@ -36,7 +36,7 @@ class GroupTask extends Model
         return $this->hasMany(PendingTask::class, 'group_task_id')
         ->where('approved', 1)
         ->where(function ($query) {
-            $query->where('state_pending_task_id', '<>', 3)
+            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
                 ->orWhereNull('state_pending_task_id');
         })
         ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
@@ -64,6 +64,10 @@ class GroupTask extends Model
 
     public function questionnaire(){
         return $this->belongsTo(Questionnaire::class);
+    }
+
+    public function reception(){
+        return $this->hasOne(Reception::class);
     }
 
     public function scopeByIds($query, array $ids){
