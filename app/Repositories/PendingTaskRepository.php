@@ -214,6 +214,8 @@ class PendingTaskRepository extends Repository {
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $firstPendingTask->datetime_pending = date('Y-m-d H:i:s');
                 $firstPendingTask->save();
+                $vehicle = $this->vehicleRepository->pendingOrInProgress($firstPendingTask->vehicle_id);
+                $this->vehicleRepository->updateSubState($vehicle->id, null, count($vehicle?->lastGroupTask->pendingTasks) > 0 ? $vehicle?->lastGroupTask->pendingTasks[0] : null);
             } else {
                 $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();
                 $vehicle = $this->vehicleRepository->pendingOrInProgress($pendingTaskOld->vehicle_id);
