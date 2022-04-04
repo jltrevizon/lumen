@@ -14,10 +14,10 @@ use Exception;
 class GroupTaskRepository extends Repository {
 
     public function __construct(
-        VehicleRepository $vehicleRepository
+        StateChangeRepository $stateChangeRepository
     )
     {
-        $this->vehicleRepository = $vehicleRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function getAll($request){
@@ -107,8 +107,8 @@ class GroupTaskRepository extends Repository {
                 $pendingTask->datetime_start = date('Y-m-d H:i:s');
                 $pendingTask->datetime_finish = date('Y-m-d H:i:s');
                 $pendingTask->save();
-                $this->vehicleRepository->updateSubstate($vehicle->id, $pendingTask, $vehicle->lastGroupTask->approvedPendingTasks[1]);
-                //$vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
+                $this->stateChangeRepository->createOrUpdate($vehicle->id, $pendingTask, $vehicle->lastGroupTask->approvedPendingTasks[1]);
+                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
             }
         }
         if (is_null($vehicle->company_id)) {

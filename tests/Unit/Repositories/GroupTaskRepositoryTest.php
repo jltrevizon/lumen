@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\PendingTaskRepository;
+use App\Repositories\StateChangeRepository;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -17,7 +18,8 @@ class GroupTaskRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new GroupTaskRepository();
+        $this->stateChangeRepository = new StateChangeRepository();
+        $this->repository = new GroupTaskRepository($this->stateChangeRepository);
     }
 
     /** @test */
