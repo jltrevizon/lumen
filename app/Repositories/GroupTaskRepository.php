@@ -14,8 +14,10 @@ use Exception;
 class GroupTaskRepository extends Repository {
 
     public function __construct(
+        VehicleRepository $vehicleRepository
     )
     {
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function getAll($request){
@@ -99,15 +101,14 @@ class GroupTaskRepository extends Repository {
                 $pendingTask->save();
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 1) {
-                return ['hola' => $vehicle->lastGroupTask];
                 $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id)
                     ->first();
-                return ['HOLA' => $pendingTask];
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
                 $pendingTask->datetime_start = date('Y-m-d H:i:s');
                 $pendingTask->datetime_finish = date('Y-m-d H:i:s');
                 $pendingTask->save();
-                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
+                $this->vehicleRepository->updateSubstate($vehicle->id, $pendingTask, $vehicle->lastGroupTask->approvedPendingTasks[1]);
+                //$vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
             }
         }
         if (is_null($vehicle->company_id)) {
