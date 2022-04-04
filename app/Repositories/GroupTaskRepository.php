@@ -106,6 +106,10 @@ class GroupTaskRepository extends Repository {
                 $pendingTask->datetime_start = date('Y-m-d H:i:s');
                 $pendingTask->datetime_finish = date('Y-m-d H:i:s');
                 $pendingTask->save();
+                $nextPendingtTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[1]->id);
+                $nextPendingtTask->state_pending_task_id = StatePendingTask::PENDING;
+                $nextPendingtTask->datetime_pending = date('Y-m-d H:i:s');
+                $nextPendingtTask->save();
                 $this->stateChangeRepository->createOrUpdate($vehicle->id, $pendingTask, $vehicle->lastGroupTask->approvedPendingTasks[1]);
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
             }
