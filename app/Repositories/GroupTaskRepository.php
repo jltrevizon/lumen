@@ -101,8 +101,7 @@ class GroupTaskRepository extends Repository {
                 $pendingTask->save();
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 1) {
-                $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id)
-                    ->first();
+                $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
                 $pendingTask->datetime_start = date('Y-m-d H:i:s');
                 $pendingTask->datetime_finish = date('Y-m-d H:i:s');
