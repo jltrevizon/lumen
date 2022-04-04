@@ -90,8 +90,22 @@ class GroupTaskRepository extends Repository {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
-            } else if ($count > 0) {
-                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+            } else if ($count == 1) {
+                $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id)
+                    ->first();
+                $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                $pendingTask->datetime_start = date('Y-m-d H:i:s');
+                $pendingTask->datetime_finish = date('Y-m-d H:i:s');
+                $pendingTask->save();
+                $vehicle->sub_state_id = SubState::CAMPA;
+            } else if ($count > 1) {
+                $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id)
+                    ->first();
+                $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                $pendingTask->datetime_start = date('Y-m-d H:i:s');
+                $pendingTask->datetime_finish = date('Y-m-d H:i:s');
+                $pendingTask->save();
+                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
             }
         }
         if (is_null($vehicle->company_id)) {
