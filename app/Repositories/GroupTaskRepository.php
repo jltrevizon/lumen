@@ -91,6 +91,7 @@ class GroupTaskRepository extends Repository {
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count == 1) {
+                return ['HOLA' => 'ADIÓS'];
                 $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id)
                     ->first();
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
