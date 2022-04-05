@@ -23,4 +23,13 @@ class TaskFilter extends ModelFilter
     public function companies($ids){
         return $this->byCompany($ids);
     }
+
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
 }

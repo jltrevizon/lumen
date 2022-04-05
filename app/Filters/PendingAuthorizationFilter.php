@@ -38,4 +38,13 @@ class PendingAuthorizationFilter extends ModelFilter
     {
         return $this->whereIn('state_authorization_id', $ids);
     }
+
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
 }
