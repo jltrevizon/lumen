@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Ald;
 use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
+use App\Models\Role;
 use App\Models\StateChange;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
+use App\Models\User;
 use App\Repositories\AccessoryRepository;
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
@@ -54,7 +56,7 @@ class PendingTaskAldController extends Controller
             }
             $user = $this->userRepository->getById($request, Auth::id());
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-            
+
             $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
             $this->vehicleRepository->updateBack($request);
 
@@ -65,6 +67,8 @@ class PendingTaskAldController extends Controller
     }
 
     private function createTasks($tasks, $vehicleId, $groupTaskId){
+        $user = User::where('role_id', Role::CONTROL)
+            ->first();
         $isPendingTaskAssign = false;
         $order = 1;
         foreach($tasks as $task){
@@ -81,7 +85,7 @@ class PendingTaskAldController extends Controller
                 $isPendingTaskAssign = true;
             }
             $pending_task->group_task_id = $groupTaskId;
-            $pending_task->user_id = Auth::id();
+            $pending_task->user_id = $user->id;
             $pending_task->duration = $taskDescription['duration'];
             if($task['approved'] == true){
                 $pending_task->order = $order;
