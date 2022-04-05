@@ -52,11 +52,12 @@ class PendingTaskAldController extends Controller
                 $reception->group_task_id = $groupTask->id;
                 $reception->save();
             }
+            $user = $this->userRepository->getById($request, Auth::id());
+            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
+            
             $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
             $this->vehicleRepository->updateBack($request);
 
-            $user = $this->userRepository->getById($request, Auth::id());
-            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
             return [ 'message' => 'OK' ];
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
