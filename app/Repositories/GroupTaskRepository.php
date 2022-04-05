@@ -99,7 +99,21 @@ class GroupTaskRepository extends Repository {
                 $pendingTask->datetime_start = date('Y-m-d H:i:s');
                 $pendingTask->datetime_finish = date('Y-m-d H:i:s');
                 $pendingTask->save();
+                PendingTask::create([
+                    'vehicle_id' => $vehicle->id,
+                    'task_id' => Task::TOCAMPA,
+                    'state_pending_task_id' => StatePendingTask::FINISHED,
+                    'user_start_id' => Auth::id(),
+                    'user_end_id' => Auth::id(),
+                    'group_task_id' => $group_task->id,
+                    'duration' => 0,
+                    'approved' => true,
+                    'datetime_pending' => date('Y-m-d H:i:s'),
+                    'datetime_start' => date('Y-m-d H:i:s'),
+                    'datetime_finish' => date('Y-m-d H:i:s')
+                ]);
                 $vehicle->sub_state_id = SubState::CAMPA;
+                $this->stateChangeRepository->createOrUpdate($vehicle->id, $pendingTask, null);
             } else if ($count > 1) {
                 $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
