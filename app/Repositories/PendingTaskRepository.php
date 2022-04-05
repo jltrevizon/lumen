@@ -432,6 +432,7 @@ class PendingTaskRepository extends Repository {
         $pendingTask->group_task_id = $request->input('group_task_id');
         $pendingTask->duration = $task['duration'];
         $pendingTask->order = count($pendingTasks) - 1;
+        $pendingTask->user_id = Auth::id();
         $pendingTask->save();
 
         return ['pending_task' => $pendingTask];
