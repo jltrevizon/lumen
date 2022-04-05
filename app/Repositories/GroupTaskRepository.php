@@ -105,6 +105,7 @@ class GroupTaskRepository extends Repository {
                     'user_start_id' => Auth::id(),
                     'user_end_id' => Auth::id(),
                     'group_task_id' => $group_task->id,
+                    'order' => 100,
                     'duration' => 0,
                     'approved' => true,
                     'datetime_pending' => date('Y-m-d H:i:s'),
