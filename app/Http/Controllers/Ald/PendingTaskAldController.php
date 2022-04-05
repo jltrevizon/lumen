@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ald;
 use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
+use App\Models\StateChange;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\ReceptionRepository;
+use App\Repositories\StateChangeRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
 use Exception;
@@ -27,7 +29,7 @@ class PendingTaskAldController extends Controller
         VehicleRepository $vehicleRepository,
         UserRepository $userRepository,
         ReceptionRepository $receptionRepository,
-        AccessoryRepository $accessoryRepository
+        StateChangeRepository $stateChangeRepository
     )
     {
         $this->taskRepository = $taskRepository;
@@ -35,6 +37,7 @@ class PendingTaskAldController extends Controller
         $this->vehicleRepository = $vehicleRepository;
         $this->userRepository = $userRepository;
         $this->receptionRepository = $receptionRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function createFromArray(Request $request){
@@ -84,6 +87,9 @@ class PendingTaskAldController extends Controller
                 $order++;
             }
             $pending_task->save();
+            if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
+                $this->stateChangeRepository->createOrUpdate($vehicleId, $pending_task, $pending_task);
+            }
         }
     }
 
