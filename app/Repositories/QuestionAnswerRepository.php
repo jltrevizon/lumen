@@ -40,7 +40,9 @@ class QuestionAnswerRepository {
             $questionAnswer->save();
             if ($questionAnswer->question_id === 9) {
                 $has_environment_label = $question['response'];
-                $this->notificationDAMail->build($request->input('vehicle_id'));
+                if($question['response'] == 0) {
+                    $this->notificationDAMail->build($request->input('vehicle_id'));
+                }
             }
         }
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
