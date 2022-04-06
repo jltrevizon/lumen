@@ -16,6 +16,9 @@ class Task extends Model
     use HasFactory, Filterable;
 
     const UBICATION = 1;
+    const TOCAMPA = 37;
+    const TOALQUILADO = 38;
+    const VALIDATE_CHECKLIST = 39;
 
     protected $fillable = [
         'company_id',

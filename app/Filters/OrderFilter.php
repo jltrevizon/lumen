@@ -21,4 +21,13 @@ class OrderFilter extends ModelFilter
     public function vehiclePlate($plate){
         return $this->byVehiclePlate($plate);
     }
+
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
 }

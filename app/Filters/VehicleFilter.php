@@ -242,4 +242,12 @@ class VehicleFilter extends ModelFilter
         return $this->whereHas('lastGroupTask.damages');
     }
 
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
 }

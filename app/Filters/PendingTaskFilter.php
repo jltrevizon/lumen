@@ -119,4 +119,13 @@ class PendingTaskFilter extends ModelFilter
         return $this->byApproved($approved);
     }
 
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
+
 }

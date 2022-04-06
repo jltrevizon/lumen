@@ -20,7 +20,20 @@ class TaskFilter extends ModelFilter
         return $this->byIds($ids);
     }
 
+    public function noIds($ids){
+        return $this->whereNotIn('id', $ids);
+    }
+
     public function companies($ids){
         return $this->byCompany($ids);
     }
+
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
 }

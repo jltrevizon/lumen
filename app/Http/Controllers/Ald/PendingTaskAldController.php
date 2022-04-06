@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Ald;
 use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
+use App\Models\Role;
+use App\Models\StateChange;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
+use App\Models\User;
 use App\Repositories\AccessoryRepository;
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\ReceptionRepository;
+use App\Repositories\StateChangeRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
 use Exception;
@@ -27,7 +31,7 @@ class PendingTaskAldController extends Controller
         VehicleRepository $vehicleRepository,
         UserRepository $userRepository,
         ReceptionRepository $receptionRepository,
-        AccessoryRepository $accessoryRepository
+        StateChangeRepository $stateChangeRepository
     )
     {
         $this->taskRepository = $taskRepository;
@@ -35,6 +39,7 @@ class PendingTaskAldController extends Controller
         $this->vehicleRepository = $vehicleRepository;
         $this->userRepository = $userRepository;
         $this->receptionRepository = $receptionRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function createFromArray(Request $request){
@@ -49,11 +54,12 @@ class PendingTaskAldController extends Controller
                 $reception->group_task_id = $groupTask->id;
                 $reception->save();
             }
+            $user = $this->userRepository->getById($request, Auth::id());
+            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
+
             $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
             $this->vehicleRepository->updateBack($request);
 
-            $user = $this->userRepository->getById($request, Auth::id());
-            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
             return [ 'message' => 'OK' ];
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
@@ -61,6 +67,8 @@ class PendingTaskAldController extends Controller
     }
 
     private function createTasks($tasks, $vehicleId, $groupTaskId){
+        $user = User::where('role_id', Role::CONTROL)
+            ->first();
         $isPendingTaskAssign = false;
         $order = 1;
         foreach($tasks as $task){
@@ -77,13 +85,16 @@ class PendingTaskAldController extends Controller
                 $isPendingTaskAssign = true;
             }
             $pending_task->group_task_id = $groupTaskId;
-            $pending_task->user_id = Auth::id();
+            $pending_task->user_id = $user->id;
             $pending_task->duration = $taskDescription['duration'];
             if($task['approved'] == true){
                 $pending_task->order = $order;
                 $order++;
             }
             $pending_task->save();
+            if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
+                $this->stateChangeRepository->createOrUpdate($vehicleId, $pending_task, $pending_task);
+            }
         }
     }
 

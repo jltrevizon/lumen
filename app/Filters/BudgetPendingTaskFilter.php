@@ -31,4 +31,13 @@ class BudgetPendingTaskFilter extends ModelFilter
     {
         return $this->whereDate('created_at','<=', $dateTime);
     }
+
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
 }

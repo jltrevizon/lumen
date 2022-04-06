@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Hola!</h1>
-    <h3>El siguiente vehículo no tiene el distintivo ambiental:</h3>
+    <h3>El siguiente vehículo requiere ITV:</h3>
     <p><strong>Matrícula: </strong> {{$vehicle->plate}}</p>
     <p><strong>Marca: </strong> {{$vehicle->vehicleModel?->brand?->name}}</p>
     <p><strong>Modelo: </strong> {{$vehicle->vehicleModel?->name}}</p>
