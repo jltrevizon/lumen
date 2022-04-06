@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Mail\NotificationDAMail;
+use App\Mail\NotificationItvMail;
 use App\Models\QuestionAnswer;
 use App\Models\Questionnaire;
 use App\Models\SubState;
@@ -16,7 +17,8 @@ class QuestionAnswerRepository {
         GroupTaskRepository $groupTaskRepository,
         PendingTaskRepository $pendingTaskRepository,
         VehicleRepository $vehicleRepository,
-        NotificationDAMail $notificationDAMail)
+        NotificationDAMail $notificationDAMail,
+        NotificationItvMail $notificationItvMail)
     {
         $this->questionnaireRepository = $questionnaireRepository;
         $this->receptionRepository = $receptionRepository;
@@ -24,6 +26,7 @@ class QuestionAnswerRepository {
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->vehicleRepository = $vehicleRepository;
         $this->notificationDAMail = $notificationDAMail;
+        $this->notificationItvMail = $notificationItvMail;
     }
 
     public function create($request){
@@ -40,7 +43,13 @@ class QuestionAnswerRepository {
             $questionAnswer->save();
             if ($questionAnswer->question_id === 9) {
                 $has_environment_label = $question['response'];
-                $this->notificationDAMail->build($request->input('vehicle_id'));
+                if($question['response'] == 0) {
+                    $this->notificationDAMail->build($request->input('vehicle_id'));
+                }
+            }
+
+            if ($questionAnswer->question_id === 4 && $question['response'] == 1) {
+                $this->notificationItvMail->build($request->input('vehicle_id'));
             }
         }
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));

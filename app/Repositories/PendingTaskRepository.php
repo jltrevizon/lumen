@@ -168,12 +168,14 @@ class PendingTaskRepository extends Repository {
                 ->whereNull('state_pending_task_id')
                 ->orderBy('order','ASC')
                 ->first();
-            $pending_task->order = $nextPendingTask->order;
+            $pending_task->order = $nextPendingTask->order ?? $pending_task->order;
             $pending_task->state_pending_task_id = null;
             $pending_task->save();
-            $nextPendingTask->order = $oldOrder;
-            $nextPendingTask->state_pending_task_id = StatePendingTask::PENDING;
-            $nextPendingTask->save();
+            if($nextPendingTask) {
+                $nextPendingTask->order = $oldOrder;
+                $nextPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+                $nextPendingTask->save();
+            }
         }
     }
 
@@ -344,6 +346,20 @@ class PendingTaskRepository extends Repository {
                     $vehicle->ready_to_delivery = true;
                     $vehicle->save();
                 }
+                PendingTask::create([
+                    'vehicle_id' => $vehicle->id,
+                    'task_id' => Task::TOCAMPA,
+                    'state_pending_task_id' => StatePendingTask::FINISHED,
+                    'user_start_id' => Auth::id(),
+                    'user_end_id' => Auth::id(),
+                    'group_task_id' => $pending_task->group_task_id,
+                    'order' => 100,
+                    'duration' => 0,
+                    'approved' => true,
+                    'datetime_pending' => date('Y-m-d H:i:s'),
+                    'datetime_start' => date('Y-m-d H:i:s'),
+                    'datetime_finish' => date('Y-m-d H:i:s')
+                ]);
                 return [
                     "status" => "OK",
                     "message" => "No hay más tareas"
@@ -416,6 +432,7 @@ class PendingTaskRepository extends Repository {
         $pendingTask->group_task_id = $request->input('group_task_id');
         $pendingTask->duration = $task['duration'];
         $pendingTask->order = count($pendingTasks) - 1;
+        $pendingTask->user_id = Auth::id();
         $pendingTask->save();
 
         return ['pending_task' => $pendingTask];

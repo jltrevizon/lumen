@@ -14,8 +14,10 @@ use Exception;
 class GroupTaskRepository extends Repository {
 
     public function __construct(
+        StateChangeRepository $stateChangeRepository
     )
     {
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function getAll($request){
@@ -90,8 +92,40 @@ class GroupTaskRepository extends Repository {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 $vehicle->sub_state_id = SubState::CAMPA;
-            } else if ($count > 0) {
-                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+            } else if ($count == 1) {
+                $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
+                $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                $pendingTask->datetime_start = date('Y-m-d H:i:s');
+                $pendingTask->datetime_finish = date('Y-m-d H:i:s');
+                $pendingTask->save();
+                PendingTask::create([
+                    'vehicle_id' => $vehicle->id,
+                    'task_id' => Task::TOCAMPA,
+                    'state_pending_task_id' => StatePendingTask::FINISHED,
+                    'user_start_id' => Auth::id(),
+                    'user_end_id' => Auth::id(),
+                    'group_task_id' => $group_task->id,
+                    'order' => 100,
+                    'duration' => 0,
+                    'approved' => true,
+                    'datetime_pending' => date('Y-m-d H:i:s'),
+                    'datetime_start' => date('Y-m-d H:i:s'),
+                    'datetime_finish' => date('Y-m-d H:i:s')
+                ]);
+                $vehicle->sub_state_id = SubState::CAMPA;
+                $this->stateChangeRepository->createOrUpdate($vehicle->id, $pendingTask, null);
+            } else if ($count > 1) {
+                $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
+                $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                $pendingTask->datetime_start = date('Y-m-d H:i:s');
+                $pendingTask->datetime_finish = date('Y-m-d H:i:s');
+                $pendingTask->save();
+                $nextPendingtTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[1]->id);
+                $nextPendingtTask->state_pending_task_id = StatePendingTask::PENDING;
+                $nextPendingtTask->datetime_pending = date('Y-m-d H:i:s');
+                $nextPendingtTask->save();
+                $this->stateChangeRepository->createOrUpdate($vehicle->id, $pendingTask, $vehicle->lastGroupTask->approvedPendingTasks[1]);
+                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
             }
         }
         if (is_null($vehicle->company_id)) {

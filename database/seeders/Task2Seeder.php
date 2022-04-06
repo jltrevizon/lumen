@@ -33,6 +33,27 @@ class Task2Seeder extends Seeder
         return [
             [
                 'company_id' => Company::ALD,
+                'sub_state_id' => SubState::CAMPA,
+                'type_task_id' => TypeTask::SPECIAL,
+                'name' => 'Pasar a disponible',
+                'duration' => random_int(1, 40),
+            ],
+            [
+                'company_id' => Company::ALD,
+                'sub_state_id' => SubState::ALQUILADO,
+                'type_task_id' => TypeTask::SPECIAL,
+                'name' => 'Pasar a alquilado',
+                'duration' => random_int(1, 40),
+            ],
+            [
+                'company_id' => Company::ALD,
+                'sub_state_id' => SubState::PRE_AVAILABLE,
+                'type_task_id' => TypeTask::SPECIAL,
+                'name' => 'Validar checklist',
+                'duration' => random_int(1, 40),
+            ],
+            [
+                'company_id' => Company::ALD,
                 'sub_state_id' => SubState::PRE_AVAILABLE,
                 'type_task_id' => TypeTask::SPECIAL,
                 'name' => 'Agregar rotulación 1 panel',

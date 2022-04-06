@@ -25,4 +25,13 @@ class CampaFilter extends ModelFilter
     public function name($name){
         return $this->byName($name);
     }
+
+    public function orderDesc($field){
+        return $this->orderByDesc($field);
+    }
+
+    public function order($field){
+        return $this->orderBy($field);
+    }
+
 }
