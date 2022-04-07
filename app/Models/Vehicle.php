@@ -37,6 +37,7 @@ class Vehicle extends Model
         'color',
         'type_model_order_id',
         'kms',
+        'last_change_state',
         'has_environment_label',
         'observations',
         'priority',
@@ -192,6 +193,16 @@ class Vehicle extends Model
 
     public function subStateChangeHistories(){
         return $this->hasMany(SubStateChangeHistory::class);
+    }
+
+    public function stateChange(){
+        return $this->hasMany(StateChange::class);
+    }
+
+    public function lastStateChange(){
+        return $this->hasOne(StateChange::class)->ofMany([
+            'id' => 'max'
+        ]);
     }
 
     public function square(){
