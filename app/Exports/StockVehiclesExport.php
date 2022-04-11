@@ -43,7 +43,7 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->has_environment_label == true ? 'Si' : 'No',
             $vehicle->campa->name ?? null,
             '',
-            date('d-m-Y', strtotime($vehicle->next_itv)),
+            $vehicle->next_itv ? date('d-m-Y', strtotime($vehicle->next_itv)) : null,
             $vehicle->category->name ?? null,
             $vehicle->typeModelOrder->name ?? null,
             $vehicle->lastGroupTask->pendingTasks[0]->task->name ?? null,
