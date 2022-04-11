@@ -37,7 +37,7 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->color->name ?? null,
             $vehicle->subState->state->name ?? null,
             $vehicle->subState->name ?? null,
-            date('d-m-Y H:i:s', strtotime($vehicle->last_change_state)),
+            $vehicle->last_change_state ? date('d-m-Y H:i:s', strtotime($vehicle->last_change_state)) : null,
             $vehicle->observations,
             $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
             $vehicle->has_environment_label == true ? 'Si' : 'No',
