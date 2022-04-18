@@ -191,7 +191,7 @@ class VehicleRepository extends Repository {
                 if($vehicle->subState->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
                     $vehicle->last_change_state = date('Y-m-d H:i:s');
                 }
-                if($vehicle->sub_state_id != $vehicle->lastGroupTasl->approvedPendingTasks[0]->task->sub_state_id){
+                if($vehicle->sub_state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id){
                     $vehicle->last_change_sub_state = date('Y-m-d H:i:s');
                 }
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
