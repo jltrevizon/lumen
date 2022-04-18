@@ -184,11 +184,15 @@ class VehicleRepository extends Repository {
             if ($count == 0) {
                 if($vehicle->subState->state_id != SubState::CAMPA){
                     $vehicle->last_change_state = date('Y-m-d H:i:s');
+                    $vehicle->last_change_sub_state = date('Y-m-d H:i:s');
                 }
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
                 if($vehicle->subState->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
                     $vehicle->last_change_state = date('Y-m-d H:i:s');
+                }
+                if($vehicle->sub_state_id != $vehicle->lastGroupTasl->approvedPendingTasks[0]->task->sub_state_id){
+                    $vehicle->last_change_sub_state = date('Y-m-d H:i:s');
                 }
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }

@@ -38,6 +38,7 @@ class Vehicle extends Model
         'type_model_order_id',
         'kms',
         'last_change_state',
+        'last_change_sub_state',
         'next_itv',
         'has_environment_label',
         'observations',
