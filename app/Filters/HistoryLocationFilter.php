@@ -43,6 +43,12 @@ class HistoryLocationFilter extends ModelFilter
         });
     }
 
+    public function vehicleCampaIds($ids){
+        return $this->whereHas('vehicle', function(Builder $builder) use($ids){
+            return $builder->whereIn('campa_id', $ids);
+        });
+    }
+
     public function orderDesc($field){
         return $this->orderByDesc($field);
     }
