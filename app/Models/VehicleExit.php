@@ -12,6 +12,7 @@ class VehicleExit extends Model
 
     protected $fillable = [
         'vehicle_id',
+        'campa_id',
         'pending_task_id',
         'delivery_note_id',
         'delivery_by',
@@ -31,5 +32,9 @@ class VehicleExit extends Model
 
     public function deliveryNote(){
         return $this->belongsTo(DeliveryNote::class);
+    }
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
     }
 }

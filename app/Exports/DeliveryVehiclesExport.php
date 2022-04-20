@@ -23,7 +23,7 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
 
     public function map($deliveryVehicle): array
     {
-        $data = $deliveryVehicle->data_delivery;
+        $data = json_decode($deliveryVehicle->data_delivery);
         return [
             date('d-m-Y'),
             $deliveryVehicle->vehicle->typeModelOrder ? $deliveryVehicle->vehicle->typeModelOrder->name : null,
@@ -31,11 +31,11 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
             $deliveryVehicle->vehicle ? $deliveryVehicle->vehicle->plate : null,
             $deliveryVehicle->vehicle->vehicleModel ? $deliveryVehicle->vehicle->vehicleModel->brand->name : null,
             $deliveryVehicle->vehicle->vehicleModel ?  $deliveryVehicle->vehicle->vehicleModel->name : null,
-            $data['company'],
-            $data['customer'],
-            $data['driver'],
-            $data['dni'],
-            $data['truck'],
+            $data->company,
+            $data->customer,
+            $data->driver,
+            $data->dni,
+            $data->truck,
         ];
     }
 
