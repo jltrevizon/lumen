@@ -374,7 +374,7 @@ public function verifyPlateReception($request){
                             $vehicle->update(['sub_state_id' => SubState::ALQUILADO, 'campa_id' => null]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
-                            $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id);
+                            $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
                             $vehicle->update(['sub_state_id' => SubState::WORKSHOP_EXTERNAL]);
                         }
                     }
