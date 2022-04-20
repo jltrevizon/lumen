@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Damage;
+use App\Models\IncidentSubmission;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,6 +39,9 @@ class NotificationMail extends Mailable
             'damage' => $damage,
         ];
         foreach($users as $user){
+            IncidentSubmission::create([
+                'email' => $user['email']
+            ]);
             Mail::send('incidences', $data, function ($message) use($user){
                 $message->to($user['email'], $user['name']);
                 $message->subject('Nueva incidencia');

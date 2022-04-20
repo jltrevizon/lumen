@@ -182,8 +182,18 @@ class VehicleRepository extends Repository {
         } else {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
+                if($vehicle->subState->state_id != SubState::CAMPA){
+                    $vehicle->last_change_state = date('Y-m-d H:i:s');
+                    $vehicle->last_change_sub_state = date('Y-m-d H:i:s');
+                }
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
+                if($vehicle->subState->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
+                    $vehicle->last_change_state = date('Y-m-d H:i:s');
+                }
+                if($vehicle->sub_state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id){
+                    $vehicle->last_change_sub_state = date('Y-m-d H:i:s');
+                }
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }
         }
@@ -361,7 +371,7 @@ public function verifyPlateReception($request){
                                 $square->vehicle_id = null;
                                 $square->save();
                             }
-                            $vehicle->update(['sub_state_id' => SubState::ALQUILADO]);
+                            $vehicle->update(['sub_state_id' => SubState::ALQUILADO, 'campa_id' => null]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
                             $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id);

@@ -21,6 +21,7 @@ use App\Models\Request;
 use App\Models\Reservation;
 use App\Models\Role;
 use App\Models\Square;
+use App\Models\StateChange;
 use App\Models\SubState;
 use App\Models\SubStateChangeHistory;
 use App\Models\TradeState;
@@ -271,6 +272,13 @@ class VehicleTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->vehicle->subStateChangeHistories());
         $this->assertInstanceOf(SubStateChangeHistory::class, $this->vehicle->subStateChangeHistories()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_state_change()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->vehicle->stateChange());
+        $this->assertInstanceOf(StateChange::class, $this->vehicle->stateChange()->getModel());
     }
 
     /** @test */
