@@ -42,11 +42,11 @@ class StockVehicles extends Mailable
             'title' => 'Stock de vehículos',
             'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d-m-Y H:i:s')
         ];
+        
         $file = Excel::download(new StockVehiclesExport, 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
         $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
        
-
         $file = Excel::download(new EntriesVehiclesExport, 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'entries.xlsx');
         $fileRename2 = $file->getPath() . '/entries.xlsx';

@@ -17,6 +17,10 @@ class DeliveryVehicleFilter extends ModelFilter
         return $this->whereIn('vehicle_id', $ids);
     }
 
+    public function campaIds($ids){
+        return $this->whereIn('vehicle_id', $ids);
+    }
+
     public function createdAt($date){
         return $this->whereDate('created_at', $date);
     }

@@ -32,10 +32,11 @@ class VehicleExitRepository extends Repository {
         return $vehicleExit;
     }
 
-    public function registerExit($vehicle_id, $deliveryNoteId){
+    public function registerExit($vehicle_id, $deliveryNoteId, $campaId){
         $user = User::findOrFail(Auth::id());
         $vehicleExit = new VehicleExit();
         $vehicleExit->vehicle_id = $vehicle_id;
+        $vehicleExit->campa_id = $campaId;
         $vehicleExit->delivery_note_id = $deliveryNoteId;
         $vehicleExit->delivery_by = $user->name;
         $vehicleExit->date_delivery = date('Y-m-d');
