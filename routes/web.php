@@ -168,7 +168,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
         $router->post('/pending-tasks/finish-all', 'PendingTaskController@finishAll');
         $router->post('/pending-tasks/transfer', 'PendingTaskController@createTransferTask');
-        $router->post('/expected-completion-date','PendingTaskController@expectedCompletionDate');
+        $router->post('/pending-tasks/expected-completion-date','PendingTaskController@expectedCompletionDate');
 
         /**
          * Purchase operations
