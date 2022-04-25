@@ -596,11 +596,12 @@ class PendingTaskRepository extends Repository {
         }
     }
 
-    public function createTransferTask($vehicleId){
+    public function createTransferTask($request){
+        $vehicle = $this->vehicleRepository->getById([], $request->input('vehicle_id'));
         $task = $this->taskRepository->getById([], Task::TRANSFER);
-        $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
+        $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicle->id);
         PendingTask::create([
-            'vehicle_id' => $vehicleId,
+            'vehicle_id' => $vehicle->id,
             'task_id' => $task->id,
             'state_pending_task_id' => StatePendingTask::IN_PROGRESS,
             'user_start' => Auth::id(),
