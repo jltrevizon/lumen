@@ -14,6 +14,10 @@ class BudgetPendingTaskFilter extends ModelFilter
         return $this->byStateBudgetPendingTaskIds($ids);
     }
 
+    public function roleIds($ids){
+        return $this->whereIn('role_id', $ids);
+    }
+
     public function vehiclePlate($plate){
         return $this->byPlate($plate);
     }
