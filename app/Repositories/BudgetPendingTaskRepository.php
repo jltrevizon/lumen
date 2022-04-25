@@ -17,9 +17,10 @@ class BudgetPendingTaskRepository extends Repository {
     }
 
     public function create($request){
-        $user = User::findOrFail(Auth::id());
+        $user = User::with(['campas'])->findOrFail(Auth::id());
         $budgetPendingTask = BudgetPendingTask::create($request->all());
         $budgetPendingTask->role_id = $user->role_id;
+        $budgetPendingTask->campa_id = $user->campas[0]->id;
         $budgetPendingTask->save();
         return $budgetPendingTask;
     }

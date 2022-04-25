@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\BudgetPendingTask;
+use App\Models\Campa;
 use App\Models\PendingTask;
 use App\Models\Role;
 use App\Models\StateBudgetPendingTask;
@@ -19,6 +20,13 @@ class BudgetPendingTaskTest extends TestCase
     {
         parent::setUp();
         $this->budgetPendingTask = BudgetPendingTask::factory()->create();
+    }
+
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->budgetPendingTask->campa());
+        $this->assertInstanceOf(Campa::class, $this->budgetPendingTask->campa()->getModel());
     }
 
     /** @test */
