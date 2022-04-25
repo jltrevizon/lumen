@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class DamageFilter extends ModelFilter
 {
@@ -13,6 +14,12 @@ class DamageFilter extends ModelFilter
 
     public function campaIds($ids){
         return $this->whereIn('campa_id', $ids);
+    }
+
+    public function vehicleCampaIds($ids){
+        return $this->whereHas('vehicle', function(Builder $builder) use($ids){
+            return $builder->whereIn('campa_id', $ids);
+        });
     }
 
     public function vehicleIds($ids){

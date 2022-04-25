@@ -56,6 +56,13 @@ class Task2Seeder extends Seeder
                 'company_id' => Company::ALD,
                 'sub_state_id' => SubState::PRE_AVAILABLE,
                 'type_task_id' => TypeTask::SPECIAL,
+                'name' => 'Traslado',
+                'duration' => random_int(1, 40), 
+            ],
+            [
+                'company_id' => Company::ALD,
+                'sub_state_id' => SubState::PRE_AVAILABLE,
+                'type_task_id' => TypeTask::SPECIAL,
                 'name' => 'Agregar rotulación 1 panel',
                 'duration' => random_int(1, 40),
             ],

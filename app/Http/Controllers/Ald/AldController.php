@@ -8,6 +8,7 @@ use App\Models\PendingTask;
 use App\Models\StatePendingTask;
 use App\Models\Vehicle;
 use App\Models\GroupTask;
+use App\Models\SubState;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskRepository;
 use App\Repositories\VehicleRepository;
@@ -131,6 +132,10 @@ class AldController extends Controller
         }
         $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($vehicleId);
         $vehicle = $this->vehicleRepository->pendingOrInProgress($vehicleId);
+        if($vehicle && $vehicle->sub_state_id == null){
+            $vehicle->sub_state_id = SubState::CAMPA;
+            $vehicle->save();
+        }
         $this->vehicleRepository->updateSubState($vehicleId, $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
     }
 

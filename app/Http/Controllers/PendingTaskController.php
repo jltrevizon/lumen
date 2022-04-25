@@ -157,4 +157,8 @@ class PendingTaskController extends Controller
         return $this->updateDataResponse($this->pendingTaskRepository->updateApprovedPendingTaskFromValidation($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    public function createTransferTask(Request $request){
+        return $this->createDataResponse($this->pendingTaskRepository->createTransferTask($request), HttpFoundationResponse::HTTP_CREATED);
+    }
+
 }
