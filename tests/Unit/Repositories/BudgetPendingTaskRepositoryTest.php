@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\BudgetPendingTask;
+use App\Models\Campa;
 use App\Models\PendingTask;
 use App\Models\Role;
 use App\Models\StateBudgetPendingTask;
@@ -30,6 +31,7 @@ class BudgetPendingTaskRepositoryTest extends TestCase
         $stateBudgetPendingTaskId = StateBudgetPendingTask::factory()->create()->id;
         $request = new Request();
         $request->replace([
+            'campa_id' => Campa::factory()->create()->id,
             'role_id' => Role::factory()->create()->id,
             'pending_task_id' => $pendingTaskId,
             'state_budget_pending_task_id' => $stateBudgetPendingTaskId,
