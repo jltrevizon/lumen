@@ -41,6 +41,8 @@ class PendingTaskExport extends Command
     {
         $date = microtime(true);
         $array = explode('.', $date);
-        Excel::store(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', 's3');
+        if(env('APP_ENV') == 'production') {
+            Excel::store(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', 's3');
+        }
     }
 }
