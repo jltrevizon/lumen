@@ -51,7 +51,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     $pendingTask->datetime_start,
                     $pendingTask->datetime_finish,
                     round(($pendingTask->total_paused / 60), 2),
-                    $vehicle->typeModelOrder->name ?? null
+                    $vehicle->typeModelOrder->name ?? null,
+                    $pendingTask->expected_completion_dates
                 ];
                 array_push($array, $line);
             }

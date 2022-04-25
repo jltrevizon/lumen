@@ -25,7 +25,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/defleeting', 'VehicleController@defleeting');
 
-    $router->get('/test-vehicles', 'VehicleController@getVehiclesWithPendingTashDelivered');
+    //$router->post('/test-vehicles', 'PendingTaskController@expectedCompletionDate');
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
@@ -168,6 +168,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
         $router->post('/pending-tasks/finish-all', 'PendingTaskController@finishAll');
         $router->post('/pending-tasks/transfer', 'PendingTaskController@createTransferTask');
+        $router->post('/expected-completion-date','PendingTaskController@expectedCompletionDate');
 
         /**
          * Purchase operations

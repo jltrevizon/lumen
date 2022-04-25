@@ -161,4 +161,20 @@ class PendingTaskController extends Controller
         return $this->createDataResponse($this->pendingTaskRepository->createTransferTask($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
+    public function expectedCompletionDate(Request $request){
+        $dates = $request->input('dates');
+        $pendingTask = PendingTask::findOrFail($request->input('pending_task_id'));
+        $array = [];
+        if($pendingTask->expected_completion_dates != null){
+            $array = json_decode($pendingTask->expected_completion_dates, JSON_UNESCAPED_UNICODE);
+        }
+        foreach($dates as $date){
+            array_push($array, $date);
+        }
+
+        $pendingTask->expected_completion_dates = $array;
+        $pendingTask->save();
+        return $pendingTask;
+    }
+
 }
