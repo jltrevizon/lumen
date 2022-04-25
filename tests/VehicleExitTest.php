@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Campa;
 use App\Models\DeliveryNote;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
@@ -41,5 +42,12 @@ class VehicleExitTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->vehicleExit->deliveryNote());
         $this->assertInstanceOf(DeliveryNote::class, $this->vehicleExit->deliveryNote()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->vehicleExit->campa());
+        $this->assertInstanceOf(Campa::class, $this->vehicleExit->campa()->getModel());
     }
 }

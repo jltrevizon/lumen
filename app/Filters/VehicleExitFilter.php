@@ -16,6 +16,10 @@ class VehicleExitFilter extends ModelFilter
         return $this->whereIn('vehicle_id', $ids);
     }
 
+    public function campaIds($ids){
+        return $this->whereIn('campa_id', $ids);
+    }
+
     public function pendingTaskIds($ids){
         return $this->whereIn('pending_task_id', $ids);
     }

@@ -366,22 +366,26 @@ public function verifyPlateReception($request){
                                     $pending_task->save();
                                 }    
                             }
-                            $square = $vehicle->square()->first();
-                            if (!is_null($square)) {
-                                $square->vehicle_id = null;
-                                $square->save();
-                            }
                             $vehicle->update(['sub_state_id' => SubState::ALQUILADO, 'campa_id' => null]);
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL){
-                            $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id);
+                            $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
                             $vehicle->update(['sub_state_id' => SubState::WORKSHOP_EXTERNAL]);
                         }
+                        $this->freeSquare($vehicle);
                     }
                 });
         return [
             'delivery_note' => $deliveryNote
         ];
+    }
+
+    private function freeSquare($vehicle){
+        $square = $vehicle->square()->first();
+        if (!is_null($square)) {
+            $square->vehicle_id = null;
+            $square->save();
+        }
     }
 
     public function setVehicleRented($request){

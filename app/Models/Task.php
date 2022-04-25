@@ -19,6 +19,7 @@ class Task extends Model
     const TOCAMPA = 37;
     const TOALQUILADO = 38;
     const VALIDATE_CHECKLIST = 39;
+    const TRANSFER = 40;
 
     protected $fillable = [
         'company_id',

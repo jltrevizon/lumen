@@ -10,19 +10,20 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
-    public function __construct(int $limit)
+    public function __construct()
     {
-        $this->limit = $limit;
+
     }
 
     public function collection()
     {
-        return DeliveryVehicle::limit($this->limit)->get();
+        return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
+            ->get();
     }
 
     public function map($deliveryVehicle): array
     {
-        $data = $deliveryVehicle->data_delivery;
+        $data = json_decode($deliveryVehicle->data_delivery);
         return [
             date('d-m-Y'),
             $deliveryVehicle->vehicle->typeModelOrder ? $deliveryVehicle->vehicle->typeModelOrder->name : null,
@@ -30,11 +31,11 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
             $deliveryVehicle->vehicle ? $deliveryVehicle->vehicle->plate : null,
             $deliveryVehicle->vehicle->vehicleModel ? $deliveryVehicle->vehicle->vehicleModel->brand->name : null,
             $deliveryVehicle->vehicle->vehicleModel ?  $deliveryVehicle->vehicle->vehicleModel->name : null,
-            $data['company'],
-            $data['customer'],
-            $data['driver'],
-            $data['dni'],
-            $data['truck'],
+            $data->company,
+            $data->customer,
+            $data->driver,
+            $data->dni,
+            $data->truck,
         ];
     }
 
