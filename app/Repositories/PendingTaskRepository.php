@@ -597,22 +597,24 @@ class PendingTaskRepository extends Repository {
     }
 
     public function createTransferTask($request){
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id')); 
-        $task = $this->taskRepository->getById([], Task::TRANSFER);
-        $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicle->id);
-        PendingTask::create([
-            'vehicle_id' => $vehicle->id,
-            'task_id' => $task->id,
-            'state_pending_task_id' => StatePendingTask::IN_PROGRESS,
-            'user_start' => Auth::id(),
-            'group_task_id' => $groupTask->id,
-            'duration' => $task->duration,
-            'order' => 1,
-            'approved' => true,
-            'datetime_pending' => date('Y-m-d H:i:s'),
-            'datetime_start' => date('Y-m-d H:i:s'),
-            'user_id' => Auth::id()
-        ]);
+        foreach($request->input('vehicle_ids') as $id) {
+            $vehicle = Vehicle::findOrFail($id); 
+            $task = $this->taskRepository->getById([], Task::TRANSFER);
+            $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicle->id);
+            PendingTask::create([
+                'vehicle_id' => $vehicle->id,
+                'task_id' => $task->id,
+                'state_pending_task_id' => StatePendingTask::IN_PROGRESS,
+                'user_start' => Auth::id(),
+                'group_task_id' => $groupTask->id,
+                'duration' => $task->duration,
+                'order' => 1,
+                'approved' => true,
+                'datetime_pending' => date('Y-m-d H:i:s'),
+                'datetime_start' => date('Y-m-d H:i:s'),
+                'user_id' => Auth::id()
+            ]);
+        }
 
         return response()->json([
             'message' => 'Task Transfer added!'
