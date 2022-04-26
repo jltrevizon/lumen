@@ -597,7 +597,7 @@ class PendingTaskRepository extends Repository {
     }
 
     public function createTransferTask($request){
-        $vehicle = $this->vehicleRepository->getById([], $request->input('vehicle_id'));
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id')); 
         $task = $this->taskRepository->getById([], Task::TRANSFER);
         $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicle->id);
         PendingTask::create([
