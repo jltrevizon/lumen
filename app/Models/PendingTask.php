@@ -84,6 +84,16 @@ class PendingTask extends Model
         return $this->hasMany(BudgetPendingTask::class);
     }
 
+    public function estimatedDates(){
+        return $this->hasMany(EstimatedDate::class);
+    }
+
+    public function lastEstimatedDate(){
+        return $this->hasOne(EstimatedDate::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
     public function userStart(){
         return $this->belongsTo(User::class, 'user_start_id');
     }

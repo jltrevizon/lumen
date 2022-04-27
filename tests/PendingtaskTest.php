@@ -3,6 +3,7 @@
 use App\Models\BudgetPendingTask;
 use App\Models\Company;
 use App\Models\Damage;
+use App\Models\EstimatedDate;
 use App\Models\GroupTask;
 use App\Models\Incidence;
 use App\Models\Operation;
@@ -108,6 +109,20 @@ class PendingtaskTest extends TestCase
     {
         $this->assertInstanceOf(HasMany::class, $this->pendingTask->budgetPendingTasks());
         $this->assertInstanceOf(BudgetPendingTask::class, $this->pendingTask->budgetPendingTasks()->getModel());
+    }
+
+    /** @test */
+    public function it_has_many_estimated_dates()
+    {
+        $this->assertInstanceOf(HasMany::class, $this->pendingTask->estimatedDates());
+        $this->assertInstanceOf(EstimatedDate::class, $this->pendingTask->estimatedDates()->getModel());
+    }
+
+    /** @test */    
+    public function it_has_one_estimated_date()
+    {
+        $this->assertInstanceOf(HasOne::class, $this->pendingTask->lastEstimatedDate());
+        $this->assertInstanceOf(EstimatedDate::class, $this->pendingTask->lastEstimatedDate()->getModel());
     }
 
     /** @test */
