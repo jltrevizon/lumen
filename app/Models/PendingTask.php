@@ -35,7 +35,6 @@ class PendingTask extends Model
         'datetime_start',
         'datetime_pause',
         'datetime_finish',
-        'expected_completion_dates',
         'comment_state',
         'user_id'
     ];
