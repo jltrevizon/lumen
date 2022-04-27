@@ -35,7 +35,6 @@ class PendingTask extends Model
         'datetime_start',
         'datetime_pause',
         'datetime_finish',
-        'expected_completion_dates',
         'comment_state',
         'user_id'
     ];
@@ -82,6 +81,16 @@ class PendingTask extends Model
 
     public function budgetPendingTasks(){
         return $this->hasMany(BudgetPendingTask::class);
+    }
+
+    public function estimatedDates(){
+        return $this->hasMany(EstimatedDate::class);
+    }
+
+    public function lastEstimatedDate(){
+        return $this->hasOne(EstimatedDate::class)->ofMany([
+            'id' => 'max'
+        ]);
     }
 
     public function userStart(){
