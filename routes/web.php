@@ -28,8 +28,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
-    $router->post('/estimated-dates', 'EstimatedDateController@store');
-    $router->put('/estimated-dates/{id}', 'EstimatedDateController@update');
 
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
@@ -580,7 +578,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
     
         /** Estimated dates */
-       
+        $router->post('/estimated-dates', 'EstimatedDateController@store');
+        $router->put('/estimated-dates/{id}', 'EstimatedDateController@update');
+        
         /**
          * Statistics
          */
