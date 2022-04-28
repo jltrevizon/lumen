@@ -53,6 +53,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     round(($pendingTask->total_paused / 60), 2),
                     $vehicle->typeModelOrder->name ?? null,
                     $pendingTask->lastEstimatedDate?->estimated_date ? date('d-m-y H:i:s', strtotime($pendingTask->lastEstimatedDate->estimated_date)) : null,
+                    $vehicle->lastDeliveryVehicle?->created_at ? date('Y-m-d H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
                 ];
                 array_push($array, $line);
             }
@@ -77,7 +78,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 null,
                 null,
                 $vehicle->typeModelOrder->name ?? null,
-                null
+                null,
+                $vehicle->lastDeliveryVehicle?->created_at ? date('Y-m-d H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
             ];
             array_push($array, $line);
         }
@@ -107,7 +109,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Fecha fin tarea',
             'Tiempo (horas)',
             'Negocio',
-            'Fecha estimada'
+            'Fecha estimada',
+            'última salida'
         ];
     }
 }
