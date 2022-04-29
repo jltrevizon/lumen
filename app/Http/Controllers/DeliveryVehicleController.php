@@ -87,6 +87,6 @@ class DeliveryVehicleController extends Controller
      */
     public function destroy($id)
     {
-        $this->deleteDataResponse($this->deliveryVehicleRepository->delete($id), Response::HTTP_OK);
+       return $this->deleteDataResponse($this->deliveryVehicleRepository->delete($id), Response::HTTP_OK);
     }
 }
