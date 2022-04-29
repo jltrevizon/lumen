@@ -13,11 +13,21 @@ class BudgetPendingTask extends Model
     use Filterable, HasFactory;
 
     protected $fillable = [
+        'campa_id',
+        'role_id',
         'pending_task_id',
         'state_budget_pending_task_id',
         'url',
         'comment'
     ];
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
+    }
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
 
     public function pendingTask(){
         return $this->belongsTo(PendingTask::class);

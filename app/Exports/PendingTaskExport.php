@@ -24,7 +24,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 ->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED]);
         }])
         ->where('company_id', Company::ALD)
-        ->get();
+        ->paginate();
     }
 
     public function map($vehicle): array
@@ -51,7 +51,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     $pendingTask->datetime_start,
                     $pendingTask->datetime_finish,
                     round(($pendingTask->total_paused / 60), 2),
-                    $vehicle->typeModelOrder->name ?? null
+                    $vehicle->typeModelOrder->name ?? null,
+                    $pendingTask->lastEstimatedDate?->estimated_date ? date('d-m-y H:i:s', strtotime($pendingTask->lastEstimatedDate->estimated_date)) : null,
                 ];
                 array_push($array, $line);
             }
@@ -75,7 +76,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 null,
                 null,
                 null,
-                $vehicle->typeModelOrder->name ?? null
+                $vehicle->typeModelOrder->name ?? null,
+                null
             ];
             array_push($array, $line);
         }
@@ -105,6 +107,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Fecha fin tarea',
             'Tiempo (horas)',
             'Negocio',
+            'Fecha estimada'
         ];
     }
 }

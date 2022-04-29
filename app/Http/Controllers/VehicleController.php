@@ -24,17 +24,6 @@ class VehicleController extends Controller
         $this->downloadVehicles = $downloadVehicles;
     }
 
-    public function getVehiclesWithPendingTashDelivered(){
-        return Vehicle::whereHas('pendingTasks', function (Builder $builder){
-            return $builder->where(function($query) {
-                return $query->where('state_pending_task_id','!=', 3)
-                ->orWhereNull('state_pending_task_id');
-            })
-            ->where('approved', true);
-        })
-        ->where('sub_state_id', SubState::ALQUILADO)
-        ->paginate(25);
-    }
 
     public function download(Request $request){
         $pendingDownload = new PendingDownload();
