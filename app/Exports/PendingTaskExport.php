@@ -34,7 +34,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             foreach($vehicle->pendingTasks as $pendingTask){
                 $line = [
                     $vehicle->plate,
-                    $pendingTask->groupTask->reception ? date('d-m-Y', strtotime($pendingTask->groupTask->reception->created_at)) : null,
+                    $pendingTask->groupTask->reception ? date('d/m/Y', strtotime($pendingTask->groupTask->reception->created_at)) : null,
                     $vehicle->kms,
                     $vehicle->vehicleModel->brand->name ?? null,
                     $vehicle->vehicleModel->name ?? null,
@@ -52,15 +52,15 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     $pendingTask->datetime_finish,
                     round(($pendingTask->total_paused / 60), 2),
                     $vehicle->typeModelOrder->name ?? null,
-                    $pendingTask->lastEstimatedDate?->estimated_date ? date('d-m-y H:i:s', strtotime($pendingTask->lastEstimatedDate->estimated_date)) : null,
-                    $vehicle->lastDeliveryVehicle?->created_at ? date('Y-m-d H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
+                    $pendingTask->lastEstimatedDate?->estimated_date ? date('d/m/Y H:i:s', strtotime($pendingTask->lastEstimatedDate->estimated_date)) : null,
+                    $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
                 ];
                 array_push($array, $line);
             }
         } else {
             $line = [
                 $vehicle->plate,
-                $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at)) : null,
+                $vehicle->lastReception ? date('d/m/Y', strtotime($vehicle->lastReception->created_at)) : null,
                 $vehicle->kms,
                 $vehicle->vehicleModel->brand->name ?? null,
                 $vehicle->vehicleModel->name ?? null,
@@ -79,7 +79,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 null,
                 $vehicle->typeModelOrder->name ?? null,
                 null,
-                $vehicle->lastDeliveryVehicle?->created_at ? date('Y-m-d H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
+                $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
             ];
             array_push($array, $line);
         }
