@@ -38,6 +38,7 @@ class SubState extends Model
     const WORKSHOP_EXTERNAL = 22;
     const PRE_AVAILABLE = 23;
     const WORKSHOP_MOON = 24;
+    const TRANSIT = 25;
 
     protected $fillable = [
         'state_id',

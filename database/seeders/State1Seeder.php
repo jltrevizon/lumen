@@ -69,6 +69,11 @@ class State1Seeder extends Seeder
                 'id' => 15,
                 'name' => 'Finalizado',
                 'company_id' => Company::INVARAT
+            ],
+            [
+                'id' => 16,
+                'name' => 'Transporte',
+                'company_id' => Company::ALD
             ]
             ];
     }
