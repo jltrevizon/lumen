@@ -2,10 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\Brand;
 use App\Models\BudgetPendingTask;
-use Exception;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetPendingTaskRepository extends Repository {
 
@@ -15,7 +14,11 @@ class BudgetPendingTaskRepository extends Repository {
     }
 
     public function create($request){
+        $user = User::with(['campas'])->findOrFail(Auth::id());
         $budgetPendingTask = BudgetPendingTask::create($request->all());
+        // $budgetPendingTask->role_id = $user->role_id;
+        $budgetPendingTask->campa_id = $user->campas[0]->id ?? null;
+        $budgetPendingTask->save();
         return $budgetPendingTask;
     }
 

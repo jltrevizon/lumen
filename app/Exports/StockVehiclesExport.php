@@ -30,28 +30,28 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
     {
         return [
             $vehicle->plate,
-            $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at ?? null)) : null,
+            $vehicle->lastReception ? date('d/m/Y', strtotime($vehicle->lastReception->created_at ?? null)) : null,
             $vehicle->kms,
             $vehicle->vehicleModel->brand->name ?? null,
             $vehicle->vehicleModel->name ?? null,
             $vehicle->color->name ?? null,
             $vehicle->subState->state->name ?? null,
             $vehicle->subState->name ?? null,
-            $vehicle->last_change_state ? date('d-m-Y H:i:s', strtotime($vehicle->last_change_state)) : null,
-            $vehicle->last_change_sub_state ? date('d-m-Y H:i:s', strtotime($vehicle->last_change_sub_state)) : null,
+            $vehicle->last_change_state ? date('d/m/Y H:i:s', strtotime($vehicle->last_change_state)) : null,
+            $vehicle->last_change_sub_state ? date('d/m/Y H:i:s', strtotime($vehicle->last_change_sub_state)) : null,
             $vehicle->observations,
             $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
             $vehicle->has_environment_label == true ? 'Si' : 'No',
             $vehicle->campa->name ?? null,
             '',
-            $vehicle->next_itv ? date('d-m-Y', strtotime($vehicle->next_itv)) : null,
+            $vehicle->next_itv ? date('d/m/Y', strtotime($vehicle->next_itv)) : null,
             $vehicle->category->name ?? null,
             $vehicle->typeModelOrder->name ?? null,
             $vehicle->lastGroupTask->pendingTasks[0]->task->name ?? null,
             $vehicle->lastGroupTask->pendingTasks[0]->statePendingTask->name ?? null,
             $vehicle->lastGroupTask->pendingTasks[0]->start_datetime ?? null,
             $vehicle->square ? ($vehicle->square->street->zone->name . ' ' . $vehicle->square->street->name . ' ' . $vehicle->square->name) : null,
-            $vehicle->lastDeliveryVehicle ? ($vehicle->sub_state_id == SubState::ALQUILADO ? date('d-m-Y', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null) : null,
+            $vehicle->lastDeliveryVehicle ? ($vehicle->sub_state_id == SubState::ALQUILADO ? date('d/m/Y', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null) : null,
             $vehicle->lastGroupTask->pendingTasks[0]->observations ?? null
         ];
     }

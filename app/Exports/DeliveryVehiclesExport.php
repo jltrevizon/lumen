@@ -25,7 +25,7 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
     {
         $data = json_decode($deliveryVehicle->data_delivery);
         return [
-            date('d-m-Y'),
+            date('d/m/Y'),
             $deliveryVehicle->vehicle->typeModelOrder ? $deliveryVehicle->vehicle->typeModelOrder->name : null,
             $deliveryVehicle->vehicle ? $deliveryVehicle->vehicle->vin : null,
             $deliveryVehicle->vehicle ? $deliveryVehicle->vehicle->plate : null,

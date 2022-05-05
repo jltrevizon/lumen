@@ -55,9 +55,12 @@ class DeliveryVehicleRepository extends Repository {
 
     public function delete($id){    
         $deliveryVehicle = DeliveryVehicle::findOrFail($id);
+        $vehicle = Vehicle::findOrFail($deliveryVehicle->vehicle_id);
+        $vehicle->campa_id = $deliveryVehicle->campa_id;
+        $vehicle->save();
         $this->updateSubStateVehicle($deliveryVehicle->vehicle_id, SubState::CAMPA);
         $deliveryVehicle->delete();
-
+        return $deliveryVehicle;
     }
 
     public function updateSubStateVehicle($vehicleId, $subState){

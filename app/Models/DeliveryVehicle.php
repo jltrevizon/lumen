@@ -5,11 +5,12 @@ namespace App\Models;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DeliveryVehicle extends Model
 {
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
         'vehicle_id',

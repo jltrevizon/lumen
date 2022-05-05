@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\BudgetPendingTask;
+use App\Models\Campa;
 use App\Models\PendingTask;
+use App\Models\Role;
 use App\Models\StateBudgetPendingTask;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +20,20 @@ class BudgetPendingTaskTest extends TestCase
     {
         parent::setUp();
         $this->budgetPendingTask = BudgetPendingTask::factory()->create();
+    }
+
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->budgetPendingTask->campa());
+        $this->assertInstanceOf(Campa::class, $this->budgetPendingTask->campa()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_role()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->budgetPendingTask->role());
+        $this->assertInstanceOf(Role::class, $this->budgetPendingTask->role()->getModel());
     }
 
     /** @test */

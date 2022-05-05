@@ -1,8 +1,11 @@
 <?php
 
 use App\Models\BudgetPendingTask;
+use App\Models\Campa;
 use App\Models\PendingTask;
+use App\Models\Role;
 use App\Models\StateBudgetPendingTask;
+use App\Models\User;
 use App\Repositories\BudgetPendingTaskRepository;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -22,10 +25,14 @@ class BudgetPendingTaskRepositoryTest extends TestCase
     /** @test */
     public function should_create_a_budget_pending_task_correctly()
     {
+        $user = User::factory()->create();
+        $this->actingAs($user);
         $pendingTaskId = PendingTask::factory()->create()->id;
         $stateBudgetPendingTaskId = StateBudgetPendingTask::factory()->create()->id;
         $request = new Request();
         $request->replace([
+            'campa_id' => Campa::factory()->create()->id,
+            'role_id' => Role::factory()->create()->id,
             'pending_task_id' => $pendingTaskId,
             'state_budget_pending_task_id' => $stateBudgetPendingTaskId,
             'url' => 'http://localhost.com'

@@ -1,3 +1,4 @@
+
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
@@ -25,11 +26,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/defleeting', 'VehicleController@defleeting');
 
-    $router->get('/test-vehicles', 'VehicleController@getVehiclesWithPendingTashDelivered');
-
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
-    
+
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
          * Reset password
@@ -578,6 +577,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pending-authorization','PendingAuthorizationController@index');
         $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
     
+        /** Estimated dates */
+        $router->post('/estimated-dates', 'EstimatedDateController@store');
+        $router->put('/estimated-dates/{id}', 'EstimatedDateController@update');
+        
         /**
          * Statistics
          */
