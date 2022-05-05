@@ -8,6 +8,7 @@ use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -32,6 +33,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
         $array = [];
         if(count($vehicle->pendingTasks) > 0) {
             foreach($vehicle->pendingTasks as $pendingTask){
+                Log::debug($pendingTask->id);
                 $line = [
                     $vehicle->plate,
                     $pendingTask->groupTask->reception ? date('d/m/Y', strtotime($pendingTask->groupTask->reception->created_at)) : null,
@@ -52,8 +54,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     $pendingTask->datetime_finish,
                     round(($pendingTask->total_paused / 60), 2),
                     $vehicle->typeModelOrder->name ?? null,
-                    $pendingTask->lastEstimatedDate?->estimated_date ? date('d/m/Y H:i:s', strtotime($pendingTask->lastEstimatedDate->estimated_date)) : null,
                     $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
+                    $pendingTask->estimatedDates?->pluck('estimated_date')->implode(',') ?? null,
                 ];
                 array_push($array, $line);
             }
@@ -78,8 +80,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 null,
                 null,
                 $vehicle->typeModelOrder->name ?? null,
-                null,
                 $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
+                null,
             ];
             array_push($array, $line);
         }
@@ -109,8 +111,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Fecha fin tarea',
             'Tiempo (horas)',
             'Negocio',
-            'Fecha estimada',
-            'última salida'
+            'última salida',
+            'Fecha estimada'
         ];
     }
 }

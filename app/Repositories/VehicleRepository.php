@@ -370,7 +370,11 @@ public function verifyPlateReception($request){
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT){
                             $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
-                            $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
+                            if($request->input('sub_state_id') == SubState::TRANSIT) {
+                                $vehicle->update(['sub_state_id' => $request->input('sub_state_id'), 'campa_id' => null]);
+                            } else {
+                                $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
+                            }
                         }
                         $this->freeSquare($vehicle);
                     }
