@@ -29,6 +29,7 @@ class State extends Model
     const PENDING_FINAL_CHECK = 13;
     const PENDING_CERTIFICATED = 14;
     const FINISHED = 15;
+    const TRANSPORT = 16;
 
     protected $fillable = [
         'name', 'type'
