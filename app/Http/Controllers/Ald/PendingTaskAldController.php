@@ -70,8 +70,7 @@ class PendingTaskAldController extends Controller
 
     private function finishPendingTaskLastGroupTask($vehicleId){
         $vehicle = Vehicle::findOrFail($vehicleId);
-        if(count($vehicle->lastGroupTask?->pendingTasks) > 0){
-            foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
+            foreach ($vehicle->lastGroupTask?->pendingTasks as $key => $pending_task) {
                 $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
                 if (is_null($pending_task->datetime_pending)) {
                     $pending_task->datetime_pending = date('Y-m-d H:i:s');
@@ -90,7 +89,6 @@ class PendingTaskAldController extends Controller
                 }
                 $pending_task->save();
             }   
-        }
     }
 
     private function createTasks($tasks, $vehicleId, $groupTaskId){
