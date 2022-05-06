@@ -36,8 +36,9 @@ class DeliveryVehicleRepository extends Repository {
         $vehicle = Vehicle::findOrFail($vehicleId);
         $hasLastGroupTask = $vehicle->lastGroupTask->id ?? null;
         if(!$hasLastGroupTask) {
-            $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
+            $hasLastGroupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
         }
+        $lastGroupTask = $hasLastGroupTask->id;
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
             'campa_id' => $user->campas[0]->id,
@@ -50,7 +51,7 @@ class DeliveryVehicleRepository extends Repository {
             'state_pending_task_id' => StatePendingTask::FINISHED,
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
-            'group_task_id'=> $vehicle->lastGroupTask->id,
+            'group_task_id'=> $lastGroupTask,
             'order' => 101,
             'approved' => true,
             'datetime_pending' => date('Y-m-d H:i:s'),
