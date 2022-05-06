@@ -100,7 +100,7 @@ class AldController extends Controller
             }
             $pending_task->datetime_pending = date("Y-m-d H:i:s");
             $pending_task->save();
-
+            return $pending_task;
 
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage(), ], 400);

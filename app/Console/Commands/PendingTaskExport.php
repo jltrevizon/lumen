@@ -39,6 +39,7 @@ class PendingTaskExport extends Command
      */
     public function handle()
     {
+        ini_set("memory_limit", "-1");
         $date = microtime(true);
         $array = explode('.', $date);
         if(env('APP_ENV') == 'production') {

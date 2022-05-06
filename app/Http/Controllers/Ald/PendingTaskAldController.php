@@ -11,6 +11,7 @@ use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\Vehicle;
 use App\Repositories\AccessoryRepository;
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
@@ -44,6 +45,7 @@ class PendingTaskAldController extends Controller
 
     public function createFromArray(Request $request){
         try {
+            $this->finishPendingTaskLastGroupTask($request->input('vehicle_id'));
             $groupTask = null;
             if ($request->input('group_task_id')) {
                 $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
@@ -64,6 +66,32 @@ class PendingTaskAldController extends Controller
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
+    }
+
+    private function finishPendingTaskLastGroupTask($vehicleId){
+        $vehicle = Vehicle::findOrFail($vehicleId);
+            $pendingTasks = $vehicle->lastGroupTask->pendingTasks ?? null;
+            if($pendingTasks) {
+                foreach ($pendingTasks as $key => $pending_task) {
+                    $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+                    if (is_null($pending_task->datetime_pending)) {
+                        $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                    }
+                    if (is_null($pending_task->datetime_start)) {                                
+                        $pending_task->datetime_start = date('Y-m-d H:i:s');
+                    }
+                    if (is_null($pending_task->datetime_finish)) {
+                        $pending_task->datetime_finish = date('Y-m-d H:i:s');                                
+                    }
+                    if (is_null($pending_task->user_start_id)) {
+                        $pending_task->user_start_id = Auth::id();
+                    }
+                    if (is_null($pending_task->user_end_id)) {
+                        $pending_task->user_end_id = Auth::id();
+                    }
+                    $pending_task->save();
+                }   
+            }
     }
 
     private function createTasks($tasks, $vehicleId, $groupTaskId){
