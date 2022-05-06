@@ -14,10 +14,12 @@ use Illuminate\Support\Facades\Auth;
 class DeliveryVehicleRepository extends Repository {
 
     public function __construct(
-        SquareRepository $squareRepository
+        SquareRepository $squareRepository,
+        GroupTaskRepository $groupTaskRepository
         )
     {
         $this->squareRepository = $squareRepository;
+        $this->groupTaskRepository = $groupTaskRepository;
     }
 
     public function index($request){
@@ -32,6 +34,10 @@ class DeliveryVehicleRepository extends Repository {
         $user = User::with('campas')
             ->findOrFail(Auth::id());
         $vehicle = Vehicle::findOrFail($vehicleId);
+        $hasLastGroupTask = $vehicle->lastGroupTask->id ?? null;
+        if(!$hasLastGroupTask) {
+            $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
+        }
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
             'campa_id' => $user->campas[0]->id,
