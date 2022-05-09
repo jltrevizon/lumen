@@ -474,4 +474,13 @@ public function verifyPlateReception($request){
             ->first();
     }
 
+    // GroupTasks of last reception
+    public function lastGroupTasks($request){
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        return Vehicle::with(['groupTasks' => function($query) use($vehicle){
+            return $query->where('created_at', '>=', $vehicle->lastReception->created_at);
+        }])
+        ->findOrFail($request->input('vehicle_id'));
+    }
+
 }
