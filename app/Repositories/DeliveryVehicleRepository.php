@@ -37,8 +37,9 @@ class DeliveryVehicleRepository extends Repository {
         $hasLastGroupTask = $vehicle->lastGroupTask->id ?? null;
         if(!$hasLastGroupTask) {
             $hasLastGroupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
+            $hasLastGroupTask = $hasLastGroupTask->id;
         }
-        $lastGroupTask = $hasLastGroupTask->id;
+        $lastGroupTask = $hasLastGroupTask;
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
             'campa_id' => $user->campas[0]->id,
