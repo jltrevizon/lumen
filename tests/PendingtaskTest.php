@@ -57,6 +57,13 @@ class PendingtaskTest extends TestCase
     }
 
     /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->campa());
+        $this->assertInstanceOf(PendingTask::class, $this->pendingTask->campa()->getModel());
+    }
+
+    /** @test */
     public function it_belongs_to_state_pending_task()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->statePendingTask());

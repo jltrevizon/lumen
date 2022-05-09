@@ -20,6 +20,7 @@ class PendingTask extends Model
     protected $fillable = [
         'vehicle_id',
         'task_id',
+        'campa_id',
         'state_pending_task_id',
         'user_start_id',
         'user_end_id',
@@ -49,6 +50,10 @@ class PendingTask extends Model
 
     public function task(){
         return $this->belongsTo(Task::class);
+    }
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
     }
 
     public function statePendingTask(){

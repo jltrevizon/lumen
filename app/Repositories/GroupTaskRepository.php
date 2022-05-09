@@ -27,7 +27,7 @@ class GroupTaskRepository extends Repository {
     }
 
     public function getById($request, $id){
-        return GroupTask::with($this->getWiths($request->with))
+        return GroupTask::with($this->getWiths($request->with) ?? [])
                     ->findOrFail($id);
     }
 

@@ -2,13 +2,16 @@
 
 namespace App\Repositories;
 
+use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StateChange;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
+use Carbon\Carbon;
 use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -110,6 +113,35 @@ class StatisticsRepository extends Repository {
             }
         }
         return $array;
+    }
+
+    public function durationByTask(){
+        $pendingTasks = PendingTask::select(
+            DB::raw('id'),
+            DB::raw('task_id')
+        )
+        ->whereHas('task', function(Builder $builder){
+            return $builder->where('company_id', Company::ALD);
+        })
+        ->where('approved',true)
+        ->get()
+        ->groupBy('task_id');
+        $array_tasks = [];
+        foreach ($pendingTasks as $key => $value) {
+            $pendings = PendingTask::whereIn('id', $value->pluck('id'))->get();
+            $diff = 0;
+            foreach($pendings as $pending){
+                $date1 = Carbon::parse($pending['datetime_start']);
+                $date2 = Carbon::parse($pending['datetime_finish']);
+                $diff += $date1->diffInMinutes($date2);
+            }
+            $item = new stdClass();
+            $item->task = Task::findOrFail($key)->name;
+            $item->duration = round(($diff / 60) / count($pendings), 2, PHP_ROUND_HALF_UP);
+            array_push($array_tasks, $item);
+        }
+        return $array_tasks;
+        
     }
 
     private function diffDateTimes($datetime){

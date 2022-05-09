@@ -97,11 +97,13 @@ class PendingTaskAldController extends Controller
     private function createTasks($tasks, $vehicleId, $groupTaskId){
         $user = User::where('role_id', Role::CONTROL)
             ->first();
+        $vehicle = Vehicle::findOrFail($vehicleId);
         $isPendingTaskAssign = false;
         $order = 1;
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
+            $pending_task->campa_id = $vehicle->campa_id;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
