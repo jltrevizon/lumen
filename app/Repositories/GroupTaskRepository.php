@@ -138,7 +138,7 @@ class GroupTaskRepository extends Repository {
         }
         $vehicle->save();
         if($vehicle->has_environment_label == false){
-            $this->notificationItvMail->build($vehicle->id);
+            $this->notificationDAMail->build($vehicle->id);
         }
         //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         
