@@ -43,9 +43,6 @@ class QuestionAnswerRepository {
             $questionAnswer->save();
             if ($questionAnswer->question_id === 9) {
                 $has_environment_label = $question['response'];
-                if($question['response'] == 0) {
-                    $this->notificationDAMail->build($request->input('vehicle_id'));
-                }
             }
 
             if ($questionAnswer->question_id === 4 && $question['response'] == 1) {
