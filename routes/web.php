@@ -591,5 +591,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/statistics/stock-by-channel','StatisticsController@getAverageTypeModelOrder');
         $router->get('/statistics/average-by-task','StatisticsController@getAveragePendingTask');
         $router->get('/statistics/duration-by-task','StatisticsController@durationByTask');
+        $router->get('/statistics/execution-time','StatisticsController@executionTime');
     });
 });

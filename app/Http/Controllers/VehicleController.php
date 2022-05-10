@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\DownloadVehicles;
 use App\Models\PendingDownload;
 use App\Models\SubState;
+use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use App\Repositories\VehicleRepository;
@@ -173,6 +174,7 @@ class VehicleController extends Controller
             $vehicle = Vehicle::where('plate', $plate)->first();
             if($vehicle){
                 $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+                $vehicle->type_model_order_id = TypeModelOrder::VO;
                 $vehicle->save();
             }
         }

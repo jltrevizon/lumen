@@ -37,4 +37,8 @@ class StatisticsController extends Controller
         return $this->statisticsRepository->durationByTask();
     }
 
+    public function executionTime(){
+        return $this->statisticsRepository->executionTime();
+    }
+
 }
