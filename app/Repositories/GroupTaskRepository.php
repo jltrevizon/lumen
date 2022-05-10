@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Repositories;
+
+use App\Mail\NotificationDAMail;
 use App\Models\GroupTask;
 use App\Models\PendingTask;
 use App\Models\SubState;
@@ -14,10 +16,12 @@ use Exception;
 class GroupTaskRepository extends Repository {
 
     public function __construct(
-        StateChangeRepository $stateChangeRepository
+        StateChangeRepository $stateChangeRepository,
+        NotificationDAMail $notificationDAMail
     )
     {
         $this->stateChangeRepository = $stateChangeRepository;
+        $this->notificationDAMail = $notificationDAMail;
     }
 
     public function getAll($request){
@@ -133,6 +137,9 @@ class GroupTaskRepository extends Repository {
             $vehicle->company_id = $user->company_id;
         }
         $vehicle->save();
+        if($vehicle->has_environment_label == false){
+            $this->notificationItvMail->build($vehicle->id);
+        }
         //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         
         return ['message' => 'Solicitud aprobada!'];
