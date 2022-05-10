@@ -25,24 +25,14 @@ class AccessoryTypeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {   
+        return $this->createDataResponse($this->accessoryTypeRepository->store($request), Response::HTTP_CREATED);
     }
 
     /**
@@ -53,18 +43,7 @@ class AccessoryTypeController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return $this->getDataResponse($this->accessoryTypeRepository->show($id), Response::HTTP_OK);
     }
 
     /**
@@ -76,7 +55,7 @@ class AccessoryTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return $this->updateDataResponse($this->accessoryTypeRepository->update($request, $id), Response::HTTP_OK);
     }
 
     /**
@@ -87,6 +66,6 @@ class AccessoryTypeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return $this->deleteDataResponse($this->accessoryTypeRepository->destroy($id), Response::HTTP_OK);
     }
 }

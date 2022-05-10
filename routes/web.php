@@ -521,7 +521,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Accessory type
          */
-        $router->get('/accessory-type','AccessoryTypeController@index');
+        $router->get('/accessory-types','AccessoryTypeController@index');
+        $router->post('/accessory-types','AccessoryTypeController@store');
+        $router->get('/accessory-types/{id}', 'AccessoryTypeController@show');
+        $router->put('/accessory-types/{id}', 'AccessoryTypeController@update');
+        $router->delete('/accessory-types/{id}', 'AccessoryTypeController@destroy');
 
         /**
          * Accessory vehicle
