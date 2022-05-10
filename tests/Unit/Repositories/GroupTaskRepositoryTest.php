@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\NotificationDAMail;
 use App\Models\GroupTask;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -19,7 +20,8 @@ class GroupTaskRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->stateChangeRepository = new StateChangeRepository();
-        $this->repository = new GroupTaskRepository($this->stateChangeRepository);
+        $this->notificationDAMail = new NotificationDAMail();
+        $this->repository = new GroupTaskRepository($this->stateChangeRepository, $this->notificationDAMail);
     }
 
     /** @test */
