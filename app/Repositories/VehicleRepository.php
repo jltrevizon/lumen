@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 use App\Models\Square;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
+use App\Models\TypeModelOrder;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
