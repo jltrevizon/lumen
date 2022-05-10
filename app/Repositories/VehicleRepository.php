@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 use App\Models\Square;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
+use App\Models\TypeModelOrder;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -432,13 +433,12 @@ public function verifyPlateReception($request){
     public function defleet($id){
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+        $vehicle->type_model_order_id = TypeModelOrder::VO;
         $vehicle->save();
         if($vehicle->lastUnapprovedGroupTask){
             $this->groupTaskRepository->disablePendingTasks($vehicle->lastUnapprovedGroupTask);
         }
-        return response()->json([
-            'message' => 'Vehicle defleeted!'
-        ]);
+        return $vehicle;
     }
 
     public function unDefleet($id){
