@@ -16,8 +16,8 @@ class BudgetController extends Controller
         $this->budgetRepository = $budgetRepository;
     }
     
-    public function getAll(Request $request){
-        return $this->getDataResponse($this->budgetRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
+    public function index(Request $request){
+        return $this->getDataResponse($this->budgetRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
 }

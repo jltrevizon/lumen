@@ -33,7 +33,7 @@ class CampaRepositoryTest extends TestCase
         Campa::factory()->create();
         $request = new Request();
         $request->with = [];
-        $result = $this->repository->getAll($request);
+        $result = $this->repository->index($request);
         $this->assertCount(2, $result);
     }
 
@@ -42,7 +42,7 @@ class CampaRepositoryTest extends TestCase
     {
         $request = new Request();
         $request->with = [];
-        $result = $this->repository->getAll($request);
+        $result = $this->repository->index($request);
         $this->assertCount(0, $result);
     }
 
@@ -52,7 +52,7 @@ class CampaRepositoryTest extends TestCase
         $campa = Campa::factory()->create();
         $request = new Request();
         $request->with = [];
-        $result = $this->repository->getById($request, $campa->id);
+        $result = $this->repository->show($request, $campa->id);
         $this->assertEquals($campa['name'], $result['name']);
     }
 

@@ -32,7 +32,7 @@ class BrandRepositoryTest extends TestCase
         Brand::factory()->create();
         Brand::factory()->create();
         $request = new Request();
-        $result = $this->repository->getAll($request);
+        $result = $this->repository->index($request);
         $this->assertCount(2, $result['brands']);
     }
 
@@ -40,7 +40,7 @@ class BrandRepositoryTest extends TestCase
     public function should_return_zero_brands()
     {
         $request = new Request();
-        $result = $this->repository->getAll($request);
+        $result = $this->repository->index($request);
         $this->assertCount(0, $result['brands']);
     }
 
@@ -58,7 +58,7 @@ class BrandRepositoryTest extends TestCase
     {
         $brand = Brand::factory()->create();
         $request = new Request();
-        $result = $this->repository->getById($request, $brand['id']);
+        $result = $this->repository->show($request, $brand['id']);
         $this->assertEquals($brand['name'], $result['brand']['name']);
         $this->assertEquals($brand['id'], $result['brand']['id']);
     }

@@ -11,13 +11,13 @@ class CampaRepository extends Repository {
 
     }
 
-    public function getAll($request){
+    public function index($request){
         return Campa::with($this->getWiths($request->with))
                 ->filter($request->all())
                 ->get();
     }
 
-    public function getById($request, $id){
+    public function show($request, $id){
         return Campa::with($this->getWiths($request->with))
                 ->findOrFail($id);
     }

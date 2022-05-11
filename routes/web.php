@@ -65,8 +65,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Campas
          */
-        $router->get('/campas/getall', 'CampaController@getall');
-        $router->get('/campas/{id}', 'CampaController@getById');
+        $router->get('/campas/getall', 'CampaController@index');
+        $router->get('/campas/{id}', 'CampaController@show');
         $router->post('/campas', 'CampaController@create');
         $router->put('/campas/update/{id}', 'CampaController@update');
         $router->delete('/campas/delete/{id}', 'CampaController@delete');
@@ -426,9 +426,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Budget pending task
          */
-        $router->post('/budget-pending-task', 'BudgetPendingTaskController@create');
+        $router->post('/budget-pending-task', 'BudgetPendingTaskController@store');
         $router->put('/budget-pending-task/{id}', 'BudgetPendingTaskController@update');
-        $router->get('/budget-pending-task', 'BudgetPendingTaskController@getAll');
+        $router->get('/budget-pending-task', 'BudgetPendingTaskController@index');
 
         /**
          * Questionnaire
@@ -446,7 +446,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Budget
          */
-        $router->get('/budgets', 'BudgetController@getAll');
+        $router->get('/budgets', 'BudgetController@index');
 
         /**
          * Budget lines

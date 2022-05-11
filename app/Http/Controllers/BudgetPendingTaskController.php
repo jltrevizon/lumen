@@ -13,15 +13,15 @@ class BudgetPendingTaskController extends Controller
         $this->budgetPendingTaskRepository = $budgetPendingTaskRepository;
     }
 
-    public function create(Request $request){
-        return $this->createDataResponse($this->budgetPendingTaskRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
+    public function store(Request $request){
+        return $this->createDataResponse($this->budgetPendingTaskRepository->store($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->budgetPendingTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getAll(Request $request){
+    public function index(Request $request){
         return $this->getDataResponse($this->budgetPendingTaskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 }
