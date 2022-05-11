@@ -451,7 +451,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Budget lines
          */
-        $router->get('/budget-lines', 'BudgetLineController@getAll');
+        $router->get('/budget-lines', 'BudgetLineController@index');
 
         /**
          * Password reset code
