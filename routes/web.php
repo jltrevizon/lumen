@@ -83,8 +83,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Companies
          */
-        $router->get('/companies/getall', 'CompanyController@getall');
-        $router->get('/companies/{id}', 'CompanyController@getById');
+        $router->get('/companies/getall', 'CompanyController@index');
+        $router->get('/companies/{id}', 'CompanyController@show');
         $router->post('/companies', 'CompanyController@create');
         $router->put('/companies/update/{id}', 'CompanyController@update');
         $router->delete('/companies/delete/{id}', 'CompanyController@delete');
@@ -466,8 +466,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Comments
          */
-        $router->get('/comments', 'CommentController@getAll');
-        $router->post('/comments', 'CommentController@create');
+        $router->get('/comments', 'CommentController@index');
+        $router->post('/comments', 'CommentController@store');
 
         /**
          * Incidence image
@@ -596,7 +596,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/statistics/average-by-substate', 'StatisticsController@getAverageSubState');
         $router->get('/statistics/stock-by-channel','StatisticsController@getAverageTypeModelOrder');
         $router->get('/statistics/average-by-task','StatisticsController@getAveragePendingTask');
-        $router->get('/statistics/duration-by-task','StatisticsController@durationByTask');
+        $router->get('/statistics/half-task-start','StatisticsController@halfTaskStart');
         $router->get('/statistics/execution-time','StatisticsController@executionTime');
     });
 });

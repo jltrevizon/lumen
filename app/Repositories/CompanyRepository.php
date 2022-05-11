@@ -12,13 +12,13 @@ class CompanyRepository extends Repository{
 
     }
 
-    public function getAll($request){
+    public function index($request){
         return Company::with($this->getWiths($request->with))
             ->filter($request->all())
             ->paginate($request->input('per_page'));
     }
 
-    public function getById($id){
+    public function show($id){
         return Company::findOrFail($id);
     }
 

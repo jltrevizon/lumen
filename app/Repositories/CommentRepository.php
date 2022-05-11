@@ -15,13 +15,13 @@ class CommentRepository extends Repository {
 
     }
 
-    public function getAll($request){
+    public function index($request){
         return Comment::with($this->getWiths($request->with))
             ->filter($request->all())
             ->paginate($request->input('per_page'));
     }
 
-    public function create($request){
+    public function store($request){
         $comment = Comment::create($request->all());
         $comment->user_id = Auth::id();
         $comment->save();

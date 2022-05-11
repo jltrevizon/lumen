@@ -115,7 +115,7 @@ class StatisticsRepository extends Repository {
         return $array;
     }
 
-    public function durationByTask(){
+    public function halfTaskStart(){
         $pendingTasks = PendingTask::select(
             DB::raw('id'),
             DB::raw('task_id')
@@ -132,7 +132,7 @@ class StatisticsRepository extends Repository {
             $diff = 0;
             foreach($pendings as $pending){
                 $date1 = Carbon::parse($pending['datetime_pending']);
-                $date2 = Carbon::parse($pending['datetime_finish']);
+                $date2 = Carbon::parse($pending['datetime_start']);
                 $diff += $date1->diffInMinutes($date2);
             }
             $item = new stdClass();

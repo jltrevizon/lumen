@@ -15,12 +15,12 @@ class CompanyController extends Controller
         $this->companyRepository = $companyRepository;
     }
 
-    public function getAll(Request $request){
-        return $this->getDataResponse($this->companyRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
+    public function index(Request $request){
+        return $this->getDataResponse($this->companyRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById($id){
-        return $this->getDataResponse($this->companyRepository->getById($id), HttpFoundationResponse::HTTP_OK);
+    public function show($id){
+        return $this->getDataResponse($this->companyRepository->show($id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){

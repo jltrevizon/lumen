@@ -33,8 +33,8 @@ class StatisticsController extends Controller
         return $this->statisticsRepository->getAveragePendingTask();
     }
 
-    public function durationByTask(){
-        return $this->statisticsRepository->durationByTask();
+    public function halfTaskStart(){
+        return $this->statisticsRepository->halfTaskStart();
     }
 
     public function executionTime(){

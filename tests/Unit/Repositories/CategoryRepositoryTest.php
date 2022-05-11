@@ -36,7 +36,7 @@ class CategoryRepositoryTest extends TestCase
         Category::factory()->create();
         $request = new Request();
         $request->with = [];
-        $result = $this->repository->getAll($request);
+        $result = $this->repository->index($request);
         $this->assertCount(2, $result);
     }
 
@@ -45,7 +45,7 @@ class CategoryRepositoryTest extends TestCase
     {
         $request = new Request();
         $request->with = [];
-        $result = $this->repository->getAll($request);
+        $result = $this->repository->index($request);
         $this->assertCount(0, $result);
     }
 
@@ -63,7 +63,7 @@ class CategoryRepositoryTest extends TestCase
     public function should_return_a_category_by_id()
     {
         $category = Category::factory()->create();
-        $result = $this->repository->getById($category['id']);
+        $result = $this->repository->show($category['id']);
         $this->assertEquals($category['id'], $result['id']);
         $this->assertEquals($category['name'], $result['name']);
         $this->assertEquals($category['description'], $result['description']);
