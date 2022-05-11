@@ -364,10 +364,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Brands
          */
-        $router->get('/brands','BrandController@getAll');
+        $router->get('/brands','BrandController@index');
         $router->post('/brands', 'BrandController@store');
         $router->put('/brands/{id}', 'BrandController@update');
-        $router->get('/brands/{id}','BrandController@getById');
+        $router->get('/brands/{id}','BrandController@show');
 
         /**
          * TradeState

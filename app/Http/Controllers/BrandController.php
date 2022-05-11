@@ -13,12 +13,12 @@ class BrandController extends Controller
         $this->brandRepository = $brandRepository;
     }
 
-    public function getAll(Request $request){
-        return $this->getDataResponse($this->brandRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
+    public function index(Request $request){
+        return $this->getDataResponse($this->brandRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById(Request $request, $id){
-        return $this->getDataResponse($this->brandRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
+    public function show(Request $request, $id){
+        return $this->getDataResponse($this->brandRepository->show($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function store(Request $request){
