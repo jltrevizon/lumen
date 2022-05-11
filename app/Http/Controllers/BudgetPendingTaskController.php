@@ -22,6 +22,6 @@ class BudgetPendingTaskController extends Controller
     }
 
     public function index(Request $request){
-        return $this->getDataResponse($this->budgetPendingTaskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->budgetPendingTaskRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 }

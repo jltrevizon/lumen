@@ -74,8 +74,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Categories
          */
-        $router->get('/categories/getall', 'CategoryController@getall');
-        $router->get('/categories/{id}', 'CategoryController@getById');
+        $router->get('/categories/getall', 'CategoryController@index');
+        $router->get('/categories/{id}', 'CategoryController@show');
         $router->post('/categories', 'CategoryController@create');
         $router->put('/categories/update/{id}', 'CategoryController@update');
         $router->delete('/categories/delete/{id}', 'CategoryController@delete');

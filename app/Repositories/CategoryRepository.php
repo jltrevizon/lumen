@@ -12,13 +12,13 @@ class CategoryRepository extends Repository {
 
     }
 
-    public function getAll($request){
+    public function index($request){
         return Category::with($this->getWiths($request->with))
             ->filter($request->all())
             ->get();
     }
 
-    public function getById($id){
+    public function show($id){
         return Category::findOrFail($id);
     }
 
