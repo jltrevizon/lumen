@@ -41,4 +41,8 @@ class StatisticsController extends Controller
         return $this->statisticsRepository->executionTime();
     }
 
+    public function averageTimeInSubState(){
+        return $this->statisticsRepository->averageTimeInSubState();
+    }
+
 }

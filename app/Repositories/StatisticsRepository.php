@@ -180,4 +180,16 @@ class StatisticsRepository extends Repository {
         return $minutes;
     }
 
+    public function averageTimeInSubState(){
+        return StateChange::with(['subState.state'])->select(
+            DB::raw('count(id) as `total`'),
+            DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),  
+            DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
+            DB::raw('sub_state_id'),
+            DB::raw('sum(total_time) as `total_time`')
+        )
+        ->groupBy('month', 'sub_state_id')
+        ->get();
+    }
+
 }
