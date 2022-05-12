@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Company;
 use App\Models\PendingTask;
+use App\Models\Reception;
 use App\Models\StateChange;
 use App\Models\SubState;
 use App\Models\Task;
@@ -192,4 +193,34 @@ class StatisticsRepository extends Repository {
         ->get();
     }
 
+    public function timeApproval(){
+        $months = Reception::whereHas('groupTask', function(Builder $builder) {
+                return $builder->where('approved', true);
+            })
+            ->select(
+                DB::raw('count(id) as `total`'),
+                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
+            )
+            ->groupBy('month')
+        ->get();
+        $arrayReceptions = [];
+        foreach($months as $month){
+            $receptions = Reception::with(['groupTask'])->whereMonth('created_at', $month['month'])
+                ->whereHas('groupTask')
+                ->get();
+                $diff = 0;
+                foreach($receptions as $reception){
+                    $date1 = Carbon::parse($reception['created_at']);
+                    $date2 = Carbon::parse($reception['groupTask']['datetime_approved'] ?? Carbon::now());
+                    $diff += $date1->diffInMinutes($date2);
+                }
+                $item = new stdClass();
+                $item->month = $month['month'];
+                $item->year = $month['year'];
+                $item->total = count($receptions);
+                $item->average = round(($diff / count($receptions)) / 60, 2) . 'h';
+                array_push($arrayReceptions, $item);
+            }
+            return $arrayReceptions;
+        }
 }

@@ -599,5 +599,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/statistics/half-task-start','StatisticsController@halfTaskStart');
         $router->get('/statistics/execution-time','StatisticsController@executionTime');
         $router->get('/statistics/average-time-sub-state', 'StatisticsController@averageTimeInSubState');
+        $router->get('/statistics/time-approval', 'StatisticsController@timeApproval');
     });
 });
