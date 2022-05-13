@@ -25,6 +25,7 @@ use App\Repositories\TypeModelOrderRepository;
 use App\Repositories\DeliveryVehicleRepository;
 use App\Repositories\VehicleExitRepository;
 use App\Repositories\CampaRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class VehicleRepository extends Repository {
@@ -476,7 +477,11 @@ public function verifyPlateReception($request){
 
     // GroupTasks of last reception
     public function lastGroupTasks($request){
-        $vehicle = Vehicle::with(['groupTasks.approvedPendingTasks.task',
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        return Vehicle::with(['groupTasks' => function($query) use($vehicle){
+            return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now());
+        },
+            'groupTasks.approvedPendingTasks.task',
             'groupTasks.approvedPendingTasks.statePendingTask',
             'groupTasks.approvedPendingTasks.userStart',
             'square.street.zone',
@@ -485,10 +490,6 @@ public function verifyPlateReception($request){
             'groupTasks.allPendingTasks.userStart',
             'groupTasks.allPendingTasks.user'
         ])
-            ->findOrFail($request->input('vehicle_id'));
-        return Vehicle::with(['groupTasks' => function($query) use($vehicle){
-            return $query->where('created_at', '>=', $vehicle->lastReception->created_at);
-        }])
         ->findOrFail($request->input('vehicle_id'));
     }
 
