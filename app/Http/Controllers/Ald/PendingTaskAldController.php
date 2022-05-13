@@ -59,7 +59,7 @@ class PendingTaskAldController extends Controller
             $user = $this->userRepository->getById($request, Auth::id());
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
 
-            $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id, $request->input('reception_id'));
+            $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
             $this->vehicleRepository->updateBack($request);
 
             return [ 'message' => 'OK' ];
@@ -94,7 +94,7 @@ class PendingTaskAldController extends Controller
             }
     }
 
-    private function createTasks($tasks, $vehicleId, $groupTaskId, $receptionId){
+    private function createTasks($tasks, $vehicleId, $groupTaskId){
         $user = User::where('role_id', Role::CONTROL)
             ->first();
         $vehicle = Vehicle::findOrFail($vehicleId);
@@ -103,7 +103,7 @@ class PendingTaskAldController extends Controller
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
-            $pending_task->reception_id = $receptionId;
+            $pending_task->reception_id = $vehicle->lastReception->id;
             $pending_task->campa_id = $vehicle->campa_id;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
