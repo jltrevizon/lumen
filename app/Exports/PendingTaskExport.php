@@ -33,7 +33,6 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
         $array = [];
         if(count($vehicle->pendingTasks) > 0) {
             foreach($vehicle->pendingTasks as $pendingTask){
-                Log::debug($pendingTask->id);
                 $line = [
                     $vehicle->plate,
                     $pendingTask->groupTask->reception ? date('d/m/Y', strtotime($pendingTask->groupTask->reception->created_at)) : null,
