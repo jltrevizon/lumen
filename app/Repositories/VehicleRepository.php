@@ -476,7 +476,16 @@ public function verifyPlateReception($request){
 
     // GroupTasks of last reception
     public function lastGroupTasks($request){
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        $vehicle = Vehicle::with(['groupTasks.approvedPendingTasks.task',
+            'groupTasks.approvedPendingTasks.statePendingTask',
+            'groupTasks.approvedPendingTasks.userStart',
+            'square.street.zone',
+            'groupTasks.allPendingTasks.task',
+            'groupTasks.allPendingTasks.statePendingTask',
+            'groupTasks.allPendingTasks.userStart',
+            'groupTasks.allPendingTasks.user'
+        ])
+            ->findOrFail($request->input('vehicle_id'));
         return Vehicle::with(['groupTasks' => function($query) use($vehicle){
             return $query->where('created_at', '>=', $vehicle->lastReception->created_at);
         }])
