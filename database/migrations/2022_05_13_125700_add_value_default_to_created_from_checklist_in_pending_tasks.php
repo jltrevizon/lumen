@@ -26,7 +26,7 @@ class AddValueDefaultToCreatedFromChecklistInPendingTasks extends Migration
     public function down()
     {
         Schema::table('pending_tasks', function (Blueprint $table) {
-            $table->boolean('created_from_checklist')->default(null);
+            $table->boolean('created_from_checklist')->default(null)->change();
         });
     }
 }

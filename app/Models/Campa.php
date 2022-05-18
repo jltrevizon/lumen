@@ -36,6 +36,7 @@ class Campa extends Model
     const PULLMANCAR = 18;
     const TOQUERO_SAN_FERNANDO = 19;
     const TOQUERO_SOTO = 20;
+    const VALLADOLID = 21;
 
     protected $fillable = [
         'company_id',

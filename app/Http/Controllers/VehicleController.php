@@ -48,7 +48,6 @@ class VehicleController extends Controller
 
         $this->validate($request, [
             'campa_id' => 'required|integer',
-            'category_id' => 'required|integer',
             'plate' => 'required|string',
             'vehicle_model_id' => 'nullable|integer',
             'first_plate' => 'nullable|date',

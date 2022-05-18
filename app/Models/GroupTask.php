@@ -54,6 +54,12 @@ class GroupTask extends Model
             ->orderBy('order', 'DESC');
     }
 
+    public function lastPendingTaskWithState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('state_pending_task_id', StatePendingTask::PENDING)
+            ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+    }
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'group_task_id');
     }

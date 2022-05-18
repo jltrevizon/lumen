@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnCampaIdToPendingTasks extends Migration
+class ChangeColumnInVehicles extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnCampaIdToPendingTasks extends Migration
      */
     public function up()
     {
-        Schema::table('pending_tasks', function (Blueprint $table) {
-            $table->foreignId('campa_id')->after('task_id')->nullable();
+        Schema::table('vehicles', function (Blueprint $table) {
+            $table->string('plate')->unique()->change();
         });
     }
 
@@ -25,9 +25,8 @@ class AddColumnCampaIdToPendingTasks extends Migration
      */
     public function down()
     {
-        Schema::table('pending_tasks', function (Blueprint $table) {
-            $table->dropForeign('pending_tasks_campa_id_foreign');
-            $table->dropColumn('campa_id');
+        Schema::table('vehicles', function (Blueprint $table) {
+            $table->string('plate')->change();
         });
     }
 }

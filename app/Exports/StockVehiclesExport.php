@@ -47,12 +47,12 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->next_itv ? date('d/m/Y', strtotime($vehicle->next_itv)) : null,
             $vehicle->category->name ?? null,
             $vehicle->typeModelOrder->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->task->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->statePendingTask->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->start_datetime ?? null,
+            $vehicle->lastGroupTask->lastPendingTaskWithState->task->name ?? null,
+            $vehicle->lastGroupTask->lastPendingTaskWithState->statePendingTask->name ?? null,
+            $vehicle->lastGroupTask?->lastPendingTaskWithState->datetime_start ? date('d/m/Y', strtotime($vehicle->lastGroupTask?->lastPendingTaskWithState->datetime_start)) : null,
             $vehicle->square ? ($vehicle->square->street->zone->name . ' ' . $vehicle->square->street->name . ' ' . $vehicle->square->name) : null,
             $vehicle->lastDeliveryVehicle ? ($vehicle->sub_state_id == SubState::ALQUILADO ? date('d/m/Y', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null) : null,
-            $vehicle->lastGroupTask->pendingTasks[0]->observations ?? null
+            $vehicle->lastGroupTask->lastPendingTaskWithState->observations ?? null
         ];
     }
 
