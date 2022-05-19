@@ -45,7 +45,7 @@ class StockVehicles extends Mailable
                     ->get();
             $data = [
                 'title' => 'Stock de vehículos',
-                'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . '18-05-2022'
+                'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d/m/Y')
             ];
             
             $file = Excel::download(new StockVehiclesExport($campa->id), 'entradas.xlsx')->getFile();
