@@ -13,15 +13,14 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
 
-    public function __construct()
+    public function __construct($campaId)
     {
-
+        $this->campaId = $campaId;
     }
 
     public function collection()
     {
-        return Vehicle::where('company_id', Company::ALD)
-                ->whereHas('campa')
+        return Vehicle::where('campa_id', $this->campaId)
                 ->where('sub_state_id', '!=', SubState::ALQUILADO)
                 ->get();
     }

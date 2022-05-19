@@ -10,14 +10,15 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
-    public function __construct()
-    {
-
+    public function __construct($campaId)
+    {   
+        $this->campaId = $campaId;
     }
 
     public function collection()
     {
         return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
+            ->where('campa_id', $this->campaId)
             ->get();
     }
 
@@ -26,11 +27,11 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
         $data = json_decode($deliveryVehicle->data_delivery);
         return [
             date('d/m/Y'),
-            $deliveryVehicle->vehicle->typeModelOrder ? $deliveryVehicle->vehicle->typeModelOrder->name : null,
-            $deliveryVehicle->vehicle ? $deliveryVehicle->vehicle->vin : null,
-            $deliveryVehicle->vehicle ? $deliveryVehicle->vehicle->plate : null,
-            $deliveryVehicle->vehicle->vehicleModel ? $deliveryVehicle->vehicle->vehicleModel->brand->name : null,
-            $deliveryVehicle->vehicle->vehicleModel ?  $deliveryVehicle->vehicle->vehicleModel->name : null,
+            $deliveryVehicle->vehicle->typeModelOrder->name ?? null,
+            $deliveryVehicle->vehicle->vin ?? null,
+            $deliveryVehicle->vehicle->plate ?? null,
+            $deliveryVehicle->vehicle->vehicleModel->brand->name ?? null,
+            $deliveryVehicle->vehicle->vehicleModel->name ?? null,
             $data->company,
             $data->customer,
             $data->driver,
