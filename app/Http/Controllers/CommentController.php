@@ -14,12 +14,12 @@ class CommentController extends Controller
         $this->commentRepository = $commentRepository;
     }
 
-    public function getAll(Request $request){
-        return $this->getDataResponse($this->commentRepository->getAll($request), Response::HTTP_OK);
+    public function index(Request $request){
+        return $this->getDataResponse($this->commentRepository->index($request), Response::HTTP_OK);
     }
 
-    public function create(Request $request){
-        return $this->createDataResponse($this->commentRepository->create($request), Response::HTTP_CREATED);
+    public function store(Request $request){
+        return $this->createDataResponse($this->commentRepository->store($request), Response::HTTP_CREATED);
     }
 
 }

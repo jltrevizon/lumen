@@ -37,6 +37,10 @@ class SubState2Seeder extends Seeder
             [
                 'name' => 'Taller lunas',
                 'state_id' => State::WORKSHOP
+            ],
+            [
+                'name' => 'Tránsito',
+                'state_id' => State::TRANSPORT
             ]
         ];
     }

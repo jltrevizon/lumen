@@ -14,8 +14,8 @@ class BudgetLineController extends Controller
         $this->budgetLineRepository = $budgetLineRepository;
     }
 
-    public function getAll(Request $request){
-        return $this->getDataResponse($this->budgetLineRepository->getAll($request), Response::HTTP_OK);
+    public function index(Request $request){
+        return $this->getDataResponse($this->budgetLineRepository->index($request), Response::HTTP_OK);
     }
 
 }

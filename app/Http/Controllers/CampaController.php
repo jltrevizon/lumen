@@ -15,12 +15,12 @@ class CampaController extends Controller
         $this->campaRepository = $campaRepository;
     }
 
-    public function getAll(Request $request){
-        return $this->getDataResponse($this->campaRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
+    public function index(Request $request){
+        return $this->getDataResponse($this->campaRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById(Request $request, $id){
-        return $this->getDataResponse($this->campaRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
+    public function show(Request $request, $id){
+        return $this->getDataResponse($this->campaRepository->show($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
     public function create(Request $request){

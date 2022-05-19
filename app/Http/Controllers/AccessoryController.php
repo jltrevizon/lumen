@@ -24,6 +24,11 @@ class AccessoryController extends Controller
         return $this->getDataResponse($this->accessoryRepository->index($request), Response::HTTP_OK);
     }
 
+    public function show(Request $request, $id)
+    {
+        return $this->getDataResponse($this->accessoryRepository->show($request, $id));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -45,6 +50,11 @@ class AccessoryController extends Controller
     public function update(Request $request, $id)
     {
         return $this->updateDataResponse($this->accessoryRepository->update($request, $id), Response::HTTP_OK);
+    }
+
+    public function destroy($id)
+    {
+        return $this->deleteDataResponse($this->accessoryRepository->delete($id), Response::HTTP_OK);
     }
 
 }

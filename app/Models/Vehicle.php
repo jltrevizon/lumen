@@ -92,19 +92,19 @@ class Vehicle extends Model
     }
 
     public function groupTasks(){
-        return $this->hasMany(GroupTask::class, 'vehicle_id');
+        return $this->hasMany(GroupTask::class);
     }
 
     public function vehiclePictures(){
-        return $this->hasMany(VehiclePicture::class, 'vehicle_id');
+        return $this->hasMany(VehiclePicture::class);
     }
 
     public function reservations(){
-        return $this->hasMany(Reservation::class, 'vehicle_id');
+        return $this->hasMany(Reservation::class);
     }
 
     public function receptions(){
-        return $this->hasMany(Reception::class, 'vehicle_id');
+        return $this->hasMany(Reception::class);
     }
 
     public function typeModelOrder(){
@@ -373,6 +373,13 @@ class Vehicle extends Model
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'
         ]);
+    }
+
+    public function lastGroupTasks(){
+        return $this->hasMany(GroupTask::class)
+            ->where(function($query){
+                return $query->where('created_at', '>=', '2020-10-07 14:36:58');
+            });
     }
 
     public function lastOrders(){

@@ -38,7 +38,7 @@ class BudgetPendingTaskRepositoryTest extends TestCase
             'url' => 'http://localhost.com'
         ]);
 
-        $result = $this->repository->create($request);
+        $result = $this->repository->store($request);
         $this->assertEquals($pendingTaskId, $result['pending_task_id']);
         $this->assertEquals($stateBudgetPendingTaskId, $result['state_budget_pending_task_id']);
     }
@@ -63,7 +63,7 @@ class BudgetPendingTaskRepositoryTest extends TestCase
         BudgetPendingTask::factory()->create();
         BudgetPendingTask::factory()->create();
         $request = new Request();
-        $result = $this->repository->getAll($request);
+        $result = $this->repository->index($request);
         $this->assertCount(2, $result->items());
     }
 

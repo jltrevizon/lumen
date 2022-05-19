@@ -65,8 +65,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Campas
          */
-        $router->get('/campas/getall', 'CampaController@getall');
-        $router->get('/campas/{id}', 'CampaController@getById');
+        $router->get('/campas/getall', 'CampaController@index');
+        $router->get('/campas/{id}', 'CampaController@show');
         $router->post('/campas', 'CampaController@create');
         $router->put('/campas/update/{id}', 'CampaController@update');
         $router->delete('/campas/delete/{id}', 'CampaController@delete');
@@ -74,8 +74,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Categories
          */
-        $router->get('/categories/getall', 'CategoryController@getall');
-        $router->get('/categories/{id}', 'CategoryController@getById');
+        $router->get('/categories/getall', 'CategoryController@index');
+        $router->get('/categories/{id}', 'CategoryController@show');
         $router->post('/categories', 'CategoryController@create');
         $router->put('/categories/update/{id}', 'CategoryController@update');
         $router->delete('/categories/delete/{id}', 'CategoryController@delete');
@@ -83,8 +83,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Companies
          */
-        $router->get('/companies/getall', 'CompanyController@getall');
-        $router->get('/companies/{id}', 'CompanyController@getById');
+        $router->get('/companies/getall', 'CompanyController@index');
+        $router->get('/companies/{id}', 'CompanyController@show');
         $router->post('/companies', 'CompanyController@create');
         $router->put('/companies/update/{id}', 'CompanyController@update');
         $router->delete('/companies/delete/{id}', 'CompanyController@delete');
@@ -292,6 +292,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
         $router->post('/vehicles/set-vehicle-rented', 'VehicleController@setVehicleRented');
+        $router->post('/vehicles/last-group-tasks','VehicleController@lastGroupTasks');
 
         /**
          * Vehicle model
@@ -363,10 +364,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Brands
          */
-        $router->get('/brands','BrandController@getAll');
+        $router->get('/brands','BrandController@index');
         $router->post('/brands', 'BrandController@store');
         $router->put('/brands/{id}', 'BrandController@update');
-        $router->get('/brands/{id}','BrandController@getById');
+        $router->get('/brands/{id}','BrandController@show');
 
         /**
          * TradeState
@@ -425,9 +426,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Budget pending task
          */
-        $router->post('/budget-pending-task', 'BudgetPendingTaskController@create');
+        $router->post('/budget-pending-task', 'BudgetPendingTaskController@store');
         $router->put('/budget-pending-task/{id}', 'BudgetPendingTaskController@update');
-        $router->get('/budget-pending-task', 'BudgetPendingTaskController@getAll');
+        $router->get('/budget-pending-task', 'BudgetPendingTaskController@index');
 
         /**
          * Questionnaire
@@ -445,12 +446,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Budget
          */
-        $router->get('/budgets', 'BudgetController@getAll');
+        $router->get('/budgets', 'BudgetController@index');
 
         /**
          * Budget lines
          */
-        $router->get('/budget-lines', 'BudgetLineController@getAll');
+        $router->get('/budget-lines', 'BudgetLineController@index');
 
         /**
          * Password reset code
@@ -465,8 +466,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         /**
          * Comments
          */
-        $router->get('/comments', 'CommentController@getAll');
-        $router->post('/comments', 'CommentController@create');
+        $router->get('/comments', 'CommentController@index');
+        $router->post('/comments', 'CommentController@store');
 
         /**
          * Incidence image
@@ -515,12 +516,18 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/accessories', 'AccessoryController@index');
         $router->post('/accessories', 'AccessoryController@store');
+        $router->get('/accessories/{id}', 'AccessoryController@show');
         $router->put('/accessories/{id}', 'AccessoryController@update');
+        $router->delete('/accessories/{id}', 'AccessoryController@destroy');
 
         /**
          * Accessory type
          */
-        $router->get('/accessory-type','AccessoryTypeController@index');
+        $router->get('/accessory-types','AccessoryTypeController@index');
+        $router->post('/accessory-types','AccessoryTypeController@store');
+        $router->get('/accessory-types/{id}', 'AccessoryTypeController@show');
+        $router->put('/accessory-types/{id}', 'AccessoryTypeController@update');
+        $router->delete('/accessory-types/{id}', 'AccessoryTypeController@destroy');
 
         /**
          * Accessory vehicle
@@ -589,5 +596,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/statistics/average-by-substate', 'StatisticsController@getAverageSubState');
         $router->get('/statistics/stock-by-channel','StatisticsController@getAverageTypeModelOrder');
         $router->get('/statistics/average-by-task','StatisticsController@getAveragePendingTask');
+        $router->get('/statistics/half-task-start','StatisticsController@halfTaskStart');
+        $router->get('/statistics/execution-time','StatisticsController@executionTime');
+        $router->get('/statistics/average-time-sub-state', 'StatisticsController@averageTimeInSubState');
+        $router->get('/statistics/time-approval', 'StatisticsController@timeApproval');
     });
 });

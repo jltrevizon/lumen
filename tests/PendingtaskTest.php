@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\BudgetPendingTask;
+use App\Models\Campa;
 use App\Models\Company;
 use App\Models\Damage;
 use App\Models\EstimatedDate;
@@ -53,6 +54,13 @@ class PendingtaskTest extends TestCase
     {
         $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->task());
         $this->assertInstanceOf(Task::class, $this->pendingTask->task()->getModel());
+    }
+
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->pendingTask->campa());
+        $this->assertInstanceOf(Campa::class, $this->pendingTask->campa()->getModel());
     }
 
     /** @test */

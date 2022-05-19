@@ -26,7 +26,7 @@ class QuestionRepositoryTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
         $request = new Request();
-        $request->replace(['question' => $question, 'description' => $description]);
+        $request->replace(['question' => $question, 'description' => $description, 'company_id' => $user->company_id]);
         $result = $this->repository->create($request);
         $this->assertEquals($question, $result['question']);
         $this->assertEquals($description, $result['description']);

@@ -9,28 +9,29 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class EntriesVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
-    public function __construct()
+    public function __construct($campaId)
     {
-
+        $this->campaId = $campaId;
     }
 
     public function collection()
     {
         return Reception::whereDate('created_at', date('Y-m-d'))
+                ->where('campa_id', $this->campaId)
                 ->get();
     }
 
     public function map($reception): array
     {
         return [
-            date('d-m-Y'),
-            $reception->vehicle->typeModelOrder ? $reception->vehicle->typeModelOrder->name : null,
-            $reception->vehicle ? $reception->vehicle->vin : null,
-            $reception->vehicle ? $reception->vehicle->plate : null,
-            $reception->vehicle->vehicleModel ? $reception->vehicle->vehicleModel->brand->name : null,
-            $reception->vehicle->vehicleModel ? $reception->vehicle->vehicleModel->name : null,
-            $reception->campa ? $reception->campa->name : null,
-            $reception->vehicle ? $reception->vehicle->version : null
+            date('d/m/Y'),
+            $reception->vehicle->typeModelOrder->name ?? null,
+            $reception->vehicle->vin ?? null,
+            $reception->vehicle->plate ?? null,
+            $reception->vehicle->vehicleModel->brand->name ?? null,
+            $reception->vehicle->vehicleModel->name ?? null,
+            $reception->campa->name ?? null,
+            $reception->vehicle->version ?? null
         ];
     }
 

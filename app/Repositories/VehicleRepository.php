@@ -10,6 +10,7 @@ use App\Models\Vehicle;
 use App\Models\Square;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
+use App\Models\TypeModelOrder;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,7 @@ use App\Repositories\TypeModelOrderRepository;
 use App\Repositories\DeliveryVehicleRepository;
 use App\Repositories\VehicleExitRepository;
 use App\Repositories\CampaRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class VehicleRepository extends Repository {
@@ -71,7 +73,7 @@ class VehicleRepository extends Repository {
     }
 
     public function getById($request, $id){
-        return Vehicle::with($this->getWiths($request->with))->findOrFail($id);
+        return Vehicle::with($this->getWiths($request->with) ?? [])->findOrFail($id);
     }
 
     public function filterVehicle($request) {
@@ -432,13 +434,12 @@ public function verifyPlateReception($request){
     public function defleet($id){
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+        $vehicle->type_model_order_id = TypeModelOrder::VO;
         $vehicle->save();
         if($vehicle->lastUnapprovedGroupTask){
             $this->groupTaskRepository->disablePendingTasks($vehicle->lastUnapprovedGroupTask);
         }
-        return response()->json([
-            'message' => 'Vehicle defleeted!'
-        ]);
+        return $vehicle;
     }
 
     public function unDefleet($id){
@@ -472,6 +473,25 @@ public function verifyPlateReception($request){
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             }])
             ->first();
+    }
+
+    // GroupTasks of last reception
+    public function lastGroupTasks($request){
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        return Vehicle::with(['groupTasks' => function($query) use($vehicle){
+            return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now());
+        },
+            'groupTasks.approvedPendingTasks.task',
+            'groupTasks.approvedPendingTasks.statePendingTask',
+            'groupTasks.approvedPendingTasks.userStart',
+            'square.street.zone',
+            'groupTasks.allPendingTasks.task',
+            'groupTasks.allPendingTasks.statePendingTask',
+            'groupTasks.allPendingTasks.userStart',
+            'groupTasks.allPendingTasks.user',
+            'lastGroupTask.approvedPendingTasks'
+        ])
+        ->findOrFail($request->input('vehicle_id'));
     }
 
 }

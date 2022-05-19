@@ -37,7 +37,7 @@ class CompanyRepositoryTest extends TestCase
         Company::factory()->create();
         $request = new Request();
         $request->with = [];
-        $companies = $this->repository->getAll($request);
+        $companies = $this->repository->index($request);
         $this->assertCount(2, $companies->items());
     }
 
@@ -46,7 +46,7 @@ class CompanyRepositoryTest extends TestCase
     {
         $request = new Request();
         $request->with = [];
-        $companies = $this->repository->getAll($request);
+        $companies = $this->repository->index($request);
         $this->assertCount(0, $companies->items());
     }
 
@@ -55,7 +55,7 @@ class CompanyRepositoryTest extends TestCase
     {
         $company = Company::factory()->create();
 
-        $getCompany = $this->repository->getById($company->id);
+        $getCompany = $this->repository->show($company->id);
 
         $this->assertEquals($company['name'], $getCompany['name']);
         $this->assertEquals($company['tradename'], $getCompany['tradename']);

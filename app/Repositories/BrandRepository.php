@@ -13,7 +13,7 @@ class BrandRepository extends Repository {
 
     }
 
-    public function getAll($request){
+    public function index($request){
         return ['brands' => Brand::with($this->getWiths($request->with))
                         ->filter($request->all())
                         ->get()
@@ -25,7 +25,7 @@ class BrandRepository extends Repository {
         return $brand;
     }
 
-    public function getById($request, $id){
+    public function show($request, $id){
         $brand = Brand::with($this->getWiths($request->with))->findOrFail($id);
         return ['brand' => $brand];
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Campa;
 use App\Models\PeopleForReport;
 use App\Models\TypeReport;
 use App\Models\User;
@@ -28,6 +29,12 @@ class PeopleForReportTest extends TestCase
         $this->assertInstanceOf(User::class, $this->peopleForReport->user()->getModel());
     }
 
+    /** @test */
+    public function it_belongs_to_campa()
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->peopleForReport->campa());
+        $this->assertInstanceOf(Campa::class, $this->peopleForReport->campa()->getModel());
+    }
 
     /** @test */
     public function it_belongs_to_type_report_id()

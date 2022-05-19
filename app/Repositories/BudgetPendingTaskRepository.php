@@ -13,7 +13,7 @@ class BudgetPendingTaskRepository extends Repository {
 
     }
 
-    public function create($request){
+    public function store($request){
         $user = User::with(['campas'])->findOrFail(Auth::id());
         $budgetPendingTask = BudgetPendingTask::create($request->all());
         // $budgetPendingTask->role_id = $user->role_id;
@@ -28,7 +28,7 @@ class BudgetPendingTaskRepository extends Repository {
         return ['budget_pending_task' => $budgetPendingTask];
     }
 
-    public function getAll($request){
+    public function index($request){
         return BudgetPendingTask::with($this->getWiths($request->with))
                     ->filter($request->all())
                     ->paginate($request->input('per_page'));

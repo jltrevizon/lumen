@@ -97,14 +97,18 @@ class PendingTaskAldController extends Controller
     private function createTasks($tasks, $vehicleId, $groupTaskId){
         $user = User::where('role_id', Role::CONTROL)
             ->first();
+        $vehicle = Vehicle::findOrFail($vehicleId);
         $isPendingTaskAssign = false;
         $order = 1;
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
+            $pending_task->reception_id = $vehicle->lastReception->id;
+            $pending_task->campa_id = $vehicle->campa_id;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
+            $pending_task->created_from_checklist = true;
             if($task['approved'] == true && $isPendingTaskAssign == false){
                 if (!isset($task['without_state_pending_task'])) {
                     $pending_task->state_pending_task_id = StatePendingTask::PENDING;
@@ -124,21 +128,6 @@ class PendingTaskAldController extends Controller
                 $this->stateChangeRepository->createOrUpdate($vehicleId, $pending_task, $pending_task);
             }
         }
-    }
-
-    private function createTaskWashed($vehicle_id, $group_task, $tasks){
-        $pending_task = new PendingTask();
-        $pending_task->vehicle_id = $vehicle_id;
-        $taskDescription = $this->taskRepository->getById([], 28);
-        if(count($tasks) < 1){
-            $pending_task->state_pending_task_id = StatePendingTask::PENDING;
-            $pending_task->datetime_pending = date("Y-m-d H:i:s");
-        }
-        $pending_task->group_task_id = $group_task->id;
-        $pending_task->task_id = $taskDescription['id'];
-        $pending_task->duration = $taskDescription['duration'];
-        $pending_task->order = 99;
-        $pending_task->save();
     }
 
     public function updatePendingTask(Request $request){

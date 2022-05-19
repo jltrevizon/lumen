@@ -14,6 +14,11 @@ class AccessoryRepository extends Repository {
             ->get();
     }
 
+    public function show($request, $id){
+        return Accessory::with($this->getWiths($request->with)) 
+            ->findOrFail($id);
+    }
+
     public function store($request){
         $accessory = Accessory::create($request->all());
         return $accessory;
@@ -23,6 +28,10 @@ class AccessoryRepository extends Repository {
         $accessory = Accessory::findOrFail($id);
         $accessory->update($request->all());
         return $accessory;
+    }
+
+    public function destroy($id){
+        return Accessory::findOrFail($id)->delete();
     }
 
 }

@@ -13,11 +13,16 @@ class PeopleForReport extends Model
 
     protected $fillable = [
         'user_id',
+        'campa_id',
         'type_report_id'
     ];
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function campa(){
+        return $this->belongsTo(Campa::class);
     }
 
     public function typeReport(){

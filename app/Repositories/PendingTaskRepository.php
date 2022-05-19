@@ -72,8 +72,10 @@ class PendingTaskRepository extends Repository {
     }
 
     private function createTasks($tasks, $groupTaskId){
+        $groupTask = $this->groupTaskRepository->getById([], $groupTaskId);
         foreach($tasks as $task){
             $pending_task = new PendingTask();
+            $pending_task->campa_id = $groupTask->vehicle->campa_id;
             $pending_task->vehicle_id = $task['vehicle_id'];
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
@@ -233,6 +235,7 @@ class PendingTaskRepository extends Repository {
         PendingTask::create([
             'vehicle_id' => $vehicle->id,
             'task_id' => Task::TOCAMPA,
+            'campa_id' => $vehicle->campa_id,
             'state_pending_task_id' => StatePendingTask::FINISHED,
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
@@ -367,6 +370,7 @@ class PendingTaskRepository extends Repository {
                 PendingTask::create([
                     'vehicle_id' => $vehicle->id,
                     'task_id' => Task::TOCAMPA,
+                    'campa_id' => $vehicle->campa_id,
                     'state_pending_task_id' => StatePendingTask::FINISHED,
                     'user_start_id' => Auth::id(),
                     'user_end_id' => Auth::id(),
@@ -441,11 +445,13 @@ class PendingTaskRepository extends Repository {
     }
 
     public function addPendingTask($request){
+        $vehicle = $this->vehicleRepository->getById($request, $request->input('vehicle_id'));
         $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))
                         ->get();
         $task = $this->taskRepository->getById([], $request->input('task_id'));
         $pendingTask = new PendingTask();
         $pendingTask->task_id = $task['id'];
+        $pendingTask->campa_id = $vehicle->campa_id;
         $pendingTask->vehicle_id = $request->input('vehicle_id');
         $pendingTask->group_task_id = $request->input('group_task_id');
         $pendingTask->duration = $task['duration'];
@@ -463,6 +469,7 @@ class PendingTaskRepository extends Repository {
         $pendingTask = new PendingTask();
         $pendingTask->vehicle_id = $vehicle->id;
         $pendingTask->task_id = $task->id;
+        $pendingTask->campa_id = $vehicle->campa_id;
         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
         $pendingTask->group_task_id = $vehicle['lastGroupTask']['id'];
         $pendingTask->duration = $task['duration'];
@@ -506,6 +513,7 @@ class PendingTaskRepository extends Repository {
     }
 
     public function createPendingTaskFromDamage($damage){
+        $vehicle = $this->vehicleRepository->getById([], $damage['vehicle_id']);
         $groupTask = $this->groupTaskRepository->getLastByVehicle($damage['vehicle_id']);
         $task = $this->taskRepository->getById([], $damage['task_id']);
         $pendingTasks = 0;
@@ -527,6 +535,7 @@ class PendingTaskRepository extends Repository {
             PendingTask::create([
                 'vehicle_id' => $damage['vehicle_id'],
                 'task_id' => $damage['task_id'],
+                'campa_id' => $vehicle->campa_id,
                 'state_pending_task_id' => StatePendingTask::PENDING,
                 'group_task_id' => $groupTask['id'],
                 'duration' => $task['id'],
@@ -538,6 +547,7 @@ class PendingTaskRepository extends Repository {
             PendingTask::create([
                 'vehicle_id' => $damage['vehicle_id'],
                 'task_id' => $damage['task_id'],
+                'campa_id' => $vehicle->campa_id,
                 'group_task_id' => $groupTask['id'],
                 'duration' => $task['id'],
                 'order' => $pendingTasks + 1,
@@ -583,6 +593,7 @@ class PendingTaskRepository extends Repository {
             PendingTask::create([
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
+                'campa_id' => $vehicle->campa_id,
                 'group_task_id' => $groupTask->id,
                 'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,
                 'damage_id' => $damage->id,
@@ -604,6 +615,7 @@ class PendingTaskRepository extends Repository {
             PendingTask::create([
                 'vehicle_id' => $vehicle->id,
                 'task_id' => $task->id,
+                'campa_id' => $vehicle->campa_id,
                 'state_pending_task_id' => StatePendingTask::IN_PROGRESS,
                 'user_start' => Auth::id(),
                 'group_task_id' => $groupTask->id,

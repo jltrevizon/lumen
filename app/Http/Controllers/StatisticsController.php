@@ -33,4 +33,20 @@ class StatisticsController extends Controller
         return $this->statisticsRepository->getAveragePendingTask();
     }
 
+    public function halfTaskStart(){
+        return $this->statisticsRepository->halfTaskStart();
+    }
+
+    public function executionTime(){
+        return $this->statisticsRepository->executionTime();
+    }
+
+    public function averageTimeInSubState(){
+        return $this->statisticsRepository->averageTimeInSubState();
+    }
+
+    public function timeApproval(){
+        return $this->statisticsRepository->timeApproval();
+    }
+
 }
