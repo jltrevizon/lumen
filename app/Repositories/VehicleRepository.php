@@ -489,7 +489,7 @@ public function verifyPlateReception($request){
             'groupTasks.allPendingTasks.statePendingTask',
             'groupTasks.allPendingTasks.userStart',
             'groupTasks.allPendingTasks.user',
-            'lastGroupTask'
+            'lastGroupTask.approvedPendingTasks'
         ])
         ->findOrFail($request->input('vehicle_id'));
     }
