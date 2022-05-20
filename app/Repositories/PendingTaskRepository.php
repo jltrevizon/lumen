@@ -60,37 +60,6 @@ class PendingTaskRepository extends Repository {
                     ->get();
     }
 
-    public function createPendingTaskFromReservation($vehicle_id, $request_id){
-        $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicle_id);
-        $has_pending_task = PendingTask::where('vehicle_id', $vehicle_id)
-                                    ->where('state_pending_task_id', '<', StatePendingTask::FINISHED)
-                                    ->get();
-        if(count($has_pending_task) > 0) return [ 'message' => 'El vehículo tiene tareas pendientes o en curso' ];
-        $tasks = $this->taskReservationRepository->getByRequest($request_id);
-        $this->createTasks($tasks, $groupTask->id);
-        return [ 'message' => 'OK' ];
-    }
-
-    private function createTasks($tasks, $groupTaskId){
-        $groupTask = $this->groupTaskRepository->getById([], $groupTaskId);
-        foreach($tasks as $task){
-            $pending_task = new PendingTask();
-            $pending_task->campa_id = $groupTask->vehicle->campa_id;
-            $pending_task->vehicle_id = $task['vehicle_id'];
-            $taskDescription = $this->taskRepository->getById([], $task['task_id']);
-            $pending_task->task_id = $task['task_id'];
-            if($task['order'] == 1){
-                $pending_task->state_pending_task_id = StatePendingTask::PENDING;
-                $pending_task->datetime_pending = date('Y-m-d H:i:s');
-            }
-            $pending_task->group_task_id = $groupTaskId;
-            $pending_task->duration = $taskDescription['duration'];
-            $pending_task->order = $task['order'];
-            $pending_task->user_id = Auth::id();
-            $pending_task->save();
-        }
-    }
-
     public function pendingTasksFilter($request){
         return PendingTask::with($this->getWiths($request->with))
             ->filter($request->all())
@@ -247,24 +216,6 @@ class PendingTaskRepository extends Repository {
             'datetime_start' => date('Y-m-d H:i:s'),
             'datetime_finish' => date('Y-m-d H:i:s')
         ]);
-    }
-
-    public function createIncidence($request){
-        $incidence = $this->incidenceRepository->createIncidence($request);
-        $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
-        $pending_task->status_color = "Red";
-        $pending_task->save();
-        $this->incidencePendingTaskRepository->create($incidence->id, $pending_task->id);
-        return [ 'incidence' => $incidence ];
-    }
-
-    public function resolvedIncidence($request){
-        $this->incidenceRepository->resolved($request);
-        $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
-        $pending_task->status_color = 'Green';
-        $pending_task->save();
-        return PendingTask::with($this->getWiths($request->with))
-                ->findOrFail($request->input('pending_task_id'));
     }
 
     public function delete($id){
