@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use EloquentFilter\ModelFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class SquareFilter extends ModelFilter
 {
@@ -13,6 +14,12 @@ class SquareFilter extends ModelFilter
 
     public function streetIds($ids){
         return $this->byStreetIds($ids);
+    }
+
+    public function zoneIds($ids){
+        return $this->whereHas('street', function(Builder $builder) use($ids){
+            return $builder->whereIn('zone_id', $ids);
+        });
     }
 
     public function vehicleIds($ids){
