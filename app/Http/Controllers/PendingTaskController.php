@@ -63,24 +63,6 @@ class PendingTaskController extends Controller
         return $this->updateDataResponse($this->pendingTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function createIncidence(Request $request){
-
-        $this->validate($request, [
-            'pending_task_id' => 'required|integer'
-        ]);
-
-        return $this->createDataResponse($this->pendingTaskRepository->createIncidence($request), HttpFoundationResponse::HTTP_CREATED);
-    }
-
-    public function resolvedIncidence(Request $request){
-
-        $this->validate($request, [
-            'pending_task_id' => 'required|integer'
-        ]);
-
-        return $this->updateDataResponse($this->pendingTaskRepository->resolvedIncidence($request), HttpFoundationResponse::HTTP_OK);
-    }
-
     public function delete($id){
         return $this->deleteDataResponse($this->pendingTaskRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }

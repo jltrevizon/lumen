@@ -273,6 +273,7 @@ public function verifyPlateReception($request){
     public function delete($id) {
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->deleted_user_id = Auth::id();
+        $this->squareRepository->freeSquare($vehicle->id);
         $vehicle->save();
         $vehicle->delete();
         return ['message' => 'Vehicle deleted'];

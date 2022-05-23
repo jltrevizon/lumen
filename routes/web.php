@@ -155,8 +155,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-tasks/start-pending-task', 'PendingTaskController@startPendingTask');
         $router->post('/pending-tasks/cancel-pending-task', 'PendingTaskController@cancelPendingTask');
         $router->post('/pending-tasks/finish-pending-task', 'PendingTaskController@finishPendingTask');
-        $router->post('/pending-tasks/incidence', 'PendingTaskController@createIncidence');
-        $router->post('/pending-tasks/resolved', 'PendingTaskController@resolvedIncidence');
         $router->post('/pending-tasks/by-state/by-campa', 'PendingTaskController@getPendingTaskByStateCampa');
         $router->post('/pending-tasks/by-plate', 'PendingTaskController@getPendingTaskByPlate');
         $router->post('/pending-tasks/by-vehicle', 'PendingTaskController@getPendingTasksByPlate');
@@ -182,16 +180,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/requests/getall', 'RequestController@getall');
         $router->get('/requests/{id}', 'RequestController@getById');
-        $router->post('/requests', 'RequestController@create');
-        $router->put('/requests/update/{id}', 'RequestController@update');
         $router->delete('/requests/delete/{id}', 'RequestController@delete');
-        $router->post('/requests/defleet/requested', 'RequestController@vehiclesRequestedDefleet');
-        $router->post('/requests/reserve/requested', 'RequestController@vehiclesRequestedReserve');
-        $router->post('/requests/confirm', 'RequestController@confirmedRequest');
-        $router->post('/requests/decline', 'RequestController@declineRequest');
-        $router->post('/requests/confirmed', 'RequestController@getConfirmedRequest');
-        $router->get('/requests/defleet/app','RequestController@getRequestDefleetApp');
-        $router->get('/requests/reserve/app','RequestController@getRequestReserveApp');
 
         /**
          * States
