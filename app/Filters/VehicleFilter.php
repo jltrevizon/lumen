@@ -57,6 +57,15 @@ class VehicleFilter extends ModelFilter
         return $this->byBudgetPendingTaskIds($ids);
     }
 
+    public function budgetLastGroupTaskIds($ids){
+        return $this->whereHas('lastGroupTask.pendingTasks', function(Builder $builder) use($ids){
+            return $builder->whereHas('budgetPendingTasks', function ($query) use($ids){
+                return $query->whereIn('state_budget_pending_task_id', $ids);
+            })
+            ->where('approved', true);
+        })
+    }
+
     public function vehicleModels($ids)
     {
         return $this->vehicleModelIds($ids);
