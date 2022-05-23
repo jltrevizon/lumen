@@ -16,7 +16,7 @@ class VehicleFilterTest extends TestCase
         Vehicle::factory()->count(3)->create();
     }
 
-    /** @test */
+
     public function it_can_filter_vehicles_by_created_at()
     {
         Vehicle::query()->update(['created_at' => Carbon::now()->subDays(2)]);
