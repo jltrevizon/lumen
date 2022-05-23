@@ -63,7 +63,7 @@ class VehicleFilter extends ModelFilter
                 return $query->whereIn('state_budget_pending_task_id', $ids);
             })
             ->where('approved', true);
-        })
+        });
     }
 
     public function vehicleModels($ids)
