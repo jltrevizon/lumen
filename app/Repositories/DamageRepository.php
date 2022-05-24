@@ -32,6 +32,7 @@ class DamageRepository extends Repository {
 
     public function index($request){
         return Damage::with($this->getWiths($request->with))
+            ->withTrashed()
             ->filter($request->all())
             ->orderBy('severity_damage_id', 'desc')
             ->orderBy('created_at', 'desc')
