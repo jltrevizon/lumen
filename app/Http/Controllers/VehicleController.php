@@ -52,8 +52,11 @@ class VehicleController extends Controller
             'vehicle_model_id' => 'nullable|integer',
             'first_plate' => 'nullable|date',
         ]);
-
-        return $this->createDataResponse(['vehicle' => $this->vehicleRepository->create($request)], HttpFoundationResponse::HTTP_CREATED);
+        $data = $this->vehicleRepository->create($request);
+        if ($data) {
+            $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_CREATED);
+        }
+        return  $this->failResponse(['message' => 'Esta matrícula ya está registrada'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function update(Request $request, $id){

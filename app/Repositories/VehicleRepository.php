@@ -134,7 +134,7 @@ class VehicleRepository extends Repository {
         $existVehicle = Vehicle::where('plate', $request->input('plate'))
                         ->first();
         if($existVehicle){
-            return response()->json(['message' => 'Esta matrícula ya está registrada'], 422);
+            return null;
         }
         $vehicle = Vehicle::create($request->all());
         if (is_null($vehicle->company_id)) {
@@ -142,7 +142,7 @@ class VehicleRepository extends Repository {
             $vehicle->company_id = $user->company_id;
         }
         $vehicle->save();
-        return response()->json(['vehicle' => $vehicle], 200);
+        return $vehicle;
     }
 
     public function update($request, $id)
