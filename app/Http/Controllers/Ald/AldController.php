@@ -67,7 +67,7 @@ class AldController extends Controller
         try {
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             if(!$vehicle->lastReception){
-                return response()->json(['message' => 'Reception not found']);
+                return $this->failResponse(['message' => 'Reception not found'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
             $groupTask = null;
             if ($request->input('group_task_id')) {
