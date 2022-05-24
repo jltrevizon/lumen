@@ -77,7 +77,7 @@ class AldController extends Controller
             } 
 
            if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
-                $this->createPendingTask($groupTask, $request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
+                $this->createPendingTask($groupTask, $request->input('vehicle_id'), $request->input('tasks'), $groupTask->id, $vehicle);
             } else if($request->input('state_pending_task_id') == StatePendingTask::FINISHED){
                 $this->createFinishedTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             }
@@ -111,7 +111,7 @@ class AldController extends Controller
         }
     }
 
-    private function createPendingTask($groupTask, $vehicleId, $tasks, $groupTaskId){
+    private function createPendingTask($groupTask, $vehicleId, $tasks, $groupTaskId, $vehicle){
         $tasksApproved = 0;
         if ($groupTask->approvedPendingTasks) {
             $tasksApproved = count($groupTask->approvedPendingTasks);
@@ -119,6 +119,7 @@ class AldController extends Controller
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
+            $pending_task->reception_id = $vehicle->lastReception->id;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = true;
