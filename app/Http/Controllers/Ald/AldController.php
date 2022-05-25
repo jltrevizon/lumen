@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 
 class AldController extends Controller
@@ -67,7 +68,7 @@ class AldController extends Controller
         try {
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             if(!$vehicle->lastReception){
-                return response()->json(['message' => 'Reception not found']);
+                return $this->failResponse(['message' => 'Reception not found'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
             $groupTask = null;
             if ($request->input('group_task_id')) {
@@ -77,7 +78,7 @@ class AldController extends Controller
             } 
 
            if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
-                $this->createPendingTask($groupTask, $request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
+                $this->createPendingTask($groupTask, $request->input('vehicle_id'), $request->input('tasks'), $groupTask->id, $vehicle);
             } else if($request->input('state_pending_task_id') == StatePendingTask::FINISHED){
                 $this->createFinishedTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
             }
@@ -104,14 +105,14 @@ class AldController extends Controller
             }
             $pending_task->datetime_pending = date("Y-m-d H:i:s");
             $pending_task->save();
-            return $pending_task;
+            return $this->createDataResponse(['data' => $pending_task], HttpFoundationResponse::HTTP_CREATED);
 
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage(), ], 400);
         }
     }
 
-    private function createPendingTask($groupTask, $vehicleId, $tasks, $groupTaskId){
+    private function createPendingTask($groupTask, $vehicleId, $tasks, $groupTaskId, $vehicle){
         $tasksApproved = 0;
         if ($groupTask->approvedPendingTasks) {
             $tasksApproved = count($groupTask->approvedPendingTasks);
@@ -119,6 +120,7 @@ class AldController extends Controller
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
+            $pending_task->reception_id = $vehicle->lastReception->id;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = true;
