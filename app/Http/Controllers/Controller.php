@@ -58,6 +58,15 @@ class Controller extends BaseController
         }
     }
 
+    public function failResponse($data, $code): JsonResponse
+    {
+        try {
+            return response()->json($data, $code);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function genericResponse($data) {
         try {
             return $data;

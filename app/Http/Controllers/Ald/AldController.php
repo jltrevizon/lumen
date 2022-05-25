@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 
 class AldController extends Controller
@@ -67,7 +68,7 @@ class AldController extends Controller
         try {
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             if(!$vehicle->lastReception){
-                return response()->json(['message' => 'Reception not found']);
+                return $this->failResponse(['message' => 'Reception not found'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
             $groupTask = null;
             if ($request->input('group_task_id')) {
@@ -104,7 +105,7 @@ class AldController extends Controller
             }
             $pending_task->datetime_pending = date("Y-m-d H:i:s");
             $pending_task->save();
-            return $pending_task;
+            return $this->createDataResponse(['data' => $pending_task], HttpFoundationResponse::HTTP_CREATED);
 
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage(), ], 400);
