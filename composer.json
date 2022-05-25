@@ -9,10 +9,9 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^8.0",
+        "php": "^7.0",
         "aws/aws-sdk-php": "^3.183",
         "barryvdh/laravel-dompdf": "^0.9.0",
-        "beyondcode/laravel-websockets": "^1.12",
         "chuckrincon/lumen-config-discover": "^1.0",
         "darkaonline/swagger-lume": "8.*",
         "doctrine/dbal": "^3.1",
@@ -30,6 +29,7 @@
         "nordsoftware/lumen-cors": "^3.4",
         "palanik/lumen-cors": "dev-master",
         "predis/predis": "^1.1",
+        "psr/log": "1.1.4",
         "tibonilab/pdf-lumen-bundle": "~2.0.0",
         "tucker-eric/eloquentfilter": "^3.0",
         "tymon/jwt-auth": "^1.0"
@@ -55,7 +55,10 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+         "platform": {
+            "php": "7.4.29"
+         }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
