@@ -54,9 +54,9 @@ class VehicleController extends Controller
         ]);
         $data = $this->vehicleRepository->create($request);
         if ($data) {
-            $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_CREATED);
+           return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_CREATED);
         }
-        return  $this->failResponse(['message' => 'Esta matrícula ya está registrada'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
+        return $this->failResponse(['message' => 'Esta matrícula ya está registrada'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function update(Request $request, $id){
