@@ -6,6 +6,7 @@ use App\Mail\DamageVehicleMail;
 use App\Mail\NotificationMail;
 use App\Models\Damage;
 use App\Models\StatusDamage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
@@ -74,6 +75,8 @@ class DamageRepository extends Repository {
     public function update($request, $id){
         $damage = Damage::findOrFail($id);
         $damage->update($request->all());
+        $damage->datetime_close = Carbon::now();
+        $damage->save();
         return $damage;
     }
 
