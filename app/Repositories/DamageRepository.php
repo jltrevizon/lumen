@@ -5,10 +5,8 @@ namespace App\Repositories;
 use App\Mail\DamageVehicleMail;
 use App\Mail\NotificationMail;
 use App\Models\Damage;
-use App\Models\PendingTask;
-use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
-use App\Models\Vehicle;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class DamageRepository extends Repository {
@@ -77,9 +75,8 @@ class DamageRepository extends Repository {
     public function update($request, $id){
         $damage = Damage::findOrFail($id);
         $damage->update($request->all());
-        if($request->input('status_damage_id') == StatusDamage::CLOSED && !is_null($damage['task_id'])){
-            // $this->pendingTaskRepository->createPendingTaskFromDamage($damage);
-        }
+        $damage->datetime_close = Carbon::now();
+        $damage->save();
         return $damage;
     }
 

@@ -15,6 +15,7 @@ class Square extends Model
     protected $fillable = [
         'street_id',
         'vehicle_id',
+        'user_id',
         'name'
     ];
 

@@ -43,6 +43,10 @@ class ReceptionFilter extends ModelFilter
         return $this->orderBy($field);
     }
 
+    public function whereHasVehicle($value){
+        return $this->whereHas('vehicle');
+    }
+
 
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter

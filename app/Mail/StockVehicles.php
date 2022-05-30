@@ -7,9 +7,11 @@ use App\Exports\EntriesVehiclesExport;
 use App\Exports\StockVehiclesExport;
 use App\Models\Campa;
 use App\Models\PeopleForReport;
+use App\Models\Role;
 use App\Models\TypeReport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
@@ -68,18 +70,61 @@ class StockVehicles extends Mailable
             ];
     
             foreach($peopleForReport as $user){
-                Mail::send('report-generic', $data, function($message) use($user, $attachments){
-                    $message->to($user['user']['email'], $user['user']['name']);
-                    $message->subject('Stock de vehículos');
-                    $message->from('no-reply.focus@grupomobius.com', 'Focus');
-                    foreach($attachments as $filePath => $fileParameters){
-                        $message->attach($filePath, $fileParameters);
-                    }
-                });
+                if($user['user']['role_id'] != Role::GLOBAL_MANAGER) {
+                    Mail::send('report-generic', $data, function($message) use($user, $attachments){
+                        $message->to($user['user']['email'], $user['user']['name']);
+                        $message->subject('Stock de vehículos');
+                        $message->from('no-reply.focus@grupomobius.com', 'Focus');
+                        foreach($attachments as $filePath => $fileParameters){
+                            $message->attach($filePath, $fileParameters);
+                        }
+                    });
+                }
             }
             \unlink($file->getPath() . '/stock-vehículos.xlsx');
             \unlink($file->getPath() . '/entries.xlsx');
             \unlink($file->getPath() . '/deliveries.xlsx');
         }
+
+        $peopleForReport = PeopleForReport::with(['user'])
+            ->where('type_report_id', TypeReport::STOCK)
+            ->whereHas('user', function (Builder $builder){
+                return $builder->where('role_id', Role::GLOBAL_MANAGER);
+            })
+            ->get();
+
+
+        $file = Excel::download(new StockVehiclesExport(null), 'entradas.xlsx')->getFile();
+        rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
+        $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
+        
+        $file = Excel::download(new EntriesVehiclesExport(null), 'entradas.xlsx')->getFile();
+        rename($file->getRealPath(), $file->getPath() . '/' . 'entries.xlsx');
+        $fileRename2 = $file->getPath() . '/entries.xlsx';
+
+
+        $file = Excel::download(new DeliveryVehiclesExport(null), 'entradas.xlsx')->getFile();
+        rename($file->getRealPath(), $file->getPath() . '/' . 'deliveries.xlsx');
+        $fileRename3 = $file->getPath() . '/deliveries.xlsx';
+
+        $attachments = [
+            $fileRename1 => ['as' => 'Stock-vehículos.xlsx'],
+            $fileRename2 => ['as' => 'Entradas.xlsx'],
+            $fileRename3 => ['as' => 'Salidas.xlsx']
+        ];
+
+        foreach($peopleForReport as $user){
+            Mail::send('report-generic', $data, function($message) use($user, $attachments){
+                $message->to($user['user']['email'], $user['user']['name']);
+                $message->subject('Stock de vehículos');
+                $message->from('no-reply.focus@grupomobius.com', 'Focus');
+                foreach($attachments as $filePath => $fileParameters){
+                    $message->attach($filePath, $fileParameters);
+                }
+            });
+        }
+        \unlink($file->getPath() . '/stock-vehículos.xlsx');
+        \unlink($file->getPath() . '/entries.xlsx');
+        \unlink($file->getPath() . '/deliveries.xlsx');
     }
 }
