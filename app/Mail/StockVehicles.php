@@ -87,6 +87,7 @@ class StockVehicles extends Mailable
         }
 
         $peopleForReport = PeopleForReport::with(['user'])
+            ->where('type_report_id', TypeReport::STOCK)
             ->whereHas('user', function (Builder $builder){
                 return $builder->where('role_id', Role::GLOBAL_MANAGER);
             })
