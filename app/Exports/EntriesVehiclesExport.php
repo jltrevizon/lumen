@@ -16,9 +16,14 @@ class EntriesVehiclesExport implements FromCollection, WithMapping, WithHeadings
 
     public function collection()
     {
-        return Reception::whereDate('created_at', date('Y-m-d'))
-                ->where('campa_id', $this->campaId)
-                ->get();
+        if($this->campaId == null){
+            return Reception::whereDate('created_at', date('Y-m-d'))
+                    ->get();
+        } else {
+            return Reception::whereDate('created_at', date('Y-m-d'))
+                    ->where('campa_id', $this->campaId)
+                    ->get();
+        }
     }
 
     public function map($reception): array

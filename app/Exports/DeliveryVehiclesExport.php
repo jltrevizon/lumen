@@ -17,9 +17,14 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
 
     public function collection()
     {
-        return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
-            ->where('campa_id', $this->campaId)
-            ->get();
+        if($this->campaId == null) {
+            return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
+                ->get();
+        } else {
+            return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
+                ->where('campa_id', $this->campaId)
+                ->get();
+        }
     }
 
     public function map($deliveryVehicle): array
