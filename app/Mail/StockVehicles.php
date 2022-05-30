@@ -86,8 +86,8 @@ class StockVehicles extends Mailable
             \unlink($file->getPath() . '/deliveries.xlsx');
         }
 
-        $peopleForReport = PeopleForReport::with(['user' => function (Builder $builder){
-            return $builder->where('role_id', Role::GLOBAL_MANAGER);
+        $peopleForReport = PeopleForReport::with(['user' => function ($query){
+            return $query->where('role_id', Role::GLOBAL_MANAGER);
         }])
         ->get();
 
