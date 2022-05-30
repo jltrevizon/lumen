@@ -461,7 +461,8 @@ public function verifyPlateReception($request){
             ->chunk(200, function ($damages) {
                 foreach($damages as $damage){
                     $damage->update([
-                        'status_damage_id' => StatusDamage::CLOSED
+                        'status_damage_id' => StatusDamage::CLOSED,
+                        'datetime_close' => Carbon::now()
                     ]);
                 }
             });
