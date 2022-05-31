@@ -530,8 +530,8 @@ class PendingTaskRepository extends Repository {
                 'duration' => $task->duration,
                 'order' => 1,
                 'approved' => true,
-                'datetime_pending' => date('Y-m-d H:i:s'),
-                'datetime_start' => date('Y-m-d H:i:s'),
+                'datetime_pending' => Carbon::now(),
+                'datetime_start' => Carbon::now(),
                 'user_id' => Auth::id()
             ]);
         }
