@@ -188,7 +188,7 @@ class VehicleRepository extends Repository {
                 }
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
-                if($vehicle->subState->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
+                if($vehicle->subState?->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
                     $vehicle->last_change_state = Carbon::now();
                 }
                 if($vehicle->sub_state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id){
