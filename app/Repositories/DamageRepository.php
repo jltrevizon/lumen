@@ -52,7 +52,8 @@ class DamageRepository extends Repository {
 
         $vehicle = $this->vehicleRepository->pendingOrInProgress($request->input('vehicle_id'));
         if($isDamageTask) { 
-            $this->vehicleRepository->updateSubState($request->input('vehicle_id'), $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0] ?? null, $vehicle?->lastGroupTask?->pendingTasks[0]);
+            $pendingTask = count($vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks) > 0 ? $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0] : null;
+            $this->vehicleRepository->updateSubState($request->input('vehicle_id'), $pendingTask, $vehicle?->lastGroupTask?->pendingTasks[0]);
         }
         
         foreach($request->input('roles') as $role){
