@@ -9,6 +9,7 @@ use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 use Exception;
@@ -84,9 +85,9 @@ class GroupTaskRepository extends Repository {
 
     public function approvedGroupTaskToAvailable($request){
         $group_task = GroupTask::findOrFail($request->input('group_task_id'));    
-        $group_task->approved_available = 1; 
-        $group_task->approved = 1;
-        $group_task->datetime_approved = date('Y-m-d H:i:s');
+        $group_task->approved_available = true; 
+        $group_task->approved = true;
+        $group_task->datetime_approved = Carbon::now();
         $group_task->save();
         
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
@@ -99,8 +100,8 @@ class GroupTaskRepository extends Repository {
             } else if ($count == 1) {
                 $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
-                $pendingTask->datetime_start = date('Y-m-d H:i:s');
-                $pendingTask->datetime_finish = date('Y-m-d H:i:s');
+                $pendingTask->datetime_start = Carbon::now();
+                $pendingTask->datetime_finish = Carbon::now();
                 $pendingTask->save();
                 PendingTask::create([
                     'vehicle_id' => $vehicle->id,
@@ -112,21 +113,21 @@ class GroupTaskRepository extends Repository {
                     'order' => 100,
                     'duration' => 0,
                     'approved' => true,
-                    'datetime_pending' => date('Y-m-d H:i:s'),
-                    'datetime_start' => date('Y-m-d H:i:s'),
-                    'datetime_finish' => date('Y-m-d H:i:s')
+                    'datetime_pending' => Carbon::now(),
+                    'datetime_start' => Carbon::now(),
+                    'datetime_finish' => Carbon::now()
                 ]);
                 $vehicle->sub_state_id = SubState::CAMPA;
                 $this->stateChangeRepository->createOrUpdate($vehicle->id, $pendingTask, null);
             } else if ($count > 1) {
                 $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
-                $pendingTask->datetime_start = date('Y-m-d H:i:s');
-                $pendingTask->datetime_finish = date('Y-m-d H:i:s');
+                $pendingTask->datetime_start = Carbon::now();
+                $pendingTask->datetime_finish = Carbon::now();
                 $pendingTask->save();
                 $nextPendingtTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[1]->id);
                 $nextPendingtTask->state_pending_task_id = StatePendingTask::PENDING;
-                $nextPendingtTask->datetime_pending = date('Y-m-d H:i:s');
+                $nextPendingtTask->datetime_pending = Carbon::now();
                 $nextPendingtTask->save();
                 $this->stateChangeRepository->createOrUpdate($vehicle->id, $pendingTask, $vehicle->lastGroupTask->approvedPendingTasks[1]);
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[1]->task->sub_state_id;
@@ -140,7 +141,6 @@ class GroupTaskRepository extends Repository {
         if($vehicle->has_environment_label == false){
             $this->notificationDAMail->build($vehicle->id);
         }
-        //    $this->vehicleRepository->updateSubState($request->input('vehicle_id'), null);
         
         return ['message' => 'Solicitud aprobada!'];
     }
@@ -177,7 +177,7 @@ class GroupTaskRepository extends Repository {
         $groupTask = GroupTask::findOrFail($group_task->id);
         $groupTask->approved = true;
         $groupTask->approved_available = true;
-        $groupTask->datetime_defleeting = date('Y-m-d H:i:s');
+        $groupTask->datetime_defleeting = Carbon::now();
         $groupTask->save();
         
         $pendingTask = new PendingTask();
@@ -187,7 +187,7 @@ class GroupTaskRepository extends Repository {
         $pendingTask->group_task_id = $group_task->id;
         $pendingTask->duration = 1;
         $pendingTask->order = $pendingTasks + 1;
-        $pendingTask->datetime_pending = date('Y-m-d H:i:s');
+        $pendingTask->datetime_pending = Carbon::now();
         $pendingTask->user_id = Auth::id();
         $pendingTask->save();
     }
@@ -228,7 +228,7 @@ class GroupTaskRepository extends Repository {
             ->orderBy('order', 'ASC')
             ->first();
         $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
-        $pendingTask->datetime_pending = date('Y-m-d H:i:s');
+        $pendingTask->datetime_pending = Carbon::now();
         $pendingTask->save();
     }
 }

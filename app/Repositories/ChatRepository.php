@@ -16,7 +16,6 @@ class ChatRepository {
 
     public function createMessage($request){
         try {
-            $user = $this->userRepository->getById($request, Auth::id());
             $chat = new Chat();
             $chat->sent_user_app = false;
             $chat->campa_id = $request->input('campa_id');
