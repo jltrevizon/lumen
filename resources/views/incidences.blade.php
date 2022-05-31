@@ -16,6 +16,10 @@
     <p><strong>Matrícula:</strong> {{$damage->vehicle->plate}} <strong>Marca:</strong> {{$damage?->vehicle?->vehicleModel?->brand?->name}} <strong>Modelo:</strong> {{$damage?->vehicle?->vehicleModel?->name}}</p>
     <p><strong>Tipo de incidencia</strong></p>
     <p>{{$damage?->damageType?->description}}</p>
+    <p><strong>Severidad:</strong></p>
+    <p>{{$damage?->severityDamage?->description}}</p>
+    <p><strong>Observación:</strong></p>
+    <p>{{$damage?->description}}</p>
     <p><strong>Notificado a:</strong></p>
     <ol>
         @foreach($damage->roles as $role)
