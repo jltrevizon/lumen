@@ -46,6 +46,10 @@ class PendingTask extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function reception(){
+        return $this->belongsTo(Reception::class);
+    }
+
     public function user(){
         return $this->belongsTo(User::class);
     }

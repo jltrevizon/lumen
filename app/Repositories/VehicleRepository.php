@@ -148,16 +148,7 @@ class VehicleRepository extends Repository {
     public function update($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        $data = $request->all();
-        Square::where('vehicle_id', $vehicle->id)->update([
-            'vehicle_id' => null
-        ]);
-        if (isset($data['ubication'])) {
-            $square = Square::find($data['ubication']);
-            $square->vehicle_id = $vehicle->id;
-            $square->save();
-        }
-        return $vehicle->update($data);
+        return $vehicle->update($request->all());
     }
 
     public function updateBack($request)
@@ -177,24 +168,22 @@ class VehicleRepository extends Repository {
     public function updateSubState($vehicleId, $lastPendingTask, $currentPendingTask) {
         $this->stateChangeRepository->createOrUpdate($vehicleId, $lastPendingTask, $currentPendingTask);
         $vehicle = Vehicle::findOrFail($vehicleId);
-        //$vehicle->sub_state_id = $sub_state_id;
-        // $enc = $vehicle->sub_state_id == SubState::ALQUILADO || $vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL;
         if (is_null($vehicle->lastGroupTask)) {
             $vehicle->sub_state_id = null;
         } else {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
                 if($vehicle->subState->state_id != SubState::CAMPA){
-                    $vehicle->last_change_state = date('Y-m-d H:i:s');
-                    $vehicle->last_change_sub_state = date('Y-m-d H:i:s');
+                    $vehicle->last_change_state = Carbon::now();
+                    $vehicle->last_change_sub_state = Carbon::now();
                 }
                 $vehicle->sub_state_id = SubState::CAMPA;
             } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
-                if($vehicle->subState->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
-                    $vehicle->last_change_state = date('Y-m-d H:i:s');
+                if($vehicle->subState?->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
+                    $vehicle->last_change_state = Carbon::now();
                 }
                 if($vehicle->sub_state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id){
-                    $vehicle->last_change_sub_state = date('Y-m-d H:i:s');
+                    $vehicle->last_change_sub_state = Carbon::now();
                 }
                 $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
             }
@@ -352,13 +341,13 @@ public function verifyPlateReception($request){
                                 foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
                                     $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
                                     if (is_null($pending_task->datetime_pending)) {
-                                        $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                                        $pending_task->datetime_pending = Carbon::now();
                                     }
                                     if (is_null($pending_task->datetime_start)) {                                
-                                        $pending_task->datetime_start = date('Y-m-d H:i:s');
+                                        $pending_task->datetime_start = Carbon::now();
                                     }
                                     if (is_null($pending_task->datetime_finish)) {
-                                        $pending_task->datetime_finish = date('Y-m-d H:i:s');                                
+                                        $pending_task->datetime_finish = Carbon::now();                                
                                     }
                                     if (is_null($pending_task->user_start_id)) {
                                         $pending_task->user_start_id = Auth::id();
@@ -461,7 +450,8 @@ public function verifyPlateReception($request){
             ->chunk(200, function ($damages) {
                 foreach($damages as $damage){
                     $damage->update([
-                        'status_damage_id' => StatusDamage::CLOSED
+                        'status_damage_id' => StatusDamage::CLOSED,
+                        'datetime_close' => Carbon::now()
                     ]);
                 }
             });

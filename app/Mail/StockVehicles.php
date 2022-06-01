@@ -70,7 +70,7 @@ class StockVehicles extends Mailable
             ];
     
             foreach($peopleForReport as $user){
-                if($user->role_id != Role::GLOBAL_MANAGER) {
+                if($user['user']['role_id'] != Role::GLOBAL_MANAGER) {
                     Mail::send('report-generic', $data, function($message) use($user, $attachments){
                         $message->to($user['user']['email'], $user['user']['name']);
                         $message->subject('Stock de vehículos');

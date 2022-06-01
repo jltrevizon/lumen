@@ -23,7 +23,10 @@ class Damage extends Model
         'task_id',
         'severity_damage_id',
         'status_damage_id',
-        'description'
+        'description',
+        'approved',
+        'internal',
+        'datetime_close',
     ];
 
     public function campa(){

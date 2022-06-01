@@ -35,7 +35,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             foreach($vehicle->pendingTasks as $pendingTask){
                 $line = [
                     $vehicle->plate,
-                    $pendingTask->groupTask->reception ? date('d/m/Y', strtotime($pendingTask->groupTask->reception->created_at)) : null,
+                    date('d/m/Y', $pendingTask->reception->created_at) ?? null,
                     $vehicle->kms,
                     $vehicle->vehicleModel->brand->name ?? null,
                     $vehicle->vehicleModel->name ?? null,
