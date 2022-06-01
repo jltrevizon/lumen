@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class Monitor extends Model
 {
+
+    use Filterable;
 
     protected $casts = [
         'data' => "array",
