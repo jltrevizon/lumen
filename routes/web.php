@@ -589,5 +589,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/statistics/execution-time','StatisticsController@executionTime');
         $router->get('/statistics/average-time-sub-state', 'StatisticsController@averageTimeInSubState');
         $router->get('/statistics/time-approval', 'StatisticsController@timeApproval');
+
+        /**
+         * HTTP Requests
+         */
+        $router->get('/http-requests', 'MonitorController@index');
     });
 });
