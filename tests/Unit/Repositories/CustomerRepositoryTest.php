@@ -84,20 +84,6 @@ class CustomerRepositoryTest extends TestCase
         $this->assertEquals($name, $result['customer']['name']);
     }
 
-    /** @test */
-    public function should_return_customers_by_company()
-    {
-        $company1 = Company::factory()->create();
-        $company2 = Company::factory()->create();
-        Customer::factory()->create(['company_id' => $company1->id]);
-        Customer::factory()->create(['company_id' => $company1->id]);
-        Customer::factory()->create(['company_id' => $company2->id]);
-        $request = new Request();
-        $request->replace(['company_id' => $company1->id]);
-        $result = $this->repository->getUserByCompany($request);
-        $this->assertCount(2, $result);
-    }
-
     private function createCustomer($data)
     {
         return $this->repository->create($data);

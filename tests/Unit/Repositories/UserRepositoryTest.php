@@ -91,25 +91,6 @@ class UserRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function should_return_users_by_campas()
-    {
-        $campa1 = Campa::factory()->create();
-        $campa2 = Campa::factory()->create();
-        $user1 = User::factory()->create();
-        $user2 = User::factory()->create();
-        $user3 = User::factory()->create();
-
-        DB::table('campa_user')->insert(['campa_id' => $campa1->id, 'user_id' => $user1->id]);
-        DB::table('campa_user')->insert(['campa_id' => $campa1->id, 'user_id' => $user2->id]);
-        DB::table('campa_user')->insert(['campa_id' => $campa2->id, 'user_id' => $user3->id]);
-
-        $result = $this->repository->getUsersByCampa($campa1->id);
-        $this->assertCount(2, $result);
-        $result = $this->repository->getUsersByCampa($campa2->id);
-        $this->assertCount(1, $result);
-    }
-
-    /** @test */
     public function should_return_users_by_role()
     {
         $campa = Campa::factory()->create();
@@ -128,23 +109,6 @@ class UserRepositoryTest extends TestCase
         $this->assertCount(2, $result);
         $result = $this->repository->getUsersByRole($request, $role2->id);
         $this->assertCount(1, $result);
-    }
-
-    /** @test */
-    public function should_return_users_active()
-    {
-        $campa = Campa::factory()->create();
-        $user1 = User::factory()->create(['active' => true]);
-        $user2 = User::factory()->create(['active' => true]);
-        $user3 = User::factory()->create(['active' => false]);
-        DB::table('campa_user')->insert(['campa_id' => $campa->id, 'user_id' => $user1->id]);
-        DB::table('campa_user')->insert(['campa_id' => $campa->id, 'user_id' => $user2->id]);
-        DB::table('campa_user')->insert(['campa_id' => $campa->id, 'user_id' => $user3->id]);
-
-        $request = new Request();
-        $request->replace(['campa_id' => $campa->id]);
-        $result = $this->repository->getActiveUsers($request);
-        $this->assertCount(2, $result);
     }
 
     /** @test */
