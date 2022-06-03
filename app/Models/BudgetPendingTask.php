@@ -19,6 +19,8 @@ class BudgetPendingTask extends Model
         'state_budget_pending_task_id',
         'code_authorization',
         'observations',
+        'approved_by',
+        'declined_by',
         'url',
         'comment'
     ];

@@ -36,15 +36,6 @@ class CustomerController extends Controller
         return $this->updateDataResponse($this->customerRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getUserByCompany(Request $request){
-
-        $this->validate($request, [
-            'company_id' => 'required|integer'
-        ]);
-
-        return $this->getDataResponse($this->customerRepository->getUserByCompany($request), HttpFoundationResponse::HTTP_OK);
-    }
-
     public function delete($id){
         Customer::where('id', $id)
             ->delete();

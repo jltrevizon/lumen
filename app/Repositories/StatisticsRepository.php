@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\BudgetPendingTask;
 use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\Reception;
@@ -223,4 +224,5 @@ class StatisticsRepository extends Repository {
             }
             return $arrayReceptions;
         }
+
 }

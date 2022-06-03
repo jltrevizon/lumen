@@ -33,9 +33,4 @@ class CustomerRepository extends Repository{
         $customer->update($request->all());
         return ['customer' => $customer];
     }
-
-    public function getUserByCompany($request){
-        return Customer::byCompany($request->input('company_id'))
-                    ->get();
-    }
 }
