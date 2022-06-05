@@ -48,6 +48,7 @@ class DeliveryVehicleRepository extends Repository {
         ]);
         PendingTask::create([
             'vehicle_id' => $vehicleId,
+            'reception_id' => $vehicle->lastReception->id ?? null,
             'task_id' => Task::TOALQUILADO,
             'state_pending_task_id' => StatePendingTask::FINISHED,
             'user_start_id' => Auth::id(),

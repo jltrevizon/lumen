@@ -52,21 +52,8 @@ class UserController extends Controller
         return $this->deleteDataResponse($this->userRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getUsersByCampa($campa_id){
-        return $this->getDataResponse($this->userRepository->getUsersByCampa($campa_id), HttpFoundationResponse::HTTP_OK);
-    }
-
     public function getUsersByRole(Request $request, $role_id){
         return $this->getDataResponse($this->userRepository->getUsersByRole($request, $role_id), HttpFoundationResponse::HTTP_OK);
-    }
-
-    public function getActiveUsers(Request $request){
-
-        $this->validate($request, [
-            'campa_id' => 'required|integer'
-        ]);
-
-        return $this->getDataResponse($this->userRepository->getActiveUsers($request), HttpFoundationResponse::HTTP_OK);
     }
 
 }

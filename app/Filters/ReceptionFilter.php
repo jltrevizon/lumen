@@ -15,6 +15,12 @@ class ReceptionFilter extends ModelFilter
         return $this->whereIn('vehicle_id', $ids);
     }
 
+    public function vehiclePlate($plate){
+        return $this->whereHas('vehicle', function ($query) use($plate){
+            return $query->where('plate','LIKE',"%$plate%");
+        });
+    }
+
     public function finished($value){
         return $this->where('finished', $value);
     }

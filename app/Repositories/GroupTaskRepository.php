@@ -105,6 +105,7 @@ class GroupTaskRepository extends Repository {
                 $pendingTask->save();
                 PendingTask::create([
                     'vehicle_id' => $vehicle->id,
+                    'reception_id' => $vehicle->lastReception->id ?? null,
                     'task_id' => Task::TOCAMPA,
                     'state_pending_task_id' => StatePendingTask::FINISHED,
                     'user_start_id' => Auth::id(),
