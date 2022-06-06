@@ -141,6 +141,7 @@ class VehicleRepository extends Repository {
             $user = Auth::user();
             $vehicle->company_id = $user->company_id;
         }
+        $vehicle->created_by = Auth::id();
         $vehicle->save();
         return $vehicle;
     }

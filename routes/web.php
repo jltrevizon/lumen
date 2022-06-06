@@ -47,9 +47,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/users/create-without-password', 'UserController@createUserWithoutPassword');
         $router->put('/users/update/{id}', 'UserController@update');
         $router->delete('/users/delete/{id}', 'UserController@delete');
-        $router->get('/users/campa/{campa_id}', 'UserController@getUsersByCampa');
         $router->post('/users/role/{role_id}', 'UserController@getUsersByRole');
-        $router->post('/users/active', 'UserController@getActiveUsers');
         $router->post('/users/assign-campa', 'CampaUserController@create');
         $router->post('/users/delete-campa', 'CampaUserController@delete');
 
@@ -95,7 +93,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/customers/getall', 'CustomerController@getall');
         $router->get('/customers/{id}', 'CustomerController@getById');
         $router->post('/customers', 'CustomerController@create');
-        $router->post('/customers/by-company', 'CustomerController@getUserByCompany');
         $router->put('/customers/update/{id}', 'CustomerController@update');
         $router->delete('/customers/delete/{id}', 'CustomerController@delete');
 

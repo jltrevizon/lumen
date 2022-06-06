@@ -204,6 +204,7 @@ class PendingTaskRepository extends Repository {
     private function createPendingTaskCampa($vehicle, $groupTaskId){
         PendingTask::create([
             'vehicle_id' => $vehicle->id,
+            'reception_id' => $vehicle->lastReception->id ?? null,
             'task_id' => Task::TOCAMPA,
             'campa_id' => $vehicle->campa_id,
             'state_pending_task_id' => StatePendingTask::FINISHED,
@@ -321,6 +322,7 @@ class PendingTaskRepository extends Repository {
                 }
                 PendingTask::create([
                     'vehicle_id' => $vehicle->id,
+                    'reception_id' => $vehicle->lastReception->id ?? null,
                     'task_id' => Task::TOCAMPA,
                     'campa_id' => $vehicle->campa_id,
                     'state_pending_task_id' => StatePendingTask::FINISHED,
@@ -522,6 +524,7 @@ class PendingTaskRepository extends Repository {
             $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicle->id);
             PendingTask::create([
                 'vehicle_id' => $vehicle->id,
+                'reception_id' => $vehicle->lastReception->id ?? null,
                 'task_id' => $task->id,
                 'campa_id' => $vehicle->campa_id,
                 'state_pending_task_id' => StatePendingTask::IN_PROGRESS,

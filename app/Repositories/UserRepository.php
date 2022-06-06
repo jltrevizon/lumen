@@ -49,22 +49,10 @@ class UserRepository extends Repository {
         return [ 'message' => 'User deleted' ];
     }
 
-    public function getUsersByCampa($campa_id){
-        return User::whereHas('campas', fn (Builder $builder) => $builder->where('campas.id', $campa_id))
-                ->get();
-    }
-
     public function getUsersByRole($request, $role_id){
         return User::with($this->getWiths($request->with))
                 ->where('role_id', $role_id)
                 ->whereHas('campas', fn (Builder $builder) => $builder->whereIn('campas.id', $request->input('campas')))
-                ->get();
-    }
-
-    public function getActiveUsers($request){
-        return User::with($this->getWiths($request->with))
-                ->where('active', true)
-                ->whereHas('campas', fn (Builder $builder) => $builder->where('campas.id', $request->input('campa_id')))
                 ->get();
     }
 
