@@ -79,9 +79,7 @@ class VehicleRepository extends Repository {
 
     public function filterVehicle($request) {
         $query = Vehicle::with($this->getWiths($request->with))
-                    ->join('receptions', 'receptions.vehicle_id', '=', 'vehicles.id')
-                    ->filter($request->all())
-                    ->orderBy('receptions.created_at','DESC');
+                    ->filter($request->all());
 
         if ($request->input('noPaginate')) {
             $vehicles = [
