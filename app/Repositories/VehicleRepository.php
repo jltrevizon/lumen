@@ -79,7 +79,7 @@ class VehicleRepository extends Repository {
 
     public function filterVehicle($request) {
         $query = Vehicle::with($this->getWiths($request->with))
-                    ->innerJoin('receptions', 'receptions.vehicle_id', '=', 'vehicles.id')
+                    ->join('receptions', 'receptions.vehicle_id', '=', 'vehicles.id')
                     ->filter($request->all())
                     ->orderBy('receptions.created_at','DESC');
 
