@@ -29,7 +29,6 @@
         "nordsoftware/lumen-cors": "^3.4",
         "palanik/lumen-cors": "dev-master",
         "predis/predis": "^1.1",
-        "psr/log": "1.1.4",
         "tibonilab/pdf-lumen-bundle": "~2.0.0",
         "tucker-eric/eloquentfilter": "^3.0",
         "tymon/jwt-auth": "^1.0"
