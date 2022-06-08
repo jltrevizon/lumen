@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Damage;
 use App\Models\PendingTask;
+use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
@@ -141,6 +142,7 @@ class VehicleRepository extends Repository {
             $user = Auth::user();
             $vehicle->company_id = $user->company_id;
         }
+        $vehicle->created_by = Auth::id();
         $vehicle->save();
         return $vehicle;
     }
