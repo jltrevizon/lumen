@@ -80,7 +80,7 @@ class VehicleRepository extends Repository {
     public function filterVehicle($request) {
         $query = Vehicle::with($this->getWiths($request->with))
                     ->filter($request->all())
-                    ->selectRaw('vehicles.*, (SELECT MIN(r.id) FROM receptions r WHERE r.vehicle_id = vehicles.id) as reception_id')
+                    ->selectRaw('vehicles.*, (SELECT MAX(r.id) FROM receptions r WHERE r.vehicle_id = vehicles.id) as reception_id')
                     ->orderBy('reception_id', 'desc');
 
         if ($request->input('noPaginate')) {
