@@ -10,6 +10,10 @@ class BudgetPendingTaskFilter extends ModelFilter
         return $this->byPendingTaskIds($ids);
     }
 
+    public function taskIds($ids){
+        return $this->byTaskIds($ids);
+    }
+
     public function stateBudgetPendingTasks($ids){
         return $this->byStateBudgetPendingTaskIds($ids);
     }

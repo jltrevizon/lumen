@@ -45,6 +45,12 @@ class BudgetPendingTask extends Model
         return $query->whereIn('pending_task_id', $ids);
     }
 
+    public function scopeByTaskIds($query, $ids){
+        return $query->whereHas('pendingTask', function($q) use($ids) { 
+            return $q->whereIn('task_id', $ids);
+        });
+    }
+
     public function scopeByStateBudgetPendingTaskIds($query, $ids){
         return $query->whereIn('state_budget_pending_task_id', $ids);
     }
