@@ -107,6 +107,10 @@ class Vehicle extends Model
         return $this->hasMany(Reception::class);
     }
 
+    public function reception(){
+        return $this->hasOne(Reception::class, 'id', 'reception_id');
+    }
+
     public function typeModelOrder(){
         return $this->belongsTo(TypeModelOrder::class);
     }
