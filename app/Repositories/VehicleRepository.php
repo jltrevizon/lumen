@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Damage;
 use App\Models\PendingTask;
+use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
@@ -78,7 +79,9 @@ class VehicleRepository extends Repository {
 
     public function filterVehicle($request) {
         $query = Vehicle::with($this->getWiths($request->with))
-                    ->filter($request->all());
+                    ->filter($request->all())
+                    ->selectRaw('vehicles.*, (SELECT MAX(r.id) FROM receptions r WHERE r.vehicle_id = vehicles.id) as reception_id')
+                    ->orderBy('reception_id', 'desc');
 
         if ($request->input('noPaginate')) {
             $vehicles = [

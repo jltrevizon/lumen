@@ -219,23 +219,25 @@ class VehicleFilter extends ModelFilter
                 return $query->whereDoesntHave('approvedPendingTasks');
             })->get('id');
             $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
-            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
-                return $query->whereNotIn('vehicle_id', $value); 
-            });
+            return $this->whereNotIn('id', $value);
         }
     }
 
     public function lastGroupTaskFirstPendingTaskIds($value)
     {
-        if ($value) {
-            $vehicle = Vehicle::whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($value){
-                return $builder->whereNotIn('task_id', $value);
-            })->get('id');
-            $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
-            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
-                return $query->whereIn('vehicle_id', $value); 
-            });
-        }
+        return $this->whereRaw('
+            id IN(
+            SELECT 
+                pt.vehicle_id 
+            FROM 
+                pending_tasks pt 
+            WHERE 
+                pt.state_pending_task_id is NOT NULL 
+                AND pt.state_pending_task_id <> 3 
+                AND pt.approved = 1 
+                AND pt.group_task_id = (SELECT MAX(gt.id) FROM group_tasks gt WHERE gt.vehicle_id = pt.vehicle_id)
+                AND pt.task_id IN('.implode(',', $value).'))
+        ');
     }
 
     public function isDefleeting($value)

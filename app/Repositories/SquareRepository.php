@@ -30,7 +30,7 @@ class SquareRepository extends Repository {
         $square->update($request->all());
         $square->user_id = Auth::id();
         $square->save();
-        $this->historyLocationRepository->saveFromBack($request->input('vehicle_id'), $id, $request->input('user_id'));
+        $this->historyLocationRepository->saveFromBack($request->input('vehicle_id'), $id, Auth::id());
         return $square;
     }
 
