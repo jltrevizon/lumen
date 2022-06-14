@@ -159,7 +159,7 @@ class AldController extends Controller
             $pending_task->group_task_id = $groupTaskId;
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->order = $task['task_order'];
-            $pending_task->user_id = uth::id();
+            $pending_task->user_id = Auth::id();
             $pending_task->save();
         }
     }
