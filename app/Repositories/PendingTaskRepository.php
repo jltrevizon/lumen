@@ -291,6 +291,7 @@ class PendingTaskRepository extends Repository {
         $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
         if($pending_task->state_pending_task_id == StatePendingTask::IN_PROGRESS){
             $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+            $pending_task->order = -1;
             $pending_task->user_end_id = Auth::id();
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
@@ -329,7 +330,7 @@ class PendingTaskRepository extends Repository {
                     'user_start_id' => Auth::id(),
                     'user_end_id' => Auth::id(),
                     'group_task_id' => $pending_task->group_task_id,
-                    'order' => 100,
+                    'order' => -1,
                     'duration' => 0,
                     'approved' => true,
                     'datetime_pending' => date('Y-m-d H:i:s'),
@@ -344,6 +345,7 @@ class PendingTaskRepository extends Repository {
         } else {
             if($pending_task->task_id == Task::UBICATION){
                 $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+                $pending_task->order = -1;
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
                 $pending_task->user_end_id = Auth::id();
@@ -427,7 +429,7 @@ class PendingTaskRepository extends Repository {
         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
         $pendingTask->group_task_id = $vehicle['lastGroupTask']['id'];
         $pendingTask->duration = $task['duration'];
-        $pendingTask->order = 1;
+        $pendingTask->order = -1;
         $pendingTask->approved = true;
         $pendingTask->status_color = 'green';
         $pendingTask->datetime_pending = date('Y-m-d');
