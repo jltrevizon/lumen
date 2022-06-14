@@ -80,7 +80,7 @@ class AldController extends Controller
            if($request->input('state_pending_task_id') == StatePendingTask::PENDING){
                 $this->createPendingTask($groupTask, $request->input('vehicle_id'), $request->input('tasks'), $groupTask->id, $vehicle);
             } else if($request->input('state_pending_task_id') == StatePendingTask::FINISHED){
-                $this->createFinishedTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id);
+                $this->createFinishedTask($request->input('vehicle_id'), $request->input('tasks'), $groupTask->id, $vehicle);
             }
 
             $is_pending_task = false;
@@ -145,7 +145,7 @@ class AldController extends Controller
         $this->vehicleRepository->updateSubState($vehicleId, $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
     }
 
-    private function createFinishedTask($vehicleId, $tasks, $groupTaskId){
+    private function createFinishedTask($vehicleId, $tasks, $groupTaskId, $vehicle){
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
