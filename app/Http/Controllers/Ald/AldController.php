@@ -149,6 +149,7 @@ class AldController extends Controller
         foreach($tasks as $task){
             $pending_task = new PendingTask();
             $pending_task->vehicle_id = $vehicleId;
+            $pending_task->reception_id = $vehicle->lastReception->id;
             $taskDescription = $this->taskRepository->getById([], $task['task_id']);
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = true;
