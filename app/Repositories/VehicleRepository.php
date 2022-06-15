@@ -344,6 +344,7 @@ public function verifyPlateReception($request){
                             if (!is_null($vehicle->lastGroupTask)) {
                                 foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
                                     $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+                                    $pending_task->order = -1;
                                     if (is_null($pending_task->datetime_pending)) {
                                         $pending_task->datetime_pending = Carbon::now();
                                     }
@@ -472,8 +473,8 @@ public function verifyPlateReception($request){
 
     // GroupTasks of last reception
     public function lastGroupTasks($request){
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        return Vehicle::with(['groupTasks' => function($query) use($vehicle){
+        
+/*with(['groupTasks' => function($query) use($vehicle){
             return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now());
         },
             'groupTasks.approvedPendingTasks.task',
@@ -485,7 +486,13 @@ public function verifyPlateReception($request){
             'groupTasks.allPendingTasks.userStart',
             'groupTasks.allPendingTasks.user',
             'lastGroupTask.approvedPendingTasks'
-        ])
+        ])*/
+
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        return Vehicle::with(array_merge($this->getWiths($request->with), ['groupTasks' => function($query) use($vehicle){
+            return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())->orderBy('created_at', 'desc');
+        }]))
+        ->filter($request->all())
         ->findOrFail($request->input('vehicle_id'));
     }
 

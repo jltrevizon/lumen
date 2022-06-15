@@ -100,6 +100,7 @@ class GroupTaskRepository extends Repository {
             } else if ($count == 1) {
                 $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                $pendingTask->order = -1;
                 $pendingTask->datetime_start = Carbon::now();
                 $pendingTask->datetime_finish = Carbon::now();
                 $pendingTask->save();
@@ -111,7 +112,7 @@ class GroupTaskRepository extends Repository {
                     'user_start_id' => Auth::id(),
                     'user_end_id' => Auth::id(),
                     'group_task_id' => $group_task->id,
-                    'order' => 100,
+                    'order' => -1,
                     'duration' => 0,
                     'approved' => true,
                     'datetime_pending' => Carbon::now(),
@@ -123,6 +124,7 @@ class GroupTaskRepository extends Repository {
             } else if ($count > 1) {
                 $pendingTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
                 $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                $pendingTask->order = -1;
                 $pendingTask->datetime_start = Carbon::now();
                 $pendingTask->datetime_finish = Carbon::now();
                 $pendingTask->save();

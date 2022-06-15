@@ -386,6 +386,26 @@ class Vehicle extends Model
             });
     }
 
+    public function approvedPendingTasks(){
+        return $this->hasMany(PendingTask::class, 'vehicle_id')
+        ->where('approved', true)
+        ->where(function ($query) {
+            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->orderBy('state_pending_task_id', 'desc')
+        ->orderBy('order')
+        ->orderBy('datetime_finish', 'desc');
+    }
+
+    public function allApprovedPendingTasks(){
+        return $this->hasMany(PendingTask::class, 'vehicle_id')
+            ->where('approved', 1)->with('groupTask')
+            ->orderBy('state_pending_task_id', 'desc')
+            ->orderBy('order')
+            ->orderBy('datetime_finish', 'desc');
+    }
+
     public function lastOrders(){
         return $this->hasOne(Order::class)->ofMany([
             'id' => 'max'

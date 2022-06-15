@@ -74,6 +74,7 @@ class PendingTaskAldController extends Controller
             if($pendingTasks) {
                 foreach ($pendingTasks as $key => $pending_task) {
                     $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+                    $pending_task->order = -1;
                     if (is_null($pending_task->datetime_pending)) {
                         $pending_task->datetime_pending = date('Y-m-d H:i:s');
                     }

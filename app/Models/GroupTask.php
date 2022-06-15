@@ -22,8 +22,9 @@ class GroupTask extends Model
     public function pendingTasks(){
         return $this->hasMany(PendingTask::class, 'group_task_id')
         ->where('approved', 1)
-        ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
-        ->orderBy('order');
+        ->orderBy('state_pending_task_id', 'desc')
+        ->orderBy('order')
+        ->orderBy('datetime_finish', 'desc');
     }
 
     public function allPendingTasks() {
@@ -39,8 +40,9 @@ class GroupTask extends Model
             $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
                 ->orWhereNull('state_pending_task_id');
         })
-        ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
-        ->orderBy('order');
+        ->orderBy('state_pending_task_id', 'desc')
+        ->orderBy('order')
+        ->orderBy('datetime_finish', 'desc');
     }
 
     public function allApprovedPendingTasks(){
@@ -51,7 +53,9 @@ class GroupTask extends Model
     public function lastPendingTaskApproved(){
         return $this->hasMany(PendingTask::class)
             ->where('approved', true)
-            ->orderBy('order', 'DESC');
+            ->orderBy('state_pending_task_id', 'desc')
+            ->orderBy('order')
+            ->orderBy('datetime_finish', 'desc');
     }
 
     public function lastPendingTaskWithState(){
