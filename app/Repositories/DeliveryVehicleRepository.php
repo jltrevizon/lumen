@@ -54,7 +54,7 @@ class DeliveryVehicleRepository extends Repository {
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
             'group_task_id'=> $lastGroupTask,
-            'order' => 101,
+            'order' => -1,
             'approved' => true,
             'datetime_pending' => date('Y-m-d H:i:s'),
             'datetime_start' => date('Y-m-d H:i:s'),

@@ -85,6 +85,7 @@ class AldController extends Controller
             }
             if($tasksApproved == 0) {
                 $pending_task->order = 1;
+                $pending_task->state_pending_task_id = StatePendingTask::PENDING;
             } else {
                 $pending_task->order = $tasksApproved + 1;
             }
@@ -101,21 +102,18 @@ class AldController extends Controller
             if ($request->input('state_pending_task_id') == StatePendingTask::FINISHED) {
                 $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
-                $pending_task->datetime_pending = date('Y-m-d H:i:s');
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
                 $pending_task->order = -1;
             }
-
+            
             $pending_task->save();
-                        
+            
             $is_pending_task = false;
-
-            $pending_tasks = $groupTask->pendingTasks;
             $order = 1;
-            foreach($pending_tasks as $pending_task)
+
+            foreach($groupTask->approvedPendingTasks as $update_pending_task)
             {
-                $update_pending_task = PendingTask::find($pending_task['id']);
                 if (!is_null($update_pending_task->state_pending_task_id)) {
                     $is_pending_task = true;
                 }
@@ -136,7 +134,20 @@ class AldController extends Controller
                 $vehicle->sub_state_id = SubState::CAMPA;
                 $vehicle->save();
             }
-            $this->vehicleRepository->updateSubState($vehicle->id, $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0], $vehicle?->lastGroupTask?->pendingTasks[0]);
+
+            $currentPendingTask = null;
+
+            if (count($vehicle?->lastGroupTask?->pendingTasks) > 0) {
+                $currentPendingTask = $vehicle?->lastGroupTask?->pendingTasks[0];
+            }
+
+            $oldPendingTask = null;
+            if (count($vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks) > 0) {
+                $oldPendingTask = $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0];
+            }
+
+            $this->vehicleRepository->updateSubState($vehicle->id, $oldPendingTask, $currentPendingTask);
+
 
             return $this->createDataResponse(['data' => $pending_task], HttpFoundationResponse::HTTP_CREATED);
 
