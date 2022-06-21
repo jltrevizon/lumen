@@ -5,37 +5,15 @@ namespace App\Exports;
 use App\Views\KpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 
-class KpiInpuOutExport implements FromCollection, WithMapping, WithHeadings
+class KpiInpuOutExport implements FromArray, WithHeadings
 {
     public function __construct()
     {
     }
 
-    public function collection()
-    {
-       return KpiView::with(['typeModelOrder'])
-        ->where('in_year', date('Y'))
-        ->select(
-            DB::raw('count(in_kpi) as `total`'),
-            DB::raw('view_kpis.type_model_order_id'),
-            DB::raw('view_kpis.in_month')
-        )
-        ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
-        ->get();
-    }
-
-    public function map($data): array
-    {
-        return [
-            $data['total']
-        ];
-    }
-
-  /*  public function array(): array
+    public function array(): array
     {
         $in_data = KpiView::with(['typeModelOrder'])
             ->where('in_year', date('Y'))
@@ -87,6 +65,9 @@ class KpiInpuOutExport implements FromCollection, WithMapping, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['out_month']] = $v['total'] ?? 0;
         }
 
+
+        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
         $value[] =  ['Salidas', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Optubre', 'Nobiembre', 'Diciembre'];
@@ -111,13 +92,10 @@ class KpiInpuOutExport implements FromCollection, WithMapping, WithHeadings
 
         return $value;
     }
-*/
+
     public function headings(): array
     {
         return [
-            'Total'
-        ];
-     /*   return [
             '',
             'Enero',
             'Febrero',
@@ -128,9 +106,9 @@ class KpiInpuOutExport implements FromCollection, WithMapping, WithHeadings
             'Julio',
             'Agosto',
             'Septiembre',
-            'Optubre',
+            'Octubre',
             'Noviembre',
             'Diciembre'
-        ];*/
+        ];
     }
 }
