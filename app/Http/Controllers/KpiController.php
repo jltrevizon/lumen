@@ -52,6 +52,6 @@ class KpiController extends Controller
     public function kpiInpuOut(Request $request)
     {
         $year = $request->input('year');
-        return Excel::download(new KpiInpuOutExport, 'kpi-' . date('d-m-Y') . '-' . '.xlsx');
+        return Excel::download(new KpiInpuOutExport, 'kpi-' . date('d-m-Y') . '-' . '.csv');
     }
 }

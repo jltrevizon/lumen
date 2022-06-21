@@ -17,8 +17,7 @@ class KpiInpuOutExport implements FromCollection, WithMapping, WithHeadings
 
     public function collection()
     {
-        return KpiView::all();
-      /*  return KpiView::with(['typeModelOrder'])
+       return KpiView::with(['typeModelOrder'])
         ->where('in_year', date('Y'))
         ->select(
             DB::raw('count(in_kpi) as `total`'),
@@ -26,13 +25,13 @@ class KpiInpuOutExport implements FromCollection, WithMapping, WithHeadings
             DB::raw('view_kpis.in_month')
         )
         ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
-        ->get();*/
+        ->get();
     }
 
     public function map($data): array
     {
         return [
-            $data['vehicle_id']
+            $data['total']
         ];
     }
 
@@ -116,7 +115,7 @@ class KpiInpuOutExport implements FromCollection, WithMapping, WithHeadings
     public function headings(): array
     {
         return [
-            'ID'
+            'Total'
         ];
      /*   return [
             '',
