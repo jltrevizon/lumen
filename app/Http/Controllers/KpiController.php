@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Views\KpiView;
 use App\Exports\KpiInpuOutExport;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
 use Maatwebsite\Excel\Facades\Excel;
 
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -53,6 +52,6 @@ class KpiController extends Controller
     public function kpiInpuOut(Request $request)
     {
         $year = $request->input('year');
-        return Excel::download(new KpiInpuOutExport((int) $year), 'salida_entradas-campaa' . $year . '.xlsx');
+        return Excel::download(new KpiInpuOutExport, 'kpi-' . date('d-m-Y') . '-' . '.xlsx');
     }
 }
