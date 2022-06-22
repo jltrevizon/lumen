@@ -17,7 +17,19 @@ class KpiViewFilter extends ModelFilter
 
     public function yearOut($value){
         return $this->where('out_year', $value);
-    }    
+    }
+    
+    public function stateIds($value){
+        return $this->whereIn('state_id', $value);
+    }
+
+    public function subStateIds($value){
+        return $this->whereIn('sub_state_id', $value);
+    }
+
+    public function typeModelOrderIds($value){
+        return $this->whereIn('type_model_order_id', $value);
+    }
 
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter

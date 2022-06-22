@@ -49,6 +49,23 @@ class KpiController extends Controller
         return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
 
+    public function subStates(Request $request)
+    {
+        $data = KpiView::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->select(
+                DB::raw('count(sub_state_id) as `total`'),
+                DB::raw('type_model_order_id'),
+                DB::raw('sub_state_id'),
+                DB::raw('state_id')
+            )
+            ->groupBy('sub_state_id')
+            ->get();
+        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
+    }
+
+
+
     public function kpiInpuOut(Request $request)
     {
         $year = $request->input('year');

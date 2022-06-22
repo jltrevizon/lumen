@@ -29,6 +29,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
     $router->get('/kpi-inpu-out', 'KpiController@kpiInpuOut');
+    $router->get('/kpi-sub-states', 'KpiController@subStates');
 
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
