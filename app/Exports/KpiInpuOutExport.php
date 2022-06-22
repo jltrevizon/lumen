@@ -17,7 +17,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
     public function array(): array
     {
         $in_data = KpiView::with(['typeModelOrder'])
-            ->filter($this->request->all() ?? date('Y'))
+            ->filter($this->request->all())
             // ->where('in_year', date('Y'))
             ->select(
                 DB::raw('count(in_kpi) as `total`'),
@@ -28,7 +28,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             ->get();
 
         $out_data = KpiView::with(['typeModelOrder'])
-            ->filter($this->request->all() ?? date('Y'))
+            ->filter($this->request->all())
             // ->where('out_year',  date('Y'))
             ->select(
                 DB::raw('count(out_kpi) as `total`'),
@@ -43,7 +43,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
         }
 
-        $value[] =  ['Entrada', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Entrada ' . implode(', ', $this->request->input('yearIn') ?? []), 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             $value[] = [
@@ -72,7 +72,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Salidas', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Salidas ' . implode(', ', $this->request->input('yearOut') ?? []), 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             $value[] = [
