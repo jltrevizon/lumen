@@ -141,7 +141,6 @@ class KpiController extends Controller
             ];
         }
 
-        $kpis = KpiView::all();
         (new FastExcel($value))->export('kpis.xlsx');
         return redirect('/kpis.xlsx');
     }
