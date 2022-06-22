@@ -9,14 +9,16 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class KpiInpuOutExport implements FromArray, WithHeadings
 {
-    public function __construct()
+    public function __construct($request)
     {
+        $this->request = $request;
     }
 
     public function array(): array
     {
         $in_data = KpiView::with(['typeModelOrder'])
-            ->where('in_year', date('Y'))
+            ->filter($this->request->all() ?? date('Y'))
+            // ->where('in_year', date('Y'))
             ->select(
                 DB::raw('count(in_kpi) as `total`'),
                 DB::raw('view_kpis.type_model_order_id'),
@@ -26,7 +28,8 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             ->get();
 
         $out_data = KpiView::with(['typeModelOrder'])
-            ->where('out_year',  date('Y'))
+            ->filter($this->request->all() ?? date('Y'))
+            // ->where('out_year',  date('Y'))
             ->select(
                 DB::raw('count(out_kpi) as `total`'),
                 DB::raw('view_kpis.type_model_order_id'),
@@ -45,18 +48,18 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
-                $v['1'] ?? 0,
-                $v['2'] ?? 0,
-                $v['3'] ?? 0,
-                $v['4'] ?? 0,
-                $v['5'] ?? 0,
-                $v['6'] ?? 0,
-                $v['7'] ?? 0,
-                $v['8'] ?? 0,
-                $v['9'] ?? 0,
-                $v['10'] ?? 0,
-                $v['11'] ?? 0,
-                $v['12'] ?? 0
+                strval($v['1'] ?? 0),
+                strval($v['2'] ?? 0),
+                strval($v['3'] ?? 0),
+                strval($v['4'] ?? 0),
+                strval($v['5'] ?? 0),
+                strval($v['6'] ?? 0),
+                strval($v['7'] ?? 0),
+                strval($v['8'] ?? 0),
+                strval($v['9'] ?? 0),
+                strval($v['10'] ?? 0),
+                strval($v['11'] ?? 0),
+                strval($v['12'] ?? 0)
             ];
         }
 
@@ -68,25 +71,24 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
         $value[] =  ['Salidas', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
-                $v['1'] ?? 0,
-                $v['2'] ?? 0,
-                $v['3'] ?? 0,
-                $v['4'] ?? 0,
-                $v['5'] ?? 0,
-                $v['6'] ?? 0,
-                $v['7'] ?? 0,
-                $v['8'] ?? 0,
-                $v['9'] ?? 0,
-                $v['10'] ?? 0,
-                $v['11'] ?? 0,
-                $v['12'] ?? 0
+                strval($v['1'] ?? 0),
+                strval($v['2'] ?? 0),
+                strval($v['3'] ?? 0),
+                strval($v['4'] ?? 0),
+                strval($v['5'] ?? 0),
+                strval($v['6'] ?? 0),
+                strval($v['7'] ?? 0),
+                strval($v['8'] ?? 0),
+                strval($v['9'] ?? 0),
+                strval($v['10'] ?? 0),
+                strval($v['11'] ?? 0),
+                strval($v['12'] ?? 0)
             ];
         }
 
