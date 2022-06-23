@@ -159,14 +159,17 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         ->with(['typeModelOrder'])
         ->whereRaw('YEAR(created_at) = ' . (int) date('Y'))
         ->whereRaw('MONTH(created_at) = ' . (int) date('m'))
+        ->whereRaw('DAY(created_at) = ' . (int) date('d'))
         ->select(
             DB::raw('count(id) as `total`'),
             DB::raw('count(deleted_at) as `deleted`'),
             DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
-            DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
+            DB::raw('YEAR(created_at) year'),
+            DB::raw('MONTH(created_at) month'),
+            DB::raw('DAY(created_at) day'),
             DB::raw('type_model_order_id')
         )
-        ->groupBy('type_model_order_id', 'year', 'month')
+        ->groupBy('type_model_order_id', 'year', 'month', 'day')
         ->get();
 
         $variable = [];
@@ -177,7 +180,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
-        $value[] =  ['Stock Actual', $this->header[(int) date('m')], '%', 'Ocupacion', '%'];
+        $value[] =  ['Stock Actual', date('d/m/yy'), '%', 'Ocupacion', '%'];
 
         foreach ($variable as $key => $v) {
             $value[] = [
