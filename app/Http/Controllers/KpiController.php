@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Exports\KpiInpuOutExport;
-use App\Models\Reception;
+use App\Exports\KpiSubStateExport;
 use App\Models\Vehicle;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
@@ -50,17 +50,21 @@ class KpiController extends Controller
 
     public function subStates(Request $request)
     {
-        /*$data = KpiView::with($this->getWiths($request->with))
-            ->filter($request->all())
+        /*$data = Vehicle::with(['typeModelOrder', 'subState.state'])
+            ->whereRaw('YEAR(created_at) = ' . 2022)
+            ->whereNull('deleted_at')
             ->select(
-                DB::raw('count(sub_state_id) as `total`'),
+                DB::raw('count(id) as `total`'),
+                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+                DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
                 DB::raw('type_model_order_id'),
-                DB::raw('sub_state_id'),
-                DB::raw('state_id')
+                DB::raw('sub_state_id')
             )
-            ->groupBy('sub_state_id')
+            ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);*/
+        return $data;*/
+        ob_clean();
+        return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados' . date('Y-m-d') . '.xlsx');
     }
 
 
