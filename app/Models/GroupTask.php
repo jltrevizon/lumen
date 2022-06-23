@@ -65,7 +65,11 @@ class GroupTask extends Model
     }
 
     public function vehicle(){
-        return $this->belongsTo(Vehicle::class, 'group_task_id');
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
+    public function typeModelOrder(){
+        return $this->belongsTo(TypeModelOrder::class);
     }
 
     public function damages(){

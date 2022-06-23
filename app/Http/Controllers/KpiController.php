@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KpiCheckListExport;
 use App\Exports\KpiDiffTimeReceptionExport;
 use Illuminate\Http\Request;
 use App\Exports\KpiInpuOutExport;
 use App\Exports\KpiSubStateExport;
+use App\Models\GroupTask;
 use App\Models\Reception;
 use App\Models\Vehicle;
 use App\Views\InKpiView;
@@ -60,6 +62,12 @@ class KpiController extends Controller
     {
         ob_clean();
         return Excel::download(new KpiDiffTimeReceptionExport($request), 'Kpi_Diferencia_Dias' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function checkList(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiCheckListExport($request), 'Kpi_Ckeck_List' . date('Y-m-d') . '.xlsx');
     }
 
     public function kpiInpuOut(Request $request)

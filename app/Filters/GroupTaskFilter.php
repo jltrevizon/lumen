@@ -27,6 +27,11 @@ class GroupTaskFilter extends ModelFilter
         return $this->orderBy($field);
     }
 
+    public function typeModelOrderIds($ids){
+        return $this->whereHas('vehicle', function($query) use($ids) {
+            return $query->whereIn('type_model_order_id', $ids);
+        });
+    }
 
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter

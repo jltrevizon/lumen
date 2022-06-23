@@ -2,13 +2,12 @@
 
 namespace App\Exports;
 
-use App\Models\Reception;
-use App\Models\Vehicle;
+use App\Models\GroupTask;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
+class KpiCheckListExport implements FromArray, WithHeadings
 {
     protected $header = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
     public function __construct($request)
@@ -19,20 +18,21 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
     public function array(): array
     {
         $year = $this->request->input('year') ?? date('Y');
-        $data = Reception::with(['typeModelOrder'])
-        ->filter($this->request->all())
-        ->select(
-            DB::raw('id'),
-            DB::raw('vehicle_id'),
-            DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
-            DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
-            DB::raw("DATE_FORMAT(updated_at, '%m-%Y') date"),
-            DB::raw('YEAR(updated_at) year, MONTH(updated_at) month')
-        )
-        ->whereRaw('YEAR(updated_at) = ' . $year)
-        ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
-        ->groupBy('type_model_order_id', 'year', 'month')
-        ->get();
+        $data = GroupTask::with(['typeModelOrder'])
+            ->filter($this->request->all())
+            ->select(
+                DB::raw('id'),
+                DB::raw('approved'),
+                DB::raw('vehicle_id'),
+                DB::raw('count(vehicle_id) as total'),
+                DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = group_tasks.vehicle_id) as type_model_order_id'),
+                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
+            )
+            ->whereRaw('id IN(SELECT MAX(id) FROM group_tasks GROUP BY vehicle_id)')
+            ->whereRaw('YEAR(created_at) = ' . $year)
+            ->groupBy('type_model_order_id', 'year', 'month')
+            ->get();
 
         $variable = [];
         foreach ($data as $key => $v) {
@@ -44,11 +44,11 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
 
         $value[0][0] = 'Año ' . $year;
 
-        $value[] = ['Dias', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
+        $value[] = ['Ckeck List', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Dias ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Ckeck List ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
