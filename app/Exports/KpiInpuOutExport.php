@@ -4,7 +4,6 @@ namespace App\Exports;
 
 use App\Models\Vehicle;
 use App\Views\InKpiView;
-use App\Views\KpiView;
 use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;

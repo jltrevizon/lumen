@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Views\KpiView;
 use App\Exports\KpiInpuOutExport;
 use App\Models\Reception;
 use App\Models\Vehicle;
 use App\Views\InKpiView;
+use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -17,15 +17,11 @@ class KpiController extends Controller
 {
     public function index(Request $request)
     {
-        $data = KpiView::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->paginate();
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
 
     public function inpu(Request $request)
     {
-        $data = KpiView::with($this->getWiths($request->with))
+        $data = InKpiView::with($this->getWiths($request->with))
             ->filter($request->all())
             ->select(
                 DB::raw('count(in_kpi) as `total`'),
@@ -40,7 +36,7 @@ class KpiController extends Controller
 
     public function out(Request $request)
     {
-        $data = KpiView::with($this->getWiths($request->with))
+        $data = OutKpiView::with($this->getWiths($request->with))
             ->filter($request->all())
             ->select(
                 DB::raw('count(out_kpi) as `total`'),
@@ -54,7 +50,7 @@ class KpiController extends Controller
 
     public function subStates(Request $request)
     {
-        $data = KpiView::with($this->getWiths($request->with))
+        /*$data = KpiView::with($this->getWiths($request->with))
             ->filter($request->all())
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
@@ -64,7 +60,7 @@ class KpiController extends Controller
             )
             ->groupBy('sub_state_id')
             ->get();
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);*/
     }
 
 
