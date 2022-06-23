@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Views\KpiView;
 use App\Exports\KpiInpuOutExport;
+use App\Models\Reception;
+use App\Models\Vehicle;
+use App\Views\InKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 

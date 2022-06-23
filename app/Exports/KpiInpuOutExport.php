@@ -2,7 +2,10 @@
 
 namespace App\Exports;
 
+use App\Models\Vehicle;
+use App\Views\InKpiView;
 use App\Views\KpiView;
+use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -16,24 +19,23 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
     public function array(): array
     {
-        $in_data = KpiView::with(['typeModelOrder'])
-            ->filter($this->request->all())
-            // ->where('in_year', date('Y'))
+        $year = $this->request->input('year') ?? date('Y');
+        $in_data = InKpiView::with(['typeModelOrder'])
+            ->where('in_year', $year)
             ->select(
                 DB::raw('count(in_kpi) as `total`'),
-                DB::raw('view_kpis.type_model_order_id'),
-                DB::raw('view_kpis.in_month')
+                DB::raw('type_model_order_id'),
+                DB::raw('in_month')
             )
             ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
             ->get();
 
-        $out_data = KpiView::with(['typeModelOrder'])
-            ->filter($this->request->all())
-            // ->where('out_year',  date('Y'))
+        $out_data = OutKpiView::with(['typeModelOrder'])
+            ->where('out_year', $year)
             ->select(
                 DB::raw('count(out_kpi) as `total`'),
-                DB::raw('view_kpis.type_model_order_id'),
-                DB::raw('view_kpis.out_month')
+                DB::raw('type_model_order_id'),
+                DB::raw('out_month')
             )
             ->groupBy('type_model_order_id', 'out_kpi', 'out_month')
             ->get();
@@ -45,9 +47,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        if ($this->request->input('year')) {
-            $value[0][0] = 'Año ' . $this->request->input('year');
-        }
+        $value[0][0] = 'Año ' . $year;
 
         $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
         $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
@@ -86,6 +86,51 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
         $value[] =  ['Salidas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+
+        foreach ($variable as $key => $v) {
+            for ($i = 1; $i <= 12; $i++) {
+                $value[2][$i] = strval(($v[$i] ?? 0) + (int) $value[2][$i]);
+            }
+            $value[] = [
+                $key,
+                strval($v['1'] ?? 0),
+                strval($v['2'] ?? 0),
+                strval($v['3'] ?? 0),
+                strval($v['4'] ?? 0),
+                strval($v['5'] ?? 0),
+                strval($v['6'] ?? 0),
+                strval($v['7'] ?? 0),
+                strval($v['8'] ?? 0),
+                strval($v['9'] ?? 0),
+                strval($v['10'] ?? 0),
+                strval($v['11'] ?? 0),
+                strval($v['12'] ?? 0)
+            ];
+        }
+
+        $stok = Vehicle::withTrashed()
+            ->with(['typeModelOrder'])
+            ->whereRaw('YEAR(created_at) = ' . $year)
+            ->select(
+                DB::raw('count(id) as `total`'),
+                DB::raw('count(deleted_at) as `deleted`'),
+                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+                DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
+                DB::raw('type_model_order_id')
+            )
+            ->groupBy('type_model_order_id', 'year', 'month')
+            ->get();
+
+
+        $variable = [];
+        foreach ($stok as $key => $v) {
+            $variable[$v['typeModelOrder']['name']][(int) $v['month']] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
+        }
+
+        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+
+        $value[] =  ['Stock ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
