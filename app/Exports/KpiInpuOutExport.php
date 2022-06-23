@@ -173,8 +173,11 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         ->get();
 
         $variable = [];
+        $total = 0;
         foreach ($stok_now as $key => $v) {
-            $variable[$v['typeModelOrder']['name']][1] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
+            $x = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
+            $total = $total + $x;
+            $variable[$v['typeModelOrder']['name']][1] = $x;
         }
 
         $value[] = ['', '', '', '', ''];
@@ -186,7 +189,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $value[] = [
                 $key,
                 strval($v[1] ?? 0),
-                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, (int) $value[3][(int) date('m')])),
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total)),
                 500,
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, 500)),
             ];
