@@ -184,8 +184,8 @@ class KpiInpuOutExport implements FromArray, WithHeadings
                 $key,
                 strval($v[1] ?? 0),
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, (int) $value[3][(int) date('m')])),
-                'NA',
-                'NA'
+                500,
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, 500)),
             ];
         }
 
