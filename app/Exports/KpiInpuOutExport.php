@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class KpiInpuOutExport implements FromArray, WithHeadings
 {
+    protected $header = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
     public function __construct($request)
     {
         $this->request = $request;
@@ -51,6 +52,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
         $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
+        $value[] = ['Stock', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
@@ -134,7 +136,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
-                $value[2][$i] = strval(($v[$i] ?? 0) + (int) $value[2][$i]);
+                $value[3][$i] = strval(($v[$i] ?? 0) + (int) $value[3][$i]);
             }
             $value[] = [
                 $key,
@@ -153,11 +155,51 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             ];
         }
 
+        $stok_now = Vehicle::withTrashed()
+        ->with(['typeModelOrder'])
+        ->whereRaw('YEAR(created_at) = ' . (int) date('Y'))
+        ->whereRaw('MONTH(created_at) = ' . (int) date('m'))
+        ->select(
+            DB::raw('count(id) as `total`'),
+            DB::raw('count(deleted_at) as `deleted`'),
+            DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+            DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
+            DB::raw('type_model_order_id')
+        )
+        ->groupBy('type_model_order_id', 'year', 'month')
+        ->get();
+
+        $variable = [];
+        foreach ($stok_now as $key => $v) {
+            $variable[$v['typeModelOrder']['name']][1] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
+        }
+
+        $value[] = ['', '', '', '', ''];
+        $value[] = ['', '', '', '', ''];
+
+        $value[] =  ['Stock Actual', $this->header[(int) date('m')], '%', 'Ocupacion', '%'];
+
+        foreach ($variable as $key => $v) {
+            $value[] = [
+                $key,
+                strval($v[1] ?? 0),
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, (int) $value[3][(int) date('m')])),
+                'NA',
+                'NA'
+            ];
+        }
+
         return $value;
+    }
+
+    public function obtenerPorcentaje($cantidad, $total) {
+        $porcentaje = ((float)$cantidad * 100) / $total; // Regla de tres
+        $porcentaje = round($porcentaje, 2);  // Quitar los decimales
+        return $porcentaje;
     }
 
     public function headings(): array
     {
-        return ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        return $this->header;
     }
 }
