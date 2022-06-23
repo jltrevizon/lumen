@@ -43,9 +43,23 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
         }
 
-        $value[] =  ['Entrada ' . implode(', ', $this->request->input('yearIn') ?? []), 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+
+        if ($this->request->input('year')) {
+            $value[0][0] = 'Año ' . $this->request->input('year');
+        }
+
+        $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
+        $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
+
+        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+
+        $value[] =  ['Entrada ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
+            for ($i = 1; $i <= 12; $i++) {
+                $value[1][$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+            }
             $value[] = [
                 $key,
                 strval($v['1'] ?? 0),
@@ -68,13 +82,15 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['out_month']] = $v['total'] ?? 0;
         }
 
-
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Salidas ' . implode(', ', $this->request->input('yearOut') ?? []), 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Salidas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
+            for ($i = 1; $i <= 12; $i++) {
+                $value[2][$i] = strval(($v[$i] ?? 0) + (int) $value[2][$i]);
+            }
             $value[] = [
                 $key,
                 strval($v['1'] ?? 0),
@@ -97,20 +113,6 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
     public function headings(): array
     {
-        return [
-            '',
-            'Enero',
-            'Febrero',
-            'Marzo',
-            'Abril',
-            'Mayo',
-            'Junio',
-            'Julio',
-            'Agosto',
-            'Septiembre',
-            'Octubre',
-            'Noviembre',
-            'Diciembre'
-        ];
+        return ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
     }
 }

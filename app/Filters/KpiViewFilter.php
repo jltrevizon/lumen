@@ -11,6 +11,10 @@ class KpiViewFilter extends ModelFilter
         return $this->byIds($ids);
     }
 
+    public function year($value){
+        return $this->where('in_year', $value)->where('out_year', $value);
+    }
+
     public function yearIn($value){
         return $this->where('in_year', $value);
     }
