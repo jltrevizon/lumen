@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KpiDiffTimeReceptionExport;
 use Illuminate\Http\Request;
 use App\Exports\KpiInpuOutExport;
 use App\Exports\KpiSubStateExport;
+use App\Models\Reception;
 use App\Models\Vehicle;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
@@ -50,24 +52,15 @@ class KpiController extends Controller
 
     public function subStates(Request $request)
     {
-        /*$data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->whereRaw('YEAR(created_at) = ' . 2022)
-            ->whereNull('deleted_at')
-            ->select(
-                DB::raw('count(id) as `total`'),
-                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
-                DB::raw('type_model_order_id'),
-                DB::raw('sub_state_id')
-            )
-            ->groupBy('type_model_order_id', 'sub_state_id')
-            ->get();
-        return $data;*/
         ob_clean();
         return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados' . date('Y-m-d') . '.xlsx');
     }
 
-
+    public function diffTimeReception(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiDiffTimeReceptionExport($request), 'Kpi_Diferencia_Dias' . date('Y-m-d') . '.xlsx');
+    }
 
     public function kpiInpuOut(Request $request)
     {
