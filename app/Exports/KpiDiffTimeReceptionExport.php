@@ -20,20 +20,20 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
     {
         $year = $this->request->input('year') ?? date('Y');
         $data = Reception::with(['typeModelOrder', 'vehicle'])
-        ->filter($this->request->all())
-        ->select(
-            DB::raw('id'),
-            DB::raw('vehicle_id'),
-            DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
-            DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
-            DB::raw("DATE_FORMAT(updated_at, '%m-%Y') date"),
-            DB::raw('YEAR(updated_at) year, MONTH(updated_at) month')
-        )
-        ->whereRaw('YEAR(updated_at) = ' . $year)
-        ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
-        ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-        ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
-        ->get();
+            ->filter($this->request->all())
+            ->select(
+                DB::raw('id'),
+                DB::raw('vehicle_id'),
+                DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
+                DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
+                DB::raw("DATE_FORMAT(updated_at, '%m-%Y') date"),
+                DB::raw('YEAR(updated_at) year, MONTH(updated_at) month')
+            )
+            ->whereRaw('YEAR(updated_at) = ' . $year)
+            ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
+            ->get();
 
         $variable = [];
         foreach ($data as $key => $v) {
@@ -73,23 +73,47 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
             ];
         }
 
-        /*$data_now = Reception::with(['typeModelOrder', 'vehicle'])
-        ->filter($this->request->all())
-        ->select(
-            DB::raw('id'),
-            DB::raw('vehicle_id'),
-            DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
-            DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
-            DB::raw("DATE_FORMAT(updated_at, '%m-%Y') date"),
-            DB::raw('YEAR(updated_at) year, MONTH(updated_at) month')
-        )
-        ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-        ->whereRaw('YEAR(updated_at) = ' . $year)
-        ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
-        ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
-        ->get();
-*/
+        $data_now = Reception::with(['typeModelOrder', 'vehicle'])
+            ->filter($this->request->all())
+            ->select(
+                DB::raw('id'),
+                DB::raw('vehicle_id'),
+                DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
+                DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
+                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+                DB::raw('YEAR(created_at) year'),
+                DB::raw('MONTH(created_at) month'),
+                DB::raw('DAY(created_at) day')
+            )
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->whereRaw('YEAR(updated_at) = ' . $year)
+            ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
+            ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month', 'day')
+            ->get();
 
+
+        $variable = [];
+        $total = 0;
+        foreach ($data_now as $key => $v) {
+            $x = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
+            $total = $total + $x;
+            $a = $v['typeModelOrder']['name'];
+            $b = $v['vehicle']['plate'];
+            $variable[$a . ' - ' . $b . ' - ' . $v['day'] . '/' . $v['date']][1] = $x;
+        }
+
+        $value[] = ['', '', '', '', ''];
+        $value[] = ['', '', '', '', ''];
+
+        $value[] =  ['Dias ' . date('m/Y'), 'Total', '%'];
+
+        foreach ($variable as $key => $v) {
+            $value[] = [
+                $key,
+                strval($v[1] ?? 0),
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total))
+            ];
+        }
 
         return $value;
     }
