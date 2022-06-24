@@ -26,10 +26,10 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
                 DB::raw('vehicle_id'),
                 DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
                 DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
-                DB::raw("DATE_FORMAT(updated_at, '%m-%Y') date"),
-                DB::raw('YEAR(updated_at) year, MONTH(updated_at) month')
+                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
             )
-            ->whereRaw('YEAR(updated_at) = ' . $year)
+            ->whereRaw('YEAR(created_at) = ' . $year)
             ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
             ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
@@ -86,7 +86,7 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
                 DB::raw('DAY(created_at) day')
             )
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->whereRaw('YEAR(updated_at) = ' . $year)
+            ->whereRaw('YEAR(created_at) = ' . $year)
             ->whereRaw('MONTH(created_at) = ' . date('m'))
             ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
             ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month', 'day')
