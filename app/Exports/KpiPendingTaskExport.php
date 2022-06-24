@@ -66,6 +66,10 @@ class KpiPendingTaskExport implements FromArray, WithHeadings
             ];
         }
 
+        if (!$value) {
+            $value = [];
+        }
+
         return $value;
     }
 
