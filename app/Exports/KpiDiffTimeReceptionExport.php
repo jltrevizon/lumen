@@ -19,7 +19,7 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
     public function array(): array
     {
         $year = $this->request->input('year') ?? date('Y');
-        $data = Reception::with(['typeModelOrder'])
+        $data = Reception::with(['typeModelOrder', 'vehicle'])
         ->filter($this->request->all())
         ->select(
             DB::raw('id'),
@@ -31,13 +31,14 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
         )
         ->whereRaw('YEAR(updated_at) = ' . $year)
         ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
-        ->groupBy('type_model_order_id', 'year', 'month')
+        ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
         ->get();
 
         $variable = [];
         foreach ($data as $key => $v) {
             $a = $v['typeModelOrder']['name'];
-            $variable[$a][(int) $v['month']] = $v['total'] ?? 0;
+            $b = $v['vehicle']['plate'];
+            $variable[$a . ' - ' . $b][(int) $v['month']] = $v['total'] ?? 0;
         }
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
