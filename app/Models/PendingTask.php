@@ -46,6 +46,10 @@ class PendingTask extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function typeModelOrder(){
+        return $this->belongsTo(TypeModelOrder::class);
+    }
+
     public function reception(){
         return $this->belongsTo(Reception::class);
     }

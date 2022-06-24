@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use EloquentFilter\Filterable;
 use App\Models\TypeModelOrder;
 
-class KpiView extends Model
+class InKpiView extends Model
 {
     use Filterable;
-    protected $table = 'view_kpis';
+    protected $table = 'view_in_kpis';
 
     public function typeModelOrder(){
         return $this->belongsTo(TypeModelOrder::class);

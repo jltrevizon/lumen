@@ -23,6 +23,10 @@ class Reception extends Model
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 
+    public function typeModelOrder(){
+        return $this->belongsTo(TypeModelOrder::class);
+    }
+
     public function accessories(){
         return $this->hasMany(Accessory::class);
     }

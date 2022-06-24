@@ -2,9 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KpiCheckListExport;
+use App\Exports\KpiDiffTimeReceptionExport;
 use Illuminate\Http\Request;
-use App\Views\KpiView;
 use App\Exports\KpiInpuOutExport;
+use App\Exports\KpiPendingTaskExport;
+use App\Exports\KpiSubStateExport;
+use App\Models\GroupTask;
+use App\Models\PendingTask;
+use App\Models\Reception;
+use App\Models\Vehicle;
+use App\Views\InKpiView;
+use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -14,15 +23,11 @@ class KpiController extends Controller
 {
     public function index(Request $request)
     {
-        $data = KpiView::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->paginate();
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
 
     public function inpu(Request $request)
     {
-        $data = KpiView::with($this->getWiths($request->with))
+        $data = InKpiView::with($this->getWiths($request->with))
             ->filter($request->all())
             ->select(
                 DB::raw('count(in_kpi) as `total`'),
@@ -37,7 +42,7 @@ class KpiController extends Controller
 
     public function out(Request $request)
     {
-        $data = KpiView::with($this->getWiths($request->with))
+        $data = OutKpiView::with($this->getWiths($request->with))
             ->filter($request->all())
             ->select(
                 DB::raw('count(out_kpi) as `total`'),
@@ -49,9 +54,33 @@ class KpiController extends Controller
         return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
 
+    public function subStates(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function diffTimeReception(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiDiffTimeReceptionExport($request), 'Kpi_Diferencia_Dias-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function checkList(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiCheckListExport($request), 'Kpi_Ckeck_List' . date('Y-m-d') . '.xlsx');
+    }
+
     public function kpiInpuOut(Request $request)
     {
-        $year = $request->input('year');
-        return Excel::download(new KpiInpuOutExport, 'kpi-' . date('d-m-Y') . '-' . '.csv');
+        ob_clean();
+        return Excel::download(new KpiInpuOutExport($request), 'Kpi_Entradas_Salidas-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function kpiPendingTask(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiPendingTaskExport($request), 'Kpi_Tareas_Pendientes-' . date('Y-m-d') . '.xlsx');
     }
 }

@@ -110,6 +110,7 @@ $app->register(Irazasyed\Larasupport\Providers\ArtisanServiceProvider::class);
 $app->register(App\Providers\BroadcastServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->register(Chuckrincon\LumenConfigDiscover\DiscoverServiceProvider::class);
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
