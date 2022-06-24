@@ -30,19 +30,16 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
             ->groupBy('type_model_order_id', 'bit')
             ->get();
 
-        $variable = [];
+        $acum = 0;
         $total = [];
-        $acum_total = [];
+        $variable = [];
+        $variable['Totales'] = [0, 0, 0, 0];
         foreach ($data_now as $key => $v) {
             $x = $v['total'] ?? 0;
             $a = $v['typeModelOrder']['name'];
             $total[$a] = ($total[$a] ?? 0) + $x;
             $variable[$a][$v['bit']] = $x;
-            $acum_total[$v['bit']] = (int) ($acum_total[$v['bit']] ?? 0) + $x;
-        }
-
-        $acum = 0;
-        foreach ($total as $key => $x) { 
+            $variable['Totales'][$v['bit']] = ($variable['Totales'][$v['bit']] ?? 0) + $x;
             $acum = $acum + $x;
         }
 
@@ -57,20 +54,12 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
             ];
         }
 
-        $value[] = [
-            'Total',
-            strval($acum),
-            strval($vacum_total[14] ?? 0),
-            strval($vacum_total[29] ?? 0),
-            strval($vacum_total[44] ?? 0),
-            strval($vacum_total[45] ?? 0),
-        ];
-
         if (!$value) {
             $value = [];
+        } else {
+            $value[0][1] = strval($acum);
         }
 
-        
         return $value;
     }
 
