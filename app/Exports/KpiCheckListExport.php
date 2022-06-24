@@ -31,6 +31,7 @@ class KpiCheckListExport implements FromArray, WithHeadings
             )
             ->whereRaw('id IN(SELECT MAX(id) FROM group_tasks GROUP BY vehicle_id)')
             ->whereRaw('YEAR(created_at) = ' . $year)
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'year', 'month')
             ->get();
 
@@ -85,6 +86,7 @@ class KpiCheckListExport implements FromArray, WithHeadings
                 DB::raw('MONTH(created_at) month'),
                 DB::raw('DAY(created_at) day')
             )
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->whereRaw('id IN(SELECT MAX(id) FROM group_tasks GROUP BY vehicle_id)')
             ->whereRaw('YEAR(created_at) = ' . $year)
             ->whereRaw('MONTH(created_at) = ' . date('m'))

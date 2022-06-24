@@ -34,6 +34,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
                 DB::raw('type_model_order_id'),
                 DB::raw('in_month')
             )
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
             ->get();
 
@@ -49,6 +50,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
                 DB::raw('type_model_order_id'),
                 DB::raw('out_month')
             )
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'out_kpi', 'out_month')
             ->get();
 

@@ -19,7 +19,8 @@ class KpiSubStateExport implements FromArray, WithHeadings
     {
         $year = $this->request->input('year') ?? date('Y');
 
-        $data = Vehicle::with(['typeModelOrder', 'subState.state'])
+        $data = Vehicle::withTrashed()
+            ->with(['typeModelOrder', 'subState.state'])
             ->whereRaw('YEAR(updated_at) = ' . $year)
             ->whereNull('deleted_at')
             ->filter($this->request->all())
@@ -30,7 +31,7 @@ class KpiSubStateExport implements FromArray, WithHeadings
                 DB::raw('type_model_order_id'),
                 DB::raw('sub_state_id')
             )
-            ->groupBy('type_model_order_id', 'sub_state_id','year', 'month')
+            ->groupBy('type_model_order_id', 'sub_state_id', 'year', 'month')
             ->get();
 
         $variable = [];
