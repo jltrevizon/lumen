@@ -71,6 +71,48 @@ class KpiCheckListExport implements FromArray, WithHeadings
             ];
         }
 
+        $data_now = GroupTask::with(['typeModelOrder'])
+            ->filter($this->request->all())
+            ->select(
+                DB::raw('id'),
+                DB::raw('approved'),
+                DB::raw('vehicle_id'),
+                DB::raw('created_at'),
+                DB::raw('count(vehicle_id) as total'),
+                DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = group_tasks.vehicle_id) as type_model_order_id'),
+                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+                DB::raw('YEAR(created_at) year'),
+                DB::raw('MONTH(created_at) month'),
+                DB::raw('DAY(created_at) day')
+            )
+            ->whereRaw('id IN(SELECT MAX(id) FROM group_tasks GROUP BY vehicle_id)')
+            ->whereRaw('YEAR(created_at) = ' . $year)
+            ->whereRaw('MONTH(created_at) = ' . date('m'))
+        //    ->whereRaw('DAY(created_at) = ' . (int) 9)
+            ->groupBy('type_model_order_id', 'year', 'month', 'day')
+            ->orderBy('date')
+            ->get();
+
+        $variable = [];
+        $total = 0;
+        foreach ($data_now as $key => $v) {
+            $x = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
+            $total = $total + $x;
+            $variable[$v['typeModelOrder']['name'] . ' - ' . $v['day']][1] = $x;
+        }
+
+        $value[] = ['', '', '', '', ''];
+        $value[] = ['', '', '', '', ''];
+
+        $value[] =  ['Stock ' . date('m/Y'), 'Total', '%'];
+
+        foreach ($variable as $key => $v) {
+            $value[] = [
+                $key,
+                strval($v[1] ?? 0),
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total))
+            ];
+        }
         return $value;
     }
 

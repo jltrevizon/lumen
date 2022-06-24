@@ -20,8 +20,15 @@ class KpiInpuOutExport implements FromArray, WithHeadings
     public function array(): array
     {
         $year = $this->request->input('year') ?? date('Y');
+        $ids = $this->request->input('typeModelOrderIds') ?? null;
+
         $in_data = InKpiView::with(['typeModelOrder'])
             ->where('in_year', $year)
+            ->where(function ($query) use ($ids) {
+                if ($ids) {
+                    $query->whereIn('type_model_order_id', $ids);
+                }
+            })
             ->select(
                 DB::raw('count(in_kpi) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -32,6 +39,11 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         $out_data = OutKpiView::with(['typeModelOrder'])
             ->where('out_year', $year)
+            ->where(function ($query) use ($ids) {
+                if ($ids) {
+                    $query->whereIn('type_model_order_id', $ids);
+                }
+            })
             ->select(
                 DB::raw('count(out_kpi) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -112,6 +124,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $stok = Vehicle::withTrashed()
             ->with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
+            ->filter($this->request->all())
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -155,34 +168,36 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         }
 
         $stok_now = Vehicle::withTrashed()
-        ->with(['typeModelOrder'])
-        ->whereRaw('YEAR(created_at) = ' . (int) date('Y'))
-        ->whereRaw('MONTH(created_at) = ' . (int) date('m'))
-        ->whereRaw('DAY(created_at) = ' . (int) date('d'))
-        ->select(
-            DB::raw('count(id) as `total`'),
-            DB::raw('count(deleted_at) as `deleted`'),
-            DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
-            DB::raw('YEAR(created_at) year'),
-            DB::raw('MONTH(created_at) month'),
-            DB::raw('DAY(created_at) day'),
-            DB::raw('type_model_order_id')
-        )
-        ->groupBy('type_model_order_id', 'year', 'month', 'day')
-        ->get();
+            ->with(['typeModelOrder'])
+            ->whereRaw('YEAR(created_at) = ' . (int) date('Y'))
+            ->whereRaw('MONTH(created_at) = ' . (int) date('m'))
+            //    ->whereRaw('DAY(created_at) = ' . (int) date('d'))
+            ->filter($this->request->all())
+            ->select(
+                DB::raw('count(id) as `total`'),
+                DB::raw('count(deleted_at) as `deleted`'),
+                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+                DB::raw('YEAR(created_at) year'),
+                DB::raw('MONTH(created_at) month'),
+                DB::raw('DAY(created_at) day'),
+                DB::raw('type_model_order_id')
+            )
+            ->groupBy('type_model_order_id', 'year', 'month', 'day')
+          //  ->orderByRaw('DAY(created_at) desc')
+            ->get();
 
         $variable = [];
         $total = 0;
         foreach ($stok_now as $key => $v) {
             $x = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
             $total = $total + $x;
-            $variable[$v['typeModelOrder']['name']][1] = $x;
+            $variable[$v['typeModelOrder']['name'] . ' - ' . $v['day']][1] = $x;
         }
 
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
-        $value[] =  ['Stock Actual', date('d/m/yy'), '%', 'Ocupacion', '%'];
+        $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
 
         foreach ($variable as $key => $v) {
             $value[] = [
@@ -197,7 +212,8 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         return $value;
     }
 
-    public function obtenerPorcentaje($cantidad, $total) {
+    public function obtenerPorcentaje($cantidad, $total)
+    {
         $porcentaje = ((float)$cantidad * 100) / $total; // Regla de tres
         $porcentaje = round($porcentaje, 2);  // Quitar los decimales
         return $porcentaje;
