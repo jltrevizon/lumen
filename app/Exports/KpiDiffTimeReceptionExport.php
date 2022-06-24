@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
 {
-    protected $header = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+    protected $header = ['Negocio', 'Total', 'número vehículos < 15', 'número vehículos < 30', 'número vehículos < 45', 'número vehículos > 45'];
     public function __construct($request)
     {
         $this->request = $request;
@@ -18,102 +18,40 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
 
     public function array(): array
     {
-        $year = $this->request->input('year') ?? date('Y');
-        $data = Reception::with(['typeModelOrder', 'vehicle'])
+        $data_now = Reception::with(['typeModelOrder'])
             ->filter($this->request->all())
             ->select(
-                DB::raw('id'),
-                DB::raw('vehicle_id'),
                 DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
-                DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
-                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
+                DB::raw('CASE WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 15 THEN 14 WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 30 THEN 29 WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 45 THEN 44 ELSE 45 END AS bit'),
+                DB::raw('count(vehicle_id) as total')
             )
-            ->whereRaw('YEAR(created_at) = ' . $year)
-            ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
+            ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
+            ->groupBy('type_model_order_id', 'bit')
             ->get();
 
         $variable = [];
-        foreach ($data as $key => $v) {
-            $a = $v['typeModelOrder']['name'];
-            $b = $v['vehicle']['plate'];
-            $variable[$a . ' - ' . $b][(int) $v['month']] = $v['total'] ?? 0;
-        }
-
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
-
-        $value[0][0] = 'Año ' . $year;
-
-        $value[] = ['Dias', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
-
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
-
-        $value[] =  ['Dias ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
-
-        foreach ($variable as $key => $v) {
-            for ($i = 1; $i <= 12; $i++) {
-                $value[1][$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
-            }
-            $value[] = [
-                $key,
-                strval($v['1'] ?? 0),
-                strval($v['2'] ?? 0),
-                strval($v['3'] ?? 0),
-                strval($v['4'] ?? 0),
-                strval($v['5'] ?? 0),
-                strval($v['6'] ?? 0),
-                strval($v['7'] ?? 0),
-                strval($v['8'] ?? 0),
-                strval($v['9'] ?? 0),
-                strval($v['10'] ?? 0),
-                strval($v['11'] ?? 0),
-                strval($v['12'] ?? 0)
-            ];
-        }
-
-        $data_now = Reception::with(['typeModelOrder', 'vehicle'])
-            ->filter($this->request->all())
-            ->select(
-                DB::raw('id'),
-                DB::raw('vehicle_id'),
-                DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
-                DB::raw('TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) AS total'),
-                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
-                DB::raw('YEAR(created_at) year'),
-                DB::raw('MONTH(created_at) month'),
-                DB::raw('DAY(created_at) day')
-            )
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->whereRaw('YEAR(created_at) = ' . $year)
-            ->whereRaw('MONTH(created_at) = ' . date('m'))
-            ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
-            ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month', 'day')
-            ->get();
-
-
-        $variable = [];
-        $total = 0;
+        $total = [];
         foreach ($data_now as $key => $v) {
             $x = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
-            $total = $total + $x;
             $a = $v['typeModelOrder']['name'];
-            $b = $v['vehicle']['plate'];
-            $variable[$a . ' - ' . $b . ' - ' . $v['day'] . '/' . $v['date']][1] = $x;
+            $total[$a] = ($total[$a] ?? 0) + $x;
+            $variable[$a][$v['bit']] = $x;
         }
-
-        $value[] = ['', '', '', '', ''];
-        $value[] = ['', '', '', '', ''];
-
-        $value[] =  ['Dias ' . date('m/Y'), 'Total', '%'];
 
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
-                strval($v[1] ?? 0),
-                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total))
+                strval($total[$key] ?? 0),
+                strval($v[14] ?? 0),
+                strval($v[29] ?? 0),
+                strval($v[44] ?? 0),
+                strval($v[45] ?? 0)
             ];
+        }
+
+        if (!$value) {
+            $value = [];
         }
 
         return $value;
