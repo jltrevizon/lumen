@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
 {
-    protected $header = ['Negocio', 'Total', 'número vehículos < 15', 'número vehículos < 30', 'número vehículos < 45', 'número vehículos > 45'];
+    protected $header = ['Negocio', 'Total vehículos', 'Número vehículos < 15', 'Número vehículos < 30', 'Número vehículos < 45', 'Número vehículos > 45'];
     public function __construct($request)
     {
         $this->request = $request;
@@ -32,11 +32,18 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
 
         $variable = [];
         $total = [];
+        $acum_total = [];
         foreach ($data_now as $key => $v) {
-            $x = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
+            $x = $v['total'] ?? 0;
             $a = $v['typeModelOrder']['name'];
             $total[$a] = ($total[$a] ?? 0) + $x;
             $variable[$a][$v['bit']] = $x;
+            $acum_total[$v['bit']] = (int) ($acum_total[$v['bit']] ?? 0) + $x;
+        }
+
+        $acum = 0;
+        foreach ($total as $key => $x) { 
+            $acum = $acum + $x;
         }
 
         foreach ($variable as $key => $v) {
@@ -50,10 +57,20 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
             ];
         }
 
+        $value[] = [
+            'Total',
+            strval($acum),
+            strval($vacum_total[14] ?? 0),
+            strval($vacum_total[29] ?? 0),
+            strval($vacum_total[44] ?? 0),
+            strval($vacum_total[45] ?? 0),
+        ];
+
         if (!$value) {
             $value = [];
         }
 
+        
         return $value;
     }
 
