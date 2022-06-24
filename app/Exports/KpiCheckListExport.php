@@ -90,7 +90,7 @@ class KpiCheckListExport implements FromArray, WithHeadings
             ->whereRaw('MONTH(created_at) = ' . date('m'))
         //    ->whereRaw('DAY(created_at) = ' . (int) 9)
             ->groupBy('type_model_order_id', 'year', 'month', 'day')
-            ->orderBy('date')
+            ->orderBy('day')
             ->get();
 
         $variable = [];
