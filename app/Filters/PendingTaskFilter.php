@@ -13,6 +13,12 @@ class PendingTaskFilter extends ModelFilter
         return $this->byVehicleIds($ids);
     }
 
+    public function typeModelOrderIds($ids){
+        return $this->whereHas('vehicle', function($query) use($ids) {
+            return $query->whereIn('type_model_order_id', $ids);
+        });
+    }
+
     public function tasks($ids){
         return $this->byTaskIds($ids);
     }
@@ -57,6 +63,21 @@ class PendingTaskFilter extends ModelFilter
         return $this->whereHas('vehicle', function(Builder $builder) use($plate){
             return $builder->where('plate','like',"%$plate%");
         });
+    }
+
+    public function createdAt($dateTime)
+    {
+        return $this->whereDate('created_at', $dateTime);
+    }
+
+    public function createdAtFrom($dateTime)
+    {
+        return $this->whereDate('created_at','>=', $dateTime);
+    }
+
+    public function createdAtTo($dateTime)
+    {
+        return $this->whereDate('created_at','<=', $dateTime);
     }
 
     public function dateTimeStartFrom($dateTime)

@@ -6,8 +6,10 @@ use App\Exports\KpiCheckListExport;
 use App\Exports\KpiDiffTimeReceptionExport;
 use Illuminate\Http\Request;
 use App\Exports\KpiInpuOutExport;
+use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
 use App\Models\GroupTask;
+use App\Models\PendingTask;
 use App\Models\Reception;
 use App\Models\Vehicle;
 use App\Views\InKpiView;
@@ -55,13 +57,13 @@ class KpiController extends Controller
     public function subStates(Request $request)
     {
         ob_clean();
-        return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados' . date('Y-m-d') . '.xlsx');
+        return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados-' . date('Y-m-d') . '.xlsx');
     }
 
     public function diffTimeReception(Request $request)
     {
         ob_clean();
-        return Excel::download(new KpiDiffTimeReceptionExport($request), 'Kpi_Diferencia_Dias' . date('Y-m-d') . '.xlsx');
+        return Excel::download(new KpiDiffTimeReceptionExport($request), 'Kpi_Diferencia_Dias-' . date('Y-m-d') . '.xlsx');
     }
 
     public function checkList(Request $request)
@@ -74,5 +76,11 @@ class KpiController extends Controller
     {
         ob_clean();
         return Excel::download(new KpiInpuOutExport($request), 'Kpi_Entradas_Salidas-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function kpiPendingTask(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiPendingTaskExport($request), 'Kpi_Tareas_Pendientes-' . date('Y-m-d') . '.xlsx');
     }
 }

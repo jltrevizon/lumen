@@ -31,7 +31,7 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
             )
             ->whereRaw('YEAR(created_at) = ' . $year)
             ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
-            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
             ->get();
 
