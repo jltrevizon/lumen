@@ -73,7 +73,7 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
             ];
         }
 
-        $data = Reception::with(['typeModelOrder', 'vehicle'])
+        /*$data_now = Reception::with(['typeModelOrder', 'vehicle'])
         ->filter($this->request->all())
         ->select(
             DB::raw('id'),
@@ -88,7 +88,7 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
         ->whereRaw('id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
         ->groupBy('type_model_order_id', 'vehicle_id', 'year', 'month')
         ->get();
-
+*/
 
 
         return $value;
