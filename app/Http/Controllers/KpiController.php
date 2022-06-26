@@ -56,6 +56,17 @@ class KpiController extends Controller
 
     public function subStates(Request $request)
     {
+        /*$data = Vehicle::withTrashed()
+        ->with(['typeModelOrder', 'subState.state'])
+        ->filter($request->all())
+        ->select(
+            DB::raw('count(id) as `total`'),
+            DB::raw('type_model_order_id'),
+            DB::raw('sub_state_id')
+        )
+        ->groupBy('type_model_order_id', 'sub_state_id')
+        ->get();
+        return $data;*/
         ob_clean();
         return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados-' . date('Y-m-d') . '.xlsx');
     }

@@ -5,11 +5,10 @@ namespace App\Exports;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use Illuminate\Database\Eloquent\Builder;
 
-class KpiSubStateExport implements FromArray, WithHeadings
+class KpiSubStateExport implements FromArray
 {
-    protected $header = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
     public function __construct($request)
     {
         $this->request = $request;
@@ -17,59 +16,77 @@ class KpiSubStateExport implements FromArray, WithHeadings
 
     public function array(): array
     {
-        $year = $this->request->input('year') ?? date('Y');
+
+        $value[] = ['', '', 'Número de lo que hay en stock', '% de lo que hay en stock'];
 
         $data = Vehicle::withTrashed()
             ->with(['typeModelOrder', 'subState.state'])
-            ->whereRaw('YEAR(updated_at) = ' . $year)
-            ->whereNull('deleted_at')
             ->filter($this->request->all())
             ->select(
                 DB::raw('count(id) as `total`'),
-                DB::raw("DATE_FORMAT(updated_at, '%m-%Y') date"),
-                DB::raw('YEAR(updated_at) year, MONTH(updated_at) month'),
                 DB::raw('type_model_order_id'),
                 DB::raw('sub_state_id')
             )
-            ->groupBy('type_model_order_id', 'sub_state_id', 'year', 'month')
+            ->whereHas('subState', function (Builder $builder) {
+                return $builder->whereIn('state_id', [2, 3, 6]);
+            })
+            //     ->whereIn('state', [2, 3, 6])
+            ->whereNotNull('sub_state_id')
+            ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
-        $variable = [];
+        $value[] = ['No Disponible', 'Total de lo que estan en estado predisponible + taller + pte venta vo', '', '%'];
+        $index = count($value) - 1;
+        $total[$index] = 0;
+
         foreach ($data as $key => $v) {
-            $a = $v['typeModelOrder']['name'];
-            $b = $v['subState']['name'] ?? 'Sin Sub-Estados';
-            $variable[$a . ' - ' . $b][(int) $v['month']] = $v['total'] ?? 0;
+            $x =  $v['total'] ?? 0;
+            $total[$index] = $total[$index] + $x;
+            $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'] . $index, strval($x), '%'];
         }
 
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+        $value[$index][2] = $total[$index];
 
-        $value[0][0] = 'Año ' . $year;
+        $data = Vehicle::withTrashed()
+            ->with(['typeModelOrder', 'subState.state'])
+            ->filter($this->request->all())
+            ->select(
+                DB::raw('count(id) as `total`'),
+                DB::raw('type_model_order_id'),
+                DB::raw('sub_state_id')
+            )
+            ->whereHas('subState', function (Builder $builder) {
+                return $builder->whereIn('state_id', [1]);
+            })
+            //     ->whereIn('state', [2, 3, 6])
+            ->whereNotNull('sub_state_id')
+            ->groupBy('type_model_order_id', 'sub_state_id')
+            ->get();
 
-        $value[] = ['Sub-Estados', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
+        $value[] = ['', '', '', ''];
+        $value[] = ['', '', '', ''];
 
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+        $value[] = ['Disponible', 'Total de lo que estan en estado disponible', '', '%'];
+        $index = count($value) - 1;
+        $total[$index] = 0;
 
-        $value[] =  ['Negocio - Sub-Estados ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        foreach ($data as $key => $v) {
+            $x =  $v['total'] ?? 0;
+            $total[$index] = $total[$index] + $x;
+            $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'] . $index, strval($x), '%'];
+        }
 
-        foreach ($variable as $key => $v) {
-            for ($i = 1; $i <= 12; $i++) {
-                $value[1][$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+        $value[$index][2] = $total[$index];
+
+        $acum = 0;
+        for ($i = 0; $i < count($total); $i++) {
+            $acum += $total[$i] ?? 0;
+        }
+
+        for ($i = 0; $i < count($value); $i++) {
+            if ($value[$i][3] == '%') {
+                $value[$i][3] = $this->obtenerPorcentaje((int) $value[$i][2], $acum);
             }
-            $value[] = [
-                $key,
-                strval($v['1'] ?? 0),
-                strval($v['2'] ?? 0),
-                strval($v['3'] ?? 0),
-                strval($v['4'] ?? 0),
-                strval($v['5'] ?? 0),
-                strval($v['6'] ?? 0),
-                strval($v['7'] ?? 0),
-                strval($v['8'] ?? 0),
-                strval($v['9'] ?? 0),
-                strval($v['10'] ?? 0),
-                strval($v['11'] ?? 0),
-                strval($v['12'] ?? 0)
-            ];
         }
 
         return $value;
@@ -80,10 +97,5 @@ class KpiSubStateExport implements FromArray, WithHeadings
         $porcentaje = ((float)$cantidad * 100) / $total; // Regla de tres
         $porcentaje = round($porcentaje, 2);  // Quitar los decimales
         return $porcentaje;
-    }
-
-    public function headings(): array
-    {
-        return $this->header;
     }
 }
