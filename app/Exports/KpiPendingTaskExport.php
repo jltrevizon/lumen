@@ -24,7 +24,7 @@ class KpiPendingTaskExport implements FromArray, WithHeadings
                 DB::raw('id'),
                 DB::raw('task_id'),
                 DB::raw('state_pending_task_id'),
-                DB::raw('COUNT(state_pending_task_id) as total'),
+                DB::raw('COUNT(id) as total'),
                 DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = pending_tasks.vehicle_id) as type_model_order_id')
             )
             ->whereRaw('group_task_id IN(SELECT MAX(id) FROM group_tasks g GROUP BY vehicle_id)')
