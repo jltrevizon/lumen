@@ -42,7 +42,7 @@ class KpiSubStateExport implements FromArray
         foreach ($data as $key => $v) {
             $x =  $v['total'] ?? 0;
             $total[$index] = $total[$index] + $x;
-            $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'] . $index, strval($x), '%'];
+            $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%'];
         }
 
         $value[$index][2] = $total[$index];
