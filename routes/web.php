@@ -30,6 +30,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
     $router->get('/kpi-inpu-out-stock', 'KpiController@kpiInpuOut');
     $router->get('/kpi-sub-states', 'KpiController@subStates');
+    $router->get('/kpi-sub-states-month', 'KpiController@subStatesMonth');
     $router->get('/kpi-diff-reception', 'KpiController@diffTimeReception');
     $router->get('/kpi-check-list', 'KpiController@checkList');
     $router->get('/kpi-pending-tasks', 'KpiController@kpiPendingTask');
