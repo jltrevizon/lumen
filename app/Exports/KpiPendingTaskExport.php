@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class KpiPendingTaskExport implements FromArray, WithHeadings
 {
-    protected $header = ['Tarea', 'Sin Estado', 'Pendiente', 'En Curso', 'Finalizada', 'Cancelada'];
+    protected $header = ['Tarea', 'Pendiente', 'En Curso', 'SUMATORIO'];
     public function __construct($request)
     {
         $this->request = $request;
@@ -29,19 +29,18 @@ class KpiPendingTaskExport implements FromArray, WithHeadings
             )
             ->whereRaw('reception_id IN(SELECT MAX(id) FROM receptions r GROUP BY vehicle_id)')
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->whereIn('state_pending_task_id', [1, 2])
             ->groupBy('task_id', 'state_pending_task_id')
             ->orderBy('task_id')
             ->get();
 
 
         $variable = [];
-        $total = 0;
         foreach ($data_now as $key => $v) {
             $x = ($v['total'] ?? 0);
-            $total = $total + $x;
-            // $a = $v['typeModelOrder']['name'];
             $b = $v['task']['name'];
-            $variable[$b][($v['state_pending_task_id'] ?? 0)] = $x;
+            $variable[$b][$v['state_pending_task_id'] ?? 0] = $x;
+            $total[$b] = $total[$b] ?? 0 + $x;
         }
 
         foreach ($variable as $key => $v) {
@@ -49,9 +48,7 @@ class KpiPendingTaskExport implements FromArray, WithHeadings
                 $key,
                 strval($v[1] ?? 0),
                 strval($v[2] ?? 0),
-                strval($v[3] ?? 0),
-                strval($v[4] ?? 0),
-                strval($v[5] ?? 0)
+                strval(($v[1] ?? 0) + ($v[2] ?? 0))
             ];
         }
 
