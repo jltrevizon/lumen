@@ -65,7 +65,6 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
         $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
-        $value[] = ['Stock', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
@@ -143,49 +142,16 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['month']] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
         }
 
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
-
-        $value[] =  ['Stock ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
-
-        foreach ($variable as $key => $v) {
-            for ($i = 1; $i <= 12; $i++) {
-                $value[3][$i] = strval(($v[$i] ?? 0) + (int) $value[3][$i]);
-            }
-            $value[] = [
-                $key,
-                strval($v['1'] ?? 0),
-                strval($v['2'] ?? 0),
-                strval($v['3'] ?? 0),
-                strval($v['4'] ?? 0),
-                strval($v['5'] ?? 0),
-                strval($v['6'] ?? 0),
-                strval($v['7'] ?? 0),
-                strval($v['8'] ?? 0),
-                strval($v['9'] ?? 0),
-                strval($v['10'] ?? 0),
-                strval($v['11'] ?? 0),
-                strval($v['12'] ?? 0)
-            ];
-        }
-
         $stok_now = Vehicle::withTrashed()
             ->with(['typeModelOrder'])
-            ->whereRaw('YEAR(created_at) = ' . (int) date('Y'))
-            ->whereRaw('MONTH(created_at) = ' . (int) date('m'))
-            //    ->whereRaw('DAY(created_at) = ' . (int) date('d'))
             ->filter($this->request->all())
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
                 DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
-                DB::raw('YEAR(created_at) year'),
-                DB::raw('MONTH(created_at) month'),
-                DB::raw('DAY(created_at) day'),
                 DB::raw('type_model_order_id')
             )
-            ->groupBy('type_model_order_id', 'year', 'month', 'day')
-          //  ->orderByRaw('DAY(created_at) desc')
+            ->groupBy('type_model_order_id')
             ->get();
 
         $variable = [];
@@ -193,7 +159,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         foreach ($stok_now as $key => $v) {
             $x = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
             $total = $total + $x;
-            $variable[$v['typeModelOrder']['name'] . ' - ' . $v['day']][1] = $x;
+            $variable[$v['typeModelOrder']['name']][1] = $x;
         }
 
         $value[] = ['', '', '', '', ''];
