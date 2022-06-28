@@ -60,8 +60,11 @@ class GroupTask extends Model
 
     public function lastPendingTaskWithState(){
         return $this->hasOne(PendingTask::class)
-            ->where('state_pending_task_id', StatePendingTask::PENDING)
-            ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            ->where('approved', true)
+            ->where(function ($query) {
+                $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            });            
     }
 
     public function vehicle(){
