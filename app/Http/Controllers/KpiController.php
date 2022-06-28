@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Exports\KpiInpuOutExport;
 use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
+use App\Exports\KpiSubStateMonthExport;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
@@ -54,6 +55,12 @@ class KpiController extends Controller
     {
         ob_clean();
         return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function subStatesMonth(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiSubStateMonthExport($request), 'Kpi_Sub-Estados-Mes' . date('Y-m-d') . '.xlsx');
     }
 
     public function diffTimeReception(Request $request)
