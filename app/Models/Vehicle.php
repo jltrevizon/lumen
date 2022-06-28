@@ -288,10 +288,6 @@ class Vehicle extends Model
         return $query->whereIn('campa_id', $campasIds);
     }
 
-    public function scopeByCampaNull($query){
-        return $query->whereNull('campa_id');
-    }
-
     public function scopeBySubStateNull($query){
         return $query->whereNull('sub_state_id');
     }
@@ -300,8 +296,12 @@ class Vehicle extends Model
         return $query->where('campa_id', $id);
     }
 
-    public function scopeCampasIds($query, array $ids){
-        return $query->whereIn('campa_id', $ids);
+    public function scopeCampasIds($query, array $campasIds){
+        $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0); 
+        if (count($ids) == count($campasIds)) {
+            return $query->whereIn('campa_id', $ids);
+        }
+        return $query->whereNull('campa_id')->orWhereIn('campa_id', $ids);
     }
 
     public function scopeSubStateIds($query, array $ids){

@@ -64,6 +64,7 @@ class PendingTaskRepository extends Repository {
     public function pendingTasksFilter($request){
         return PendingTask::with($this->getWiths($request->with))
             ->filter($request->all())
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->paginate($request->input('per_page'));
     }
 
