@@ -307,12 +307,6 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
-    public function search_by_campa_null()
-    {
-        $this->assertInstanceOf(Builder::class, $this->vehicle->byCampaNull());
-    }
-
-    /** @test */
     public function search_by_sub_state_null()
     {
         $this->assertInstanceOf(Builder::class, $this->vehicle->bySubStateNull());

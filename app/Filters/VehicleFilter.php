@@ -105,10 +105,6 @@ class VehicleFilter extends ModelFilter
         return $this->bySubStatePendingTasks($ids);
     }
 
-    public function campaNull(){
-        return $this->byCampaNull();
-    }
-
     public function subStateNull(){
         return $this->bySubStateNull();
     }

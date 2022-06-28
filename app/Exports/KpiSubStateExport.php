@@ -30,6 +30,7 @@ class KpiSubStateExport implements FromArray
             ->whereHas('subState', function (Builder $builder) {
                 return $builder->whereIn('state_id', [2, 3, 6]);
             })
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
@@ -56,6 +57,7 @@ class KpiSubStateExport implements FromArray
             ->whereHas('subState', function (Builder $builder) {
                 return $builder->whereIn('state_id', [1]);
             })
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
