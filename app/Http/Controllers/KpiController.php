@@ -9,8 +9,10 @@ use App\Exports\KpiInpuOutExport;
 use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
 use App\Exports\KpiSubStateMonthExport;
+use App\Models\Vehicle;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -59,6 +61,26 @@ class KpiController extends Controller
 
     public function subStatesMonth(Request $request)
     {
+        $data = Vehicle::withTrashed()
+           // ->with(['typeModelOrder', 'subState.state'])
+            ->filter($request->all())
+            ->select(
+                DB::raw('AVG(count) as `total`'),
+                DB::raw('(SELECT v.id FROM vehicles v where v.id = vehicles.id) as count'),
+                DB::raw('type_model_order_id'),
+                DB::raw('sub_state_id'),
+                DB::raw('YEAR(created_at) year'),
+                DB::raw('MONTH(created_at) month'),
+                DB::raw('DAY(created_at) day')
+            )
+            ->whereHas('subState', function (Builder $builder) {
+                return $builder->whereIn('state_id', [2, 3, 6]);
+            })
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->whereNotNull('sub_state_id')
+            ->groupBy('type_model_order_id', 'sub_state_id', 'year', 'month', 'day')
+            ->get();
+        return $data;
         ob_clean();
         return Excel::download(new KpiSubStateMonthExport($request), 'Kpi_Sub-Estados-Mes' . date('Y-m-d') . '.xlsx');
     }
