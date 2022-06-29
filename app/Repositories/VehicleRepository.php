@@ -9,6 +9,7 @@ use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\Square;
+use App\Models\State;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
 use App\Models\TypeModelOrder;
@@ -177,7 +178,7 @@ class VehicleRepository extends Repository {
         } else {
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
             if ($count == 0) {
-                if($vehicle->subState->state_id != SubState::CAMPA){
+                if($vehicle->subState->state_id != State::AVAILABLE){
                     $vehicle->last_change_state = Carbon::now();
                     $vehicle->last_change_sub_state = Carbon::now();
                 }
