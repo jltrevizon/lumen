@@ -22,6 +22,7 @@ class ReceptionRepository extends Repository {
     }
 
     public function index($request){
+        ini_set("memory_limit", "-1");
         return Reception::with($this->getWiths($request->with))
             ->filter($request->all())
             ->paginate($request->input('per_page'));
