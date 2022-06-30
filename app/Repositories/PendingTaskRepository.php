@@ -440,6 +440,9 @@ class PendingTaskRepository extends Repository {
         $pendingTask->datetime_pending = date('Y-m-d');
         $pendingTask->datetime_start = date('Y-m-d');
         $pendingTask->datetime_finish = date('Y-m-d');
+        $pendingTask->user_id = Auth::id();
+        $pendingTask->user_start_id = Auth::id();
+        $pendingTask->user_end_id = Auth::id();
         $pendingTask->save();
         return $pendingTask;
     }
