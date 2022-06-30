@@ -21,6 +21,7 @@ class PendingTask extends Model
         'vehicle_id',
         'reception_id',
         'task_id',
+        'question_answer_id',
         'campa_id',
         'state_pending_task_id',
         'user_start_id',
@@ -52,6 +53,10 @@ class PendingTask extends Model
 
     public function reception(){
         return $this->belongsTo(Reception::class);
+    }
+
+    public function questionAnswer(){
+        return $this->belongsTo(QuestionAnswer::class);
     }
 
     public function user(){

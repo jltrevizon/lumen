@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ald;
 use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
+use App\Models\QuestionAnswer;
 use App\Models\Role;
 use App\Models\StateChange;
 use App\Models\StatePendingTask;
@@ -22,6 +23,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Console\Input\Input;
 
 class PendingTaskAldController extends Controller
 {
@@ -110,6 +112,13 @@ class PendingTaskAldController extends Controller
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
             $pending_task->created_from_checklist = true;
+            
+            $question_answer = QuestionAnswer::where('task_id', $task['task_id'])
+            ->where('questionnaire_id', $vehicle->lastQuestionnaire?->id)->first();
+            if (!is_null($question_answer)) {
+                $pending_task->question_answer_id = $question_answer->id;
+            }
+
             if($task['approved'] == true && $isPendingTaskAssign == false){
                 if (!isset($task['without_state_pending_task'])) {
                     $pending_task->state_pending_task_id = StatePendingTask::PENDING;
