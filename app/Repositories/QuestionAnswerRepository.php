@@ -4,22 +4,28 @@ namespace App\Repositories;
 
 use App\Mail\NotificationDAMail;
 use App\Mail\NotificationItvMail;
+use App\Models\PendingTask;
 use App\Models\QuestionAnswer;
 use App\Models\Questionnaire;
+use App\Models\StatePendingTask;
 use App\Models\SubState;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
-class QuestionAnswerRepository {
+class QuestionAnswerRepository
+{
 
     public function __construct(
+        TaskRepository $taskRepository,
         QuestionnaireRepository $questionnaireRepository,
         ReceptionRepository $receptionRepository,
         GroupTaskRepository $groupTaskRepository,
         PendingTaskRepository $pendingTaskRepository,
         VehicleRepository $vehicleRepository,
         NotificationDAMail $notificationDAMail,
-        NotificationItvMail $notificationItvMail)
-    {
+        NotificationItvMail $notificationItvMail
+    ) {
+        $this->taskRepository = $taskRepository;
         $this->questionnaireRepository = $questionnaireRepository;
         $this->receptionRepository = $receptionRepository;
         $this->groupTaskRepository = $groupTaskRepository;
@@ -29,11 +35,12 @@ class QuestionAnswerRepository {
         $this->notificationItvMail = $notificationItvMail;
     }
 
-    public function create($request){
+    public function create($request)
+    {
         $questionnaire = $this->questionnaireRepository->create($request);
         $questions = $request->input('questions');
         $has_environment_label = null;
-        foreach($questions as $question){
+        foreach ($questions as $question) {
             $questionAnswer = new QuestionAnswer();
             $questionAnswer->questionnaire_id = $questionnaire['id'];
             $questionAnswer->question_id = $question['question_id'];
@@ -61,10 +68,11 @@ class QuestionAnswerRepository {
         ];
     }
 
-    public function createChecklist($request){
+    public function createChecklist($request)
+    {
         $questionnaire = $this->questionnaireRepository->create($request);
         $questions = $request->input('questions');
-        foreach($questions as $question){
+        foreach ($questions as $question) {
             $questionAnswer = new QuestionAnswer();
             $questionAnswer->questionnaire_id = $questionnaire['id'];
             $questionAnswer->question_id = $question['question_id'];
@@ -72,8 +80,8 @@ class QuestionAnswerRepository {
             $questionAnswer->description = $question['description'];
             $questionAnswer->save();
         }
-        $questionnaireComplete = Questionnaire::with(['questionAnswers.question','vehicle.lastOrder']) 
-                ->findOrFail($questionnaire['id']);
+        $questionnaireComplete = Questionnaire::with(['questionAnswers.question', 'vehicle.lastOrder'])
+            ->findOrFail($questionnaire['id']);
         $client = new \GuzzleHttp\Client();
         $response = $client->post(
             'https://devgsp20.invarat.com/api/createChecklist',
@@ -92,9 +100,10 @@ class QuestionAnswerRepository {
         ];
     }
 
-    public function update($request, $id){
+    public function update($request, $id)
+    {
         $questionAnswer = QuestionAnswer::findOrFail($id);
-        if($request->input('task_id')){
+        if ($request->input('task_id')) {
             $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
             $this->pendingTaskRepository->updatePendingTaskFromValidation($groupTask, $request->input('last_task_id'), $request->input('task_id'));
         }
@@ -102,9 +111,44 @@ class QuestionAnswerRepository {
         return ['question_answer' => $questionAnswer];
     }
 
-    public function updateResponse($request, $id){
+    public function updateResponse($request, $id)
+    {
         $questionAnswer = QuestionAnswer::findOrFail($id);
         $questionAnswer->update($request->all());
+        $pendingTask = PendingTask::where('question_answer_id', $questionAnswer->id)->first();
+        if (!is_null($pendingTask)) {
+            $pendingTask->approved = $questionAnswer->response;
+            $pendingTask->save();
+        } else if (!!$questionAnswer->response) {
+            $vehicle = $questionAnswer->questionnaire->vehicle;
+            $pending_task = new PendingTask();
+            $pending_task->question_answer_id = $questionAnswer->id;
+            $pending_task->vehicle_id = $vehicle->id;
+            $pending_task->reception_id = $vehicle->lastReception->id;
+            $pending_task->campa_id = $vehicle->campa_id;
+            $taskDescription = $this->taskRepository->getById([], $questionAnswer->task_id);
+            $pending_task->task_id = $questionAnswer->task_id;
+            $pending_task->approved = $questionAnswer->response;
+            $pending_task->created_from_checklist = true;
+
+            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+
+            if (!!$pending_task->approved && $count == 0) {
+                $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                $pending_task->datetime_pending = date('Y-m-d H:i:s');
+            }
+            $pending_task->group_task_id = $vehicle->lastGroupTask->id;
+            $pending_task->user_id = Auth::id();
+            $pending_task->duration = $taskDescription['duration'];
+            if (!!$pending_task->approved) {
+                $pending_task->order = $count + 1;
+            }
+            $pending_task->save();
+            if ($pending_task->state_pending_task_id == StatePendingTask::PENDING) {
+                $this->stateChangeRepository->createOrUpdate($vehicle->id, $pending_task, $pending_task);
+            }
+            $pendingTask = $pending_task;
+        }
         return $questionAnswer;
     }
 }
