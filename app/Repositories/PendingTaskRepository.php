@@ -62,6 +62,7 @@ class PendingTaskRepository extends Repository {
     }
 
     public function pendingTasksFilter($request){
+        ini_set("memory_limit", "-1");
         return PendingTask::with($this->getWiths($request->with))
             ->filter($request->all())
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
