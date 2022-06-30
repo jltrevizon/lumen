@@ -51,6 +51,7 @@ class DeliveryVehicleRepository extends Repository {
             'reception_id' => $vehicle->lastReception->id ?? null,
             'task_id' => Task::TOALQUILADO,
             'state_pending_task_id' => StatePendingTask::FINISHED,
+            'user_id' => Auth::id(),
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
             'group_task_id'=> $lastGroupTask,
