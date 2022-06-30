@@ -41,6 +41,9 @@ class RepairPendingTasksLastGroupTaskSeeder extends Seeder
             if ($value['order'] == 1 && !$pending_task->state_pending_task_id && count($pending_task->vehicle->lastGroupTask->approvedPendingTasks) === 0) {
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
             }
+            if (count($pending_task->vehicle->lastGroupTask->approvedPendingTasks) > 0) {
+                $pending_task->state_pending_task_id = null;
+            }
             $pending_task->save();
             Log::debug($value);
         }
