@@ -211,6 +211,7 @@ class PendingTaskRepository extends Repository {
             'task_id' => Task::TOCAMPA,
             'campa_id' => $vehicle->campa_id,
             'state_pending_task_id' => StatePendingTask::FINISHED,
+            'user_id' => Auth::id(),
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
             'group_task_id' => $groupTaskId,
@@ -330,6 +331,7 @@ class PendingTaskRepository extends Repository {
                     'task_id' => Task::TOCAMPA,
                     'campa_id' => $vehicle->campa_id,
                     'state_pending_task_id' => StatePendingTask::FINISHED,
+                    'user_id' => Auth::id(),
                     'user_start_id' => Auth::id(),
                     'user_end_id' => Auth::id(),
                     'group_task_id' => $pending_task->group_task_id,
@@ -438,6 +440,9 @@ class PendingTaskRepository extends Repository {
         $pendingTask->datetime_pending = date('Y-m-d');
         $pendingTask->datetime_start = date('Y-m-d');
         $pendingTask->datetime_finish = date('Y-m-d');
+        $pendingTask->user_id = Auth::id();
+        $pendingTask->user_start_id = Auth::id();
+        $pendingTask->user_end_id = Auth::id();
         $pendingTask->save();
         return $pendingTask;
     }

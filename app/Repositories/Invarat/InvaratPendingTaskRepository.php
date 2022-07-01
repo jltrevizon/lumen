@@ -34,6 +34,7 @@ class InvaratPendingTaskRepository extends Repository {
         foreach($tasks as $task){
             $pendingTask = new PendingTask();
             $pendingTask->vehicle_id = $vehicleId;
+            $pendingTask->user_id = Auth::id();
             $pendingTask->task_id = $task['id'];
             $pendingTask->approved = true;
             if($order == 1) {

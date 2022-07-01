@@ -104,6 +104,8 @@ class AldController extends Controller
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
                 $pending_task->datetime_start = date('Y-m-d H:i:s');
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
+                $pending_task->user_start_id = Auth::id();
+                $pending_task->user_end_id = Auth::id();
                 $pending_task->order = -1;
             }
             
