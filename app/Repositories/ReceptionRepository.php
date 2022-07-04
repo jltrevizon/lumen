@@ -34,7 +34,7 @@ class ReceptionRepository extends Repository
         $receptionDuplicate = Reception::where('vehicle_id', $request->input('vehicle_id'))
             ->whereDate('created_at', date('Y-m-d'))
             ->first();
-        if (count($receptionDuplicate->vehiclePictures) > 0) {
+        if ($receptionDuplicate) {
             $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
         }
 
