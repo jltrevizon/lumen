@@ -44,7 +44,7 @@ class PendingTask extends Model
     ];
 
     public function vehicle(){
-        return $this->belongsTo(Vehicle::class)->withTrashed();
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function typeModelOrder(){
@@ -52,7 +52,7 @@ class PendingTask extends Model
     }
 
     public function reception(){
-        return $this->belongsTo(Reception::class)->withTrashed();
+        return $this->belongsTo(Reception::class);
     }
 
     public function questionAnswer(){

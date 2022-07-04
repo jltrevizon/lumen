@@ -108,7 +108,7 @@ class Vehicle extends Model
     }
 
     public function reception(){
-        return $this->hasOne(Reception::class, 'id', 'reception_id')->withTrashed();
+        return $this->hasOne(Reception::class, 'id', 'reception_id');
     }
 
     public function typeModelOrder(){

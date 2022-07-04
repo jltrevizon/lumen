@@ -122,8 +122,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             ];
         }
 
-        $stok = Vehicle::withTrashed()
-            ->with(['typeModelOrder'])
+        $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
             ->filter($this->request->all())
             ->select(
@@ -133,6 +132,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
                 DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
                 DB::raw('type_model_order_id')
             )
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'year', 'month')
             ->get();
 
@@ -142,8 +142,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['month']] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
         }
 
-        $stok_now = Vehicle::withTrashed()
-            ->with(['typeModelOrder'])
+        $stok_now = Vehicle::with(['typeModelOrder'])
             ->filter($this->request->all())
             ->select(
                 DB::raw('count(id) as `total`'),
@@ -151,6 +150,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
                 DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
                 DB::raw('type_model_order_id')
             )
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id')
             ->get();
 

@@ -61,9 +61,7 @@ class KpiController extends Controller
 
     public function subStatesMonth(Request $request)
     {
-        $data = Vehicle::withTrashed()
-           // ->with(['typeModelOrder', 'subState.state'])
-            ->filter($request->all())
+        $data = Vehicle::filter($request->all())
             ->select(
                 DB::raw('AVG(count) as `total`'),
                 DB::raw('(SELECT v.id FROM vehicles v where v.id = vehicles.id) as count'),

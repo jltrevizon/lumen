@@ -84,7 +84,7 @@ class GroupTask extends Model
     }
 
     public function reception(){
-        return $this->hasOne(Reception::class)->withTrashed();
+        return $this->hasOne(Reception::class);
     }
 
     public function scopeByIds($query, array $ids){
