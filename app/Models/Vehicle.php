@@ -161,7 +161,7 @@ class Vehicle extends Model
     public function lastReception(){
         return $this->hasOne(Reception::class)->with(['vehiclePictures'])->ofMany([
             'id' => 'max'
-        ])->withTrashed();
+        ]);
     }
 
 
