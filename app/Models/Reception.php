@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reception extends Model
 {
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
         'campa_id',
@@ -17,6 +18,10 @@ class Reception extends Model
         'group_task_id',
         'finished',
         'has_accessories'
+    ];
+
+    protected $dates = [
+        'deleted_at'
     ];
 
     public function vehicle(){

@@ -108,7 +108,7 @@ class Vehicle extends Model
     }
 
     public function reception(){
-        return $this->hasOne(Reception::class, 'id', 'reception_id');
+        return $this->hasOne(Reception::class, 'id', 'reception_id')->withTrashed();
     }
 
     public function typeModelOrder(){
@@ -161,7 +161,7 @@ class Vehicle extends Model
     public function lastReception(){
         return $this->hasOne(Reception::class)->with(['vehiclePictures'])->ofMany([
             'id' => 'max'
-        ]);
+        ])->withTrashed();
     }
 
 

@@ -31,6 +31,6 @@ class VehiclePicture extends Model
     }
 
     public function reception(){
-        return $this->belongsTo(Reception::class);
+        return $this->belongsTo(Reception::class)->withTrashed();
     }
 }

@@ -22,8 +22,8 @@ class ReceptionController extends Controller
         $this->validate($request, [
             'vehicle_id' => 'required|integer'
         ]);
-
-        return $this->createDataResponse($this->receptionRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
+        $data = $this->receptionRepository->create($request);
+        return $this->createDataResponse($data, HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function getById($id){
