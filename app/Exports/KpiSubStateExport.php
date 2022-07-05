@@ -19,8 +19,7 @@ class KpiSubStateExport implements FromArray
 
         $value[] = ['', '', 'Número de lo que hay en stock', '% de lo que hay en stock'];
 
-        $data = Vehicle::withTrashed()
-            ->with(['typeModelOrder', 'subState.state'])
+        $data = Vehicle::with(['typeModelOrder', 'subState.state'])
             ->filter($this->request->all())
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
@@ -46,8 +45,7 @@ class KpiSubStateExport implements FromArray
 
         $value[$index][2] = $total[$index];
 
-        $data = Vehicle::withTrashed()
-            ->with(['typeModelOrder', 'subState.state'])
+        $data = Vehicle::with(['typeModelOrder', 'subState.state'])
             ->filter($this->request->all())
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),

@@ -430,7 +430,7 @@ public function verifyPlateReception($request){
     public function defleet($id){
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
-        $vehicle->type_model_order_id = TypeModelOrder::VO;
+        // $vehicle->type_model_order_id = TypeModelOrder::VO;
         $vehicle->save();
         if($vehicle->lastUnapprovedGroupTask){
             $this->groupTaskRepository->disablePendingTasks($vehicle->lastUnapprovedGroupTask);

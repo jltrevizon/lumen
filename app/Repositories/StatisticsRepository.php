@@ -17,16 +17,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
-class StatisticsRepository extends Repository {
+class StatisticsRepository extends Repository
+{
 
-    public function getStockByState(){
+    public function getStockByState()
+    {
         $data = [];
         $subStates = Vehicle::selectRaw('sub_state_id, count(*) as total')
             ->whereNotNull('sub_state_id')
             ->groupBy('sub_state_id')
-            ->pluck('total','sub_state_id')
+            ->pluck('total', 'sub_state_id')
             ->all();
-        foreach($subStates as $index => $total){
+        foreach ($subStates as $index => $total) {
             $subStateComplete = SubState::with(['state'])->findOrFail($index);
             $line = new stdClass();
             $line->state = $subStateComplete->state->name;
@@ -37,30 +39,31 @@ class StatisticsRepository extends Repository {
         return $data;
     }
 
-    public function getStockByMonth(){
-        $vehicles = Vehicle::withTrashed()
-            ->select(
-                DB::raw('count(id) as `total`'), 
-                DB::raw('count(deleted_at) as `deleted`'),
-                DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),  
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
-            )
-            ->groupBy('year','month')
+    public function getStockByMonth()
+    {
+        $vehicles = Vehicle::select(
+            DB::raw('count(id) as `total`'),
+            DB::raw('count(deleted_at) as `deleted`'),
+            DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
+            DB::raw('YEAR(created_at) year, MONTH(created_at) month')
+        )
+            ->groupBy('year', 'month')
             ->get();
         return $vehicles;
     }
 
-    public function getAverageSubState($request){
+    public function getAverageSubState($request)
+    {
         $stateChanges = StateChange::filter($request->all())
             ->get()
             ->groupBy('sub_state_id');
         $array = [];
-        foreach($stateChanges as $key => $changes){
-            if($key != ''){
+        foreach ($stateChanges as $key => $changes) {
+            if ($key != '') {
                 $subState = SubState::findOrFail($key);
                 $total_time = 0;
-                foreach($changes as $change){
-                    if($change->datetime_finish_sub_state == null){
+                foreach ($changes as $change) {
+                    if ($change->datetime_finish_sub_state == null) {
                         $total_time += $this->diffDateTimes($change->created_at);
                     } else {
                         $total_time += $change->total_time;
@@ -75,14 +78,15 @@ class StatisticsRepository extends Repository {
         return $array;
     }
 
-    public function getAverageTypeModelOrder(){
-        $typeModelOrders = Vehicle::select('id','type_model_order_id')
-        ->get()
-        ->groupBy('type_model_order_id');
+    public function getAverageTypeModelOrder()
+    {
+        $typeModelOrders = Vehicle::select('id', 'type_model_order_id')
+            ->get()
+            ->groupBy('type_model_order_id');
         $array = [];
-        foreach($typeModelOrders as $key => $vehicles){
+        foreach ($typeModelOrders as $key => $vehicles) {
             $object = new stdClass();
-            if($key == ''){
+            if ($key == '') {
                 $object->type_model_order = 'Sin canal';
             } else {
                 $typeModelOrder = TypeModelOrder::findOrFail($key);
@@ -94,19 +98,20 @@ class StatisticsRepository extends Repository {
         return $array;
     }
 
-    public function getAveragePendingTask(){
+    public function getAveragePendingTask()
+    {
         $totalPendingTask = PendingTask::where('approved', true)->count();
         $pendingTasks = PendingTask::select(
             DB::raw('id'),
             DB::raw('task_id')
         )
-        ->where('approved',true)
-        ->get()
-        ->groupBy('task_id');
+            ->where('approved', true)
+            ->get()
+            ->groupBy('task_id');
         $array = [];
-        foreach($pendingTasks as $key => $pendingTask){
+        foreach ($pendingTasks as $key => $pendingTask) {
             $task = Task::findOrFail($key);
-            if($task) {
+            if ($task) {
                 $object = new stdClass();
                 $object->task = $task->name;
                 $object->total = count($pendingTask);
@@ -117,22 +122,23 @@ class StatisticsRepository extends Repository {
         return $array;
     }
 
-    public function halfTaskStart(){
+    public function halfTaskStart()
+    {
         $pendingTasks = PendingTask::select(
             DB::raw('id'),
             DB::raw('task_id')
         )
-        ->whereHas('task', function(Builder $builder){
-            return $builder->where('company_id', Company::ALD);
-        })
-        ->where('approved',true)
-        ->get()
-        ->groupBy('task_id');
+            ->whereHas('task', function (Builder $builder) {
+                return $builder->where('company_id', Company::ALD);
+            })
+            ->where('approved', true)
+            ->get()
+            ->groupBy('task_id');
         $array_tasks = [];
         foreach ($pendingTasks as $key => $value) {
             $pendings = PendingTask::whereIn('id', $value->pluck('id'))->get();
             $diff = 0;
-            foreach($pendings as $pending){
+            foreach ($pendings as $pending) {
                 $date1 = Carbon::parse($pending['datetime_pending']);
                 $date2 = Carbon::parse($pending['datetime_start']);
                 $diff += $date1->diffInMinutes($date2);
@@ -145,22 +151,23 @@ class StatisticsRepository extends Repository {
         return $array_tasks;
     }
 
-    public function executionTime(){
+    public function executionTime()
+    {
         $pendingTasks = PendingTask::select(
             DB::raw('id'),
             DB::raw('task_id')
         )
-        ->whereHas('task', function(Builder $builder){
-            return $builder->where('company_id', Company::ALD);
-        })
-        ->where('approved',true)
-        ->get()
-        ->groupBy('task_id');
+            ->whereHas('task', function (Builder $builder) {
+                return $builder->where('company_id', Company::ALD);
+            })
+            ->where('approved', true)
+            ->get()
+            ->groupBy('task_id');
         $array_tasks = [];
         foreach ($pendingTasks as $key => $value) {
             $pendings = PendingTask::whereIn('id', $value->pluck('id'))->get();
             $diff = 0;
-            foreach($pendings as $pending){
+            foreach ($pendings as $pending) {
                 $date1 = Carbon::parse($pending['datetime_start']);
                 $date2 = Carbon::parse($pending['datetime_finish']);
                 $diff += $date1->diffInMinutes($date2);
@@ -173,7 +180,8 @@ class StatisticsRepository extends Repository {
         return $array_tasks;
     }
 
-    private function diffDateTimes($datetime){
+    private function diffDateTimes($datetime)
+    {
         $datetime1 = new DateTime($datetime);
         $diference = date_diff($datetime1, new DateTime());
         $minutes = $diference->days * 24 * 60;
@@ -182,47 +190,48 @@ class StatisticsRepository extends Repository {
         return $minutes;
     }
 
-    public function averageTimeInSubState(){
+    public function averageTimeInSubState()
+    {
         return StateChange::with(['subState.state'])->select(
             DB::raw('count(id) as `total`'),
-            DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),  
+            DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
             DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
             DB::raw('sub_state_id'),
             DB::raw('sum(total_time) as `total_time`')
         )
-        ->groupBy('month', 'sub_state_id')
-        ->get();
+            ->groupBy('month', 'sub_state_id')
+            ->get();
     }
 
-    public function timeApproval(){
-        $months = Reception::whereHas('groupTask', function(Builder $builder) {
-                return $builder->where('approved', true);
-            })
+    public function timeApproval()
+    {
+        $months = Reception::whereHas('groupTask', function (Builder $builder) {
+            return $builder->where('approved', true);
+        })
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('YEAR(created_at) year, MONTH(created_at) month')
             )
             ->groupBy('month')
-        ->get();
+            ->get();
         $arrayReceptions = [];
-        foreach($months as $month){
+        foreach ($months as $month) {
             $receptions = Reception::with(['groupTask'])->whereMonth('created_at', $month['month'])
                 ->whereHas('groupTask')
                 ->get();
-                $diff = 0;
-                foreach($receptions as $reception){
-                    $date1 = Carbon::parse($reception['created_at']);
-                    $date2 = Carbon::parse($reception['groupTask']['datetime_approved'] ?? Carbon::now());
-                    $diff += $date1->diffInMinutes($date2);
-                }
-                $item = new stdClass();
-                $item->month = $month['month'];
-                $item->year = $month['year'];
-                $item->total = count($receptions);
-                $item->average = round(($diff / count($receptions)) / 60, 2) . 'h';
-                array_push($arrayReceptions, $item);
+            $diff = 0;
+            foreach ($receptions as $reception) {
+                $date1 = Carbon::parse($reception['created_at']);
+                $date2 = Carbon::parse($reception['groupTask']['datetime_approved'] ?? Carbon::now());
+                $diff += $date1->diffInMinutes($date2);
             }
-            return $arrayReceptions;
+            $item = new stdClass();
+            $item->month = $month['month'];
+            $item->year = $month['year'];
+            $item->total = count($receptions);
+            $item->average = round(($diff / count($receptions)) / 60, 2) . 'h';
+            array_push($arrayReceptions, $item);
         }
-
+        return $arrayReceptions;
+    }
 }

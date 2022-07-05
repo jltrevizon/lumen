@@ -176,7 +176,7 @@ class VehicleController extends Controller
             $vehicle = Vehicle::where('plate', $plate)->first();
             if($vehicle){
                 $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
-                $vehicle->type_model_order_id = TypeModelOrder::VO;
+                // $vehicle->type_model_order_id = TypeModelOrder::VO;
                 $vehicle->save();
             }
         }
