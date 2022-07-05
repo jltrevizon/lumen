@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reception extends Model
 {
-    use HasFactory, Filterable, SoftDeletes;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'campa_id',
