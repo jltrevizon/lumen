@@ -164,6 +164,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
         $router->post('/pending-tasks/add', 'PendingTaskController@addPendingTask');
         $router->get('/pending-tasks/filter', 'PendingTaskController@pendingTasksFilter');
+        $router->get('/pending-tasks/filter-download-file', 'PendingTaskController@pendingTasksFilterDownloadFile');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
         $router->post('/pending-tasks/finish-all', 'PendingTaskController@finishAll');
@@ -606,3 +607,4 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/kpis/out', 'KpiController@out');
     });
 });
+
