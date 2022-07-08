@@ -41,12 +41,25 @@ class DamageRepository extends Repository {
     public function store($request){
         $damage = Damage::create($request->all());
         $damage->user_id = Auth::id();
+        $damage->vehicle_id = $request->input('vehicle_id');
         $damage->save();
+        
+        $vehicle = $damage->vehicle;
+        
+        $groupTask = null;
+        if(!$vehicle->lastGroupTask || count($vehicle->lastGroupTask->approvedPendingTasks) === 0){
+            $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($damage->vehicle_id);
+        } else {
+            $groupTask = $vehicle->lastGroupTask;
+        }
+
+        $damage->group_task_id = $groupTask->id;
+        $damage->save();
+
         $isDamageTask = false;
-        $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($request->input('vehicle_id'));
 
         foreach($request->input('tasks') as $task){
-            $this->pendingTaskRepository->addPendingTaskFromIncidence($request->input('vehicle_id'), $task, $damage);
+            $this->pendingTaskRepository->addPendingTaskFromIncidence($damage->vehicle_id, $task, $damage);
             $this->damageTaskRepository->create($damage->id, $task);
             $isDamageTask = true;
         }
@@ -58,14 +71,9 @@ class DamageRepository extends Repository {
         
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
-            $this->notificationMail->build($role, $damage->id);
-        }
-
-        $groupTask = $damage->vehicle->lastGroupTask;
-
-        if($groupTask){
-            $damage->group_task_id = $groupTask->id;
-            $damage->save();
+            if(env('APP_ENV') == 'production') {
+                $this->notificationMail->build($role, $damage->id);
+            }
         }
 
         return $damage;

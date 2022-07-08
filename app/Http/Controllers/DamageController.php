@@ -32,7 +32,8 @@ class DamageController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->createDataResponse($this->damageRepository->store($request), Response::HTTP_CREATED);
+        $data = $this->damageRepository->store($request);
+        return $this->createDataResponse($data, Response::HTTP_CREATED);
     }
 
     /**
