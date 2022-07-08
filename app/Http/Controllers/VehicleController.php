@@ -113,6 +113,10 @@ class VehicleController extends Controller
         return $this->getDataResponse($this->vehicleRepository->filterVehicle($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    public function filterVehicleDownloadFile(Request $request){
+        return $this->getDataResponse($this->vehicleRepository->filterVehicleDownloadFile($request), HttpFoundationResponse::HTTP_OK);
+    }
+
     public function vehicleReserved(Request $request){
         return $this->getDataResponse($this->vehicleRepository->vehicleReserved($request), HttpFoundationResponse::HTTP_OK);
     }
