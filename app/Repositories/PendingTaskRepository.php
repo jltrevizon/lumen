@@ -72,6 +72,49 @@ class PendingTaskRepository extends Repository
             ->paginate($request->input('per_page'));
     }
 
+    public function pendingTasksFilterDownloadFile($request)
+    {
+        return PendingTask::select([
+            'id',
+            'vehicle_id',
+            'task_id',
+            'user_start_id',
+            'user_end_id',
+            'state_pending_task_id',
+            'datetime_start',
+            'datetime_finish',
+            'total_paused',
+            'group_task_id'
+        ])
+            ->with(array(
+                'task'  => function ($query) {
+                    $query->select('id', 'name');
+                }, 'vehicle' => function ($query) {
+                    $query->select('id', 'plate');
+                },
+                'userStart',
+                'userEnd',
+                'statePendingTask' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'GroupTask' => function ($query) {
+                    $query->select('id', 'created_at',);
+                }
+            ))
+            ->filter($request->all())
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->paginate($request->input('per_page'));
+        // ->find(26508);
+
+        // task, vehicle, userStart, userEnd, statePendingTask, vehicle.lastReception, groupTaskReception
+        /*
+        return PendingTask::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->paginate($request->input('per_page'));
+        */
+    }
+
     public function getById($request, $id)
     {
         $pending_task = PendingTask::with($this->getWiths($request->with))
