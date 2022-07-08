@@ -18,6 +18,7 @@ class DamageRepository extends Repository {
         VehicleRepository $vehicleRepository,
         DamageTaskRepository $damageTaskRepository,
         NotificationMail $notificationMail,
+        StateChangeRepository $stateChangeRepository
     )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
@@ -26,6 +27,7 @@ class DamageRepository extends Repository {
         $this->vehicleRepository = $vehicleRepository;
         $this->damageTaskRepository = $damageTaskRepository;
         $this->notificationMail = $notificationMail;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function index($request){
@@ -51,8 +53,7 @@ class DamageRepository extends Repository {
 
         $vehicle = $this->vehicleRepository->pendingOrInProgress($request->input('vehicle_id'));
         if($isDamageTask) { 
-            $pendingTask = count($vehicleWithOldPendingTask->lastGroupTask->pendingTasks ?? [] ) > 0 ? $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0] : null;
-            $this->vehicleRepository->updateSubState($request->input('vehicle_id'), $pendingTask, $vehicle?->lastGroupTask?->pendingTasks[0]);
+            $this->stateChangeRepository->updateSubStateVehicle($vehicle);         
         }
         
         foreach($request->input('roles') as $role){

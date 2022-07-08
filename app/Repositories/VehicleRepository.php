@@ -46,7 +46,6 @@ class VehicleRepository extends Repository {
         CampaRepository $campaRepository,
         DeliveryNoteRepository $deliveryNoteRepository,
         SquareRepository $squareRepository,
-        SubStateChangeHistoryRepository $subStateChangeHistoryRepository,
         StateChangeRepository $stateChangeRepository)
     {
         $this->userRepository = $userRepository;
@@ -62,7 +61,6 @@ class VehicleRepository extends Repository {
         $this->vehicleExitRepository = $vehicleExitRepository;
         $this->squareRepository = $squareRepository;
         $this->deliveryNoteRepository = $deliveryNoteRepository;
-        $this->subStateChangeHistoryRepository = $subStateChangeHistoryRepository;
         $this->stateChangeRepository = $stateChangeRepository;
     }
     
@@ -99,29 +97,13 @@ class VehicleRepository extends Repository {
         foreach($vehicles as $vehicle){
             $existVehicle = Vehicle::where('plate', $vehicle['plate'])
                         ->first();
-            if(!$existVehicle){
-                /*$new_vehicle = Vehicle::create($vehicle);
-                $campa = $vehicle['campa'] ? $this->campaRepository->getByName($vehicle['campa']) : null;
-                $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
-                $new_vehicle->campa_id = $campa ? $campa['id'] : null;
-                $new_vehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
-                $new_vehicle->sub_state_id = $campa ? SubState::CAMPA : null;
-                $new_vehicle->company_id = Company::ALD;
-                $new_vehicle->save();*/
-            } else {
-                //$vehicle['square'] ? $this->squareRepository->assignVehicle($vehicle['street'], intval($vehicle['square']), $existVehicle['id']) : null;
-                //if($vehicle['channel'] !== 'ALD Flex' && $vehicle['campa'] == 'Campa Leganes') $existVehicle->sub_state_id = SubState::CAMPA;
-                //if($vehicle['campa'] === 'Campa Leganes' && $vehicle['sub_state'] === null) $existVehicle->sub_state_id = SubState::ALQUILADO;
+            if($existVehicle) {
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
                 if($category) $existVehicle->category_id = $category['id'];
                 $brand = $vehicle['brand'] ? $this->brandRepository->getByNameFromExcel($vehicle['brand']) : null;
                 $vehicle_model = $brand ? $this->vehicleModelRepository->getByNameFromExcel($brand['id'], $vehicle['vehicle_model']) : null;
                 $typeModelOrder = $vehicle['channel'] ? $this->typeModelOrderRepository->getByName($vehicle['channel']) : null;
                 $existVehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
-                //$category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
-                //if($category) $existVehicle->category_id = $category['id'];
-                //$existVehicle->campa_id = 3;
-                //$existVehicle->sub_state_id = SubState::CAMPA;
                 $existVehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
                 $existVehicle->save();
             }
@@ -168,34 +150,6 @@ class VehicleRepository extends Repository {
         $vehicle->campa_id = $campa;
         $vehicle->save();
         return $vehicle;
-    }
-
-    public function updateSubState($vehicleId, $lastPendingTask, $currentPendingTask) {
-        $this->stateChangeRepository->createOrUpdate($vehicleId, $lastPendingTask, $currentPendingTask);
-        $vehicle = Vehicle::findOrFail($vehicleId);
-        if (is_null($vehicle->lastGroupTask)) {
-            $vehicle->sub_state_id = null;
-        } else {
-            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
-            if ($count == 0) {
-                if($vehicle->subState->state_id != State::AVAILABLE){
-                    $vehicle->last_change_state = Carbon::now();
-                    $vehicle->last_change_sub_state = Carbon::now();
-                }
-                $vehicle->sub_state_id = SubState::CAMPA;
-            } else if ($count > 0 && $vehicle->sub_state_id !== 8) {
-                if($vehicle->subState?->state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->subState->state_id){
-                    $vehicle->last_change_state = Carbon::now();
-                }
-                if($vehicle->sub_state_id != $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id){
-                    $vehicle->last_change_sub_state = Carbon::now();
-                }
-                $vehicle->sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
-            }
-        }
-        $vehicle->save();
-        $this->subStateChangeHistoryRepository->store($vehicle->id, $vehicle->sub_state_id);
-        return response()->json(['vehicle' => $vehicle]);
     }
 
     public function updateTradeState($vehicle_id, $trade_state_id) {
@@ -364,11 +318,13 @@ public function verifyPlateReception($request){
                                     $pending_task->save();
                                 }    
                             }
-                            $vehicle->update(['sub_state_id' => SubState::ALQUILADO]);
+                            $vehicle->sub_state_id = SubState::ALQUILADO;
+                            $vehicle->save();
                         }
                         if($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT){
                             $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
-                            $vehicle->update(['sub_state_id' => $request->input('sub_state_id')]);
+                            $vehicle->sub_state_id = $request->input('sub_state_id');
+                            $vehicle->save();
                         }
                         $this->freeSquare($vehicle);
                     }

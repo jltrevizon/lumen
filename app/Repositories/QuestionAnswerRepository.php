@@ -59,7 +59,7 @@ class QuestionAnswerRepository
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
 
         $vehicle = $reception->vehicle;
-        $vehicle->sub_state_id = SubState::CHECK;
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         $vehicle->has_environment_label = $has_environment_label;
         $vehicle->save();
 
@@ -119,7 +119,7 @@ class QuestionAnswerRepository
         if (!is_null($pendingTask)) {
             $pendingTask->approved = $questionAnswer->response;
             $pendingTask->save();
-        } else if (!!$questionAnswer->response) {
+        } else if (!!$questionAnswer->response && !!$questionAnswer->task_id) {
             $vehicle = $questionAnswer->questionnaire->vehicle;
             $pending_task = new PendingTask();
             $pending_task->question_answer_id = $questionAnswer->id;
@@ -128,6 +128,7 @@ class QuestionAnswerRepository
             $pending_task->campa_id = $vehicle->campa_id;
             $taskDescription = $this->taskRepository->getById([], $questionAnswer->task_id);
             $pending_task->task_id = $questionAnswer->task_id;
+            $pending_task->duration = $taskDescription['duration'];
             $pending_task->approved = $questionAnswer->response;
             $pending_task->created_from_checklist = true;
 
@@ -139,13 +140,12 @@ class QuestionAnswerRepository
             }
             $pending_task->group_task_id = $vehicle->lastGroupTask->id;
             $pending_task->user_id = Auth::id();
-            $pending_task->duration = $taskDescription['duration'];
             if (!!$pending_task->approved) {
                 $pending_task->order = $count + 1;
             }
             $pending_task->save();
             if ($pending_task->state_pending_task_id == StatePendingTask::PENDING) {
-                $this->stateChangeRepository->createOrUpdate($vehicle->id, $pending_task, $pending_task);
+                $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             }
             $pendingTask = $pending_task;
         }

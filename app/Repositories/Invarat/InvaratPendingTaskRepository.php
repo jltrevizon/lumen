@@ -47,8 +47,7 @@ class InvaratPendingTaskRepository extends Repository {
             $pendingTask->save();
             $order++;
         }
-        $vehicle = $this->vehicleRepository->pendingOrInProgress($vehicleId);
-         $this->vehicleRepository->updateSubState($vehicleId, null, $vehicle?->lastGroupTask?->pendingTasks[0]);
+        $this->stateChangeRepository->updateSubStateVehicle($groupTask->vehicle);
     }
 
 }

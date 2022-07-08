@@ -10,8 +10,8 @@ use App\Models\Vehicle;
 use App\Models\GroupTask;
 use App\Models\SubState;
 use App\Repositories\GroupTaskRepository;
+use App\Repositories\StateChangeRepository;
 use App\Repositories\TaskRepository;
-use App\Repositories\VehicleRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -26,55 +26,57 @@ class AldController extends Controller
     public function __construct(
         TaskRepository $taskRepository,
         GroupTaskRepository $groupTaskRepository,
-        VehicleRepository $vehicleRepository
-    )
-    {
+        StateChangeRepository $stateChangeRepository
+    ) {
         $this->taskRepository = $taskRepository;
         $this->groupTaskRepository = $groupTaskRepository;
-        $this->vehicleRepository = $vehicleRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
-    public function unapprovedTask(Request $request){
+    public function unapprovedTask(Request $request)
+    {
         try {
             return Vehicle::with($this->getWiths($request->with))
-            ->whereHas('lastUnapprovedGroupTask')
-            ->whereHas('campa', function (Builder $builder) {
-                return $builder->where('company_id', Company::ALD);
-            })
-            ->filter($request->all())
-            ->paginate($request->input('per_page'));
-        } catch (Exception $e){
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
-
-    public function approvedTask(Request $request){
-        try {
-            return Vehicle::with($this->getWiths($request->with))
-                    ->whereHas('groupTasks', function (Builder $builder) {
-                        return $builder->where('approved', true);
-                    })
-                    ->whereHas('campa', function (Builder $builder) {
-                        return $builder->where('company_id', Company::ALD);
-                    })
-                    ->filter($request->all())
-                    ->paginate($request->input('per_page'));
+                ->whereHas('lastUnapprovedGroupTask')
+                ->whereHas('campa', function (Builder $builder) {
+                    return $builder->where('company_id', Company::ALD);
+                })
+                ->filter($request->all())
+                ->paginate($request->input('per_page'));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
     }
 
-    public function createTaskVehiclesAvalible(Request $request){
+    public function approvedTask(Request $request)
+    {
+        try {
+            return Vehicle::with($this->getWiths($request->with))
+                ->whereHas('groupTasks', function (Builder $builder) {
+                    return $builder->where('approved', true);
+                })
+                ->whereHas('campa', function (Builder $builder) {
+                    return $builder->where('company_id', Company::ALD);
+                })
+                ->filter($request->all())
+                ->paginate($request->input('per_page'));
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 409);
+        }
+    }
+
+    public function createTaskVehiclesAvalible(Request $request)
+    {
         try {
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-            if(!$vehicle->lastReception){
+            if (!$vehicle->lastReception) {
                 return $this->failResponse(['message' => 'Reception not found'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
             $groupTask = null;
             if ($request->input('group_task_id')) {
                 $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
             } else {
-                $groupTask = $this->groupTaskRepository->createGroupTaskApproved($request);                
+                $groupTask = $this->groupTaskRepository->createGroupTaskApproved($request);
             }
 
             $pending_task = new PendingTask();
@@ -83,13 +85,13 @@ class AldController extends Controller
             if ($groupTask->approvedPendingTasks) {
                 $tasksApproved = count($groupTask->approvedPendingTasks);
             }
-            if($tasksApproved == 0) {
+            if ($tasksApproved == 0) {
                 $pending_task->order = 1;
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
             } else {
                 $pending_task->order = $tasksApproved + 1;
             }
-            
+
             $pending_task->user_id = Auth::id();
             $pending_task->vehicle_id = $vehicle->id;
             $pending_task->reception_id = $vehicle->lastReception->id;
@@ -108,14 +110,13 @@ class AldController extends Controller
                 $pending_task->user_end_id = Auth::id();
                 $pending_task->order = -1;
             }
-            
+
             $pending_task->save();
-            
+
             $is_pending_task = false;
             $order = 1;
 
-            foreach($groupTask->approvedPendingTasks as $update_pending_task)
-            {
+            foreach ($groupTask->approvedPendingTasks as $update_pending_task) {
                 if (!is_null($update_pending_task->state_pending_task_id)) {
                     $is_pending_task = true;
                 }
@@ -129,33 +130,10 @@ class AldController extends Controller
                 $order++;
             }
 
-
-            $vehicleWithOldPendingTask = $this->vehicleRepository->pendingOrInProgress($vehicle->id);
-            $vehicle = $this->vehicleRepository->pendingOrInProgress($vehicle->id);
-            if($vehicle && $vehicle->sub_state_id == null){
-                $vehicle->sub_state_id = SubState::CAMPA;
-                $vehicle->save();
-            }
-
-            $currentPendingTask = null;
-
-            if (count($vehicle?->lastGroupTask?->pendingTasks) > 0) {
-                $currentPendingTask = $vehicle?->lastGroupTask?->pendingTasks[0];
-            }
-
-            $oldPendingTask = null;
-            if (count($vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks) > 0) {
-                $oldPendingTask = $vehicleWithOldPendingTask?->lastGroupTask?->pendingTasks[0];
-            }
-
-            $this->vehicleRepository->updateSubState($vehicle->id, $oldPendingTask, $currentPendingTask);
-
-
+            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             return $this->createDataResponse(['data' => $pending_task], HttpFoundationResponse::HTTP_CREATED);
-
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage(), ], 400);
+            return response()->json(['message' => $e->getMessage(),], 400);
         }
     }
-
 }
