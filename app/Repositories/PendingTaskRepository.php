@@ -104,15 +104,6 @@ class PendingTaskRepository extends Repository
             ->filter($request->all())
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->paginate($request->input('per_page'));
-        // ->find(26508);
-
-        // task, vehicle, userStart, userEnd, statePendingTask, vehicle.lastReception, groupTaskReception
-        /*
-        return PendingTask::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->paginate($request->input('per_page'));
-        */
     }
 
     public function getById($request, $id)
