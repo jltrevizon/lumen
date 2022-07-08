@@ -23,7 +23,8 @@ class QuestionAnswerRepository
         PendingTaskRepository $pendingTaskRepository,
         VehicleRepository $vehicleRepository,
         NotificationDAMail $notificationDAMail,
-        NotificationItvMail $notificationItvMail
+        NotificationItvMail $notificationItvMail,
+        StateChangeRepository $stateChangeRepository
     ) {
         $this->taskRepository = $taskRepository;
         $this->questionnaireRepository = $questionnaireRepository;
@@ -33,6 +34,7 @@ class QuestionAnswerRepository
         $this->vehicleRepository = $vehicleRepository;
         $this->notificationDAMail = $notificationDAMail;
         $this->notificationItvMail = $notificationItvMail;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function create($request)
