@@ -20,10 +20,10 @@ class RepairSubStateVehicleSedder extends Seeder
     public function run()
     {
         Log::debug('BIGIN REPAIR SUBSTATE VEHICLE');
-        $vehicles = Vehicle::where('id', 9479)->get();
+        $vehicles = Vehicle::all();
         foreach ($vehicles as $key => $value) {
-           Log::debug($value->lastGroupTask->approved_available);
-            // $data = $this->stateChangeRepository->updateSubStateVehicle($value);
+           // Log::debug($value->lastGroupTask->approved_available);
+            $data = $this->stateChangeRepository->updateSubStateVehicle($value);
            // Log::debug($data->sub_state_id);
         }
         Log::debug('END REPAIR SUBSTATE VEHICLE');

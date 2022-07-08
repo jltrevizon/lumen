@@ -24,7 +24,7 @@ class StateChangeRepository extends Repository
                 $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {
-                    if ($vehicle->subState->state_id != State::AVAILABLE) {
+                    if ($vehicle->subState?->state_id != State::AVAILABLE) {
                         $vehicle->last_change_state = Carbon::now();
                         $vehicle->last_change_sub_state = Carbon::now();
                     }
