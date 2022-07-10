@@ -37,9 +37,6 @@ class StateChangeRepository extends Repository
                 $lastPendingTask = null;
 
                 if ($count > 0) {
-                    $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
-                    $lastPendingTask =  $approvedPendingTasks[0];
-                    $this->createOrUpdate($vehicle, $lastPendingTask, $currentPendingTask);
                     if ($count > 0 && $sub_state_id !== SubState::SOLICITUD_DEFLEET) {
                         $pendingTask = $vehicle->lastGroupTask->approvedPendingTasks[0];
                         if (is_null($vehicle->last_change_state)) {
@@ -72,6 +69,8 @@ class StateChangeRepository extends Repository
                             }
                         }
                     }
+                    $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
+                    $lastPendingTask =  $approvedPendingTasks[0];
                 } else {
                     if ($vehicle->subState?->state_id != State::AVAILABLE) {
                         $vehicle->last_change_state = Carbon::now();
@@ -82,6 +81,7 @@ class StateChangeRepository extends Repository
         }
         $vehicle->sub_state_id = $sub_state_id;
         $vehicle->save();
+        $this->createOrUpdate($vehicle, $lastPendingTask, $currentPendingTask);
         $this->store($vehicle->id, $vehicle->sub_state_id);
         return $vehicle;
     }
