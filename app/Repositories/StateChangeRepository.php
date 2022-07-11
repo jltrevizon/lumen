@@ -10,6 +10,7 @@ use App\Models\State;
 use App\Models\StatePendingTask;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\Log;
 
 class StateChangeRepository extends Repository
 {
@@ -81,9 +82,11 @@ class StateChangeRepository extends Repository
             $lastPendingTask = null;
             $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
             $count = count($approvedPendingTasks);
-            $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
-            $lastPendingTask =  $approvedPendingTasks[0];
-            $this->createOrUpdate($vehicle, $lastPendingTask, $currentPendingTask);
+            if ($count > 0) {
+                $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
+                $lastPendingTask =  $approvedPendingTasks[0];
+                $this->createOrUpdate($vehicle, $lastPendingTask, $currentPendingTask);
+            }
         }
         $this->store($vehicle->id, $vehicle->sub_state_id);
         return $vehicle;

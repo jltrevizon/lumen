@@ -6,7 +6,6 @@ use App\Models\Vehicle;
 use App\Repositories\StateChangeRepository;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\ErrorHandler\Debug;
 
 class RepairSubStateVehicleSedder extends Seeder
 {
