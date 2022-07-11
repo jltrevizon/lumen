@@ -170,7 +170,7 @@ class VehicleRepository extends Repository {
                 $query->select('id', 'name', 'state_id')
                 ->with(array(
                     'state' => function($query) {
-                        $query->select('id', 'name');
+                        $query->select('id', 'name', 'display_name');
                     }
                 ));
             },
