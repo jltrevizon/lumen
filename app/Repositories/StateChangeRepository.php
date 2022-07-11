@@ -80,6 +80,7 @@ class StateChangeRepository extends Repository
             $currentPendingTask = null;
             $lastPendingTask = null;
             $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
+            $count = count($approvedPendingTasks);
             $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
             $lastPendingTask =  $approvedPendingTasks[0];
             $this->createOrUpdate($vehicle, $lastPendingTask, $currentPendingTask);
