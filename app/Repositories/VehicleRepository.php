@@ -128,7 +128,6 @@ class VehicleRepository extends Repository {
                         $query->select('id', 'vehicle_id', 'reception_id', 'url', 'active');                        
                     }
                 ));
-                
             },
             'lastQuestionnaire' => function($query) {
                     $query->select('id', 'lastQuestionnaire.vehicle_id', 'file')
@@ -196,6 +195,15 @@ class VehicleRepository extends Repository {
                             },
                             'statePendingTask' => function($query) {
                                 $query->select('id', 'name');
+                            },
+                            'incidences',
+                            'budgetPendingTasks' => function($query) {
+                                $query->select('id', 'pending_task_id', 'state_budget_pending_task_id', 'url')
+                                ->with(array(
+                                    'stateBudgetPendingTask' => function($query) {
+                                        $query->select('id', 'name');
+                                    }
+                                ));
                             }
                         ));
                     },
@@ -217,6 +225,15 @@ class VehicleRepository extends Repository {
                             },
                             'statePendingTask' => function($query) {
                                 $query->select('id', 'name');
+                            },
+                            'incidences',
+                            'budgetPendingTasks' => function($query) {
+                                $query->select('id', 'pending_task_id', 'state_budget_pending_task_id', 'url')
+                                ->with(array(
+                                    'stateBudgetPendingTask' => function($query) {
+                                        $query->select('id', 'name');
+                                    }
+                                ));
                             }
                         ));
                     }
