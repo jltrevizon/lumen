@@ -167,10 +167,10 @@ class VehicleRepository extends Repository {
                 ));
             },
             'subState' => function($query) {
-                $query->select('id', 'name', 'state_id')
+                $query->select('id', 'name', 'state_id', 'display_name')
                 ->with(array(
                     'state' => function($query) {
-                        $query->select('id', 'name', 'display_name');
+                        $query->select('id', 'name');
                     }
                 ));
             },
