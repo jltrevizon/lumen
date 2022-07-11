@@ -79,9 +79,9 @@ class StateChangeRepository extends Repository
         if (!is_null($vehicle->lastGroupTask)) {
             $currentPendingTask = null;
             $lastPendingTask = null;
+            $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
             $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
             $lastPendingTask =  $approvedPendingTasks[0];
-            $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
             $this->createOrUpdate($vehicle, $lastPendingTask, $currentPendingTask);
         }
         $this->store($vehicle->id, $vehicle->sub_state_id);
