@@ -18,7 +18,8 @@ class DamageRepository extends Repository {
         VehicleRepository $vehicleRepository,
         DamageTaskRepository $damageTaskRepository,
         NotificationMail $notificationMail,
-        StateChangeRepository $stateChangeRepository
+        StateChangeRepository $stateChangeRepository,
+        GroupTaskRepository $groupTaskRepository
     )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
@@ -28,6 +29,7 @@ class DamageRepository extends Repository {
         $this->damageTaskRepository = $damageTaskRepository;
         $this->notificationMail = $notificationMail;
         $this->stateChangeRepository = $stateChangeRepository;
+        $this->groupTaskRepository = $groupTaskRepository;
     }
 
     public function index($request){
