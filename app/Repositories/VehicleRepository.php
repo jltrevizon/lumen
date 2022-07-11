@@ -102,8 +102,13 @@ class VehicleRepository extends Repository {
             'sub_state_id',
             'campa_id',
             'category_id',
-            'type_model_order_id'
+            'type_model_order_id',
+            'trade_state_id'
         ])->with(array(
+            'requests.customer',
+            'reservations',
+            'tradeState',
+            'orders',
             'campa' => function($query) {
                 $query->select('id', 'name', 'location');
             },
@@ -117,7 +122,13 @@ class VehicleRepository extends Repository {
                 $query->select('id', 'vehicle_id', 'damage_type_id', 'description', 'severity_damage_id', 'status_damage_id');
             },
             'lastReception' => function($query) {
-                $query->select('id', 'lastReception.vehicle_id','created_at');
+                $query->select('id', 'lastReception.vehicle_id','created_at')
+                ->with(array(
+                    'vehiclePictures' => function($query) {
+                        $query->select('id', 'vehicle_id', 'reception_id', 'url', 'active');                        
+                    }
+                ));
+                
             },
             'lastQuestionnaire' => function($query) {
                     $query->select('id', 'lastQuestionnaire.vehicle_id', 'file')
@@ -127,6 +138,9 @@ class VehicleRepository extends Repository {
                         ->with(array(
                             'question' => function($query) {
                                 $query->select('id', 'question', 'description');
+                            }, 
+                            'task' => function($query) {
+                                $query->select('id', 'sub_state_id', 'type_task_id', 'name');
                             }
                         ));
                     }
@@ -165,6 +179,27 @@ class VehicleRepository extends Repository {
                 $query->select('id', 'lastGroupTask.vehicle_id', 'approved', 'datetime_approved')
                 ->with(array(
                     'pendingTasks' => function($query) {
+                        $query->select('id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
+                        ->with(array(
+                            'task' => function($query) {
+                                $query->select('id', 'sub_state_id', 'name')
+                                ->with(array(
+                                    'subState' => function($query) {
+                                        $query->select('id', 'state_id', 'name', 'display_name')
+                                        ->with(array(
+                                            'state' => function($query) {
+                                                $query->select('id', 'name');
+                                            }
+                                        ));
+                                    }
+                                ));
+                            },
+                            'statePendingTask' => function($query) {
+                                $query->select('id', 'name');
+                            }
+                        ));
+                    },
+                    'approvedPendingTasks' => function($query) {
                         $query->select('id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
                         ->with(array(
                             'task' => function($query) {
