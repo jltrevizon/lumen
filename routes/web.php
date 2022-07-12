@@ -279,6 +279,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->get('/vehicles/filter', 'VehicleController@filterVehicle');
+        $router->get('/vehicles/filter-download-file', 'VehicleController@filterVehicleDownloadFile');
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
         $router->get('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');

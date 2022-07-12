@@ -134,10 +134,8 @@ class PendingTaskAldController extends Controller
                 $order++;
             }
             $pending_task->save();
-            if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
-                $this->stateChangeRepository->createOrUpdate($vehicleId, $pending_task, $pending_task);
-            }
         }
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
     }
 
     public function updatePendingTask(Request $request){
