@@ -111,6 +111,10 @@ class Vehicle extends Model
         return $this->hasOne(Reception::class, 'id', 'reception_id');
     }
 
+    public function budgetPendingTask(){
+        return $this->belongsTo(BudgetPendingTask::class);
+    }
+
     public function typeModelOrder(){
         return $this->belongsTo(TypeModelOrder::class);
     }
