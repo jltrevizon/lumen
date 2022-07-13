@@ -4,15 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Damage;
 use App\Models\PendingTask;
-use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Models\Square;
-use App\Models\State;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
-use App\Models\TypeModelOrder;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -100,108 +96,159 @@ class VehicleRepository extends Repository
         return ['vehicles' => $vehicles];
     }
 
-    public function filterVehicleDownloadFile($request)
-    {
+    public function filterVehicleDownloadFile($request) {
 
-        $query = Vehicle::select([
-            'id',
+        $query = Vehicle::select([    
+            'id', 
             'plate',
             'kms',
             'vehicle_model_id',
             'sub_state_id',
             'campa_id',
             'category_id',
-            'type_model_order_id'
+            'type_model_order_id',
+            'trade_state_id'
         ])->with(array(
-            'campa' => function ($query) {
+            'requests.customer',
+            'reservations',
+            'tradeState',
+            'orders',
+            'campa' => function($query) {
                 $query->select('id', 'name', 'location');
             },
-            'category' => function ($query) {
+            'category' => function($query) {
                 $query->select('id', 'name');
             },
-            'typeModelOrder' => function ($query) {
+            'typeModelOrder' => function($query) {
                 $query->select('id', 'name');
             },
-            'damages' => function ($query) {
+            'damages' => function($query) {
                 $query->select('id', 'vehicle_id', 'damage_type_id', 'description', 'severity_damage_id', 'status_damage_id');
             },
-            'lastReception' => function ($query) {
-                $query->select('id', 'lastReception.vehicle_id', 'created_at');
+            'lastReception' => function($query) {
+                $query->select('id', 'lastReception.vehicle_id','created_at')
+                ->with(array(
+                    'vehiclePictures' => function($query) {
+                        $query->select('id', 'vehicle_id', 'reception_id', 'url', 'active');                        
+                    }
+                ));
             },
-            'lastQuestionnaire' => function ($query) {
-                $query->select('id', 'lastQuestionnaire.vehicle_id', 'file')
+            'lastQuestionnaire' => function($query) {
+                    $query->select('id', 'lastQuestionnaire.vehicle_id', 'file')
                     ->with(array(
-                        'questionAnswers' => function ($query) {
-                            $query->select('id', 'questionnaire_id', 'task_id', 'response', 'question_id', 'description', 'description_response')
-                                ->with(array(
-                                    'question' => function ($query) {
-                                        $query->select('id', 'question', 'description');
-                                    }
-                                ));
-                        }
-                    ));
+                    'questionAnswers' => function($query) {
+                        $query->select('id', 'questionnaire_id', 'task_id', 'response', 'question_id', 'description', 'description_response')
+                        ->with(array(
+                            'question' => function($query) {
+                                $query->select('id', 'question', 'description');
+                            }, 
+                            'task' => function($query) {
+                                $query->select('id', 'sub_state_id', 'type_task_id', 'name');
+                            }
+                        ));
+                    }
+                ));
             },
-            'square' => function ($query) {
-                $query->select('vehicle_id', 'id', 'street_id', 'name')
-                    ->with(array(
-                        'street' => function ($query) {
-                            $query->select('id', 'name', 'zone_id')
-                                ->with(array(
-                                    'zone' => function ($query) {
-                                        $query->select('id', 'name');
-                                    }
-                                ));
-                        }
-                    ));
+            'square' => function($query) {
+                $query->select('vehicle_id','id', 'street_id', 'name')
+                ->with(array(
+                    'street' => function($query) {
+                        $query->select('id', 'name', 'zone_id')
+                        ->with(array(
+                            'zone' => function($query) {
+                                $query->select('id', 'name');
+                            }
+                        ));
+                    }
+                ));
             },
-            'vehicleModel' => function ($query) {
+            'vehicleModel' => function($query) {
                 $query->select('id', 'name', 'brand_id')
-                    ->with(array(
-                        'brand' => function ($query) {
-                            $query->select('id', 'name');
-                        }
-                    ));
+                ->with(array(
+                    'brand' => function($query) {
+                        $query->select('id', 'name');
+                    }
+                ));
             },
-            'subState' => function ($query) {
-                $query->select('id', 'name', 'state_id')
-                    ->with(array(
-                        'state' => function ($query) {
-                            $query->select('id', 'name');
-                        }
-                    ));
+            'subState' => function($query) {
+                $query->select('id', 'name', 'state_id', 'display_name')
+                ->with(array(
+                    'state' => function($query) {
+                        $query->select('id', 'name');
+                    }
+                ));
             },
-            'lastGroupTask' => function ($query) {
+            'lastGroupTask' => function($query) {
                 $query->select('id', 'lastGroupTask.vehicle_id', 'approved', 'datetime_approved')
-                    ->with(array(
-                        'pendingTasks' => function ($query) {
-                            $query->select('id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
+                ->with(array(
+                    'pendingTasks' => function($query) {
+                        $query->select('id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
+                        ->with(array(
+                            'task' => function($query) {
+                                $query->select('id', 'sub_state_id', 'name')
                                 ->with(array(
-                                    'task' => function ($query) {
-                                        $query->select('id', 'sub_state_id', 'name')
-                                            ->with(array(
-                                                'subState' => function ($query) {
-                                                    $query->select('id', 'state_id', 'name', 'display_name')
-                                                        ->with(array(
-                                                            'state' => function ($query) {
-                                                                $query->select('id', 'name');
-                                                            }
-                                                        ));
-                                                }
-                                            ));
-                                    },
-                                    'statePendingTask' => function ($query) {
+                                    'subState' => function($query) {
+                                        $query->select('id', 'state_id', 'name', 'display_name')
+                                        ->with(array(
+                                            'state' => function($query) {
+                                                $query->select('id', 'name');
+                                            }
+                                        ));
+                                    }
+                                ));
+                            },
+                            'statePendingTask' => function($query) {
+                                $query->select('id', 'name');
+                            },
+                            'incidences',
+                            'budgetPendingTasks' => function($query) {
+                                $query->select('id', 'pending_task_id', 'state_budget_pending_task_id', 'url')
+                                ->with(array(
+                                    'stateBudgetPendingTask' => function($query) {
                                         $query->select('id', 'name');
                                     }
                                 ));
-                        }
-                    ));
+                            }
+                        ));
+                    },
+                    'approvedPendingTasks' => function($query) {
+                        $query->select('id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
+                        ->with(array(
+                            'task' => function($query) {
+                                $query->select('id', 'sub_state_id', 'name')
+                                ->with(array(
+                                    'subState' => function($query) {
+                                        $query->select('id', 'state_id', 'name', 'display_name')
+                                        ->with(array(
+                                            'state' => function($query) {
+                                                $query->select('id', 'name');
+                                            }
+                                        ));
+                                    }
+                                ));
+                            },
+                            'statePendingTask' => function($query) {
+                                $query->select('id', 'name');
+                            },
+                            'incidences',
+                            'budgetPendingTasks' => function($query) {
+                                $query->select('id', 'pending_task_id', 'state_budget_pending_task_id', 'url')
+                                ->with(array(
+                                    'stateBudgetPendingTask' => function($query) {
+                                        $query->select('id', 'name');
+                                    }
+                                ));
+                            }
+                        ));
+                    }
+                ));
             }
         ))
-            ->filter($request->all())
-            ->selectRaw('(SELECT MAX(r.id) FROM receptions r WHERE r.vehicle_id = vehicles.id) as reception_id')
-            ->orderBy('reception_id', 'desc');
+        ->filter($request->all())
+        ->selectRaw('(SELECT MAX(r.id) FROM receptions r WHERE r.vehicle_id = vehicles.id) as reception_id')
+        ->orderBy('reception_id', 'desc');
 
-        return ['vehicles' => $query->paginate($request->input('per_page'))];
+        return [ 'vehicles' => $query->paginate($request->input('per_page')) ];
     }
 
     public function createFromExcel($request)
