@@ -22,7 +22,7 @@ class RepairSubStateVehicleSedder extends Seeder
     {
         Log::debug('BIGIN REPAIR SUBSTATE VEHICLE');
         $vehicles = Vehicle::all();
-        // $vehicles = Vehicle::where('id', 3976)->get();
+        // $vehicles = Vehicle::where('id', 1497)->get();
 
         Vehicle::whereNull('deleted_at')->update([
             'last_change_state' => null,
