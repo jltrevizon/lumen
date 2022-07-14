@@ -42,8 +42,6 @@ class StateChangeRepository extends Repository
             $lastPendingTask = null;
             $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
             $count = count($approvedPendingTasks);
-            Log::debug('bug');
-
             if ($count > 0) {
                 if ($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET) {
                     $pendingTask = $vehicle->lastGroupTask->approvedPendingTasks[0];
@@ -91,6 +89,8 @@ class StateChangeRepository extends Repository
                     $vehicle->save();
                 }
             }
+        } else {
+            Log::debug('Bug: vehicle ' . $vehicle->id . ' Sin grupo de tareas');
         }
         $this->store($vehicle->id, $vehicle->sub_state_id);
         return $vehicle;
