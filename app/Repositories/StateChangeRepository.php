@@ -18,7 +18,7 @@ class StateChangeRepository extends Repository
     public function updateSubStateVehicle($vehicle)
     {
         $sub_state_id = $vehicle->sub_state_id;
-        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET) {
+        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::ALQUILADO && $sub_state_id !== SubState::WORKSHOP_EXTERNAL && $sub_state_id !== SubState::TRANSIT) {
             if (is_null($vehicle->lastGroupTask)) {
                 $sub_state_id = null;
             } else if (!$vehicle->lastGroupTask->approved && !$vehicle->lastGroupTask->approved_available) {
