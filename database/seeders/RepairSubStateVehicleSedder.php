@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Repositories\StateChangeRepository;
 use Illuminate\Database\Seeder;
@@ -21,13 +22,13 @@ class RepairSubStateVehicleSedder extends Seeder
     public function run()
     {
         Log::debug('BIGIN REPAIR SUBSTATE VEHICLE');
-        $vehicles = Vehicle::all();
+        $vehicles = Vehicle::whereNotIn('sub_state_id', [
+            SubState::ALQUILADO,
+            SubState::WORKSHOP_EXTERNAL,
+            SubState::SOLICITUD_DEFLEET,
+            SubState::TRANSIT
+        ])->get();
         // $vehicles = Vehicle::where('id', 1497)->get();
-
-        Vehicle::whereNull('deleted_at')->update([
-            'last_change_state' => null,
-            'last_change_sub_state' => null
-        ]);
 
         foreach ($vehicles as $key => $value) {
             $data = $this->stateChangeRepository->updateSubStateVehicle($value);
