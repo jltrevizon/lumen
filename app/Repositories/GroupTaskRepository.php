@@ -107,7 +107,9 @@ class GroupTaskRepository extends Repository
                 'user_end_id' => Auth::id(),
                 'duration' => 0,
                 'approved' => true,
-                'datetime_finish' => Carbon::now()
+                'datetime_finish' => Carbon::now(),
+                'campa_id' => $vehicle->campa_id,
+                'order' => -1
             ];
             $pendingTask = PendingTask::updateOrCreate([
                 'group_task_id' => $group_task->id,

@@ -2,11 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Console\Commands\StateChanges;
+use App\Models\PendingTask;
 use App\Models\Reception;
 use App\Models\Request;
 use App\Models\SubState;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReceptionRepository extends Repository
 {
@@ -34,6 +37,13 @@ class ReceptionRepository extends Repository
         $receptionDuplicate = Reception::where('vehicle_id', $request->input('vehicle_id'))
             ->whereDate('created_at', date('Y-m-d'))
             ->first();
+
+        $vehicle = $receptionDuplicate->vehicle;
+
+        if ($vehicle->lastReception && !$vehicle->lastReception->finished && !$request->input('ignore_reception')) {
+            return null;
+        }
+
         if ($receptionDuplicate) {
             $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
         }
@@ -41,17 +51,24 @@ class ReceptionRepository extends Repository
         $reception = Reception::where('vehicle_id', $request->input('vehicle_id'))
             ->whereDate('created_at', date('Y-m-d'))->first();
 
-        if ($reception) {
+        if ($reception && !!$request->input('ignore_reception')) {
+            $pending_tasks = PendingTask::where('reception_id', $reception->id)->get();
+            foreach ($pending_tasks as $key => $pending_task) {
+                DB::table('state_changes')
+                ->where('pending_task_id', $pending_task->id)->delete();
+                $pending_task->delete();
+            }
             $reception->delete();
+            $user = $this->userRepository->getById([], Auth::id());
+            $reception = new Reception();
+            $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
+            $reception->vehicle_id = $request->input('vehicle_id');
+            $reception->finished = false;
+            $reception->has_accessories = false;
+            $reception->save();
+        } else {
+            $reception = $vehicle->lastReception;
         }
-
-        $user = $this->userRepository->getById([], Auth::id());
-        $reception = new Reception();
-        $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
-        $reception->vehicle_id = $request->input('vehicle_id');
-        $reception->finished = false;
-        $reception->has_accessories = false;
-        $reception->save();
 
         return ['reception' => $reception];
     }
