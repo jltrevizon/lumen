@@ -7,6 +7,7 @@ use App\Models\PendingTask;
 use App\Models\Reception;
 use App\Models\Request;
 use App\Models\SubState;
+use App\Models\Vehicle;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,9 +39,9 @@ class ReceptionRepository extends Repository
             ->whereDate('created_at', date('Y-m-d'))
             ->first();
 
-        $vehicle = $receptionDuplicate->vehicle;
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
-        if ($vehicle->lastReception && !$vehicle->lastReception->finished && !$request->input('ignore_reception')) {
+        if ($vehicle && $vehicle->lastReception && !$vehicle->lastReception->finished && !$request->input('ignore_reception')) {
             return null;
         }
 
