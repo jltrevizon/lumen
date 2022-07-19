@@ -39,7 +39,7 @@ class ReceptionRepository extends Repository
             ->whereDate('created_at', date('Y-m-d'))
             ->first();
 
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        $vehicle = Vehicle::with('lastReception')->findOrFail($request->input('vehicle_id'));
 
         if ($vehicle->lastReception && !$vehicle->lastReception->finished && !$request->input('ignore_reception')) {
             return null;
@@ -60,18 +60,26 @@ class ReceptionRepository extends Repository
                 $pending_task->delete();
             }
             $reception->delete();
-            $user = $this->userRepository->getById([], Auth::id());
-            $reception = new Reception();
-            $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
-            $reception->vehicle_id = $request->input('vehicle_id');
-            $reception->finished = false;
-            $reception->has_accessories = false;
-            $reception->save();
+            $reception = $this->newReception($vehicle->id);
         } else {
             $reception = $vehicle->lastReception;
+            if (is_null($reception)) {
+                $reception = $this->newReception($vehicle->id);
+            }
         }
 
         return ['reception' => $reception];
+    }
+
+    public function newReception($vehicle_id) {
+        $user = $this->userRepository->getById([], Auth::id());
+        $reception = new Reception();
+        $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
+        $reception->vehicle_id = $vehicle_id;
+        $reception->finished = false;
+        $reception->has_accessories = false;
+        $reception->save();
+        return $reception;
     }
 
     public function getById($id)
