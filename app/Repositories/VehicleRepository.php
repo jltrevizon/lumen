@@ -472,8 +472,8 @@ class VehicleRepository extends Repository
                 foreach ($vehicles as $vehicle) {
                     if ($request->input('sub_state_id') == SubState::ALQUILADO) {
                         $this->closeDamage($vehicle['id']);
+                        $count = 0;
                         if (!is_null($vehicle->lastGroupTask)) {
-                            $count = 0;
                             foreach ($vehicle->lastGroupTask->pendingTasks as $key => $pending_task) {
                                 $count++;
                                 $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
