@@ -18,20 +18,29 @@ class StateChangeRepository extends Repository
     public function updateSubStateVehicle($vehicle)
     {
         $sub_state_id = $vehicle->sub_state_id;
-        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::ALQUILADO && $sub_state_id !== SubState::WORKSHOP_EXTERNAL && $sub_state_id !== SubState::TRANSIT) {
+        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::WORKSHOP_EXTERNAL && $sub_state_id !== SubState::TRANSIT) {
             if (is_null($vehicle->lastGroupTask)) {
                 $sub_state_id = null;
-            } else if (!$vehicle->lastGroupTask->approved && !$vehicle->lastGroupTask->approved_available) {
-                $sub_state_id = SubState::CHECK;
             } else {
                 $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {
-                    $sub_state_id = SubState::CAMPA;
-                } else if ($count === 1 && $approvedPendingTasks[0]->task->sub_state_id === SubState::CHECK) {
-                    $sub_state_id = SubState::CHECK;
+                    if ($sub_state_id != SubState::ALQUILADO) {
+                        $sub_state_id = SubState::CAMPA;
+                    }
                 } else {
-                    $sub_state_id = $vehicle->lastGroupTask->approvedPendingTasks[0]->task->sub_state_id;
+                    $pendingTask = $approvedPendingTasks[0];
+                    $sub_state_id = $pendingTask->task->sub_state_id;
+
+                    Log::debug($sub_state_id);
+
+                    if ($sub_state_id === SubState::ALQUILADO) {
+                        $sub_state_id = SubState::ALQUILADO;
+                        $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                        $pendingTask->save();
+                    } else if (!$vehicle->lastGroupTask->approved && !$vehicle->lastGroupTask->approved_available) {
+                        $sub_state_id = SubState::CHECK;
+                    }
                 }
             }
         }
