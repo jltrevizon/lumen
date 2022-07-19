@@ -41,7 +41,7 @@ class ReceptionRepository extends Repository
 
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
-        if ($vehicle && $vehicle->lastReception && !$vehicle->lastReception->finished && !$request->input('ignore_reception')) {
+        if ($vehicle->lastReception && !$vehicle->lastReception->finished && !$request->input('ignore_reception')) {
             return null;
         }
 
