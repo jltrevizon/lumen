@@ -622,24 +622,11 @@ class VehicleRepository extends Repository
     // GroupTasks of last reception
     public function lastGroupTasks($request)
     {
-
-        /*with(['groupTasks' => function($query) use($vehicle){
-            return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now());
-        },
-            'groupTasks.approvedPendingTasks.task',
-            'groupTasks.approvedPendingTasks.statePendingTask',
-            'groupTasks.approvedPendingTasks.userStart',
-            'square.street.zone',
-            'groupTasks.allPendingTasks.task',
-            'groupTasks.allPendingTasks.statePendingTask',
-            'groupTasks.allPendingTasks.userStart',
-            'groupTasks.allPendingTasks.user',
-            'lastGroupTask.approvedPendingTasks'
-        ])*/
-
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         return Vehicle::with(array_merge($this->getWiths($request->with), ['groupTasks' => function ($query) use ($vehicle) {
-            return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())->orderBy('created_at', 'desc');
+            return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
+            ->orderBy('id', 'desc')
+            ->orderBy('created_at', 'desc');
         }]))
             ->filter($request->all())
             ->findOrFail($request->input('vehicle_id'));
