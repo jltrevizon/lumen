@@ -35,43 +35,23 @@ class ReceptionRepository extends Repository
 
     public function create($request)
     {
-        $receptionDuplicate = Reception::where('vehicle_id', $request->input('vehicle_id'))
-            ->whereDate('created_at', date('Y-m-d'))
-            ->first();
-
         $vehicle = Vehicle::with('lastReception')->findOrFail($request->input('vehicle_id'));
-
-        if ($vehicle->lastReception && !$vehicle->lastReception->finished && !$request->input('ignore_reception')) {
-            return null;
-        }
-
-        if ($receptionDuplicate) {
-            $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
-        }
-
-        $reception = Reception::where('vehicle_id', $request->input('vehicle_id'))
-            ->whereDate('created_at', date('Y-m-d'))->first();
-
-        if ($reception && !!$request->input('ignore_reception')) {
-            $pending_tasks = PendingTask::where('reception_id', $reception->id)->get();
-            foreach ($pending_tasks as $key => $pending_task) {
-                DB::table('state_changes')
-                ->where('pending_task_id', $pending_task->id)->delete();
-                $pending_task->delete();
+        $reception = $vehicle->lastReception;
+        $reception_alquilado = !!$reception->finished && $vehicle->sub_state_id === SubState::ALQUILADO;
+        if (is_null($reception) || $reception_alquilado || !!$request->input('ignore_reception')) {
+            if ($reception && !$reception->finished) {
+                $this->vehiclePictureRepository->deletePictureByReception($reception);
+                $reception->delete();
             }
-            $reception->delete();
             $reception = $this->newReception($vehicle->id);
         } else {
-            $reception = $vehicle->lastReception;
-            if (is_null($reception)) {
-                $reception = $this->newReception($vehicle->id);
-            }
+            return null;
         }
-
         return ['reception' => $reception];
     }
 
-    public function newReception($vehicle_id) {
+    public function newReception($vehicle_id)
+    {
         $user = $this->userRepository->getById([], Auth::id());
         $reception = new Reception();
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
