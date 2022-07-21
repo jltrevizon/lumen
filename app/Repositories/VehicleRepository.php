@@ -99,6 +99,37 @@ class VehicleRepository extends Repository
     public function filterVehicleDownloadFile($request)
     {
 
+        $queryPendingTask = function ($query) {
+            $query->select('id', 'vehicle_id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
+                ->with(array(
+                    'task' => function ($query) {
+                        $query->select('id', 'sub_state_id', 'name')
+                            ->with(array(
+                                'subState' => function ($query) {
+                                    $query->select('id', 'state_id', 'name', 'display_name')
+                                        ->with(array(
+                                            'state' => function ($query) {
+                                                $query->select('id', 'name');
+                                            }
+                                        ));
+                                }
+                            ));
+                    },
+                    'statePendingTask' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'incidences',
+                    'budgetPendingTasks' => function ($query) {
+                        $query->select('id', 'pending_task_id', 'state_budget_pending_task_id', 'url')
+                            ->with(array(
+                                'stateBudgetPendingTask' => function ($query) {
+                                    $query->select('id', 'name');
+                                }
+                            ));
+                    }
+                ));
+        };
+
         $query = Vehicle::select([
             'id',
             'plate',
@@ -179,69 +210,11 @@ class VehicleRepository extends Repository
                         }
                     ));
             },
-            'lastGroupTask' => function ($query) {
+            'lastGroupTask' => function ($query) use ($queryPendingTask) {
                 $query->select('id', 'lastGroupTask.vehicle_id', 'approved', 'datetime_approved')
                     ->with(array(
-                        'pendingTasks' => function ($query) {
-                            $query->select('id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
-                                ->with(array(
-                                    'task' => function ($query) {
-                                        $query->select('id', 'sub_state_id', 'name')
-                                            ->with(array(
-                                                'subState' => function ($query) {
-                                                    $query->select('id', 'state_id', 'name', 'display_name')
-                                                        ->with(array(
-                                                            'state' => function ($query) {
-                                                                $query->select('id', 'name');
-                                                            }
-                                                        ));
-                                                }
-                                            ));
-                                    },
-                                    'statePendingTask' => function ($query) {
-                                        $query->select('id', 'name');
-                                    },
-                                    'incidences',
-                                    'budgetPendingTasks' => function ($query) {
-                                        $query->select('id', 'pending_task_id', 'state_budget_pending_task_id', 'url')
-                                            ->with(array(
-                                                'stateBudgetPendingTask' => function ($query) {
-                                                    $query->select('id', 'name');
-                                                }
-                                            ));
-                                    }
-                                ));
-                        },
-                        'approvedPendingTasks' => function ($query) {
-                            $query->select('id', 'group_task_id', 'task_id', 'state_pending_task_id', 'datetime_start', 'datetime_finish', 'datetime_pending', 'observations')
-                                ->with(array(
-                                    'task' => function ($query) {
-                                        $query->select('id', 'sub_state_id', 'name')
-                                            ->with(array(
-                                                'subState' => function ($query) {
-                                                    $query->select('id', 'state_id', 'name', 'display_name')
-                                                        ->with(array(
-                                                            'state' => function ($query) {
-                                                                $query->select('id', 'name');
-                                                            }
-                                                        ));
-                                                }
-                                            ));
-                                    },
-                                    'statePendingTask' => function ($query) {
-                                        $query->select('id', 'name');
-                                    },
-                                    'incidences',
-                                    'budgetPendingTasks' => function ($query) {
-                                        $query->select('id', 'pending_task_id', 'state_budget_pending_task_id', 'url')
-                                            ->with(array(
-                                                'stateBudgetPendingTask' => function ($query) {
-                                                    $query->select('id', 'name');
-                                                }
-                                            ));
-                                    }
-                                ));
-                        }
+                   //    'pendingTasks' => $queryPendingTask,
+                        'approvedPendingTasks' => $queryPendingTask
                     ));
             }
         ))
@@ -625,8 +598,8 @@ class VehicleRepository extends Repository
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         return Vehicle::with(array_merge($this->getWiths($request->with), ['groupTasks' => function ($query) use ($vehicle) {
             return $query->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
-            ->orderBy('id', 'desc')
-            ->orderBy('created_at', 'desc');
+                ->orderBy('id', 'desc')
+                ->orderBy('created_at', 'desc');
         }]))
             ->filter($request->all())
             ->findOrFail($request->input('vehicle_id'));
