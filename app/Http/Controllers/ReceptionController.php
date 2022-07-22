@@ -25,10 +25,7 @@ class ReceptionController extends Controller
             'vehicle_id' => 'required|integer'
         ]);
         $data = $this->receptionRepository->create($request);
-        if ($data) {
-            return $this->createDataResponse($data, HttpFoundationResponse::HTTP_CREATED);
-        }
-        return $this->failResponse(['message' => 'El vehiculo ya tiene una recepcion use parametro ignore_reception en true para omitir y crear otra recepcion esta accion eliminara las tareas pendiente de esa recepcion'], HttpFoundationResponse::HTTP_NOT_FOUND);
+        return $this->createDataResponse($data, HttpFoundationResponse::HTTP_CREATED);
     }
 
     public function getById($id)
