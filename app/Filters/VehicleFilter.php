@@ -228,8 +228,7 @@ class VehicleFilter extends ModelFilter
             FROM 
                 pending_tasks pt 
             WHERE 
-                pt.state_pending_task_id is NOT NULL 
-                AND pt.state_pending_task_id in (1, 2)
+                AND ( pt.state_pending_task_id in (1, 2) OR pt.state_pending_task_id IS NULL)
                 AND pt.approved = 1 
                 AND pt.group_task_id = (SELECT MAX(gt.id) FROM group_tasks gt WHERE gt.vehicle_id = pt.vehicle_id)
                 AND pt.task_id IN('.implode(',', $value).'))
