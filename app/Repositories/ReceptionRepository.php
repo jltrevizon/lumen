@@ -41,7 +41,9 @@ class ReceptionRepository extends Repository
         if (is_null($reception) || $reception_alquilado || !!$request->input('ignore_reception')) {
             if ($reception && !$reception->finished) {
                 $this->vehiclePictureRepository->deletePictureByReception($reception);
-                $reception->delete();
+                if ($vehicle->sub_state_id !== SubState::ALQUILADO) {
+                    $reception->delete();
+                }
             }
             $reception = $this->newReception($vehicle->id);
         } else {
