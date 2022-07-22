@@ -37,19 +37,24 @@ class ReceptionRepository extends Repository
     {
         $vehicle = Vehicle::with('lastReception')->findOrFail($request->input('vehicle_id'));
         $reception = $vehicle->lastReception;
-        $reception_alquilado = !!$reception->finished && $vehicle->sub_state_id === SubState::ALQUILADO;
-        if (is_null($reception) || $reception_alquilado || !!$request->input('ignore_reception')) {
-            if ($reception && !$reception->finished) {
-                $this->vehiclePictureRepository->deletePictureByReception($reception);
-                if ($vehicle->sub_state_id !== SubState::ALQUILADO) {
-                    $reception->delete();
-                }
-            }
-            $reception = $this->newReception($vehicle->id);
+    
+        if($request->input('newReception')) {
+            $this->vehiclePictureRepository->deletePictureByReception($reception);
+            $reception->delete();
+            $newReception = $this->newReception($vehicle->id);
+            return ['reception' => $newReception];
         } else {
-            return null;
+            return ['reception' => $reception];
         }
-        return ['reception' => $reception];
+        // $reception_alquilado = !!$reception->finished && $vehicle->sub_state_id === SubState::ALQUILADO;
+        // if (is_null($reception) || $reception_alquilado || !!$request->input('ignore_reception')) {
+        //     if ($reception && !$reception->finished) {
+        //         if ($vehicle->sub_state_id !== SubState::ALQUILADO) {
+        //         }
+        //     }
+        // } else {
+        //     return null;
+        // }
     }
 
     public function newReception($vehicle_id)
