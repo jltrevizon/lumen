@@ -228,29 +228,12 @@ class VehicleFilter extends ModelFilter
             FROM 
                 pending_tasks pt 
             WHERE 
-                pt.state_pending_task_id is NOT NULL 
-                AND pt.state_pending_task_id <> 3 
+                AND ( pt.state_pending_task_id in (1, 2) OR pt.state_pending_task_id IS NULL)
                 AND pt.approved = 1 
-                AND pt.group_task_id = (SELECT MAX(gt.id) FROM group_tasks gt WHERE gt.vehicle_id = pt.vehicle_id)
-        )');
-    }
-
-    public function pendingTaskIds($value)
-    {
-        return $this->whereRaw('
-            id IN(
-            SELECT 
-                pt.vehicle_id 
-            FROM 
-                pending_tasks pt 
-            WHERE 
-                pt.task_id IN('.implode(',', $value).')
-                AND pt.group_task_id = (SELECT MAX(gt.id) FROM group_tasks gt WHERE gt.vehicle_id = pt.vehicle_id)
-                AND pt.approved = 1 
-                AND pt.state_pending_task_id IN(1, 2)
-                AND pt.order = 1
-            ORDER BY pt.state_pending_task_id desc, pt.order, pt.datetime_finish desc 
-        )');
+                AND pt.group_task_id = (SELECT MAX(gt.id) FROM group_tasks gt WHERE gt.vehicle_id = pt.vehicle_id AND gt.approved = 1)
+                AND pt.task_id IN('.implode(',', $value).'))
+        ');
+        
     }
 
     public function isDefleeting($value)
