@@ -219,21 +219,17 @@ class VehicleFilter extends ModelFilter
         }
     }
 
-    public function withLastGroupTask($value)
+    public function lastGroupTaskFirstPendingTaskIds($value)
     {
-        return $this->whereRaw('
-            id IN(
-            SELECT 
-                pt.vehicle_id 
-            FROM 
-                pending_tasks pt 
-            WHERE 
-                AND ( pt.state_pending_task_id in (1, 2) OR pt.state_pending_task_id IS NULL)
-                AND pt.approved = 1 
-                AND pt.group_task_id = (SELECT MAX(gt.id) FROM group_tasks gt WHERE gt.vehicle_id = pt.vehicle_id AND gt.approved = 1)
-                AND pt.task_id IN('.implode(',', $value).'))
-        ');
-        
+        if ($value) {
+            $vehicle = Vehicle::whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($value){
+                return $builder->whereNotIn('task_id', $value);
+            })->get('id');
+            $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
+            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
+                return $query->whereIn('vehicle_id', $value); 
+            });
+        }
     }
 
     public function isDefleeting($value)
