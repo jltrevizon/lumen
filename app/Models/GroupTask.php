@@ -7,6 +7,7 @@ use App\Models\PendingTask;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class GroupTask extends Model
 {

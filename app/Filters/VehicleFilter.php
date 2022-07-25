@@ -7,7 +7,7 @@ use App\Models\Role;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Vehicle;
-
+use Illuminate\Support\Facades\DB;
 
 class VehicleFilter extends ModelFilter
 {
@@ -222,13 +222,17 @@ class VehicleFilter extends ModelFilter
     public function lastGroupTaskFirstPendingTaskIds($value)
     {
         if ($value) {
-            $vehicle = Vehicle::whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($value){
-                return $builder->whereNotIn('task_id', $value);
-            })->get('id');
-            $value = collect($vehicle)->map(function ($item){ return $item->id;})->toArray();
-            return $this->whereHas('lastGroupTask.approvedPendingTasks', function($query) use ($value) {
-                return $query->whereIn('vehicle_id', $value); 
-            });
+            $sql = <<<SQL
+                select pt.task_id 
+                from pending_tasks pt 
+                WHERE pt.state_pending_task_id <> 3 
+                AND pt.approved = 1 
+                AND pt.vehicle_id = vehicles.id 
+                ORDER BY pt.state_pending_task_id DESC, pt.order, pt.datetime_finish DESC 
+                limit 1
+            SQL;
+           return $this->selectRaw('*,('. $sql .') as task_id')
+           ->whereRaw('('. $sql .') IN('. implode(',', $value) .')');
         }
     }
 
