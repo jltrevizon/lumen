@@ -91,7 +91,7 @@ class VehicleRepository extends Repository
                 'data' => $query->get()
             ];
         } else {
-            $vehicles =  $query->paginate($request->input('per_page'));
+            $vehicles =  $query->paginate($request->input('per_page') ?? 5);
         }
         return ['vehicles' => $vehicles];
     }
@@ -222,7 +222,7 @@ class VehicleRepository extends Repository
             ->selectRaw('(SELECT MAX(r.id) FROM receptions r WHERE r.vehicle_id = vehicles.id) as reception_id')
             ->orderBy('reception_id', 'desc');
 
-        return ['vehicles' => $query->paginate($request->input('per_page'))];
+        return ['vehicles' => $query->paginate($request->input('per_page') ?? 5)];
     }
 
     public function createFromExcel($request)
