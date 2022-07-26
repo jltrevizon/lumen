@@ -7,7 +7,7 @@ use App\Models\Role;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Vehicle;
-
+use Illuminate\Support\Facades\DB;
 
 class VehicleFilter extends ModelFilter
 {
@@ -221,19 +221,19 @@ class VehicleFilter extends ModelFilter
 
     public function lastGroupTaskFirstPendingTaskIds($value)
     {
-        return $this->whereRaw('
-            id IN(
-            SELECT 
-                pt.vehicle_id 
-            FROM 
-                pending_tasks pt 
-            WHERE 
-                pt.state_pending_task_id is NOT NULL 
-                AND pt.state_pending_task_id <> 3 
+        if ($value) {
+            $sql = <<<SQL
+                select pt.task_id 
+                from pending_tasks pt 
+                WHERE pt.state_pending_task_id <> 3 
                 AND pt.approved = 1 
-                AND pt.group_task_id = (SELECT MAX(gt.id) FROM group_tasks gt WHERE gt.vehicle_id = pt.vehicle_id)
-                AND pt.task_id IN('.implode(',', $value).'))
-        ');
+                AND pt.vehicle_id = vehicles.id 
+                ORDER BY pt.state_pending_task_id DESC, pt.order, pt.datetime_finish DESC 
+                limit 1
+            SQL;
+           return $this->selectRaw('*,('. $sql .') as task_id')
+           ->whereRaw('('. $sql .') IN('. implode(',', $value) .')');
+        }
     }
 
     public function isDefleeting($value)
