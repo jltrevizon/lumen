@@ -53,15 +53,15 @@ class ReceptionRepository extends Repository
         $campa = Auth::user()->campas->first();
         if (!is_null($campa)) {
             $reception->campa_id = $campa->id;
-            if (is_null($reception->vehicle->campa_id)) {
-                $reception->vehicle->campa_id = $reception->campa_id;
-                $reception->vehicle->save();
-            }
         }
         $reception->vehicle_id = $request->input('vehicle_id');
         $reception->finished = false;
         $reception->has_accessories = false;
         $reception->save();
+        if (is_null($reception->vehicle->campa_id)) {
+            $reception->vehicle->campa_id = $campa->campa_id;
+            $reception->vehicle->save();
+        }
     }
 
     public function newReception($vehicle_id)
