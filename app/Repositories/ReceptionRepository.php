@@ -49,13 +49,19 @@ class ReceptionRepository extends Repository
             ->whereDate('created_at', date('Y-m-d'))
             ->delete();
 
-        $user = $this->userRepository->getById([], Auth::id());
         $reception = new Reception();
-        $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
+        $campa = Auth::user()->campas->first();
+        if (!is_null($campa)) {
+            $reception->campa_id = $campa->id;
+        }
         $reception->vehicle_id = $request->input('vehicle_id');
         $reception->finished = false;
         $reception->has_accessories = false;
         $reception->save();
+        if (is_null($reception->vehicle->campa_id)) {
+            $reception->vehicle->campa_id = $campa->campa_id;
+            $reception->vehicle->save();
+        }
     }
 
     public function newReception($vehicle_id)

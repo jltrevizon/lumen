@@ -95,6 +95,10 @@ class AldController extends Controller
             $pending_task->user_id = Auth::id();
             $pending_task->vehicle_id = $vehicle->id;
             $pending_task->reception_id = $vehicle->lastReception->id;
+            if (is_null($vehicle->campa_id) && $vehicle->lastReception->campa) {
+                $vehicle->campa_id = $vehicle->lastReception->campa->id;
+                $vehicle->save();
+            }
             $pending_task->task_id = $request->input('task_id');
             $pending_task->group_task_id = $groupTask->id;
             $taskDescription = $this->taskRepository->getById([], $pending_task->task_id);
