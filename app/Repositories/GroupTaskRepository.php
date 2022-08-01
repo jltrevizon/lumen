@@ -136,7 +136,7 @@ class GroupTaskRepository extends Repository
             }
             $pendingTask->save();
             $count = count($vehicle->lastGroupTask->approvedPendingTasks);
-            if ($count > 1) {
+            if ($count > 0) {
                 $pendingtTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
                 $pendingtTask->state_pending_task_id = StatePendingTask::PENDING;
                 $pendingtTask->datetime_pending = Carbon::now();

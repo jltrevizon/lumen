@@ -23,6 +23,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\Input;
 
 class PendingTaskAldController extends Controller
@@ -118,7 +119,7 @@ class PendingTaskAldController extends Controller
             if (!is_null($question_answer)) {
                 $pending_task->question_answer_id = $question_answer->id;
             }
-
+            Log::debug($task);
             if($task['approved'] == true && $isPendingTaskAssign == false){
                 if (!isset($task['without_state_pending_task'])) {
                     $pending_task->state_pending_task_id = StatePendingTask::PENDING;
