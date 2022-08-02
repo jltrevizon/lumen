@@ -372,11 +372,20 @@ class VehicleRepository extends Repository
         return ['message' => 'Vehicle deleted'];
     }
 
-    public function returnVehicle($id)
+    public function returnVehicle($request, $id)
     {
         $vehicle = Vehicle::where('id', $id)->withTrashed()->first();
         $vehicle->deleted_user_id = Auth::id();
         $vehicle->deleted_at = null;
+        $vehicle->update($request->all());
+        $user = Auth::user();
+        if (is_null($vehicle->campa_id)) {
+            if ($vehicle->lastReception?->campa_d) {
+                $vehicle->campa_id = $vehicle->lastReception?->campa_id;
+            } else if (count($user->campas) > 0) {
+                $vehicle->campa_id = $user->campas[0]->id;
+            }
+        }
         $vehicle->restore();
         return $vehicle;
     }

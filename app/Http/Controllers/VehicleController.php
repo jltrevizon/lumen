@@ -90,10 +90,9 @@ class VehicleController extends Controller
         return $this->deleteDataResponse($this->vehicleRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function returnVehicle($id)
+    public function returnVehicle(Request $request, $id)
     {
-        $data = $this->vehicleRepository->returnVehicle($id);
-        return $data;
+        $data = $this->vehicleRepository->returnVehicle($request, $id);
         return $this->deleteDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
 
