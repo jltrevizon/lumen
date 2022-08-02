@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Damage;
+use App\Models\GroupTask;
 use App\Models\PendingTask;
 use App\Models\Reception;
 use App\Models\SubState;
@@ -396,7 +397,12 @@ class VehicleRepository extends Repository
 
     public function newReception($vehicle_id, $campa_id)
     {
+        $group_task = new GroupTask();
+        $group_task->vehicle_id = $vehicle_id;
+        $group_task->approved = true;
+        $group_task->save();
         $reception = new Reception();
+        $reception->group_task_id = $group_task->id;
         $reception->campa_id = $campa_id;
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
