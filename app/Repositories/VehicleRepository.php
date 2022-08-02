@@ -213,7 +213,7 @@ class VehicleRepository extends Repository
             'lastGroupTask' => function ($query) use ($queryPendingTask) {
                 $query->select('id', 'lastGroupTask.vehicle_id', 'approved', 'datetime_approved')
                     ->with(array(
-                   //    'pendingTasks' => $queryPendingTask,
+                        //    'pendingTasks' => $queryPendingTask,
                         'approvedPendingTasks' => $queryPendingTask
                     ));
             }
@@ -253,10 +253,13 @@ class VehicleRepository extends Repository
 
     public function create($request)
     {
-        $existVehicle = Vehicle::where('plate', $request->input('plate'))
+        $existVehicle = Vehicle::where('plate', $request->input('plate'))->withTrashed()
             ->first();
         if ($existVehicle) {
-            return null;
+            return [
+                'code' => is_null($existVehicle->deleted_at) ? 422 : 406,
+                'vehicle' => $existVehicle
+            ];
         }
         $vehicle = Vehicle::create($request->all());
         if (is_null($vehicle->company_id)) {
@@ -367,6 +370,24 @@ class VehicleRepository extends Repository
         $vehicle->save();
         $vehicle->delete();
         return ['message' => 'Vehicle deleted'];
+    }
+
+    public function returnVehicle($request, $id)
+    {
+        $vehicle = Vehicle::where('id', $id)->withTrashed()->first();
+        $vehicle->deleted_user_id = Auth::id();
+        $vehicle->deleted_at = null;
+        $vehicle->update($request->all());
+        $user = Auth::user();
+        if (is_null($vehicle->campa_id)) {
+            if ($vehicle->lastReception?->campa_d) {
+                $vehicle->campa_id = $vehicle->lastReception?->campa_id;
+            } else if (count($user->campas) > 0) {
+                $vehicle->campa_id = $user->campas[0]->id;
+            }
+        }
+        $vehicle->restore();
+        return $vehicle;
     }
 
     public function deleteMassive($request)
