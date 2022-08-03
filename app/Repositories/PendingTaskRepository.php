@@ -554,9 +554,35 @@ class PendingTaskRepository extends Repository
             }
         }
         if ($task->need_authorization == false) {
+            $reception_id = null;
+            if ($vehicle->lastReception?->id) {
+                $reception_id = $vehicle->lastReception?->id;
+            } else {
+                $reception = $this->receptionRepository->newReception($vehicleId);
+                $reception_id = $reception->id;
+            }
+            $vehicle = Vehicle::findOrFail($vehicleId);
+
+            $groupTask = null;
+
+            if(!$vehicle->lastGroupTask || count($vehicle->lastGroupTask->approvedPendingTasks) === 0){
+                $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($damage->vehicle_id);
+            } else {
+                $groupTask = $vehicle->lastGroupTask;
+            }
+
+            if (!$vehicle->lastReception->group_task_id) {
+                $vehicle->lastReception->group_task_id = $groupTask->id;
+                $vehicle->lastReception->save();
+            }
+    
+            $damage->group_task_id = $groupTask->id;
+            $damage->save();
+
             PendingTask::create([
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
+                'reception_id' => $reception_id,
                 'campa_id' => $vehicle->campa_id,
                 'group_task_id' => $damage->group_task_id,
                 'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,

@@ -48,14 +48,6 @@ class DamageRepository extends Repository {
         
         $vehicle = $damage->vehicle;
         
-        $groupTask = null;
-        if(!$vehicle->lastGroupTask || count($vehicle->lastGroupTask->approvedPendingTasks) === 0){
-            $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($damage->vehicle_id);
-        } else {
-            $groupTask = $vehicle->lastGroupTask;
-        }
-
-        $damage->group_task_id = $groupTask->id;
         $damage->save();
 
         $isDamageTask = false;
