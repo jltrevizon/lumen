@@ -216,7 +216,7 @@ class Vehicle extends Model
     }
 
     public function square(){
-        return $this->hasOne(Square::class);
+        return $this->hasOne(Square::class)->orderBy('name', 'asc');
     }
 
     public function scopeByRole($query, $roleId){
