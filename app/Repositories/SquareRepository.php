@@ -15,7 +15,11 @@ class SquareRepository extends Repository {
 
     public function index($request){
         return Square::with($this->getWiths($request->with))
+            ->selectRaw('*, (Select st.name from streets as st where st.id = squares.street_id) as street_name, (Select z.name from streets as st, zones as z where st.id = squares.street_id and st.zone_id = z.id) as zone_name')
             ->filter($request->all())
+            ->orderBy('zone_name', 'asc')
+            ->orderBy('street_name', 'asc')
+            ->orderBy('name', 'asc')
             ->get();
     }
 
