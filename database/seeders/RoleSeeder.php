@@ -15,24 +15,58 @@ class RoleSeeder extends Seeder
     public function run()
     {
         $roles = $this->data();
-        foreach($roles as $role){
-            Role::create([
+        foreach ($roles as $role) {
+            Role::updateOrCreate([
+                'id' => $role['id']
+            ], [
                 'description' => $role['description']
             ]);
         }
     }
 
-    public function data(){
+    public function data()
+    {
         return [
-            ['description' => 'Admin'],
-            ['description' => 'Gestor Global'],
-            ['description' => 'Gestor Campa'],
-            ['description' => 'User App'],
-            ['description' => 'Recepción'],
-            ['description' => 'Comercial'],
-            ['description' => 'Control'],
-            ['description' => 'Taller mecánico'],
-            ['description' => 'Taller carrocería']
+            [
+                'id' => 1,
+                'description' => 'Admin'
+            ],
+            [
+                'id' => 2,
+                'description' => 'Gestor Global'
+            ],
+            [
+                'id' => 3,
+                'description' => 'Gestor Campa'
+            ],
+            [
+                'id' => 4,
+                'description' => 'Operario'
+            ],
+            [
+                'id' => 5,
+                'description' => 'Recepción'
+            ],
+            [
+                'id' => 6,
+                'description' => 'Comercial'
+            ],
+            [
+                'id' => 7,
+                'description' => 'Invarat'
+            ],
+            [
+                'id' => 8,
+                'description' => 'Taller mecánico'
+            ],
+            [
+                'id' => 9,
+                'description' => 'Taller carrocería'
+            ],
+            [
+                'id' => 10,
+                'description' => 'Tecnico'
+            ]
         ];
     }
 }
