@@ -26,6 +26,7 @@ use App\Repositories\VehicleExitRepository;
 use App\Repositories\CampaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VehicleRepository extends Repository
 {
@@ -394,16 +395,27 @@ class VehicleRepository extends Repository
         return $vehicle;
     }
 
-    public function newReception($vehicle_id)
+    public function newReception($vehicle_id, $group_task_id = null)
     {
         $user = $this->userRepository->getById([], Auth::id());
-        $group_task = $this->groupTaskRepository->create([
-            'vehicle_id' => $vehicle_id,
-            'approved_available' => true,
-            'approved' => true
-        ]);
         $reception = new Reception();
-        $reception->group_task_id = $group_task->id;
+
+        if (is_null($group_task_id)) {
+            $group_task = $this->groupTaskRepository->create([
+                'vehicle_id' => $vehicle_id,
+                'approved_available' => true,
+                'approved' => true
+            ]);
+            $group_task_id = $group_task->id;
+        } else {
+            $vehicle = Vehicle::find($vehicle_id);
+            if ($vehicle->lastGroupTask && count($vehicle->lastGroupTask->allApprovedPendingTasks) > 0) {
+                $reception->created_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->created_at;
+                $reception->updated_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->updated_at;
+            }    
+        }
+    
+        $reception->group_task_id = $group_task_id;
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
@@ -672,10 +684,24 @@ class VehicleRepository extends Repository
     public function lastGroupTasks($request)
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        if ($vehicle->lastReception?->group_task_id < $vehicle->lastGroupTask?->id) {
+            $value = [
+                'fix' => 'ESTA RECEPCION ESTA EN UN GRUPO ANTERIOR',
+                'last_reception_group_id' => $vehicle->lastReception?->group_task_id,
+                'last_group_id' => $vehicle->lastGroupTask?->id,
+                'count_reception_approved_pending_tasks' => count($vehicle->lastReception->groupTask->approvedPendingTasks),
+                'count_last_group_task_approved_pending_tasks' => count($vehicle->lastGroupTask->approvedPendingTasks)
+            ];
+            if ($value['count_reception_approved_pending_tasks'] === 0) {
+                Log::debug($value);
+                $this->newReception($vehicle->id, $vehicle->lastGroupTask->id);
+                $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+            }
+        }
         return Vehicle::with(array_merge($this->getWiths($request->with), ['groupTasks' => function ($query) use ($vehicle) {
             return $query
                 ->where('id', '=', $vehicle->lastReception->group_task_id)
-                //->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
+                // ->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
                 ->orderBy('id', 'desc')
                 ->orderBy('created_at', 'desc');
         }]))

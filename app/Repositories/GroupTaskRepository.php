@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Mail\NotificationDAMail;
 use App\Models\GroupTask;
 use App\Models\PendingTask;
-use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\Task;
