@@ -7,18 +7,16 @@ use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
 use App\Models\Vehicle;
-use App\Models\GroupTask;
-use App\Models\SubState;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateChangeRepository;
 use App\Repositories\TaskRepository;
+use App\Repositories\VehicleRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use PhpParser\Node\Stmt\TryCatch;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
-
 
 class AldController extends Controller
 {
@@ -26,11 +24,13 @@ class AldController extends Controller
     public function __construct(
         TaskRepository $taskRepository,
         GroupTaskRepository $groupTaskRepository,
-        StateChangeRepository $stateChangeRepository
+        StateChangeRepository $stateChangeRepository,
+        VehicleRepository $vehicleRepository
     ) {
         $this->taskRepository = $taskRepository;
         $this->groupTaskRepository = $groupTaskRepository;
         $this->stateChangeRepository = $stateChangeRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function unapprovedTask(Request $request)
@@ -72,19 +72,18 @@ class AldController extends Controller
             if (!$vehicle->lastReception) {
                 return $this->failResponse(['message' => 'Reception not found'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
-            $groupTask = null;
-            if ($request->input('group_task_id')) {
-                $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
-            } else {
-                $groupTask = $this->groupTaskRepository->createGroupTaskApproved($request);
+
+            $groupTask = $vehicle->lastReception->groupTask;
+            if (is_null($groupTask) || count($groupTask->approvedPendingTasks) === 0) {
+                $this->vehicleRepository->newReception($vehicle->id);
+                $vehicle = Vehicle::find($vehicle->id);
+                $groupTask = $vehicle->lastReception->groupTask;
             }
 
             $pending_task = new PendingTask();
 
-            $tasksApproved = 0;
-            if ($groupTask->approvedPendingTasks) {
-                $tasksApproved = count($groupTask->approvedPendingTasks);
-            }
+            $tasksApproved = count($groupTask->approvedPendingTasks);
+
             if ($tasksApproved == 0) {
                 $pending_task->order = 1;
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;

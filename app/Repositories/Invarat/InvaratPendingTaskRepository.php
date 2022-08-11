@@ -7,6 +7,7 @@ use App\Models\GroupTask;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
+use App\Models\Vehicle;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\Repository;
 use App\Repositories\TaskRepository;
@@ -29,7 +30,8 @@ class InvaratPendingTaskRepository extends Repository {
 
     public function create($vehicleId){
         $tasks = $this->taskRepository->getByCompany(Company::INVARAT);
-        $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
+        $reception = $this->vehicleRepository->newReception($vehicleId);
+        $groupTask = $reception->groupTask;
         $order = 1;
         foreach($tasks as $task){
             $pendingTask = new PendingTask();

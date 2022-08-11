@@ -17,7 +17,7 @@ class DeliveryVehicleRepository extends Repository
 
     public function __construct(
         SquareRepository $squareRepository,
-        GroupTaskRepository $groupTaskRepository
+        GroupTaskRepository $groupTaskRepository,
     ) {
         $this->squareRepository = $squareRepository;
         $this->groupTaskRepository = $groupTaskRepository;
@@ -31,18 +31,12 @@ class DeliveryVehicleRepository extends Repository
             ->paginate($request->input('per_page'));
     }
 
-    public function createDeliveryVehicles($vehicleId, $data, $deliveryNoteId, $count)
+    public function createDeliveryVehicles($vehicleId, $data, $deliveryNoteId, $count, $groupTaskId)
     {
         $this->squareRepository->freeSquare($vehicleId);
         $user = User::with('campas')
             ->findOrFail(Auth::id());
         $vehicle = Vehicle::findOrFail($vehicleId);
-        $hasLastGroupTask = $vehicle->lastGroupTask->id ?? null;
-        if (!$hasLastGroupTask) {
-            $hasLastGroupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicleId);
-            $hasLastGroupTask = $hasLastGroupTask->id;
-        }
-        $lastGroupTask = $hasLastGroupTask;
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
             'campa_id' => $user->campas[0]->id,
@@ -53,7 +47,7 @@ class DeliveryVehicleRepository extends Repository
             'vehicle_id' => $vehicleId,
             'reception_id' => $vehicle->lastReception->id ?? null,
             'task_id' => Task::TOALQUILADO,
-            'group_task_id' => $lastGroupTask,
+            'group_task_id' => $groupTaskId,
         ], [
             'state_pending_task_id' => StatePendingTask::PENDING,
             'user_id' => Auth::id(),

@@ -577,7 +577,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending Authorization
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
-        $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
     
         /** Estimated dates */
         $router->post('/estimated-dates', 'EstimatedDateController@store');
