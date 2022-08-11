@@ -63,7 +63,7 @@ class GroupTaskRepositoryTest extends TestCase
         $vehicle = Vehicle::factory()->create();
         $request = new Request();
         $request->replace(['vehicle_id' => $vehicle->id]);
-        $result = $this->repository->create($request);
+        $result = $this->repository->create($request->all());
         $this->assertEquals($vehicle->id, $result['vehicle_id']);
         $this->assertEquals($result['approved'], false);
     }
