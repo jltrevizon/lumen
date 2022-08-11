@@ -84,7 +84,7 @@ class GroupTaskRepository extends Repository
                 'order' => -1
             ];
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'group_task_id' => $vehicle->lastGroupTask->id,
                 'task_id' => Task::VALIDATE_CHECKLIST,
                 'vehicle_id' => $vehicle->id
             ], $data_update);
@@ -96,7 +96,7 @@ class GroupTaskRepository extends Repository
             }
             $pendingTask->save();
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'group_task_id' => $vehicle->lastGroupTask->id,
                 'task_id' => Task::TOCAMPA,
                 'vehicle_id' => $vehicle->id
             ], $data_update);
