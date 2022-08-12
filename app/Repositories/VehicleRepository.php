@@ -693,7 +693,6 @@ class VehicleRepository extends Repository
                 'count_last_group_task_approved_pending_tasks' => count($vehicle->lastGroupTask->approvedPendingTasks)
             ];
             if ($value['count_reception_approved_pending_tasks'] === 0) {
-                Log::debug($value);
                 $this->newReception($vehicle->id, $vehicle->lastGroupTask->id);
                 $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             }

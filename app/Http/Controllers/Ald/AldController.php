@@ -65,6 +65,12 @@ class AldController extends Controller
         }
     }
 
+    public function lastGroupTask($vehicle_id)
+    {
+        $vehicle = Vehicle::findOrFail($vehicle_id);
+        return $vehicle->lastReception->groupTask;
+    }
+
     public function createTaskVehiclesAvalible(Request $request)
     {
         try {
@@ -73,11 +79,11 @@ class AldController extends Controller
                 return $this->failResponse(['message' => 'Reception not found'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $groupTask = $vehicle->lastReception->groupTask;
+            $groupTask = $this->lastGroupTask($vehicle->id);
             if (is_null($groupTask) || count($groupTask->approvedPendingTasks) === 0) {
                 $this->vehicleRepository->newReception($vehicle->id);
                 $vehicle = Vehicle::find($vehicle->id);
-                $groupTask = $vehicle->lastReception->groupTask;
+                $groupTask = $this->lastGroupTask($vehicle->id);
             }
 
             $pending_task = new PendingTask();
@@ -93,13 +99,15 @@ class AldController extends Controller
 
             $pending_task->user_id = Auth::id();
             $pending_task->vehicle_id = $vehicle->id;
+
             $pending_task->reception_id = $vehicle->lastReception->id;
+            $pending_task->group_task_id = $groupTask->id;
+
             if (is_null($vehicle->campa_id) && $vehicle->lastReception->campa) {
                 $vehicle->campa_id = $vehicle->lastReception->campa->id;
                 $vehicle->save();
             }
             $pending_task->task_id = $request->input('task_id');
-            $pending_task->group_task_id = $groupTask->id;
             $taskDescription = $this->taskRepository->getById([], $pending_task->task_id);
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->approved = true;
@@ -115,6 +123,7 @@ class AldController extends Controller
             }
 
             $pending_task->save();
+            $groupTask = $this->lastGroupTask($vehicle->id);
 
             $is_pending_task = false;
             $order = 1;
@@ -132,9 +141,8 @@ class AldController extends Controller
                 $update_pending_task->save();
                 $order++;
             }
-
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-            return $this->createDataResponse(['data' => $pending_task], HttpFoundationResponse::HTTP_CREATED);
+            return $this->createDataResponse(['data' => $groupTask->approvedPendingTasks], HttpFoundationResponse::HTTP_CREATED);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage(),], 400);
         }
