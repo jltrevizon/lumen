@@ -57,6 +57,16 @@ class DeliveryVehicleFilter extends ModelFilter
         return $this->whereNotNull('delivery_note_id');
     }   
 
+    public function deletedAt($value){
+        if ($value == 1) {
+            return $this->withTrashed()->whereNotNull('deleted_at');
+        } if ($value == 2) {
+            return $this->withTrashed();
+        } else {
+            return $this->withTrashed()->whereNull('deleted_at');
+        }
+    }   
+
     public function deliveryNoteIds($ids){
         return $this->whereIn('delivery_note_id', $ids);
     }    

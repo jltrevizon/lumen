@@ -41,7 +41,8 @@ class DeliveryVehicleRepository extends Repository
             'vehicle_id' => $vehicleId,
             'campa_id' => $user->campas[0]->id,
             'delivery_note_id' => $deliveryNoteId,
-            'data_delivery' => json_encode($data)
+            'data_delivery' => json_encode($data),
+            'delivery_by' => $user->name
         ]);
         PendingTask::updateOrCreate([
             'vehicle_id' => $vehicleId,
