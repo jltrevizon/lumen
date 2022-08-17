@@ -554,7 +554,7 @@ class VehicleRepository extends Repository
                         }
                         $hasLastGroupTask = $vehicle->lastReception?->groupTask?->id ?? null;
                         if (!$hasLastGroupTask) {
-                            $reception = $this->vehicleRepository->newReception($vehicle->id);
+                            $reception = $this->newReception($vehicle->id);
                             $hasLastGroupTask = $reception->groupTask->id;
                         }
                         $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1, $hasLastGroupTask);
@@ -567,7 +567,7 @@ class VehicleRepository extends Repository
                             $vehicle->sub_state_id = null;
                         }
                         $vehicle->save();
-                        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+                        $this->stateChangeRepository->updateSubStateVehicle($vehicle, SubState::ALQUILADO);
                     }
                     if ($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT) {
                         $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
