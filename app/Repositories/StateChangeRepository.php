@@ -31,9 +31,6 @@ class StateChangeRepository extends Repository
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
                     $sub_state_id = $pendingTask->task->sub_state_id;
-
-                    Log::debug($sub_state_id);
-
                     if ($sub_state_id === SubState::ALQUILADO) {
                         $sub_state_id = SubState::ALQUILADO;
                         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
@@ -41,6 +38,19 @@ class StateChangeRepository extends Repository
                     } else if (!$vehicle->lastGroupTask->approved && !$vehicle->lastGroupTask->approved_available) {
                         $sub_state_id = SubState::CHECK;
                     }
+                }
+            }
+        }
+        if ($sub_state_id == SubState::SOLICITUD_DEFLEET && !is_null($vehicle->lastGroupTask)) {
+            $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
+            $count = count($approvedPendingTasks);
+            if ($count > 0) {
+                $pendingTask = $approvedPendingTasks[0];
+                $sub_state_id = $pendingTask->task->sub_state_id;
+                if ($sub_state_id === SubState::ALQUILADO) {
+                    $sub_state_id = SubState::ALQUILADO;
+                    $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                    $pendingTask->save();
                 }
             }
         }
@@ -122,7 +132,7 @@ class StateChangeRepository extends Repository
                 'campa_id' => $vehicle->campa_id ?? null,
                 'vehicle_id' => $vehicle->id,
                 'pending_task_id' => $currentPendingTask->id,
-                'group_task_id' => $currentPendingTask->group_task_id,
+                'group_task_id' => $currentPendingTask?->group_task_id,
                 'sub_state_id' => $currentPendingTask == null ? SubState::CAMPA : $currentPendingTask->task->sub_state_id,
             ]);
             return;

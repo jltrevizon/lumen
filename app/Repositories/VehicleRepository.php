@@ -703,7 +703,7 @@ class VehicleRepository extends Repository
         }
         return Vehicle::with(array_merge($this->getWiths($request->with), ['groupTasks' => function ($query) use ($vehicle) {
             return $query
-                ->where('id', '=', $vehicle->lastReception->group_task_id)
+                ->where('id', '=', $vehicle->lastReception?->group_task_id)
                 // ->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
                 ->orderBy('id', 'desc')
                 ->orderBy('created_at', 'desc');
