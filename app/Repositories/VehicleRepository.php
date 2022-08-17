@@ -563,7 +563,9 @@ class VehicleRepository extends Repository
                             $reception->finished = true;
                             $reception->save();
                         }
-                        $vehicle->sub_state_id = null;
+                        if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
+                            $vehicle->sub_state_id = null;
+                        }
                         $vehicle->save();
                         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
                     }
