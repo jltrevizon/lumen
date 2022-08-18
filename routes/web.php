@@ -34,6 +34,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/kpi-diff-reception', 'KpiController@diffTimeReception');
     $router->get('/kpi-check-list', 'KpiController@checkList');
     $router->get('/kpi-pending-tasks', 'KpiController@kpiPendingTask');
+    $router->get('/stock-pending-tasks', 'KpiController@pendingTask');
 
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**

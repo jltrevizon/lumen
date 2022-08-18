@@ -6,6 +6,7 @@ use App\Exports\KpiCheckListExport;
 use App\Exports\KpiDiffTimeReceptionExport;
 use Illuminate\Http\Request;
 use App\Exports\KpiInpuOutExport;
+use App\Exports\PendingTaskExport as ExportsPendingTaskExport;
 use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
 use App\Exports\KpiSubStateMonthExport;
@@ -105,5 +106,14 @@ class KpiController extends Controller
     {
         ob_clean();
         return Excel::download(new KpiPendingTaskExport($request), 'Kpi_Tareas_Pendientes-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function pendingTask(Request $request)
+    {
+        ini_set("memory_limit", "-1");
+        $date = microtime(true);
+        $array = explode('.', $date);
+        ob_clean();
+        return Excel::store(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', 'local');
     }
 }

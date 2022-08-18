@@ -45,7 +45,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     $pendingTask->observations,
                     $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
                     $vehicle->has_environment_label == true ? 'Si' : 'No',
-                    $vehicle->campa->name ?? null,
+                    $pendingTask->campa->name ?? null,
                     $vehicle->category->name ?? null,
                     $pendingTask->task->name ?? null,
                     $pendingTask->statePendingTask->name ?? null,
