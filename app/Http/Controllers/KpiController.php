@@ -114,6 +114,6 @@ class KpiController extends Controller
         $date = microtime(true);
         $array = explode('.', $date);
         ob_clean();
-        return Excel::store(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', 'local');
+        return Excel::download(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
 }
