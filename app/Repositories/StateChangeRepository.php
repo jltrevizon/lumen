@@ -56,7 +56,7 @@ class StateChangeRepository extends Repository
                     $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
                     $pendingTask->campa_id = null;
                     $pendingTask->save();
-                    $vehicle->campa_id = null;
+                    // $vehicle->campa_id = null;
                     $vehicle->save();
                 }
             }
