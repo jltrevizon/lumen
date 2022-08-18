@@ -1,4 +1,5 @@
 <?php
+/** @var \Laravel\Lumen\Routing\Router $router */
 
 $router->group(['prefix' => 'api'], function () use ($router){
 
@@ -11,5 +12,8 @@ $router->group(['prefix' => 'api'], function () use ($router){
         $router->put('/invarat/update-budgets', 'Invarat\InvaratBudgetController@update');
         $router->get('/invarat/vehicles-by-channel', 'Invarat\InvaratVehicleController@vehiclesByChannel');
     });
+
+    $router->post('/invarat/gsp20/create-order', 'Invarat\GspController@createVehicle');
+
 
 });
