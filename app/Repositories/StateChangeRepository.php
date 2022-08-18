@@ -54,7 +54,7 @@ class StateChangeRepository extends Repository
                 $pendingTask = $approvedPendingTasks[0];
                 if ($param_sub_state_id === SubState::ALQUILADO) {
                     $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
-                    $pendingTask->campa_id = null;
+                  //  $pendingTask->campa_id = null;
                     $pendingTask->save();
                     // $vehicle->campa_id = null;
                     $vehicle->save();
