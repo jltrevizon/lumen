@@ -189,7 +189,7 @@ class Vehicle extends Model
     }
 
     public function lastDeliveryVehicle(){
-        return $this->hasOne(DeliveryVehicle::class)->ofMany([
+        return $this->hasOne(DeliveryVehicle::class)->withTrashed()->ofMany([
             'id' => 'max'
         ]);
     }
