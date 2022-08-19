@@ -399,7 +399,7 @@ class VehicleRepository extends Repository
     {
         $user = $this->userRepository->getById([], Auth::id());
         $reception = new Reception();
-
+        $vehicle = Vehicle::find($vehicle_id);
         if (is_null($group_task_id)) {
             $group_task = $this->groupTaskRepository->create([
                 'vehicle_id' => $vehicle_id,
@@ -408,7 +408,6 @@ class VehicleRepository extends Repository
             ]);
             $group_task_id = $group_task->id;
         } else {
-            $vehicle = Vehicle::find($vehicle_id);
             if ($vehicle->lastGroupTask && count($vehicle->lastGroupTask->allApprovedPendingTasks) > 0) {
                 $reception->created_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->created_at;
                 $reception->updated_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->updated_at;
@@ -420,6 +419,7 @@ class VehicleRepository extends Repository
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
         $reception->has_accessories = false;
+        $reception->type_model_order_id = $vehicle->type_model_order_id;
         $reception->save();
         return $reception;
     }

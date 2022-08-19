@@ -8,6 +8,7 @@ use App\Models\StateChange;
 use App\Models\SubState;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use DateTime;
@@ -58,6 +59,11 @@ class StateChangeRepository extends Repository
                     $pendingTask->save();
                     // $vehicle->campa_id = null;
                     $vehicle->save();
+                    $reception = $pendingTask->reception;
+                    if ($reception && $vehicle->type_model_order_id) {
+                        $reception->type_model_order_id = TypeModelOrder::VO_ENTREGADO;
+                        $reception->save();
+                    }
                 }
             }
         }

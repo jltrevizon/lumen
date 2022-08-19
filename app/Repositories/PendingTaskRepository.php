@@ -345,6 +345,11 @@ class PendingTaskRepository extends Repository
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
             $pending_task->save();
+            $reception = $pending_task->reception;
+            if ($reception) {
+                $reception->type_model_order_id = $vehicle->type_model_order_id;
+                $reception->save();
+            }
             if ($vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL) {
                 $vehicle->sub_state_id = $pending_task->task->sub_state_id;
                 $vehicle->save();
