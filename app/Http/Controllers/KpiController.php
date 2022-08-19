@@ -10,6 +10,9 @@ use App\Exports\PendingTaskExport as ExportsPendingTaskExport;
 use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
 use App\Exports\KpiSubStateMonthExport;
+use App\Models\Company;
+use App\Models\PendingTask;
+use App\Models\StatePendingTask;
 use App\Models\Vehicle;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
@@ -111,6 +114,7 @@ class KpiController extends Controller
     public function pendingTask(Request $request)
     {
         ini_set("memory_limit", "-1");
+        ini_set('max_execution_time', '-1');
         $date = microtime(true);
         $array = explode('.', $date);
         ob_clean();
