@@ -23,10 +23,12 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
     {
         if($this->campaId == null) {
             return Vehicle::where('sub_state_id', '!=', SubState::ALQUILADO)
+                ->filter([ 'defleetingAndDelivery' => 1 ])
                 ->get();
         } else {
             return Vehicle::where('campa_id', $this->campaId)
                     ->where('sub_state_id', '!=', SubState::ALQUILADO)
+                    ->filter([ 'defleetingAndDelivery' => 1 ])
                     ->get();
         }
     }
