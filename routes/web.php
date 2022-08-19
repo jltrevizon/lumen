@@ -35,6 +35,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/kpi-check-list', 'KpiController@checkList');
     $router->get('/kpi-pending-tasks', 'KpiController@kpiPendingTask');
     $router->get('/stock-pending-tasks', 'KpiController@pendingTask');
+    $router->get('/stock-vehicles', 'KpiController@stockVehicle');
 
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
