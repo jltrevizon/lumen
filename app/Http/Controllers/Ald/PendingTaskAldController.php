@@ -54,7 +54,7 @@ class PendingTaskAldController extends Controller
                 $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
             }
             else {
-                $groupTask = $this->groupTaskRepository->create($request);
+                $groupTask = $this->groupTaskRepository->create($request->all());
                 $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
                 $reception->group_task_id = $groupTask->id;
                 $reception->save();

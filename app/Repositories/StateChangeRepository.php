@@ -8,6 +8,8 @@ use App\Models\StateChange;
 use App\Models\SubState;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\TypeModelOrder;
+use App\Models\Vehicle;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Log;
@@ -15,8 +17,9 @@ use Illuminate\Support\Facades\Log;
 class StateChangeRepository extends Repository
 {
 
-    public function updateSubStateVehicle($vehicle)
+    public function updateSubStateVehicle($vehicle, $param_sub_state_id = null)
     {
+        $vehicle = Vehicle::find($vehicle->id);
         $sub_state_id = $vehicle->sub_state_id;
         if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::WORKSHOP_EXTERNAL && $sub_state_id !== SubState::TRANSIT) {
             if (is_null($vehicle->lastGroupTask)) {
@@ -31,15 +34,36 @@ class StateChangeRepository extends Repository
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
                     $sub_state_id = $pendingTask->task->sub_state_id;
-
-                    Log::debug($sub_state_id);
-
                     if ($sub_state_id === SubState::ALQUILADO) {
                         $sub_state_id = SubState::ALQUILADO;
                         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
                         $pendingTask->save();
                     } else if (!$vehicle->lastGroupTask->approved && !$vehicle->lastGroupTask->approved_available) {
                         $sub_state_id = SubState::CHECK;
+                    }
+                }
+            }
+        } else if ($sub_state_id == SubState::SOLICITUD_DEFLEET && !is_null($vehicle->lastGroupTask)) {
+            $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
+            $count = count($approvedPendingTasks);
+            Log::debug([
+                'bug' => $sub_state_id,
+                'Bug2' => $param_sub_state_id,
+                'count' => $count
+            ]);
+            if ($count > 0) {
+                $pendingTask = $approvedPendingTasks[0];
+                if ($param_sub_state_id === SubState::ALQUILADO) {
+                    $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                  //  $pendingTask->campa_id = null;
+                    $pendingTask->save();
+                    // $vehicle->campa_id = null;
+                    $vehicle->type_model_order_id = TypeModelOrder::VO_ENTREGADO;
+                    $vehicle->save();
+                    $reception = $pendingTask->reception;
+                    if ($reception && $vehicle->type_model_order_id) {
+                        $reception->type_model_order_id = $vehicle->type_model_order_id;
+                        $reception->save();
                     }
                 }
             }
@@ -122,7 +146,7 @@ class StateChangeRepository extends Repository
                 'campa_id' => $vehicle->campa_id ?? null,
                 'vehicle_id' => $vehicle->id,
                 'pending_task_id' => $currentPendingTask->id,
-                'group_task_id' => $currentPendingTask->group_task_id,
+                'group_task_id' => $currentPendingTask?->group_task_id,
                 'sub_state_id' => $currentPendingTask == null ? SubState::CAMPA : $currentPendingTask->task->sub_state_id,
             ]);
             return;

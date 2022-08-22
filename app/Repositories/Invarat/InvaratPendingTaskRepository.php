@@ -10,6 +10,7 @@ use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
+use App\Models\Vehicle;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\PendingTaskCanceledRepository;
 use App\Repositories\Repository;
@@ -36,7 +37,8 @@ class InvaratPendingTaskRepository extends Repository {
 
     public function create($vehicleId){
         $tasks = $this->taskRepository->getByCompany(Company::INVARAT);
-        $groupTask = $this->groupTaskRepository->createWithVehicleId($vehicleId);
+        $reception = $this->vehicleRepository->newReception($vehicleId);
+        $groupTask = $reception->groupTask;
         $order = 1;
         foreach($tasks as $task){
             $pendingTask = new PendingTask();

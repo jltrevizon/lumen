@@ -64,18 +64,6 @@ class ReceptionRepository extends Repository
         }
     }
 
-    public function newReception($vehicle_id)
-    {
-        $user = $this->userRepository->getById([], Auth::id());
-        $reception = new Reception();
-        $reception->campa_id = $user->campas->pluck('id')->toArray()[0];
-        $reception->vehicle_id = $vehicle_id;
-        $reception->finished = false;
-        $reception->has_accessories = false;
-        $reception->save();
-        return $reception;
-    }
-
     public function getById($id)
     {
         $reception = Reception::with(['vehicle.vehicleModel.brand', 'vehicle.subState.state'])

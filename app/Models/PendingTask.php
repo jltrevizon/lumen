@@ -24,6 +24,7 @@ class PendingTask extends Model
         'question_answer_id',
         'campa_id',
         'state_pending_task_id',
+        'type_model_order_id',
         'user_start_id',
         'user_end_id',
         'group_task_id',

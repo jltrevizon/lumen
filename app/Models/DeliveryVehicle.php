@@ -16,7 +16,8 @@ class DeliveryVehicle extends Model
         'vehicle_id',
         'campa_id',
         'delivery_note_id',
-        'data_delivery'
+        'data_delivery',
+        'delivery_by',
     ];
 
     protected $casts = [

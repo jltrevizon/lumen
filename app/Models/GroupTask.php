@@ -47,6 +47,19 @@ class GroupTask extends Model
         ->orderBy('datetime_finish', 'desc');
     }
 
+    public function defaultOrderApprovedPendingTasks(){
+        return $this->hasMany(PendingTask::class, 'group_task_id')
+        ->where('approved', true)
+        ->where(function ($query) {
+            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->orderByRaw('FIELD(task_id,39, 11, 2, 3, 4, 41, 5, 6, 7, 8)');
+        // ->orderBy('state_pending_task_id', 'desc')
+        // ->orderBy('order')
+        // ->orderBy('datetime_finish', 'desc');
+    }
+
     public function allApprovedPendingTasks(){
         return $this->hasMany(PendingTask::class)
             ->where('approved', 1);

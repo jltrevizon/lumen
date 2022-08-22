@@ -34,6 +34,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/kpi-diff-reception', 'KpiController@diffTimeReception');
     $router->get('/kpi-check-list', 'KpiController@checkList');
     $router->get('/kpi-pending-tasks', 'KpiController@kpiPendingTask');
+    $router->get('/stock-pending-tasks', 'KpiController@pendingTask');
+    $router->get('/stock-vehicles', 'KpiController@stockVehicle');
 
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
@@ -577,7 +579,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending Authorization
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
-        $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
     
         /** Estimated dates */
         $router->post('/estimated-dates', 'EstimatedDateController@store');
