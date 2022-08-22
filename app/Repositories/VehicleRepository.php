@@ -309,8 +309,13 @@ class VehicleRepository extends Repository
             ->byPendingRequestDefleet()
             ->filter($request->all())
             ->first();
+        $vehicleDefleet = null;
+
         if ($vehicleDefleet) {
-            return ['defleet' => true, 'vehicle' => $vehicleDefleet];
+            $defleetingAndDelivery = Vehicle::where('id', $vehicleDefleet?->id)->filter(['defleetingAndDelivery' => 0])->first();
+        }
+        if ($vehicleDefleet) {
+            return ['defleet' => true, 'vehicle' => $vehicleDefleet, 'vehicle_delivery' => $defleetingAndDelivery];
         }
 
         $vehicle = Vehicle::with($this->getWiths($request->with))
@@ -318,7 +323,11 @@ class VehicleRepository extends Repository
             ->first();
 
         if ($vehicle) {
-            return ['vehicle' => $vehicle, 'registered' => true];
+            $defleetingAndDelivery = Vehicle::where('id', $vehicle?->id)->filter(['defleetingAndDelivery' => 0])->first();
+        }
+
+        if ($vehicle) {
+            return ['vehicle' => $vehicle, 'registered' => true, 'vehicle_delivery' => $defleetingAndDelivery];
         } else {
             return ['registered' => false];
         }
@@ -411,9 +420,9 @@ class VehicleRepository extends Repository
             if ($vehicle->lastGroupTask && count($vehicle->lastGroupTask->allApprovedPendingTasks) > 0) {
                 $reception->created_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->created_at;
                 $reception->updated_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->updated_at;
-            }    
+            }
         }
-    
+
         $reception->group_task_id = $group_task_id;
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
         $reception->vehicle_id = $vehicle_id;
