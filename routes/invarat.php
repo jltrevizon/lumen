@@ -13,6 +13,8 @@ $router->group(['prefix' => 'api'], function () use ($router){
         $router->get('/invarat/vehicles-by-channel', 'Invarat\InvaratVehicleController@vehiclesByChannel');
     });
 
+    $router->post('/invarat/start-pending-task', 'Invarat\InvaratPendingTaskController@startPendingTask');
+    $router->post('/invarat/cancel-pending-task', 'Invarat\InvaratPendingTaskController@cancelPendingTask');
     $router->post('/invarat/gsp20/create-order', 'Invarat\GspController@createVehicle');
 
 
