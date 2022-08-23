@@ -21,6 +21,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
     {
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
+        $campas = $this->request->input('campas') ?? null;
 
         $in_data = InKpiView::with(['typeModelOrder'])
             ->where('in_year', $year)
@@ -165,15 +166,19 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
+        $value[] = [$campas, '', '', '', ''];
+        $ocupacion = 14000;
+
         $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
+        $value[] =  ['total', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
                 strval($v[1] ?? 0),
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total)),
-                500,
-                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, 500)),
+                $ocupacion,
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $ocupacion)),
             ];
         }
 
