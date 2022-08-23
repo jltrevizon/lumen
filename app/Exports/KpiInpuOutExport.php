@@ -166,6 +166,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
 
         $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
+        $value[] =  ['total', '1', '2', '3', '4'];
 
         foreach ($variable as $key => $v) {
             $value[] = [
