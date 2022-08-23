@@ -167,7 +167,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
-        $campas = Campa::filter($this->request->all())
+        $campas = Campa::filter(['ids' => $campas])
             ->select(
                 DB::raw('sum(ocupation) as `ocupacion`')
             )
