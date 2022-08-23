@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Vehicle;
+use App\Models\Campa;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
@@ -166,11 +167,15 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
-        $value[] = [$campas, '', '', '', ''];
-        $ocupacion = 14000;
+        $campas = Campa::filter($this->request->all())
+            ->select(
+                DB::raw('sum(ocupation) as `ocupacion`')
+            )
+            ->get();
+        $ocupacion = $campas[0]['ocupacion'];
 
         $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
-        $value[] =  ['total', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
+        $value[] =  ['TOTAL', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {
             $value[] = [
