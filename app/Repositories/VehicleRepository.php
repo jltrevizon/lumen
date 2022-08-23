@@ -702,11 +702,11 @@ class VehicleRepository extends Repository
                 'fix' => 'ESTA RECEPCION ESTA EN UN GRUPO ANTERIOR',
                 'last_reception_group_id' => $vehicle->lastReception?->group_task_id,
                 'last_group_id' => $vehicle->lastGroupTask?->id,
-                'count_reception_approved_pending_tasks' => count($vehicle->lastReception->groupTask->approvedPendingTasks),
-                'count_last_group_task_approved_pending_tasks' => count($vehicle->lastGroupTask->approvedPendingTasks)
+                'count_reception_approved_pending_tasks' => count($vehicle->lastReception?->groupTask?->approvedPendingTasks ?? []),
+                'count_last_group_task_approved_pending_tasks' => count($vehicle->lastGroupTask?->approvedPendingTasks ?? [])
             ];
             if ($value['count_reception_approved_pending_tasks'] === 0) {
-                $this->newReception($vehicle->id, $vehicle->lastGroupTask->id);
+                $this->newReception($vehicle->id, $vehicle->lastGroupTask?->id);
                 $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             }
         }
