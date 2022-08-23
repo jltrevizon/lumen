@@ -559,6 +559,11 @@ class VehicleRepository extends Repository
                                     $pending_task->user_end_id = Auth::id();
                                 }
                                 $pending_task->save();
+                                $reception = $pending_task->reception;
+                                if (!is_null($reception)) {
+                                    $reception->finished = 1;
+                                    $reception->save();
+                                }
                             }
                         }
                         $hasLastGroupTask = $vehicle->lastReception?->groupTask?->id ?? null;
