@@ -165,8 +165,10 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
+        $ocupacion = 14000;
+
         $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
-        $value[] =  ['total', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), 500, strval($this->obtenerPorcentaje((int) $total ?? 0, 500))];
+        $value[] =  ['total', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {
             $value[] = [
@@ -174,7 +176,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
                 strval($v[1] ?? 0),
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total)),
                 500,
-                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, 500)),
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $ocupacion)),
             ];
         }
 
