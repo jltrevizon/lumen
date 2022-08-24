@@ -12,6 +12,7 @@ use App\Repositories\Repository;
 use App\Repositories\VehicleModelRepository;
 use App\Repositories\VehicleRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class InvaratVehicleRepository extends Repository {
 
@@ -37,6 +38,23 @@ class InvaratVehicleRepository extends Repository {
         $vehicle->vehicle_model_id= $vehicleModel->id;
         $vehicle->save();
         return $vehicle;
+    }
+
+    /**
+     * Obtenemos vehículos de la compañía 2
+     *
+     * @param $request
+     * @return array
+     */
+    public function filterVehicle($request){
+
+        $query = Vehicle::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->where('company_id',2)
+            ->paginate($request->input('per_page') ?? 10);
+
+        return ['vehicles' => $query];
+
     }
 
     public function vehiclesByChannel($request){
