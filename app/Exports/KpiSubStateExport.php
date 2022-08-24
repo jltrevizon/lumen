@@ -86,7 +86,7 @@ class KpiSubStateExport implements FromArray
         
         for ($i = 5; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
-                $value[$i][3] = $this->obtenerPorcentaje((int) $value[$i][2], $acum);
+                // $value[$i][3] = $this->obtenerPorcentaje((int) $value[$i][2], $acum);
             }
         }
 
