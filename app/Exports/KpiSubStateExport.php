@@ -24,7 +24,7 @@ class KpiSubStateExport implements FromArray
         /* Taller */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -53,7 +53,7 @@ class KpiSubStateExport implements FromArray
         /* Pendiente V.O. */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -82,7 +82,7 @@ class KpiSubStateExport implements FromArray
         /* Predisponible */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -112,7 +112,7 @@ class KpiSubStateExport implements FromArray
         /* Disponible */        
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -150,7 +150,7 @@ class KpiSubStateExport implements FromArray
         }
         */
         $value[1][2] = strval($total_general);
-        $value[2][2] = strval($total_no_disponible);
+        $value[2][2] = strval($total_no_disponibles);
         
         for ($i = 0; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
