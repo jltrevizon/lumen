@@ -126,7 +126,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -145,7 +145,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         }
 
         $stok_now = Vehicle::with(['typeModelOrder'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
