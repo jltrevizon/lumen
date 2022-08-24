@@ -19,7 +19,7 @@ class KpiSubStateExport implements FromArray
 
         $value[] = ['', '', 'Número de lo que hay en stock', '% de lo que hay en stock'];
 
-        $value[] = ['Total general', 'Total no siponibles y disponibles', '229', '100'];
+        // $value[] = ['Total general', 'Total no siponibles y disponibles', '229', '100'];
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
             ->filter($this->request->all())
