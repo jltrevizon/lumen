@@ -63,7 +63,7 @@ class InvaratPendingTaskRepository extends Repository {
      * Inicia una tarea.
      *
      * @param $request
-     * @return bool|string[]
+     * @return false|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|string[]|null
      */
     public function startTask($request){
 
@@ -76,7 +76,14 @@ class InvaratPendingTaskRepository extends Repository {
             $pending_task->datetime_start = date('Y-m-d H:i:s');
             $pending_task->user_start_id = Auth::id();
 
-            return $pending_task->save();
+            if($pending_task->save()){
+
+                $pending_task->load($this->getWiths($request->with));
+                return $pending_task;
+
+            }
+
+            return false;
 
         } else {
 
@@ -105,27 +112,25 @@ class InvaratPendingTaskRepository extends Repository {
     }
 
     /**
-     *
      * Finalizamos una tarea, comprobamos si hay proximas como pendientes para resetear la fecha.
      *
      * @param $request
-     * @return bool|void
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|void|null
      */
-    public function finishPendingTask($request)
+    public function finishTask($request)
     {
 
         try {
 
-            $pending_task = PendingTask::findOrFail($request->input('pending_task_id'));
+            $pending_task = PendingTask::with($this->getWiths($request->with))->findOrFail($request->input('pending_task_id'));
             $vehicle = $pending_task->vehicle;
 
             if ($pending_task->state_pending_task_id == StatePendingTask::IN_PROGRESS) {
+
                 $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
                 $pending_task->order = -1;
                 $pending_task->user_end_id = Auth::id();
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
-                $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
-                $pending_task->save();
 
                 if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) {
                     $pending_task_next = $vehicle->lastGroupTask->approvedPendingTasks[0];
@@ -133,21 +138,33 @@ class InvaratPendingTaskRepository extends Repository {
                     if ($pending_task_next) {
                         $pending_task_next->state_pending_task_id = StatePendingTask::PENDING;
                         $pending_task_next->datetime_pending = date('Y-m-d H:i:s');
-
-                        return $pending_task_next->save();
+                        $pending_task_next->save();
 
                     }
 
-                    return true;
+                }
+
+                if($pending_task->save()){
+
+                    $pending_task->load($this->getWiths($request->with));
+                    return $pending_task;
 
                 }
+
+                throw new \Exception("Error al finalizar la tarea, ponte en contacto con el administrador.");
+
+            }else{
+
+                throw new \Exception("La tarea no está en estado proceso");
+
             }
 
         }catch (\Exception $e){
              Log::debug($e->getMessage()." - ".$e->getFile()." - ".$e->getLine());
-             return false;
+            return [
+                'message' => $e->getMessage()
+            ];
         }
-
     }
 
 }
