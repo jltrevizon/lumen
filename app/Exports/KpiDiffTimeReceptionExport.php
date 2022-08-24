@@ -19,7 +19,7 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
     public function array(): array
     {
         $data_now = Reception::with(['typeModelOrder'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
                 DB::raw('CASE WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 15 THEN 14 WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 30 THEN 29 WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 45 THEN 44 ELSE 45 END AS bit'),
