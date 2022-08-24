@@ -19,7 +19,7 @@ class KpiSubStateExport implements FromArray
 
         $value[] = ['', '', 'Número de lo que hay en stock', '% de lo que hay en stock'];
 
-        $value[] = ['Total general', 'Total no siponibles y disponibles', '229', '100'];
+        $value[] = ['Total general', 'Total no siponibles y disponibles', '', ''];
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
             ->filter($this->request->all())
@@ -36,7 +36,7 @@ class KpiSubStateExport implements FromArray
             ->get();
 
         $value[] = ['No Disponible', 'Total de lo que estan en estado predisponible + taller + pte venta vo', '', '%'];
-        $index = count($value) - 1; // 1
+        $index = count($value) - 1;
         $total[$index] = 0;
 
         foreach ($data as $key => $v) {
@@ -81,7 +81,7 @@ class KpiSubStateExport implements FromArray
             $acum += $total[$i] ?? 0;
         }
 
-        for ($i = 0; $i < count($value); $i++) {
+        for ($i = 2; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
                 $value[$i][3] = $this->obtenerPorcentaje((int) $value[$i][2], $acum);
             }
