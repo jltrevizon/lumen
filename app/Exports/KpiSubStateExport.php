@@ -46,6 +46,7 @@ class KpiSubStateExport implements FromArray
         }
 
         $value[$index][2] = $total[$index];
+        $total_no_disponible = $total[$index];
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
             ->filter($this->request->all())
@@ -75,15 +76,18 @@ class KpiSubStateExport implements FromArray
         }
 
         $value[$index][2] = $total[$index];
+        $total_disponible = $total[$index];
+
+        $total_general = $total_no_disponible + $total_disponible;
         
         $acum = 0;
         for ($i = 0; $i < count($total); $i++) {
             $acum += $total[$i] ?? 0;
         }
 
-        $value[1][2] = strval($acum);
+        $value[1][2] = strval($acum) . ' ' . strval($total_general) . ' ' . strval($total_no_disponible) . ' ' . strval($total_disponible);
         
-        for ($i = 5; $i < count($value); $i++) {
+        for ($i = 0; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
                 // $value[$i][3] = $this->obtenerPorcentaje((int) $value[$i][2], $acum);
             }
