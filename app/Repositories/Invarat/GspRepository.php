@@ -13,6 +13,7 @@ use App\Repositories\Repository;
 use App\Repositories\StateChangeRepository;
 use App\Repositories\VehicleModelRepository;
 use App\Repositories\VehicleRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class GspRepository extends Repository {
@@ -28,15 +29,13 @@ class GspRepository extends Repository {
     }
 
     /**
-     * Se crea un vehículo por petición de GSP20
+     * Se crea un vehículo por petición de GSP20 sin tareas y con estado pendiende te prueba dinamica
      *
      * @param $request
      * @return mixed
      */
     public function createVehicle($request)
     {
-
-        Log::debug(print_r($request->input(),true));
 
         // Comprobamos si existe el vehículo por matrículla
         $vehicleExist = $this->vehicleRepository->getByPlate($request);
