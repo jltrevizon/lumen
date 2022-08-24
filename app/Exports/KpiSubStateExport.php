@@ -81,7 +81,7 @@ class KpiSubStateExport implements FromArray
             $acum += $total[$i] ?? 0;
         }
 
-        $value[1][2] = $acum;
+        $value[1][2] = strval($acum);
         
         for ($i = 5; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
