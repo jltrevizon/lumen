@@ -142,6 +142,7 @@ class KpiSubStateExport implements FromArray
         $total_disponible = $total[$index];
 
         $total_no_disponible = $total_taller + $total_predisponible + $total_pendiente_venta;
+        $total_general = $total_disponibles + $total_no_disponibles;
         /*
         $acum = 0;
         for ($i = 0; $i < count($total); $i++) {
