@@ -73,34 +73,50 @@ class QuestionAnswerRepository
 
     public function createChecklist($request)
     {
-        $questionnaire = $this->questionnaireRepository->create($request);
-        $questions = $request->input('questions');
-        foreach ($questions as $question) {
-            $questionAnswer = new QuestionAnswer();
-            $questionAnswer->questionnaire_id = $questionnaire['id'];
-            $questionAnswer->question_id = $question['question_id'];
-            $questionAnswer->response = $question['response'];
-            $questionAnswer->description = $question['description'];
-            $questionAnswer->save();
+        try{
+
+            $questionnaire = $this->questionnaireRepository->create($request);
+            $questions = $request->input('questions');
+
+            foreach ($questions as $question) {
+                $questionAnswer = new QuestionAnswer();
+                $questionAnswer->questionnaire_id = $questionnaire['id'];
+                $questionAnswer->question_id = $question['id'];
+                $questionAnswer->response = 0;
+                $questionAnswer->description = "";
+                $questionAnswer->save();
+            }
+
+            return true;
+
+        }catch (Exception $e){
+
+            Log::debug("ERROR -->  ".$e->getMessage()." - ".$e->getFile()." - ".$e->getLine() );
+
+            return [
+                'message' => $e->getMessage(),
+            ];
+
         }
-        $questionnaireComplete = Questionnaire::with(['questionAnswers.question', 'vehicle.lastOrder'])
-            ->findOrFail($questionnaire['id']);
-        $client = new \GuzzleHttp\Client();
-        $response = $client->post(
-            'https://devgsp20.invarat.com/api/createChecklist',
-            [
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Zm9jdXM6aW52YXJhdGZvY3Vz'
-                ],
-                'body' => json_encode($questionnaireComplete)
-            ]
-        );
-        return [
-            'message' => 'Ok',
-            'message_gsp' => $response
-        ];
+
+//        $questionnaireComplete = Questionnaire::with(['questionAnswers.question', 'vehicle.lastOrder'])
+//            ->findOrFail($questionnaire['id']);
+//        $client = new \GuzzleHttp\Client();
+//        $response = $client->post(
+//            'http://gsp20:8080.com/api/createChecklist',
+//            [
+//                'headers' => [
+//                    'Accept' => 'application/json',
+//                    'Content-Type' => 'application/json',
+//                    'Authorization' => 'Zm9jdXM6aW52YXJhdGZvY3Vz'
+//                ],
+//                'body' => json_encode($questionnaireComplete)
+//            ]
+//        );
+//        return [
+//            'message' => 'Ok',
+//            'message_gsp' => $response
+//        ];
     }
 
     public function update($request, $id)
