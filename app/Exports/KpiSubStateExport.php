@@ -139,7 +139,7 @@ class KpiSubStateExport implements FromArray
         }
 
         $value[$index][2] = $total[$index];
-        $total_disponible = $total[$index];
+        $total_disponibles = $total[$index];
 
         $total_no_disponibles = $total_taller + $total_predisponible + $total_pendiente_venta;
         $total_general = $total_disponibles + $total_no_disponibles;
