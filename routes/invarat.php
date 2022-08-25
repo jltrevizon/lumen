@@ -19,6 +19,7 @@ $router->group(['prefix' => 'api'], function () use ($router){
         $router->post('/invarat/start-pending-task', 'Invarat\InvaratPendingTaskController@startPendingTask');
         $router->post('/invarat/finish-pending-task', 'Invarat\InvaratPendingTaskController@finishPendingTask');
         $router->post('/invarat/cancel-pending-task', 'Invarat\InvaratPendingTaskController@cancelPendingTask');
+        $router->post('/invarat/next-pending-task', 'Invarat\InvaratPendingTaskController@nextPendingTask');
     });
 
 
