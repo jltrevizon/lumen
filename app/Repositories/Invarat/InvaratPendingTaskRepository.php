@@ -59,6 +59,32 @@ class InvaratPendingTaskRepository extends Repository {
         $this->stateChangeRepository->updateSubStateVehicle($groupTask->vehicle);
     }
 
+
+    /**
+     * Método que trae la siguiente task de un grupo de tareas
+     *
+     * @param object $request
+     * @return object|array
+     */
+    public function nextPendingTask($request){
+
+        $pending_task = PendingTask::with('task')
+            ->where('group_task_id',$request->group_task_id)
+            ->where('vehicle_id',$request->vehicle_id)
+            ->where('order',$request->order++)
+            ->first();
+
+        if($pending_task){
+            return $pending_task;
+        }else{
+            //No encuentra más tareas pendientes
+            return [
+                'message' => 'No hay más tareas.'
+            ];
+        }
+
+    }
+
     /**
      * Inicia una tarea.
      *

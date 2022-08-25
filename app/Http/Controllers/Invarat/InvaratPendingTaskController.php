@@ -20,6 +20,10 @@ class InvaratPendingTaskController extends Controller
         return $this->createDataResponse($this->invaratVehicleRepository->startTask($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
+    public function nextPendingTask(Request $request){
+        return $this->createDataResponse($this->invaratVehicleRepository->nextPendingTask($request), HttpFoundationResponse::HTTP_CREATED);
+    }
+
     public function finishPendingTask(Request $request){
         return $this->createDataResponse($this->invaratVehicleRepository->finishTask($request), HttpFoundationResponse::HTTP_CREATED);
     }
