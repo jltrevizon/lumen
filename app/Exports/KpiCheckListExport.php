@@ -28,14 +28,13 @@ class KpiCheckListExport implements FromArray, WithHeadings
                 DB::raw('sum((select count(*) from pending_tasks where vehicle_id = vehicles.id and task_id = 3 and approved = 1 and (state_pending_task_id in (1, 2) or (state_pending_task_id is null and comment_state is null)) )) mecanica')
             )
             */
-            ->whereHas('subState', function (Builder $builder) {
-                return $builder->whereIn('state_id', [11]);
-            })
+            ->whereRaw('sub_state_id = 11')
             ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->get();
 
-            $value[] = ['datos', '', '1', '', '', '', '', '', '', '', '', '', ''];
-            $value[] = ['datos', strval(count($data)), '2', '', '', '', '', '', '', '', '', '', ''];
+            $value[] = ['Checklist pendientes', '', '1', '', '', '', '', '', '', '', '', '', ''];
+            $value[] = ['Mecánica', '', '1', '', '', '', '', '', '', '', '', '', ''];
+            $value[] = ['Chapa', strval(count($data)), '2', '', '', '', '', '', '', '', '', '', ''];
             // $value[] = [$data[0]['vehiculos'], $data[0]['chapa'], $data[0]['mecanica']];
             foreach ($data as $key => $v) {
                 $value[] = [strval($v['id'])];
