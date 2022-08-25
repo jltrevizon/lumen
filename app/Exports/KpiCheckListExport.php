@@ -4,8 +4,10 @@ namespace App\Exports;
 
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+
 
 class KpiCheckListExport implements FromArray, WithHeadings
 {
