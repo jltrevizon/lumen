@@ -34,7 +34,9 @@ class KpiCheckListExport implements FromArray, WithHeadings
 
             $value[] = ['datos', '', '', '', '', '', '', '', '', '', '', '', ''];
             $value[] = [$data[0]['vehiculos'], $data[0]['chapa'], $data[0]['mecanica']];
-            $value[] = [implode(',', $data[0])];
+            foreach ($data as $key => $v) {
+                $value[] = [$v['vehiculos']];
+            }
 
             return $value;
 
