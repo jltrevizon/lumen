@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\GroupTask;
+use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
