@@ -9,7 +9,8 @@ RUN apt update \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip \
     && docker-php-ext-install mysqli pdo pdo_mysql \
-    && docker-php-ext-enable pdo_mysql
+    && docker-php-ext-enable pdo_mysql \ 
+    && docker-php-ext-install gd 
 
 WORKDIR /var/www/api-focus
 
