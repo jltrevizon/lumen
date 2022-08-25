@@ -35,7 +35,11 @@ class KpiCheckListExport implements FromArray, WithHeadings
             $value[] = ['Chapa', strval(count($data)), '2', '', '', '', '', '', '', '', '', '', ''];
             // $value[] = [$data[0]['vehiculos'], $data[0]['chapa'], $data[0]['mecanica']];
             foreach ($data as $key => $v) {
-                $value[] = [strval($v['id']), strval($v['mecanica']), strval($v['chapa']))];
+                $value[] = [
+                    strval($v['id']), 
+                    strval($v['mecanica']), 
+                    strval($v['chapa'])
+                ];
             }
 
             return $value;
