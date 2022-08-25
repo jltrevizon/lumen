@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Vehicle;
+use App\Models\Company;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromArray;
