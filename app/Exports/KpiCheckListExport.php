@@ -32,8 +32,9 @@ class KpiCheckListExport implements FromArray, WithHeadings
             ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->get();
 
-            $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
+            $value[] = ['datos', '', '', '', '', '', '', '', '', '', '', '', ''];
             $value[] = [$data[0]['vehiculos'], $data[0]['chapa'], $data[0]['mecanica']];
+            $value[] = [implode(",", $data)];
 
             return $value;
 
