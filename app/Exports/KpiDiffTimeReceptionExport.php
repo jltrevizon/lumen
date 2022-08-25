@@ -61,6 +61,7 @@ class KpiDiffTimeReceptionExport implements FromArray, WithHeadings
             $value[0][1] = strval($acum);
         }
 
+        Log::debug($value);
         return $value;
     }
 

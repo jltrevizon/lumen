@@ -15,6 +15,7 @@ use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
 use App\Models\Vehicle;
+use App\Models\Reception;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
 use Illuminate\Database\Eloquent\Builder;
