@@ -3,11 +3,13 @@
 namespace App\Repositories\Invarat;
 
 use App\Models\Company;
+use App\Models\QuestionAnswer;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use App\Repositories\BrandRepository;
+use App\Repositories\QuestionnaireRepository;
 use App\Repositories\Repository;
 use App\Repositories\VehicleModelRepository;
 use App\Repositories\VehicleRepository;
@@ -19,12 +21,15 @@ class InvaratVehicleRepository extends Repository {
     public function __construct(
         BrandRepository $brandRepository,
         VehicleModelRepository $vehicleModelRepository,
-        VehicleRepository $vehicleRepository
+        VehicleRepository $vehicleRepository,
+        QuestionnaireRepository $questionnaireRepository
+
         )
     {
         $this->brandRepository = $brandRepository;
         $this->vehicleModelRepository = $vehicleModelRepository;
         $this->vehicleRepository = $vehicleRepository;
+        $this->questionnaireRepository = $questionnaireRepository;
     }
 
     public function createVehicle($request){
@@ -40,23 +45,6 @@ class InvaratVehicleRepository extends Repository {
         return $vehicle;
     }
 
-    /**
-     * Obtenemos vehículos de la compañía 2
-     *
-     * @param $request
-     * @return array
-     */
-    public function filterVehicle($request){
-
-        $query = Vehicle::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->where('company_id',2)
-            ->paginate($request->input('per_page') ?? 10);
-
-        return ['vehicles' => $query];
-
-    }
-
     public function vehiclesByChannel($request){
         return Vehicle::with($this->getWiths($request->with))
             ->whereHas('pendingTasks', function(Builder $builder) {
@@ -65,6 +53,41 @@ class InvaratVehicleRepository extends Repository {
             ->where('type_model_order_id', '!=', TypeModelOrder::ALDFLEX)
             ->get()
             ->groupby('type_model_order_id');
+    }
+
+    /**
+     * Generamos las preguntas, con respuestas vacías.
+     *
+     * @param $request
+     * @return array|bool
+     */
+    public function createChecklistEmpty($request)
+    {
+        try{
+
+            $questionnaire = $this->questionnaireRepository->create($request);
+            $questions = $request->input('questions');
+
+            foreach ($questions as $question) {
+                $questionAnswer = new QuestionAnswer();
+                $questionAnswer->questionnaire_id = $questionnaire['id'];
+                $questionAnswer->question_id = $question['id'];
+                $questionAnswer->response = 0;
+                $questionAnswer->description = "";
+                $questionAnswer->save();
+            }
+
+            return $questionnaire;
+
+        }catch (\Exception $e){
+
+            Log::debug("ERROR -->  ".$e->getMessage()." - ".$e->getFile()." - ".$e->getLine() );
+
+            return [
+                'message' => $e->getMessage(),
+            ];
+
+        }
     }
 
 }

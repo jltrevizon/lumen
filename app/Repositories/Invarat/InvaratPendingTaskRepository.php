@@ -59,6 +59,32 @@ class InvaratPendingTaskRepository extends Repository {
         $this->stateChangeRepository->updateSubStateVehicle($groupTask->vehicle);
     }
 
+
+    /**
+     * Método que trae la siguiente task de un grupo de tareas
+     *
+     * @param object $request
+     * @return object|array
+     */
+    public function nextPendingTask($request){
+
+        $pending_task = PendingTask::with('task')
+            ->where('group_task_id',$request->group_task_id)
+            ->where('vehicle_id',$request->vehicle_id)
+            ->where('order',$request->order++)
+            ->first();
+
+        if($pending_task){
+            return $pending_task;
+        }else{
+            //No encuentra más tareas pendientes
+            return [
+                'message' => 'No hay más tareas.'
+            ];
+        }
+
+    }
+
     /**
      * Inicia una tarea.
      *
@@ -166,5 +192,34 @@ class InvaratPendingTaskRepository extends Repository {
             ];
         }
     }
+
+    /**
+     *
+     * Generamos una pending task con el siguiente orden
+     *
+     * @param $request
+     * @return PendingTask[]
+     */
+    public function addPendingTaskReacondicionamiento($request)
+    {
+        $vehicle = $this->vehicleRepository->getById($request, $request->input('vehicle_id'));
+        $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))
+            ->latest()->first();
+        $task = $this->taskRepository->getById([], $request->input('task_id'));
+        $pendingTask = new PendingTask();
+        $pendingTask->task_id = $task['id'];
+        $pendingTask->campa_id = $vehicle->campa_id;
+        $pendingTask->vehicle_id = $request->input('vehicle_id');
+        $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
+        $pendingTask->group_task_id = $request->input('group_task_id');
+        $pendingTask->duration = $task['duration'];
+        $pendingTask->order = $request->input('order') != "" ? $request->input('order') :  $pendingTasks->order + 1;
+        $pendingTask->observations = $request->input('observations');
+        $pendingTask->user_id = Auth::id();
+        $pendingTask->save();
+
+        return ['pending_task' => $pendingTask];
+    }
+
 
 }
