@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\KpiCheckListExport;
 use App\Exports\KpiDiffTimeReceptionExport;
+use App\Exports\KpiFullExport;
 use Illuminate\Http\Request;
 use App\Exports\KpiInpuOutExport;
 use App\Exports\PendingTaskExport as ExportsPendingTaskExport;
@@ -105,6 +106,12 @@ class KpiController extends Controller
     {
         ob_clean();
         return Excel::download(new KpiInpuOutExport($request), 'Kpi_Entradas_Salidas-' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function kpiFull(Request $request)
+    {
+        ob_clean();
+        return Excel::download(new KpiFullExport($request), 'Kpi-' . date('Y-m-d') . '.xlsx');
     }
 
     public function kpiPendingTask(Request $request)
