@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Mail\NotificationDAMail;
 use App\Models\GroupTask;
 use App\Models\PendingTask;
-use App\Models\SubState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\Task;
@@ -36,41 +35,13 @@ class GroupTaskRepository extends Repository
             ->findOrFail($id);
     }
 
-    public function createWithVehicleId($vehicle_id)
+    public function create($data)
     {
         $group_task = new GroupTask();
-        $group_task->vehicle_id = $vehicle_id;
-        $group_task->approved = 0;
-        $group_task->save();
-        return $group_task;
-    }
-
-    public function create($request)
-    {
-        $group_task = new GroupTask();
-        $group_task->vehicle_id = $request->input('vehicle_id');
-        $group_task->questionnaire_id = $request->input('questionnaire_id');
-        $group_task->approved = 0;
-        $group_task->save();
-        return $group_task;
-    }
-
-    public function createGroupTaskApproved($request)
-    {
-        $group_task = new GroupTask();
-        $group_task->vehicle_id = $request->input('vehicle_id');
-        $group_task->approved = 1;
-        $group_task->approved_available = 1;
-        $group_task->save();
-        return $group_task;
-    }
-
-    public function createGroupTaskApprovedByVehicle($vehicleId)
-    {
-        $group_task = new GroupTask();
-        $group_task->vehicle_id = $vehicleId;
-        $group_task->approved = 1;
-        $group_task->approved_available = 1;
+        $group_task->vehicle_id = $data['vehicle_id'];
+        $group_task->questionnaire_id = $data['questionnaire_id'] ?? null;
+        $group_task->approved_available = $data['approved_available'] ?? 0;
+        $group_task->approved = $data['approved'] ?? 0;
         $group_task->save();
         return $group_task;
     }
@@ -112,7 +83,7 @@ class GroupTaskRepository extends Repository
                 'order' => -1
             ];
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'group_task_id' => $vehicle->lastGroupTask->id,
                 'task_id' => Task::VALIDATE_CHECKLIST,
                 'vehicle_id' => $vehicle->id
             ], $data_update);
@@ -124,7 +95,7 @@ class GroupTaskRepository extends Repository
             }
             $pendingTask->save();
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'group_task_id' => $vehicle->lastGroupTask->id,
                 'task_id' => Task::TOCAMPA,
                 'vehicle_id' => $vehicle->id
             ], $data_update);

@@ -11,6 +11,7 @@ use App\Models\StatePendingTask;
 use App\Models\SubState;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class QuestionAnswerRepository
 {
@@ -113,6 +114,9 @@ class QuestionAnswerRepository
         return ['question_answer' => $questionAnswer];
     }
 
+    /**
+     * 11, 2, 3, 4, 41, 5, 6, 7, 8
+     */
     public function updateResponse($request, $id)
     {
         $questionAnswer = QuestionAnswer::findOrFail($id);
@@ -121,6 +125,7 @@ class QuestionAnswerRepository
         if (!is_null($pendingTask)) {
             $pendingTask->approved = $questionAnswer->response;
             $pendingTask->save();
+            $vehicle = $pendingTask->vehicle;
         } else if (!!$questionAnswer->response && !!$questionAnswer->task_id) {
             $vehicle = $questionAnswer->questionnaire->vehicle;
             $pending_task = new PendingTask();
@@ -150,6 +155,10 @@ class QuestionAnswerRepository
                 $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             }
             $pendingTask = $pending_task;
+        }
+        foreach ($vehicle->lastGroupTask->defaultOrderApprovedPendingTasks as $key => $value) {
+            $value->order = $key + 1;
+            $value->save();
         }
         return $questionAnswer;
     }

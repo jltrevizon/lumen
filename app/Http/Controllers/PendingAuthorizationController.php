@@ -25,10 +25,6 @@ class PendingAuthorizationController extends Controller
         return $this->getDataResponse($this->pendingAuthorizationRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function approvedAuthorization(Request $request){
-        return $this->updateDataResponse($this->pendingAuthorizationRepository->approvedAuthorization($request), HttpFoundationResponse::HTTP_OK);
-    }
-
     /**
      * Show the form for creating a new resource.
      *

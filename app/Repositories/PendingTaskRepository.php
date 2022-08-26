@@ -345,6 +345,11 @@ class PendingTaskRepository extends Repository
             $pending_task->datetime_finish = date('Y-m-d H:i:s');
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
             $pending_task->save();
+            $reception = $pending_task->reception;
+            if ($reception) {
+                $reception->type_model_order_id = $vehicle->type_model_order_id;
+                $reception->save();
+            }
             if ($vehicle->sub_state_id == SubState::WORKSHOP_EXTERNAL) {
                 $vehicle->sub_state_id = $pending_task->task->sub_state_id;
                 $vehicle->save();
@@ -558,24 +563,18 @@ class PendingTaskRepository extends Repository
             if ($vehicle->lastReception?->id) {
                 $reception_id = $vehicle->lastReception?->id;
             } else {
-                $reception = $this->receptionRepository->newReception($vehicleId);
+                $reception = $this->vehicleRepository->newReception($vehicleId);
                 $reception_id = $reception->id;
             }
             $vehicle = Vehicle::findOrFail($vehicleId);
 
-            $groupTask = null;
-
-            if(!$vehicle->lastGroupTask || count($vehicle->lastGroupTask->approvedPendingTasks) === 0){
-                $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($damage->vehicle_id);
-            } else {
-                $groupTask = $vehicle->lastGroupTask;
-            }
+            $groupTask = $vehicle->lastReception->groupTask;
 
             if (!$vehicle->lastReception->group_task_id) {
                 $vehicle->lastReception->group_task_id = $groupTask->id;
                 $vehicle->lastReception->save();
             }
-    
+
             $damage->group_task_id = $groupTask->id;
             $damage->save();
 
@@ -602,7 +601,11 @@ class PendingTaskRepository extends Repository
         foreach ($request->input('vehicle_ids') as $id) {
             $vehicle = Vehicle::findOrFail($id);
             $task = $this->taskRepository->getById([], Task::TRANSFER);
-            $groupTask = $this->groupTaskRepository->createGroupTaskApprovedByVehicle($vehicle->id);
+            $groupTask = $this->groupTaskRepository->create([
+                'vehicle_id' => $vehicle->id,
+                'approved_available' => 1,
+                'approved' => 1
+            ]);
             PendingTask::create([
                 'vehicle_id' => $vehicle->id,
                 'reception_id' => $vehicle->lastReception->id ?? null,

@@ -21,4 +21,9 @@ class InvaratVehicleController extends Controller
     public function vehiclesByChannel(Request $request){
         return $this->getDataResponse($this->invaratVehicleRepository->vehiclesByChannel($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function createChecklistEmpty(Request $request){
+        return $this->getDataResponse($this->invaratVehicleRepository->createChecklistEmpty($request), HttpFoundationResponse::HTTP_OK);
+    }
+
 }

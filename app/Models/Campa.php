@@ -45,6 +45,7 @@ class Campa extends Model
         'location',
         'address',
         'active',
+        'ocupation'
     ];
 
     public function users(){

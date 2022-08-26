@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Vehicle extends Model
 {
@@ -188,7 +189,7 @@ class Vehicle extends Model
     }
 
     public function lastDeliveryVehicle(){
-        return $this->hasOne(DeliveryVehicle::class)->ofMany([
+        return $this->hasOne(DeliveryVehicle::class)->withTrashed()->ofMany([
             'id' => 'max'
         ]);
     }

@@ -41,4 +41,19 @@ class VehiclePictureRepository extends Repository {
         return ['message' => 'Pictures deleted'];
     }
 
+    public function delete($id){
+
+        $pic = VehiclePicture::find($id);
+
+        if($pic){
+            $pic->delete();
+            return ['message' => 'Picture deleted'];
+        }else{
+            return ['message' => 'Picture not found'];
+        }
+
+    }
+
+
+
 }

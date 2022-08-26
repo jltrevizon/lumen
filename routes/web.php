@@ -28,12 +28,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
+    $router->get('/kpi-all', 'KpiController@kpiFull');
     $router->get('/kpi-inpu-out-stock', 'KpiController@kpiInpuOut');
     $router->get('/kpi-sub-states', 'KpiController@subStates');
     $router->get('/kpi-sub-states-month', 'KpiController@subStatesMonth');
     $router->get('/kpi-diff-reception', 'KpiController@diffTimeReception');
     $router->get('/kpi-check-list', 'KpiController@checkList');
     $router->get('/kpi-pending-tasks', 'KpiController@kpiPendingTask');
+    $router->get('/stock-pending-tasks', 'KpiController@pendingTask');
+    $router->get('/stock-vehicles', 'KpiController@stockVehicle');
 
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
@@ -300,6 +303,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Vehicle Picture
          */
         $router->post('/vehicle-pictures', 'VehiclePictureController@create');
+        $router->delete('/vehicle-pictures/{id}', 'VehiclePictureController@delete');
         $router->post('/vehicle-pictures/by-vehicle', 'VehiclePictureController@getPicturesByVehicle');
 
         /**
@@ -577,7 +581,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending Authorization
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
-        $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
     
         /** Estimated dates */
         $router->post('/estimated-dates', 'EstimatedDateController@store');
