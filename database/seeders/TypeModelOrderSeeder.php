@@ -56,7 +56,7 @@ class TypeModelOrderSeeder extends Seeder
             ],
             [
                 'id' => 8,
-                'name' => 'VO-ENTREGADO'
+                'name' => 'VO-ENTREGADO-ALD-FLEX'
             ]
         ];
     }

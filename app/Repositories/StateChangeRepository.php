@@ -52,14 +52,13 @@ class StateChangeRepository extends Repository
                 'count' => $count
             ]);
             if ($count > 0) {
-                $pendingTask = $approvedPendingTasks[0];
+                foreach ($approvedPendingTasks as $key => $pendingTask) {
+                    if ($param_sub_state_id === SubState::ALQUILADO) {
+                        $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
+                        $pendingTask->save();
+                    }
+                }
                 if ($param_sub_state_id === SubState::ALQUILADO) {
-                    $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
-                  //  $pendingTask->campa_id = null;
-                    $pendingTask->save();
-                    // $vehicle->campa_id = null;
-                    $vehicle->type_model_order_id = TypeModelOrder::VO_ENTREGADO;
-                    $vehicle->save();
                     $reception = $pendingTask->reception;
                     if ($reception && $vehicle->type_model_order_id) {
                         $reception->type_model_order_id = $vehicle->type_model_order_id;

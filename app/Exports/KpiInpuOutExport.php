@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Vehicle;
+use App\Models\Campa;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
     {
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
+        $campas = $this->request->input('campas') ?? null;
 
         $in_data = InKpiView::with(['typeModelOrder'])
             ->where('in_year', $year)
@@ -124,7 +126,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -143,7 +145,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         }
 
         $stok_now = Vehicle::with(['typeModelOrder'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -165,15 +167,23 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
+        $campas = Campa::filter(['ids' => $campas])
+            ->select(
+                DB::raw('sum(ocupation) as `ocupacion`')
+            )
+            ->get();
+        $ocupacion = $campas[0]['ocupacion'];
+
         $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
+        $value[] =  ['TOTAL', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
                 strval($v[1] ?? 0),
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total)),
-                500,
-                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, 500)),
+                $ocupacion,
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $ocupacion)),
             ];
         }
 
