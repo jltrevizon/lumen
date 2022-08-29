@@ -79,23 +79,23 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $totales_entradas = [];
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
-                $totales_entrada[$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+                $totales_entradas[$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
             }
         }
         $value[] = [
             'Total',
-            strval($totales_entrada[1] ?? 0),
-            strval($totales_entrada[2] ?? 0),
-            strval($totales_entrada[3] ?? 0),
-            strval($totales_entrada[4] ?? 0),
-            strval($totales_entrada[5] ?? 0),
-            strval($totales_entrada[6] ?? 0),
-            strval($totales_entrada[7] ?? 0),
-            strval($totales_entrada[8] ?? 0),
-            strval($totales_entrada[9] ?? 0),
-            strval($totales_entrada[10] ?? 0),
-            strval($totales_entrada[11] ?? 0),
-            strval($totales_entrada[12] ?? 0)
+            strval($totales_entradas[1] ?? 0),
+            strval($totales_entradas[2] ?? 0),
+            strval($totales_entradas[3] ?? 0),
+            strval($totales_entradas[4] ?? 0),
+            strval($totales_entradas[5] ?? 0),
+            strval($totales_entradas[6] ?? 0),
+            strval($totales_entradas[7] ?? 0),
+            strval($totales_entradas[8] ?? 0),
+            strval($totales_entradas[9] ?? 0),
+            strval($totales_entradas[10] ?? 0),
+            strval($totales_entradas[11] ?? 0),
+            strval($totales_entradas[12] ?? 0)
         ];
 
         foreach ($variable as $key => $v) {
