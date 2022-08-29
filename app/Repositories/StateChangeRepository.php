@@ -84,7 +84,7 @@ class StateChangeRepository extends Repository
                     }
 
                     if ($vehicle->sub_state_id != $pendingTask->task->sub_state_id) {
-                        $vehicle->last_change_sub_state = Carbon::now();
+                        $pendingTask->last_change_sub_state = Carbon::now();
                         $pendingTask->save();
                     }
                 }
