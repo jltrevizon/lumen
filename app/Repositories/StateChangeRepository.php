@@ -76,50 +76,21 @@ class StateChangeRepository extends Repository
             $count = count($approvedPendingTasks);
             if ($count > 0) {
                 if ($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET) {
-                    $pendingTask = $vehicle->lastGroupTask->approvedPendingTasks[0];
-                    if (is_null($vehicle->last_change_state)) {
-                        $last_change_state = null;
-                        if ($pendingTask->state_pending_task_id === StatePendingTask::PENDING) {
-                            $last_change_state = $pendingTask->datetime_pending;
-                        }
-                        if ($pendingTask->state_pending_task_id === StatePendingTask::IN_PROGRESS) {
-                            $last_change_state = $pendingTask->datetime_start;
-                        }
-                        $vehicle->last_change_state = $last_change_state ?? Carbon::now();
-                        $vehicle->save();
-                    } else {
-                        if ($vehicle->subState?->state_id != $pendingTask->task->subState->state_id) {
-                            $vehicle->last_change_state = Carbon::now();
-                            $vehicle->save();
-                        }
+                    $pendingTask = $vehicle->lastGroupTask->lastPendingTaskWithState;
+
+                    if ($vehicle->subState?->state_id != $pendingTask->task->subState->state_id) {
+                        $pendingTask->last_change_state = Carbon::now();
+                        $pendingTask->save();
                     }
 
-                    if (is_null($vehicle->last_change_sub_state)) {
-                        $last_change_sub_state = null;
-                        if ($pendingTask->state_pending_task_id === StatePendingTask::PENDING) {
-                            $last_change_sub_state = $pendingTask->datetime_pending;
-                        }
-                        if ($pendingTask->state_pending_task_id === StatePendingTask::IN_PROGRESS) {
-                            $last_change_sub_state = $pendingTask->datetime_start;
-                        }
-                        $vehicle->last_change_sub_state = $last_change_sub_state ?? Carbon::now();
-                        $vehicle->save();
-                    } else {
-                        if ($vehicle->sub_state_id != $pendingTask->task->sub_state_id) {
-                            $vehicle->last_change_sub_state = Carbon::now();
-                            $vehicle->save();
-                        }
+                    if ($vehicle->sub_state_id != $pendingTask->task->sub_state_id) {
+                        $vehicle->last_change_sub_state = Carbon::now();
+                        $pendingTask->save();
                     }
                 }
                 $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
                 $lastPendingTask =  $approvedPendingTasks[0];
                 $this->createOrUpdate($vehicle, $lastPendingTask, $currentPendingTask);
-            } else {
-                if ($vehicle->subState?->state_id != State::AVAILABLE) {
-                    $vehicle->last_change_state = Carbon::now();
-                    $vehicle->last_change_sub_state = Carbon::now();
-                    $vehicle->save();
-                }
             }
         } else {
             Log::debug('Bug: vehicle ' . $vehicle->id . ' Sin grupo de tareas');

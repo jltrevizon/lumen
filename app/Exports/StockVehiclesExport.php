@@ -35,7 +35,7 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
 
     public function map($vehicle): array
     {
-
+        $pendingTask = $vehicle->lastGroupTask?->lastPendingTaskWithState;
         return [
             $vehicle->plate,
             $vehicle->lastReception ? date('d/m/Y', strtotime($this->fixTime($vehicle->lastReception->created_at ?? null))) : null,
@@ -45,8 +45,8 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->color->name ?? null,
             $vehicle->subState->state->name ?? null,
             $vehicle->subState->name ?? null,
-            $vehicle->last_change_state ? date('d/m/Y H:i:s', strtotime($this->fixTime($vehicle->last_change_state))) : null,
-            $vehicle->last_change_sub_state ? date('d/m/Y H:i:s', strtotime($this->fixTime($vehicle->last_change_sub_state))) : null,
+            $pendingTask?->last_change_state ? date('d/m/Y H:i:s', strtotime($this->fixTime($vehicle->last_change_state))) : null,
+            $pendingTask?->last_change_sub_state ? date('d/m/Y H:i:s', strtotime($this->fixTime($vehicle->last_change_sub_state))) : null,
             $vehicle->observations,
             $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
             $vehicle->has_environment_label == true ? 'Si' : 'No',
@@ -55,12 +55,12 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->next_itv ? date('d/m/Y', strtotime($this->fixTime($vehicle->next_itv ?? null))) : null,
             $vehicle->category->name ?? null,
             $vehicle->typeModelOrder->name ?? null,
-            $vehicle->lastGroupTask->lastPendingTaskWithState->task->name ?? null,
-            $vehicle->lastGroupTask->lastPendingTaskWithState->statePendingTask->name ?? null,
-            $vehicle->lastGroupTask?->lastPendingTaskWithState?->datetime_start ? date('d/m/Y', strtotime($this->fixTime($vehicle->lastGroupTask?->lastPendingTaskWithState->datetime_start ?? null))) : null,
+            $pendingTask->task->name ?? null,
+            $pendingTask->statePendingTask->name ?? null,
+            $pendingTask?->datetime_start ? date('d/m/Y', strtotime($this->fixTime($vehicle->lastGroupTask?->lastPendingTaskWithState->datetime_start ?? null))) : null,
             $vehicle->square && $vehicle->square->street && $vehicle->square->street->zone ? ($vehicle->square->street->zone->name . ' ' . $vehicle->square->street->name . ' ' . $vehicle->square->name) : null,
             // $vehicle->lastDeliveryVehicle ? ($vehicle->sub_state_id == SubState::ALQUILADO ? date('d/m/Y', strtotime($this->fixTime($vehicle->lastDeliveryVehicle->created_at ?? null))) : null) : null,
-            $vehicle->lastGroupTask->lastPendingTaskWithState->observations ?? null
+            $pendingTask?->observations ?? null
         ];
     }
 
