@@ -198,7 +198,7 @@ class InvaratPendingTaskRepository extends Repository {
      * Generamos una pending task con el siguiente orden
      *
      * @param $request
-     * @return PendingTask[]
+     * @return PendingTask[]|false
      */
     public function addPendingTaskReacondicionamiento($request)
     {
@@ -216,9 +216,13 @@ class InvaratPendingTaskRepository extends Repository {
         $pendingTask->order = $request->input('order') != "" ? $request->input('order') :  $pendingTasks->order + 1;
         $pendingTask->observations = $request->input('observations');
         $pendingTask->user_id = Auth::id();
-        $pendingTask->save();
 
-        return ['pending_task' => $pendingTask];
+        if(!$pendingTask->save()){
+
+            return false;
+        };
+
+        return ['pending_task' => $pendingTask ];
     }
 
 
