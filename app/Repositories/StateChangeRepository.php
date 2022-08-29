@@ -67,8 +67,7 @@ class StateChangeRepository extends Repository
                 }
             }
         }
-        $vehicle->sub_state_id = $sub_state_id;
-        $vehicle->save();
+
         if (!is_null($vehicle->lastGroupTask)) {
             $currentPendingTask = null;
             $lastPendingTask = null;
@@ -95,6 +94,10 @@ class StateChangeRepository extends Repository
         } else {
             Log::debug('Bug: vehicle ' . $vehicle->id . ' Sin grupo de tareas');
         }
+
+        $vehicle->sub_state_id = $sub_state_id;
+        $vehicle->save();
+
         $this->store($vehicle->id, $vehicle->sub_state_id);
         return $vehicle;
     }
