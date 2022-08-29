@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Database\Eloquent\Builder;
-
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
@@ -493,28 +492,20 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class    => function(AfterSheet $event) {
+            AfterSheet::class => function(AfterSheet $event) {
                 $cellRange = 'A1:W1'; 
                 $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
 
-                $event->sheet->styleCells(
-                'A2:W2',
-                    [
-                        'font' => [
-                            'bold' => true 
-                        ]
+
+
+                
+                
+                $styleArray1 = [
+                    'font' => [
+                        'bold' => true,
                     ]
-                );
-
-
-                $cellRange = 'A2:W2';
-                $event->sheet->getDelegate()->getStyle($cellRange)->setStyle(array(
-                    'font' => array(
-                        'font' => true
-                    )
-                ));
-
-
+                ];
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);
 
 
 
