@@ -500,7 +500,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
                 
                 
-                $styleArray1 = [
+                $styleArray = [
                     'font' => [
                         'bold' => true,
                     ]
