@@ -490,7 +490,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         return [
             AfterSheet::class    => function(AfterSheet $event) {
                 $cellRange = 'A1:W1'; // All headers
-                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
+                // $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
             },
         ];
     }
