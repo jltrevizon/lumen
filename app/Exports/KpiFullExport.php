@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Database\Eloquent\Builder;
 
-class KpiFullExport implements FromArray, WithHeadings
+class KpiFullExport implements FromArray, WithHeadings, WithStyles
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
     public function __construct($request)
@@ -477,6 +477,13 @@ class KpiFullExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return $this->header;
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => ['font' => ['bold' => true]],
+        ];
     }
 
 }
