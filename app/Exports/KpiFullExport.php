@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class KpiFullExport implements FromArray, WithHeadings, WithHeadings, WithEvents
+class KpiFullExport implements FromArray, WithHeadings, WithEvents
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
     public function __construct($request)
