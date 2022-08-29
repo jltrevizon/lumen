@@ -76,6 +76,28 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $value[] =  ['Entradas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
+        $totales_entradas = [];
+        foreach ($variable as $key => $v) {
+            for ($i = 1; $i <= 12; $i++) {
+                $totales_entrada[$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+            }
+        }
+        $value[] = [
+            'Total',
+            strval($totales_entrada[1] ?? 0),
+            strval($totales_entrada[2] ?? 0),
+            strval($totales_entrada[3] ?? 0),
+            strval($totales_entrada[4] ?? 0),
+            strval($totales_entrada[5] ?? 0),
+            strval($totales_entrada[6] ?? 0),
+            strval($totales_entrada[7] ?? 0),
+            strval($totales_entrada[8] ?? 0),
+            strval($totales_entrada[9] ?? 0),
+            strval($totales_entrada[10] ?? 0),
+            strval($totales_entrada[11] ?? 0),
+            strval($totales_entrada[12] ?? 0)
+        ];
+
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
                 $value[1][$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
