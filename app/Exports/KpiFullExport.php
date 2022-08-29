@@ -79,7 +79,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $totales_entradas = [];
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
-                $totales_entradas[$i] = strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+                $totales_entradas[$i] += strval(($v[$i] ?? 0) + (int) $value[1][$i]);
             }
         }
         $value[] = [
@@ -128,6 +128,28 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
         $value[] =  ['Salidas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        $totales_salidas = [];
+        foreach ($variable as $key => $v) {
+            for ($i = 1; $i <= 12; $i++) {
+                $totales_salidas[$i] += strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+            }
+        }
+        $value[] = [
+            'Total',
+            strval($totales_salidas[1] ?? 0),
+            strval($totales_salidas[2] ?? 0),
+            strval($totales_salidas[3] ?? 0),
+            strval($totales_salidas[4] ?? 0),
+            strval($totales_salidas[5] ?? 0),
+            strval($totales_salidas[6] ?? 0),
+            strval($totales_salidas[7] ?? 0),
+            strval($totales_salidas[8] ?? 0),
+            strval($totales_salidas[9] ?? 0),
+            strval($totales_salidas[10] ?? 0),
+            strval($totales_salidas[11] ?? 0),
+            strval($totales_salidas[12] ?? 0)
+        ];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
