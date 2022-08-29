@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Invarat;
 
 use App\Models\Company;
 use App\Models\Question;
