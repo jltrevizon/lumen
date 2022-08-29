@@ -79,7 +79,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $totales_entradas = [];
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
-                $totales_entradas[$i] += strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+                $totales_entradas[$i] += strval(($v[$i] ?? 0));
             }
         }
         $value[] = [
@@ -132,7 +132,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $totales_salidas = [];
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
-                $totales_salidas[$i] += strval(($v[$i] ?? 0) + (int) $value[1][$i]);
+                $totales_salidas[$i] += strval(($v[$i] ?? 0));
             }
         }
         $value[] = [
@@ -170,12 +170,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 strval($v['11'] ?? 0),
                 strval($v['12'] ?? 0)
             ];
-        }
-
-        // salida
-        return $value;
-        
-        
+        }        
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
