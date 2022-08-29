@@ -66,7 +66,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithStyles
             $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
         }
 
-        $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
         $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
@@ -480,7 +480,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithStyles
         return $this->header;
     }
 
-    public function styles(Worksheet $sheet)
+    public function styles()
     {
         return [
             1 => ['font' => ['bold' => true]],
