@@ -302,11 +302,10 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         /** KPI SUB STATES */
 
-        $value[] = ['Situación stock actual', '', '', ''];
+        $value[] = ['Situación stock actual', '', '#', '%total', '%'];
         $base_index = count($value) + 1;
-        $value[] = ['', '', 'Número de lo que hay en stock', '% de lo que hay en stock', '', ''];
-        $value[] = ['Total general', 'Total no disponibles y disponibles', '', '100', ''];
-        $value[] = ['No Disponible', 'Total de lo que están en estado predisponible + taller + pte venta vo', '', '%', ''];
+        $value[] = ['Total general', '', '', '100', ''];
+        $value[] = ['No Disponible', '', '', '%', ''];
 
         /* Taller */
 
@@ -324,7 +323,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
-        $value[] = ['Taller', 'Total de lo que están en estado taller', '', '%', ''];
+        $value[] = ['Taller', '', '', '%', ''];
         $index = count($value) - 1;
         $total[$index] = 0;
 
@@ -353,7 +352,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
-        $value[] = ['Pendiente Venta V.O.', 'Total de lo que están en estado pendiente de venta vo', '', '%', ''];
+        $value[] = ['Pendiente Venta V.O.', '', '', '%', ''];
         $index = count($value) - 1;
         $total[$index] = 0;
 
@@ -382,7 +381,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
-        $value[] = ['Pre-disponible', 'Total de lo que están en estado predisponible', '', '%', ''];
+        $value[] = ['Pre-disponible', '', '', '%', ''];
         $index = count($value) - 1;
         $total[$index] = 0;
 
@@ -399,7 +398,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /* Disponible */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1], ['typeModelOrder' => 4]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -415,7 +414,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $value[] = ['', '', '', ''];
         $value[] = ['', '', '', ''];
 
-        $value[] = ['Disponible', 'Total de lo que estan en estado disponible', '', '%', 'Disponible'];
+        $value[] = ['Disponible', '', '', '%', 'Disponible'];
         $index = count($value) - 1;
         $total[$index] = 0;
 
