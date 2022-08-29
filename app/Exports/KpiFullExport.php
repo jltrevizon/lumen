@@ -430,7 +430,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $total_no_disponibles = $total_taller + $total_predisponible + $total_pendiente_venta;
         $total_general = $total_disponibles + $total_no_disponibles;
        
-        $value[$base_index][2] = strval($total_general);
+        // $value[$base_index][2] = strval($total_general);
         $value[$base_index + 1][2] = strval($total_no_disponibles);
 
         for ($i = 0; $i < count($value); $i++) {
@@ -460,16 +460,16 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             )
             ->get();
 
-        $value[] = ['Checklist pendientes', 'Checklist pendientes (vehículos en estado pendiente check) totales.', strval($data[0]['vehiculos'])];
-        $value[] = ['Mecánica', 'Número de tareas de mecánica de vehículos pendiente check', strval($data[0]['mecanica'])];
-        $value[] = ['Chapa', 'Número de tareas de chapa de vehiculos pendiente check.', strval($data[0]['chapa'])];
+        $value[] = ['Sin aprobar', '', strval($data[0]['vehiculos'])];
+        $value[] = ['Mecánica', '', strval($data[0]['mecanica'])];
+        $value[] = ['Chapa', '', strval($data[0]['chapa'])];
 
 
         /** End KPI */
 
         $total = [];
         $value[] = ['', '', '', '', ''];
-        $value[] = ['Tareas pendientes', '', '', '', ''];
+        $value[] = ['Tareas pendientes', 'En curso', 'Pte', 'Total', ''];
 
         /** KPI PendingTasks */
 
