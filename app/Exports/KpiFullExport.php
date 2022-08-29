@@ -172,6 +172,9 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }        
 
+
+
+
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
             ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
@@ -222,7 +225,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->get();
         $ocupacion = $campas[0]['ocupacion'];
 
-        $value[] =  ['Stock campa actual', 'Totales', '%', 'Ocupacion', '%'];
+        $value[] =  ['Stock campa actual', '#', '%', 'Ocupacion', '%'];
         $value[] =  ['TOTAL', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {
@@ -230,7 +233,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 $key,
                 strval($v[1] ?? 0),
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total)),
-                $ocupacion,
+                '',
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $ocupacion)),
             ];
         }
@@ -239,7 +242,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $total = [];
         $value[] = ['', '', '', '', ''];
-        $value[] = ['Días en campa', '', '', '', ''];
+        $value[] = ['Días en campa', '< 15 días', '< 30 días', '< 45 días', '>= 45 días'];
 
         /** KPI DiffTimeReception */
 
@@ -277,7 +280,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
-                strval($total[$key] ?? 0),
+                // strval($total[$key] ?? 0),
                 strval($v[14] ?? 0),
                 strval($v[29] ?? 0),
                 strval($v[44] ?? 0),
@@ -535,20 +538,12 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 $cellRange = 'A1:W1'; 
                 $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
 
-
-
-                
-                
                 $styleArray = [
                     'font' => [
                         'bold' => true,
                     ]
                 ];
-                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);
-
-
-
-                
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);                
             },
         ];
     }
