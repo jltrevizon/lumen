@@ -75,7 +75,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Entrada ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        $value[] =  ['Entradas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
@@ -128,6 +128,11 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 strval($v['12'] ?? 0)
             ];
         }
+
+        // salida
+        return $value;
+        
+        
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
@@ -492,12 +497,28 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 $cellRange = 'A1:W1'; 
                 $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
 
+                $event->sheet->styleCells(
+                'A2:W2',
+                    [
+                        'font' => [
+                            'bold' => true 
+                        ]
+                    ]
+                );
+
+
                 $cellRange = 'A2:W2';
                 $event->sheet->getDelegate()->getStyle($cellRange)->setStyle(array(
                     'font' => array(
                         'font' => true
                     )
-                    ));
+                ));
+
+
+
+
+
+                
             },
         ];
     }
