@@ -12,11 +12,12 @@ use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithStyles;
 use Illuminate\Database\Eloquent\Builder;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class KpiFullExport implements FromArray, WithHeadings, WithStyles
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+
+class KpiFullExport implements FromArray, WithHeadings, WithHeadings, WithEvents
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
     public function __construct($request)
@@ -481,10 +482,16 @@ class KpiFullExport implements FromArray, WithHeadings, WithStyles
         return $this->header;
     }
 
-    public function styles()
+    /**
+     * @return array
+     */
+    public function registerEvents(): array
     {
         return [
-            1 => ['font' => ['bold' => true]],
+            AfterSheet::class    => function(AfterSheet $event) {
+                $cellRange = 'A1:W1'; // All headers
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
+            },
         ];
     }
 
