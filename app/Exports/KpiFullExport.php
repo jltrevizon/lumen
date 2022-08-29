@@ -75,7 +75,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Entrada ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Entrada ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
@@ -106,7 +106,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Salidas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Salidas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
@@ -489,8 +489,15 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
     {
         return [
             AfterSheet::class    => function(AfterSheet $event) {
-                $cellRange = 'A1:W1'; // All headers
-                // $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
+                $cellRange = 'A1:W1'; 
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
+
+                $cellRange = 'A2:W2';
+                $event->sheet->getDelegate()->getStyle($cellRange)->setStyle(array(
+                    'font' => array(
+                        'font' => true
+                    )
+                    ));
             },
         ];
     }
