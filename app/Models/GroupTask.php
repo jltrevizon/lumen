@@ -79,7 +79,19 @@ class GroupTask extends Model
             ->where(function ($query) {
                 $query->where('state_pending_task_id', StatePendingTask::PENDING)
                 ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
-            });            
+            });       
+    }
+
+    public function lastChangeState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->whereNotNull('last_change_state');            
+    }
+
+    public function lastChangeSubState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->whereNotNull('last_change_sub_state');            
     }
 
     public function vehicle(){

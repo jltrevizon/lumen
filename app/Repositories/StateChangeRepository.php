@@ -77,15 +77,18 @@ class StateChangeRepository extends Repository
                 if ($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET) {
                     $pendingTask = $vehicle->lastGroupTask->lastPendingTaskWithState;
 
+                    $pendingTask->last_change_state = $vehicle->lastGroupTask->lastChangeState?->last_change_state;
+                    $pendingTask->last_change_sub_state = $vehicle->lastGroupTask->lastChangeSubState?->last_change_sub_state;
+
                     if ($vehicle->subState?->state_id != $pendingTask->task->subState->state_id) {
                         $pendingTask->last_change_state = Carbon::now();
-                        $pendingTask->save();
                     }
 
                     if ($vehicle->sub_state_id != $pendingTask->task->sub_state_id) {
                         $pendingTask->last_change_sub_state = Carbon::now();
-                        $pendingTask->save();
                     }
+
+                    $pendingTask->save();
                 }
                 $currentPendingTask = $approvedPendingTasks[$count > 1 ? 1 : 0];
                 $lastPendingTask =  $approvedPendingTasks[0];
