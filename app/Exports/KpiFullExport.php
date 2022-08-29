@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class KpiFullExport implements FromArray, WithHeadings
+class KpiFullExport implements FromArray, WithHeadings, WithEvents
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
     public function __construct($request)
@@ -65,14 +67,36 @@ class KpiFullExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
         }
 
-        $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
         $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Entrada ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Entradas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        $totales_entradas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        foreach ($variable as $key => $v) {
+            for ($i = 1; $i <= 12; $i++) {
+                $totales_entradas[$i] += strval(($v[$i] ?? 0));
+            }
+        }
+        $value[] = [
+            'Total',
+            strval($totales_entradas[1] ?? 0),
+            strval($totales_entradas[2] ?? 0),
+            strval($totales_entradas[3] ?? 0),
+            strval($totales_entradas[4] ?? 0),
+            strval($totales_entradas[5] ?? 0),
+            strval($totales_entradas[6] ?? 0),
+            strval($totales_entradas[7] ?? 0),
+            strval($totales_entradas[8] ?? 0),
+            strval($totales_entradas[9] ?? 0),
+            strval($totales_entradas[10] ?? 0),
+            strval($totales_entradas[11] ?? 0),
+            strval($totales_entradas[12] ?? 0)
+        ];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
@@ -103,7 +127,29 @@ class KpiFullExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-        $value[] =  ['Salidas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+        $value[] =  ['Salidas ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        $totales_salidas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        foreach ($variable as $key => $v) {
+            for ($i = 1; $i <= 12; $i++) {
+                $totales_salidas[$i] += strval(($v[$i] ?? 0));
+            }
+        }
+        $value[] = [
+            'Total',
+            strval($totales_salidas[1] ?? 0),
+            strval($totales_salidas[2] ?? 0),
+            strval($totales_salidas[3] ?? 0),
+            strval($totales_salidas[4] ?? 0),
+            strval($totales_salidas[5] ?? 0),
+            strval($totales_salidas[6] ?? 0),
+            strval($totales_salidas[7] ?? 0),
+            strval($totales_salidas[8] ?? 0),
+            strval($totales_salidas[9] ?? 0),
+            strval($totales_salidas[10] ?? 0),
+            strval($totales_salidas[11] ?? 0),
+            strval($totales_salidas[12] ?? 0)
+        ];
 
         foreach ($variable as $key => $v) {
             for ($i = 1; $i <= 12; $i++) {
@@ -124,7 +170,7 @@ class KpiFullExport implements FromArray, WithHeadings
                 strval($v['11'] ?? 0),
                 strval($v['12'] ?? 0)
             ];
-        }
+        }        
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
@@ -477,6 +523,34 @@ class KpiFullExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return $this->header;
+    }
+
+    /**
+     * @return array
+     */
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $cellRange = 'A1:W1'; 
+                $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
+
+
+
+                
+                
+                $styleArray = [
+                    'font' => [
+                        'bold' => true,
+                    ]
+                ];
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);
+
+
+
+                
+            },
+        ];
     }
 
 }
