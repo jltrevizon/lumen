@@ -12,6 +12,7 @@ use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use Illuminate\Database\Eloquent\Builder;
 
 class KpiFullExport implements FromArray, WithHeadings, WithStyles
