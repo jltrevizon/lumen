@@ -27,7 +27,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
         }])
             ->where('company_id', Company::ALD)
             ->get();*/
-        $vehicle_ids = collect(Vehicle::filter([ 'defleetingAndDelivery' => 0 ])->get())->map(function ($item){ return $item->id;})->toArray();
+      //  $vehicle_ids = collect(Vehicle::filter([ 'defleetingAndDelivery' => 0 ])->get())->map(function ($item){ return $item->id;})->toArray();
         return PendingTask::select(['datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
             ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
             ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
@@ -66,7 +66,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             ))
             ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->whereNotIn('vehicle_id', $vehicle_ids)
+       //     ->whereNotIn('vehicle_id', $vehicle_ids)
             ->get();
     }
 

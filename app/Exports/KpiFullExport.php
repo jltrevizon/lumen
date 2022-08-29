@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Illuminate\Database\Eloquent\Builder;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class KpiFullExport implements FromArray, WithHeadings, WithStyles
 {
