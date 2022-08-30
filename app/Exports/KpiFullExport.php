@@ -20,8 +20,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-    protected $test = 'P1';
-
     public function __construct($request)
     {
         $this->request = $request;
@@ -29,8 +27,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
     public function array(): array
     {
-
-        $test = 'R1';
 
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
@@ -241,8 +237,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }
 
-        // Last checkpoint 
-
         /** End KPI */
 
         $total = [];
@@ -293,11 +287,13 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }
 
+        /*
         if (!$value) {
             $value = [];
         } else {
             $value[0][1] = strval($acum);
         }
+        */
 
         /** End KPI */
 
@@ -311,8 +307,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $base_index = count($value) + 1;
         $value[] = ['Total general', '', '', '100', ''];
         $value[] = ['No Disponible', '', '', '%', ''];
-
-        return $value;
 
         /* Taller */
 
@@ -519,7 +513,8 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value = [];
         }
 
-        
+        return $value;
+
     }
 
     public function obtenerPorcentaje($cantidad, $total)
@@ -550,6 +545,9 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                     ]
                 ];
                 $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A18:W18')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A30:W30')->ApplyFromArray($styleArray); 
 
 
                 // $event->sheet->getStyle($test)->getFont()->setBold(true);               
