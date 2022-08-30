@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class KpiFullExport implements FromArray, WithHeadings, WithEvents
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
+
     public function __construct($request)
     {
         $this->request = $request;
@@ -26,6 +27,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
     public function array(): array
     {
+
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
         $campas = $this->request->input('campas') ?? null;
@@ -172,9 +174,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }        
 
-
-
-
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
             ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
@@ -288,11 +287,13 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }
 
+        /*
         if (!$value) {
             $value = [];
         } else {
             $value[0][1] = strval($acum);
         }
+        */
 
         /** End KPI */
 
@@ -429,7 +430,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $total_no_disponibles = $total_taller + $total_predisponible + $total_pendiente_venta;
         $total_general = $total_disponibles + $total_no_disponibles;
-        // 
        
         $value[$base_index][2] = strval($total_general);
         $value[$base_index + 1][2] = strval($total_no_disponibles);
@@ -514,6 +514,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         }
 
         return $value;
+
     }
 
     public function obtenerPorcentaje($cantidad, $total)
@@ -543,9 +544,21 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                         'bold' => true,
                     ]
                 ];
-                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);                
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A18:W18')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A30:W30')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A41:W41')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A53:W53')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A86:W86')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A97:W97')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A102:W102')->ApplyFromArray($styleArray); 
+
+                // $event->sheet->getStyle($test)->getFont()->setBold(true);               
+                // $event->sheet->getStyle($test)->getFont()->getColor()->setARGB('767171');
             },
         ];
     }
 
 }
+
