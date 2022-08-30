@@ -2,10 +2,12 @@
 
 namespace App\Repositories\Invarat;
 
+use App\Models\BudgetPendingTask;
 use App\Models\Company;
 use App\Models\GroupTask;
 use App\Models\PendingTask;
 use App\Models\Request;
+use App\Models\StateBudgetPendingTask;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
@@ -19,6 +21,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use function Symfony\Component\Translation\t;
 
 class InvaratPendingTaskRepository extends Repository {
 
@@ -225,5 +228,23 @@ class InvaratPendingTaskRepository extends Repository {
         return ['pending_task' => $pendingTask ];
     }
 
+    /**
+     * Creamos o actualimos el presupuesto de tarea pendiente.
+     *
+     * @param $request
+     * @return mixed
+     */
+    public function updateOrCreateBudgetPengingTaskGtWeb($request){
+
+        $budgetPendingTask = BudgetPendingTask::updateOrCreate(
+            array(
+                "pending_task_id" => $request->input("pending_task_id")
+            ),
+            $request->all()
+        );
+
+        return $budgetPendingTask;
+
+    }
 
 }

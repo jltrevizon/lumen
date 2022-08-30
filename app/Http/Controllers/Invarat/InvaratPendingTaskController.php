@@ -36,4 +36,8 @@ class InvaratPendingTaskController extends Controller
         return $this->createDataResponse($this->invaratVehicleRepository->addPendingTaskReacondicionamiento($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
+    public function updateOrCreateBudgetPengingTaskGtWeb(Request $request){
+        return $this->createDataResponse($this->invaratVehicleRepository->updateOrCreateBudgetPengingTaskGtWeb($request), HttpFoundationResponse::HTTP_CREATED);
+    }
+
 }
