@@ -80,11 +80,11 @@ class StateChangeRepository extends Repository
                     $pendingTask->last_change_state = $vehicle->lastGroupTask->lastChangeState?->last_change_state;
                     $pendingTask->last_change_sub_state = $vehicle->lastGroupTask->lastChangeSubState?->last_change_sub_state;
 
-                    if ($vehicle->subState?->state_id != $pendingTask->task->subState->state_id) {
+                    if ($vehicle->subState?->state_id != $pendingTask->task->subState->state_id || is_null($pendingTask->last_change_state)) {
                         $pendingTask->last_change_state = Carbon::now();
                     }
 
-                    if ($vehicle->sub_state_id != $pendingTask->task->sub_state_id) {
+                    if ($vehicle->sub_state_id != $pendingTask->task->sub_state_id || is_null($pendingTask->last_change_sub_state)) {
                         $pendingTask->last_change_sub_state = Carbon::now();
                     }
 
