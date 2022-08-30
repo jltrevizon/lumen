@@ -82,9 +82,20 @@ class GroupTask extends Model
             });       
     }
 
+    public function lastTaskWithState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->where(function ($query) {
+                $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                ->orWhere('state_pending_task_id', StatePendingTask::FINISHED);
+            });       
+    }
+
     public function lastChangeState(){
         return $this->hasOne(PendingTask::class)
             ->where('approved', true)
+            ->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereNotNull('last_change_state');            
     }
 

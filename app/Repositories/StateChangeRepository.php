@@ -75,7 +75,7 @@ class StateChangeRepository extends Repository
             $count = count($approvedPendingTasks);
             if ($count > 0) {
                 if ($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET) {
-                    $pendingTask = $vehicle->lastGroupTask->lastPendingTaskWithState;
+                    $pendingTask = $vehicle->lastGroupTask->lastTaskWithState;
                     if (!is_null($pendingTask)) {
                         $pendingTask->last_change_state = $vehicle->lastGroupTask->lastChangeState?->last_change_state;
                         $pendingTask->last_change_sub_state = $vehicle->lastGroupTask->lastChangeSubState?->last_change_sub_state;
