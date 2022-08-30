@@ -19,6 +19,9 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class KpiFullExport implements FromArray, WithHeadings, WithEvents
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
+
+    protected $test = 'P1';
+
     public function __construct($request)
     {
         $this->request = $request;
@@ -26,6 +29,9 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
     public function array(): array
     {
+
+        $test = 'R1';
+
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
         $campas = $this->request->input('campas') ?? null;
@@ -171,9 +177,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 strval($v['12'] ?? 0)
             ];
         }        
-
-
-
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
@@ -333,7 +336,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Taller'];
         }
 
-        $value[$index][2] = $total[$index];
+        // $value[$index][2] = $total[$index];
         $total_taller = $total[$index];
 
         /* Pendiente V.O. */
@@ -362,7 +365,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Pendiente Venta V.O.'];
         }
 
-        $value[$index][2] = $total[$index];
+        // $value[$index][2] = $total[$index];
         $total_pendiente_venta = $total[$index];
 
         /* Predisponible */
@@ -391,7 +394,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Pre-disponible'];
         }
 
-        $value[$index][2] = $total[$index];
+        // $value[$index][2] = $total[$index];
         $total_predisponible = $total[$index];
 
 
