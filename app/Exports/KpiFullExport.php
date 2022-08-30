@@ -551,8 +551,8 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
 
 
-                $event->sheet->getStyle($test)->getFont()->setBold(true);               
-                $event->sheet->getStyle($test)->getFont()->getColor()->setARGB('767171');
+                // $event->sheet->getStyle($test)->getFont()->setBold(true);               
+                // $event->sheet->getStyle($test)->getFont()->getColor()->setARGB('767171');
             },
         ];
     }
