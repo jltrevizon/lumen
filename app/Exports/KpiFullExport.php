@@ -424,15 +424,14 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Disponible'];
         }
 
-        $value[$index][2] = $total[$index];
+        // $value[$index][2] = $total[$index];
         $total_disponibles = $total[$index];
 
         $total_no_disponibles = $total_taller + $total_predisponible + $total_pendiente_venta;
         $total_general = $total_disponibles + $total_no_disponibles;
-        // 
        
-        $value[$base_index][2] = strval($total_general);
-        $value[$base_index + 1][2] = strval($total_no_disponibles);
+        // $value[$base_index][2] = strval($total_general);
+        // $value[$base_index + 1][2] = strval($total_no_disponibles);
 
         for ($i = 0; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
