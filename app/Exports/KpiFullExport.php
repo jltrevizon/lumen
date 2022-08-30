@@ -548,7 +548,11 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray); 
                 $event->sheet->getStyle('A18:W18')->ApplyFromArray($styleArray); 
                 $event->sheet->getStyle('A30:W30')->ApplyFromArray($styleArray); 
-
+                $event->sheet->getStyle('A41:W41')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A53:W53')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A86:W86')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A97:W97')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A102:W102')->ApplyFromArray($styleArray); 
 
                 // $event->sheet->getStyle($test)->getFont()->setBold(true);               
                 // $event->sheet->getStyle($test)->getFont()->getColor()->setARGB('767171');
@@ -557,3 +561,4 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
     }
 
 }
+
