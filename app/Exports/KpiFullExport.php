@@ -241,7 +241,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }
 
-        return $value;
+        // Last checkpoint 
 
         /** End KPI */
 
@@ -311,6 +311,8 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $base_index = count($value) + 1;
         $value[] = ['Total general', '', '', '100', ''];
         $value[] = ['No Disponible', '', '', '%', ''];
+
+        return $value;
 
         /* Taller */
 
@@ -548,7 +550,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                     ]
                 ];
                 $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray); 
-
 
 
                 // $event->sheet->getStyle($test)->getFont()->setBold(true);               
