@@ -241,6 +241,8 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }
 
+        return $value;
+
         /** End KPI */
 
         $total = [];
@@ -336,7 +338,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Taller'];
         }
 
-        // $value[$index][2] = $total[$index];
+        $value[$index][2] = $total[$index];
         $total_taller = $total[$index];
 
         /* Pendiente V.O. */
@@ -365,7 +367,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Pendiente Venta V.O.'];
         }
 
-        // $value[$index][2] = $total[$index];
+        $value[$index][2] = $total[$index];
         $total_pendiente_venta = $total[$index];
 
         /* Predisponible */
@@ -394,7 +396,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Pre-disponible'];
         }
 
-        // $value[$index][2] = $total[$index];
+        $value[$index][2] = $total[$index];
         $total_predisponible = $total[$index];
 
 
@@ -427,14 +429,14 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value[] = [$v['subState']['state']['name'], $v['typeModelOrder']['name'] . ' - ' . $v['subState']['name'], strval($x), '%', 'Disponible'];
         }
 
-        // $value[$index][2] = $total[$index];
+        $value[$index][2] = $total[$index];
         $total_disponibles = $total[$index];
 
         $total_no_disponibles = $total_taller + $total_predisponible + $total_pendiente_venta;
         $total_general = $total_disponibles + $total_no_disponibles;
        
-        // $value[$base_index][2] = strval($total_general);
-        // $value[$base_index + 1][2] = strval($total_no_disponibles);
+        $value[$base_index][2] = strval($total_general);
+        $value[$base_index + 1][2] = strval($total_no_disponibles);
 
         for ($i = 0; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
@@ -515,7 +517,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $value = [];
         }
 
-        return $value;
+        
     }
 
     public function obtenerPorcentaje($cantidad, $total)
@@ -545,7 +547,12 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                         'bold' => true,
                     ]
                 ];
-                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);                
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray); 
+
+
+
+                $sheet->getStyle($test)->getFont()->setBold(true);               
+                $sheet->getStyle($test)->getFont()->getColor()->setARGB('767171');
             },
         ];
     }
