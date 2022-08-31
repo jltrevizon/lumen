@@ -247,8 +247,14 @@ class VehicleFilter extends ModelFilter
     }
 
     public function defleetingAndDelivery($value) {
-        $vehicle_ids = collect(PendingTask::where('state_pending_task_id', 3)->where('task_id', 38)->whereRaw(Db::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))->get('vehicle_id'))->map(function ($item){ return $item->vehicle_id;})->toArray();
-        if ($value) {
+        $vehicle_ids = collect(
+            PendingTask::where('state_pending_task_id', 3)
+            ->where('approved', 1)
+            ->where('task_id', 38)
+            ->whereRaw(Db::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))
+            ->get('vehicle_id')
+            )->map(function ($item){ return $item->vehicle_id;})->toArray();
+        if ($value == 1) {
             return $this->whereNotIn('id', $vehicle_ids);
         }
         return $this->whereIn('id', $vehicle_ids);

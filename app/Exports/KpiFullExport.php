@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 class KpiFullExport implements FromArray, WithHeadings, WithEvents
 {
     protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
+
     public function __construct($request)
     {
         $this->request = $request;
@@ -26,6 +27,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
     public function array(): array
     {
+
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
         $campas = $this->request->input('campas') ?? null;
@@ -222,7 +224,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->get();
         $ocupacion = $campas[0]['ocupacion'];
 
-        $value[] =  ['Stock campa actual', 'Totales', '%', 'Ocupacion', '%'];
+        $value[] =  ['Stock campa actual', '#', '%', 'Ocupacion', '%'];
         $value[] =  ['TOTAL', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {
@@ -230,7 +232,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 $key,
                 strval($v[1] ?? 0),
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total)),
-                $ocupacion,
+                '',
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $ocupacion)),
             ];
         }
@@ -239,7 +241,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $total = [];
         $value[] = ['', '', '', '', ''];
-        $value[] = ['Días en campa', '', '', '', ''];
+        $value[] = ['Días en campa', '< 15 días', '< 30 días', '< 45 días', '>= 45 días'];
 
         /** KPI DiffTimeReception */
 
@@ -277,7 +279,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
-                strval($total[$key] ?? 0),
+                // strval($total[$key] ?? 0),
                 strval($v[14] ?? 0),
                 strval($v[29] ?? 0),
                 strval($v[44] ?? 0),
@@ -285,11 +287,13 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ];
         }
 
+        /*
         if (!$value) {
             $value = [];
         } else {
             $value[0][1] = strval($acum);
         }
+        */
 
         /** End KPI */
 
@@ -299,11 +303,10 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         /** KPI SUB STATES */
 
-        $value[] = ['Situación stock actual', '', '', ''];
+        $value[] = ['Situación stock actual', '', '#', '%total', '%'];
         $base_index = count($value) + 1;
-        $value[] = ['', '', 'Número de lo que hay en stock', '% de lo que hay en stock', '', ''];
-        $value[] = ['Total general', 'Total no disponibles y disponibles', '', '100', ''];
-        $value[] = ['No Disponible', 'Total de lo que están en estado predisponible + taller + pte venta vo', '', '%', ''];
+        $value[] = ['Total general', '', '', '100', ''];
+        $value[] = ['No Disponible', '', '', '%', ''];
 
         /* Taller */
 
@@ -321,7 +324,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
-        $value[] = ['Taller', 'Total de lo que están en estado taller', '', '%', ''];
+        $value[] = ['Taller', '', '', '%', ''];
         $index = count($value) - 1;
         $total[$index] = 0;
 
@@ -350,7 +353,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
-        $value[] = ['Pendiente Venta V.O.', 'Total de lo que están en estado pendiente de venta vo', '', '%', ''];
+        $value[] = ['Pendiente Venta V.O.', '', '', '%', ''];
         $index = count($value) - 1;
         $total[$index] = 0;
 
@@ -379,7 +382,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             ->groupBy('type_model_order_id', 'sub_state_id')
             ->get();
 
-        $value[] = ['Pre-disponible', 'Total de lo que están en estado predisponible', '', '%', ''];
+        $value[] = ['Pre-disponible', '', '', '%', ''];
         $index = count($value) - 1;
         $total[$index] = 0;
 
@@ -396,7 +399,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /* Disponible */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1], ['typeModelOrder' => 4]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -412,7 +415,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $value[] = ['', '', '', ''];
         $value[] = ['', '', '', ''];
 
-        $value[] = ['Disponible', 'Total de lo que estan en estado disponible', '', '%', 'Disponible'];
+        $value[] = ['Disponible', '', '', '%', 'Disponible'];
         $index = count($value) - 1;
         $total[$index] = 0;
 
@@ -458,16 +461,16 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             )
             ->get();
 
-        $value[] = ['Checklist pendientes', 'Checklist pendientes (vehículos en estado pendiente check) totales.', strval($data[0]['vehiculos'])];
-        $value[] = ['Mecánica', 'Número de tareas de mecánica de vehículos pendiente check', strval($data[0]['mecanica'])];
-        $value[] = ['Chapa', 'Número de tareas de chapa de vehiculos pendiente check.', strval($data[0]['chapa'])];
+        $value[] = ['Sin aprobar', '', strval($data[0]['vehiculos'])];
+        $value[] = ['Mecánica', '', strval($data[0]['mecanica'])];
+        $value[] = ['Chapa', '', strval($data[0]['chapa'])];
 
 
         /** End KPI */
 
         $total = [];
         $value[] = ['', '', '', '', ''];
-        $value[] = ['Tareas pendientes', '', '', '', ''];
+        $value[] = ['Tareas pendientes', 'En curso', 'Pte', 'Total', ''];
 
         /** KPI PendingTasks */
 
@@ -511,6 +514,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         }
 
         return $value;
+
     }
 
     public function obtenerPorcentaje($cantidad, $total)
@@ -535,22 +539,26 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 $cellRange = 'A1:W1'; 
                 $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
 
-
-
-                
-                
                 $styleArray = [
                     'font' => [
                         'bold' => true,
                     ]
                 ];
-                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A18:W18')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A30:W30')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A41:W41')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A53:W53')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A86:W86')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A97:W97')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A102:W102')->ApplyFromArray($styleArray); 
 
-
-
-                
+                // $event->sheet->getStyle($test)->getFont()->setBold(true);               
+                // $event->sheet->getStyle($test)->getFont()->getColor()->setARGB('767171');
             },
         ];
     }
 
 }
+
