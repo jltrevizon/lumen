@@ -22,9 +22,11 @@ class SquareRepository extends Repository
             ->orderBy('zone_name', 'asc')
             ->orderBy('street_name', 'asc')
             ->orderBy('name', 'asc');
+
         if ($request->input('per_page')) {
             return $query->paginate($request->input('per_page'));
         }
+        
         return $query->get();
     }
 
