@@ -41,6 +41,28 @@ class VehiclePictureRepository extends Repository {
         return ['message' => 'Pictures deleted'];
     }
 
+    /*
+     * Método para borrar imagenes de un determinado vehículo y lugar
+     *
+     */
+    public function deletePictureByPlace($request){
+        $pictures = VehiclePicture::where('vehicle_id', $request->input['vehicle_id'])
+            ->where('place', $request->input['place'])
+            ->get();
+
+        if($pictures){
+
+            foreach($pictures as $pic){
+                $pic->delete();
+            }
+
+            return ['message' => 'Pictures deleted'];
+        }else{
+            return ['message' => 'Picture not found'];
+        }
+
+    }
+
     public function delete($id){
 
         $pic = VehiclePicture::find($id);
