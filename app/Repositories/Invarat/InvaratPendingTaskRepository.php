@@ -74,7 +74,8 @@ class InvaratPendingTaskRepository extends Repository {
         $pending_task = PendingTask::with('task')
             ->where('group_task_id',$request->group_task_id)
             ->where('vehicle_id',$request->vehicle_id)
-            ->where('order',$request->order++)
+            ->where('order',">",$request->order)
+            ->orderBy("order", "ASC")
             ->first();
 
         if($pending_task){
@@ -157,7 +158,6 @@ class InvaratPendingTaskRepository extends Repository {
             if ($pending_task->state_pending_task_id == StatePendingTask::IN_PROGRESS) {
 
                 $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
-                $pending_task->order = -1;
                 $pending_task->user_end_id = Auth::id();
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
 
