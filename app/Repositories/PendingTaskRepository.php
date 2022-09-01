@@ -300,8 +300,10 @@ class PendingTaskRepository extends Repository
             $pending_task->user_start_id = Auth::id();
             $pending_task->save();
             $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-            $this->squareRepository->freeSquare($vehicle->id);
-            $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
+            if (!is_null($vehicle->square)) {
+                $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
+                $this->squareRepository->freeSquare($vehicle->id);
+            }
             $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
         } else {
