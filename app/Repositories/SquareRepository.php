@@ -26,7 +26,7 @@ class SquareRepository extends Repository
         if ($request->input('per_page')) {
             return $query->paginate($request->input('per_page'));
         }
-        
+
         return $query->get();
     }
 
@@ -56,7 +56,7 @@ class SquareRepository extends Repository
         Square::where('vehicle_id', $vehicleId)
             ->chunk(200, function ($squares) {
                 foreach ($squares as $square) {
-                    $this->historyLocationRepository->saveFromBack($square->vehicle_id, null, Auth::id());
+                    // $this->historyLocationRepository->saveFromBack($square->vehicle_id, null, Auth::id());
                     $square->update(['vehicle_id' => null]);
                 }
             });
