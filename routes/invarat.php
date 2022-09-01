@@ -25,6 +25,8 @@ $router->group(['prefix' => 'api'], function () use ($router){
 
     // Sin middlewaere auth, ya que entra mediante GSP20. (TODO -> Falta generar token auth)
     $router->post('/invarat/gsp20/create-order', 'Invarat\GspController@createVehicle');
+    $router->get('/invarat/gsp20/getVehicleForPlate', 'Invarat\GspController@getVehicleForPlate');
+    $router->post('/invarat/gsp20/createBudgeForType', 'Invarat\GspController@createBudgeForType');
 
 
 

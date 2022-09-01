@@ -2,11 +2,16 @@
 
 namespace App\Repositories\Invarat;
 
+use App\Models\BudgetPendingTask;
 use App\Models\Company;
+use App\Models\GroupTask;
 use App\Models\Order;
+use App\Models\PendingTask;
 use App\Models\State;
+use App\Models\StateBudgetPendingTask;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
+use App\Models\Task;
 use App\Models\Vehicle;
 use App\Repositories\BrandRepository;
 use App\Repositories\Repository;
@@ -56,12 +61,82 @@ class GspRepository extends Repository {
         return $vehicle;
     }
 
+    /**
+     * Buscamos vehículo por matrícula para la compañía 2 por API, sin auth
+     *
+     * @param $request
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getVehicleForPlate($request){
 
+        return Vehicle::with($this->getWiths($request->with))
+            ->where("company_id", Company::INVARAT)
+            ->where("plate", $request->input("plate"))->first();
 
-//    public function orderFilter($request){
-//        return Order::with($this->getWiths($request->with))
-//                    ->filter($request->all())
-//                    ->paginate($request->input('per_page'));
-//    }
+    }
+
+    /**
+     * Creamos las tareas pendientes de prespuestos dependiendo de la division de valoraciones realizadas por GSP20.
+     *
+     * @param $request
+     * @return array|string[]
+     */
+    public function createBudgeForType($request){
+
+        try {
+
+            // Ultima tarea
+            $lastPendingTask = PendingTask::query()->where("vehicle_id",$request->input("vehicle_id"))->latest()->first();
+
+            if(!$lastPendingTask){
+                throw new \Exception("Error al generar las tareas pendientes de los prepupuestos --> ".$request->input("vehicle_id"));
+            }
+
+            // Orden 3 en negativo para colocar las 3 tareas por el orden (mecanica, ext_int, neumaticos)
+            $order = 3;
+
+            foreach ($request->input("ref_docs") as $task_id => $docs){
+
+                $pendingTask = PendingTask::create(array(
+                    "vehicle_id" => $lastPendingTask->vehicle_id,
+                    "task_id" => $task_id,
+                    "state_pending_task_id" => StatePendingTask::PENDING,
+                    "group_task_id" => $lastPendingTask->group_task_id,
+                    "duration" => 0,
+                    "order" => $lastPendingTask->order - $order
+                ));
+
+                foreach ($docs as $doc){
+
+                    BudgetPendingTask::create(array(
+                        "pending_task_id" => $pendingTask->id,
+                        "state_budget_pending_task_id" => StateBudgetPendingTask::PENDING,
+                        "url" => $doc["url"]
+                    ));
+
+                }
+
+                $order--;
+
+            }
+
+            return [
+                "type" => "success",
+                "msg" => ""
+            ];
+
+        }catch (\Exception $e){
+
+            Log::debug("ERROR --> ". $e->getMessage()." - ".$e->getFile()." - ".$e->getLine());
+
+            return [
+                "type" => "error",
+                "msg" => $e->getMessage()
+            ];
+
+        }
+
+    }
+
 
 }
