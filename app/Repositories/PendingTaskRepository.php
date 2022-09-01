@@ -39,7 +39,8 @@ class PendingTaskRepository extends Repository
         IncidencePendingTaskRepository $incidencePendingTaskRepository,
         RepositoriesPendingAuthorizationRepository $pendingAuthorizationRepository,
         StateChangeRepository $stateChangeRepository,
-        SquareRepository $squareRepository
+        SquareRepository $squareRepository,
+        HistoryLocationRepository $historyLocationRepository
     ) {
         $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
@@ -53,6 +54,7 @@ class PendingTaskRepository extends Repository
         $this->pendingAuthorizationRepository = $pendingAuthorizationRepository;
         $this->stateChangeRepository = $stateChangeRepository;
         $this->squareRepository = $squareRepository;
+        $this->historyLocationRepository = $historyLocationRepository;
     }
 
     public function getAll($request)
@@ -299,6 +301,7 @@ class PendingTaskRepository extends Repository
             $pending_task->save();
             $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             $this->squareRepository->freeSquare($vehicle->id);
+            $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
             $this->updateStateOrder($request);
             return $this->getPendingOrNextTask($request);
         } else {
