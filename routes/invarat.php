@@ -20,6 +20,7 @@ $router->group(['prefix' => 'api'], function () use ($router){
         $router->post('/invarat/addPendingTaskReacondicionamiento', 'Invarat\InvaratPendingTaskController@addPendingTaskReacondicionamiento');
         $router->post('/invarat/next-pending-task', 'Invarat\InvaratPendingTaskController@nextPendingTask');
         $router->post('/invarat/updateOrCreateBudgetPengingTaskGtWeb', 'Invarat\InvaratPendingTaskController@updateOrCreateBudgetPengingTaskGtWeb');
+        $router->put('/invarat/updatePendingTaskReacondicionamiento', 'Invarat\InvaratPendingTaskController@updatePendingTaskReacondicionamiento');
     });
 
 

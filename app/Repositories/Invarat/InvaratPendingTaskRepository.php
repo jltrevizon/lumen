@@ -247,4 +247,19 @@ class InvaratPendingTaskRepository extends Repository {
 
     }
 
+    /**
+     *
+     * Actualizar tarea pendiente
+     *
+     * @param $request
+     * @param $id
+     * @return array
+     */
+    public function updatePendingTaskReacondicionamiento($request)
+    {
+        $pending_task = PendingTask::findOrFail($request->input("id"));
+        $pending_task->update($request->all());
+        return $pending_task;
+    }
+
 }
