@@ -206,8 +206,7 @@ class InvaratPendingTaskRepository extends Repository {
     public function addPendingTaskReacondicionamiento($request)
     {
         $vehicle = $this->vehicleRepository->getById($request, $request->input('vehicle_id'));
-        $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))
-            ->latest()->first();
+        $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))->orderBy("order","DESC")->first();
         $task = $this->taskRepository->getById([], $request->input('task_id'));
         $pendingTask = new PendingTask();
         $pendingTask->task_id = $task['id'];
