@@ -715,9 +715,9 @@ class VehicleRepository extends Repository
                 $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             }
         }
-        return Vehicle::with(array_merge($this->getWiths($request->with), ['groupTasks' => function ($query) use ($vehicle) {
+        return Vehicle::with(array_merge($this->getWiths($request->with), ['allApprovedPendingTasks' => function ($query) use ($vehicle) {
             return $query
-                ->where('id', '=', $vehicle->lastReception?->group_task_id)
+                ->where('group_task_id', '=', $vehicle->lastReception?->group_task_id)
                 // ->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
                 ->orderBy('id', 'desc')
                 ->orderBy('created_at', 'desc');

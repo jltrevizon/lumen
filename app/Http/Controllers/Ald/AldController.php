@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
+use App\Models\Task;
 use App\Models\Vehicle;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\StateChangeRepository;
@@ -141,6 +142,17 @@ class AldController extends Controller
                 $update_pending_task->save();
                 $order++;
             }
+
+            $groupTask = $this->lastGroupTask($vehicle->id);
+
+            if (count($groupTask->approvedPendingTasks) > 0) {
+                if ($groupTask->approvedPendingTasks[0]->task_id == Task::CHECK_BLOCKED) {
+                    $groupTask->approvedPendingTasks[0]->state_pending_task_id = StatePendingTask::IN_PROGRESS;
+                    $groupTask->approvedPendingTasks[0]->datetime_start = date('Y-m-d H:i:s');
+                    $groupTask->approvedPendingTasks[0]->save();
+                }
+            }
+
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             return $this->createDataResponse(['data' => $groupTask->approvedPendingTasks], HttpFoundationResponse::HTTP_CREATED);
         } catch (Exception $e) {

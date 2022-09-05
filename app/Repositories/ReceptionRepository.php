@@ -47,9 +47,14 @@ class ReceptionRepository extends Repository
 
         }
 
-        Reception::where('vehicle_id', $request->input('vehicle_id'))
+        $vehicle = Vehicle::find($request->input('vehicle_id'));
+
+        if ($vehicle->lastReception) {
+            Reception::where('vehicle_id', $request->input('vehicle_id'))
             ->whereDate('created_at', date('Y-m-d'))
+            ->where('id', $vehicle->lastReception->id)
             ->delete();
+        }
 
         $reception = new Reception();
         $campa = Auth::user()->campas->first();
