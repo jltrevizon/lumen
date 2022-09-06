@@ -60,8 +60,12 @@ class QuestionAnswerRepository
             }
         }
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
-
-        $vehicle = $reception->vehicle;
+        if ($reception) {
+            $vehicle = $reception->vehicle;
+        } else {
+            $reception = $this->vehicleRepository->newReception($request->input('vehicle_id'));
+            $vehicle = $reception->vehicle;
+        }
         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         $vehicle->has_environment_label = $has_environment_label;
         $vehicle->save();
