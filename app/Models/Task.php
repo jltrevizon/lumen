@@ -21,6 +21,7 @@ class Task extends Model
     const VALIDATE_CHECKLIST = 39;
     const TRANSFER = 40;
     const CHECK_BLOCKED = 61;
+    const CHECK_RELEASE = 62;
 
     protected $fillable = [
         'company_id',

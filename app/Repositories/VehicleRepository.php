@@ -27,6 +27,7 @@ use App\Repositories\CampaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use SebastianBergmann\Environment\Console;
 
 class VehicleRepository extends Repository
 {
@@ -270,6 +271,8 @@ class VehicleRepository extends Repository
         }
         $vehicle->created_by = Auth::id();
         $vehicle->save();
+        $this->newReception($vehicle->id);
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return $vehicle;
     }
 
@@ -304,33 +307,22 @@ class VehicleRepository extends Repository
 
     public function verifyPlate($request)
     {
-        $vehicleDefleet = Vehicle::with($this->getWiths($request->with))
-            ->byPlate($request->input('plate'))
-            ->byPendingRequestDefleet()
-            ->filter($request->all())
-            ->first();
-        $vehicleDefleet = null;
-
-        if ($vehicleDefleet) {
-            $defleetingAndDelivery = Vehicle::where('id', $vehicleDefleet?->id)->filter(['defleetingAndDelivery' => 0])->first();
-        }
-        if ($vehicleDefleet) {
-            return ['defleet' => true, 'vehicle' => $vehicleDefleet, 'vehicle_delivery' => $defleetingAndDelivery];
-        }
-
         $vehicle = Vehicle::with($this->getWiths($request->with))
-            ->where('plate', $request->input('plate'))
+        ->filter($request->all())
+        ->first();;
+
+        $vehicleDefleet = Vehicle::where('id', $vehicle?->id)
+            ->byPendingRequestDefleet()
             ->first();
 
-        if ($vehicle) {
-            $defleetingAndDelivery = Vehicle::where('id', $vehicle?->id)->filter(['defleetingAndDelivery' => 0])->first();
-        }
+        $defleetingAndDelivery = Vehicle::where('id', $vehicle?->id)->filter(['defleetingAndDelivery' => 0])->first();
 
-        if ($vehicle) {
+        if ($vehicleDefleet) {
+            return ['vehicle' => $vehicle, 'defleet' => true, 'vehicle_delivery' => $defleetingAndDelivery];
+        } else if ($vehicle) {
             return ['vehicle' => $vehicle, 'registered' => true, 'vehicle_delivery' => $defleetingAndDelivery];
-        } else {
-            return ['registered' => false];
         }
+        return ['registered' => false];
     }
 
     public function verifyPlateReception($request)
