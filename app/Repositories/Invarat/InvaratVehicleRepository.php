@@ -146,7 +146,7 @@ class InvaratVehicleRepository extends Repository {
                 e.`name` as modelo,
                 f.`name` as ubicación,
                 a.created_at as fecha_entrada,
-                (SELECT max(g.observations) from pending_tasks g where g.state_pending_task_id != 3 and g.vehicle_id = a.id) as observaciones
+                (SELECT max(g.comment_state) from pending_tasks g where g.state_pending_task_id != 3 and g.vehicle_id = a.id) as observaciones
             from vehicles a, type_model_orders c, sub_states d, vehicle_models e, campas f
             where a.type_model_order_id = c.id
             and a.sub_state_id = d.id
