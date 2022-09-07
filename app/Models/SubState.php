@@ -26,7 +26,7 @@ class SubState extends Model
     const ALQUILADO = 10;
     const CHECK = 11;
     const CHECK_BLOCKED = 12;
-    const CHECK_RELEASE = 27;
+    const CHECK_RELEASE = 29;
     const PENDING_TEST_DINAMIC_INITIAL = 13;
     const PENDING_INITIAL_CHECK = 14;
     const PENDING_BUDGET = 15;
