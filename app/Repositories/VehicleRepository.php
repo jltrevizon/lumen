@@ -46,7 +46,8 @@ class VehicleRepository extends Repository
         CampaRepository $campaRepository,
         DeliveryNoteRepository $deliveryNoteRepository,
         SquareRepository $squareRepository,
-        StateChangeRepository $stateChangeRepository
+        StateChangeRepository $stateChangeRepository,
+        HistoryLocationRepository $historyLocationRepository
     ) {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -62,6 +63,7 @@ class VehicleRepository extends Repository
         $this->squareRepository = $squareRepository;
         $this->deliveryNoteRepository = $deliveryNoteRepository;
         $this->stateChangeRepository = $stateChangeRepository;
+        $this->historyLocationRepository = $historyLocationRepository;
     }
 
     public function getAll($request)
@@ -592,6 +594,7 @@ class VehicleRepository extends Repository
     {
         $square = $vehicle->square()->first();
         if (!is_null($square)) {
+            $this->historyLocationRepository->saveFromBack($square->vehicle_id, null, Auth::id());
             $square->vehicle_id = null;
             $square->save();
         }

@@ -33,7 +33,6 @@ class DeliveryVehicleRepository extends Repository
 
     public function createDeliveryVehicles($vehicleId, $data, $deliveryNoteId, $count, $groupTaskId)
     {
-        $this->squareRepository->freeSquare($vehicleId);
         $user = User::with('campas')
             ->findOrFail(Auth::id());
         $vehicle = Vehicle::findOrFail($vehicleId);
