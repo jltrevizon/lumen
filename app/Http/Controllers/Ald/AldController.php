@@ -152,9 +152,13 @@ class AldController extends Controller
                     $groupTask->approvedPendingTasks[0]->save();
                 }
             }
-
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+            
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-            return $this->createDataResponse(['data' => $groupTask->approvedPendingTasks], HttpFoundationResponse::HTTP_CREATED);
+            return $this->createDataResponse([
+                'data' => $groupTask->approvedPendingTasks, 
+                'vehicle' => Vehicle::find($vehicle->id)
+            ], HttpFoundationResponse::HTTP_CREATED);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage(),], 400);
         }

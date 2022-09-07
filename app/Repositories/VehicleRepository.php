@@ -281,7 +281,8 @@ class VehicleRepository extends Repository
     public function update($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        return $vehicle->update($request->all());
+        $vehicle->update($request->all());
+        return Vehicle::with($this->getWiths($request->with) ?? [])->findOrFail($id);
     }
 
     public function updateBack($request)
