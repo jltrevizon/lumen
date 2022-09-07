@@ -11,6 +11,8 @@ $router->group(['prefix' => 'api'], function () use ($router){
         $router->post('/invarat/budgets', 'Invarat\InvaratBudgetController@create');
         $router->put('/invarat/update-budgets', 'Invarat\InvaratBudgetController@update');
         $router->get('/invarat/vehicles-by-channel', 'Invarat\InvaratVehicleController@vehiclesByChannel');
+        $router->get('/invarat/vehicles-results', 'Invarat\InvaratVehicleController@getVehicleResults');
+        $router->get('/invarat/vehicles-details', 'Invarat\InvaratVehicleController@getVehicleDetails');
         $router->post('/invarat/createChecklistEmpty', 'Invarat\InvaratVehicleController@createChecklistEmpty');
 
         // Los metodos actuales tienen un control de estados que no es necesario para notroso.
