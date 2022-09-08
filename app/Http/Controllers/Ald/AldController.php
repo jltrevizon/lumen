@@ -9,6 +9,7 @@ use App\Models\StatePendingTask;
 use App\Models\Task;
 use App\Models\Vehicle;
 use App\Repositories\GroupTaskRepository;
+use App\Repositories\SquareRepository;
 use App\Repositories\StateChangeRepository;
 use App\Repositories\TaskRepository;
 use App\Repositories\VehicleRepository;
@@ -26,12 +27,14 @@ class AldController extends Controller
         TaskRepository $taskRepository,
         GroupTaskRepository $groupTaskRepository,
         StateChangeRepository $stateChangeRepository,
-        VehicleRepository $vehicleRepository
+        VehicleRepository $vehicleRepository,
+        SquareRepository $squareRepository
     ) {
         $this->taskRepository = $taskRepository;
         $this->groupTaskRepository = $groupTaskRepository;
         $this->stateChangeRepository = $stateChangeRepository;
         $this->vehicleRepository = $vehicleRepository;
+        $this->squareRepository = $squareRepository;
     }
 
     public function unapprovedTask(Request $request)
@@ -155,6 +158,9 @@ class AldController extends Controller
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+            if ($request->input('square_id')) {
+                $this->squareRepository->update($request, $request->input('square_id'));
+            }
             return $this->createDataResponse([
                 'data' => $groupTask->approvedPendingTasks, 
                 'vehicle' => Vehicle::find($vehicle->id)
