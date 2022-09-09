@@ -25,6 +25,7 @@ class QuestionAnswerRepository
         VehicleRepository $vehicleRepository,
         NotificationDAMail $notificationDAMail,
         NotificationItvMail $notificationItvMail,
+        SquareRepository $squareRepository,
         StateChangeRepository $stateChangeRepository
     ) {
         $this->taskRepository = $taskRepository;
@@ -36,6 +37,7 @@ class QuestionAnswerRepository
         $this->notificationDAMail = $notificationDAMail;
         $this->notificationItvMail = $notificationItvMail;
         $this->stateChangeRepository = $stateChangeRepository;
+        $this->squareRepository = $squareRepository;
     }
 
     public function create($request)
@@ -69,7 +71,9 @@ class QuestionAnswerRepository
         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         $vehicle->has_environment_label = $has_environment_label;
         $vehicle->save();
-
+        if ($request->input('square_id')) {
+            $this->squareRepository->update($request, $request->input('square_id'));
+        }
         return [
             'questionnaire' => $questionnaire
         ];
