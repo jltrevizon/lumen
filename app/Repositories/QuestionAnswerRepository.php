@@ -75,11 +75,6 @@ class QuestionAnswerRepository
     
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
     
-            if (is_null($vehicle->lastReception)) {
-                $this->vehicleRepository->newReception($vehicle->id);
-                $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-            }
-    
             $pendingTasks = $vehicle->lastGroupTask->pendingTasks ?? null;
             if ($pendingTasks) {
                 foreach ($pendingTasks as $key => $pending_task) {
@@ -104,6 +99,9 @@ class QuestionAnswerRepository
                 }
             }
     
+            $this->vehicleRepository->newReception($vehicle->id, null, false);
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+
             $groupTask = GroupTask::findOrFail($vehicle->lastGroupTask->id);
     
             $user = Auth::user();

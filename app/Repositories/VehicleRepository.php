@@ -401,7 +401,7 @@ class VehicleRepository extends Repository
         return $vehicle;
     }
 
-    public function newReception($vehicle_id, $group_task_id = null)
+    public function newReception($vehicle_id, $group_task_id = null, $approved = true)
     {
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
@@ -419,8 +419,8 @@ class VehicleRepository extends Repository
         if (is_null($group_task_id)) {
             $group_task = $this->groupTaskRepository->create([
                 'vehicle_id' => $vehicle_id,
-                'approved_available' => true,
-                'approved' => true
+                'approved_available' => $approved,
+                'approved' => $approved
             ]);
             $group_task_id = $group_task->id;
         } else {
