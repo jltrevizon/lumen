@@ -62,10 +62,10 @@ class QuestionAnswerRepository
             }
         }
         $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
-        if ($reception) {
+        if (!$reception || $reception->vehicle->sub_state_id === 10) {
+            $reception = $this->vehicleRepository->newReception($request->input('vehicle_id'));
             $vehicle = $reception->vehicle;
         } else {
-            $reception = $this->vehicleRepository->newReception($request->input('vehicle_id'));
             $vehicle = $reception->vehicle;
         }
         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
