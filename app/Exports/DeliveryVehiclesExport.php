@@ -19,9 +19,11 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
     {
         if($this->campaId == null) {
             return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
+                ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
                 ->get();
         } else {
             return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
+                ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
                 ->where('campa_id', $this->campaId)
                 ->get();
         }
