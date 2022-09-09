@@ -9,6 +9,7 @@ use App\Models\QuestionAnswer;
 use App\Models\Questionnaire;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
+use App\Models\Vehicle;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -59,9 +60,9 @@ class QuestionAnswerRepository
                 $this->notificationItvMail->build($request->input('vehicle_id'));
             }
         }
-        $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
+        $this->receptionRepository->lastReception($request->input('vehicle_id'));
 
-        $vehicle = $reception->vehicle;
+        $vehicle = Vehicle::find($request->input('vehicle_id'));
         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         $vehicle->has_environment_label = $has_environment_label;
         $vehicle->save();
