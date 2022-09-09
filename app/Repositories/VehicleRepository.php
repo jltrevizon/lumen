@@ -23,6 +23,8 @@ use App\Repositories\UserRepository;
 use App\Repositories\TypeModelOrderRepository;
 use App\Repositories\DeliveryVehicleRepository;
 use App\Repositories\VehicleExitRepository;
+use App\Repositories\StateChangeRepository;
+
 use App\Repositories\CampaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
