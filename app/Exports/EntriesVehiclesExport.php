@@ -18,10 +18,12 @@ class EntriesVehiclesExport implements FromCollection, WithMapping, WithHeadings
     {
         if($this->campaId == null){
             return Reception::whereDate('created_at', date('Y-m-d'))
+                    ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
                     ->get();
         } else {
             return Reception::whereDate('created_at', date('Y-m-d'))
                     ->where('campa_id', $this->campaId)
+                    ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
                     ->get();
         }
     }
