@@ -48,6 +48,7 @@ class QuestionAnswerRepository
 
     public function create($request)
     {
+        $questionnaire = null;
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
             $questionnaire = $this->questionnaireRepository->create($request);
