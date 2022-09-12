@@ -33,6 +33,11 @@ class GspController extends Controller
         return $this->createDataResponse($this->gspRepository->createBudgeForType($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
+    public function falloCheckVehicle(Request $request){
+
+        return $this->updateDataResponse($this->gspRepository->falloCheckVehicle($request), HttpFoundationResponse::HTTP_CREATED);
+    }
+
 //    public function orderFilter(Request $request){
 //        return $this->getDataResponse($this->invaratOrderRepository->orderFilter($request), HttpFoundationResponse::HTTP_OK);
 //    }
