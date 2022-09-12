@@ -17,6 +17,7 @@ class TypeModelOrder extends Model
     const CARMARKET = 5;
     const DEVOLUTION = 6;
     const VO = 7;
+    const VO_ENTREGADO = 8;
 
     protected $fillable = [
         'name'

@@ -20,6 +20,8 @@ class Task extends Model
     const TOALQUILADO = 38;
     const VALIDATE_CHECKLIST = 39;
     const TRANSFER = 40;
+    const CHECK_BLOCKED = 61;
+    const CHECK_RELEASE = 64;
 
     protected $fillable = [
         'company_id',

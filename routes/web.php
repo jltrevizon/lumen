@@ -28,12 +28,15 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
+    $router->get('/kpi-all', 'KpiController@kpiFull');
     $router->get('/kpi-inpu-out-stock', 'KpiController@kpiInpuOut');
     $router->get('/kpi-sub-states', 'KpiController@subStates');
     $router->get('/kpi-sub-states-month', 'KpiController@subStatesMonth');
     $router->get('/kpi-diff-reception', 'KpiController@diffTimeReception');
     $router->get('/kpi-check-list', 'KpiController@checkList');
     $router->get('/kpi-pending-tasks', 'KpiController@kpiPendingTask');
+    $router->get('/stock-pending-tasks', 'KpiController@pendingTask');
+    $router->get('/stock-vehicles', 'KpiController@stockVehicle');
 
     $router->post('broadcasting/auth', ['uses' => 'BroadcastController@authenticate']);
         /**
@@ -164,6 +167,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
         $router->post('/pending-tasks/add', 'PendingTaskController@addPendingTask');
         $router->get('/pending-tasks/filter', 'PendingTaskController@pendingTasksFilter');
+        $router->get('/pending-tasks/filter-download-file', 'PendingTaskController@pendingTasksFilterDownloadFile');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
         $router->post('/pending-tasks/finish-all', 'PendingTaskController@finishAll');
@@ -270,6 +274,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/vehicles/change-sub-state', 'VehicleController@changeSubState');
         $router->put('/vehicles/update/{id}', 'VehicleController@update');
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
+        $router->post('/vehicles/return/{id}', 'VehicleController@returnVehicle');
         $router->post('/vehicles/delete-massive', 'VehicleController@deleteMassive');
         $router->post('/vehicles/set-sub-state-null', 'VehicleController@setSubStateNull');
         $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
@@ -278,6 +283,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->get('/vehicles/filter', 'VehicleController@filterVehicle');
+        $router->get('/vehicles/filter-download-file', 'VehicleController@filterVehicleDownloadFile');
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
         $router->get('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
@@ -297,6 +303,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Vehicle Picture
          */
         $router->post('/vehicle-pictures', 'VehiclePictureController@create');
+        $router->delete('/vehicle-pictures/{id}', 'VehiclePictureController@delete');
         $router->post('/vehicle-pictures/by-vehicle', 'VehiclePictureController@getPicturesByVehicle');
 
         /**
@@ -574,7 +581,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending Authorization
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
-        $router->post('/approved-pending-authorization','PendingAuthorizationController@approvedAuthorization');
     
         /** Estimated dates */
         $router->post('/estimated-dates', 'EstimatedDateController@store');
@@ -606,3 +612,4 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/kpis/out', 'KpiController@out');
     });
 });
+

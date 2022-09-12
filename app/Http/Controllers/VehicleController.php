@@ -26,7 +26,8 @@ class VehicleController extends Controller
     }
 
 
-    public function download(Request $request){
+    public function download(Request $request)
+    {
         $pendingDownload = new PendingDownload();
         $pendingDownload->user_id = Auth::id();
         $pendingDownload->type_document = 'vehicles';
@@ -34,17 +35,20 @@ class VehicleController extends Controller
         return $this->createDataResponse('Documento generandose, en cuanto esté listo, le llegará a su correo', HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getAll(Request $request){
+    public function getAll(Request $request)
+    {
 
         return $this->getDataResponse($this->vehicleRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getById(Request $request, $id){
+    public function getById(Request $request, $id)
+    {
 
         return $this->getDataResponse($this->vehicleRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
         $this->validate($request, [
             'campa_id' => 'required|integer',
@@ -53,17 +57,19 @@ class VehicleController extends Controller
             'first_plate' => 'nullable|date',
         ]);
         $data = $this->vehicleRepository->create($request);
-        if ($data) {
-           return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_CREATED);
+        if (!is_null($data['code'])) {
+            return $this->failResponse(['message' => 'Esta matrícula ya está registrada', 'vehicle' => $data['vehicle']], $data['code']);
         }
-        return $this->failResponse(['message' => 'Esta matrícula ya está registrada'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
+        return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_OK);
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         return $this->updateDataResponse(['vehicle' => $this->vehicleRepository->update($request, $id)], HttpFoundationResponse::HTTP_OK);
     }
 
-    public function verifyPlate(Request $request){
+    public function verifyPlate(Request $request)
+    {
 
         $this->validate($request, [
             'plate' => 'required|string',
@@ -72,21 +78,31 @@ class VehicleController extends Controller
         return $this->getDataResponse($this->vehicleRepository->verifyPlate($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function vehicleDefleet(Request $request){
+    public function vehicleDefleet(Request $request)
+    {
 
         return $this->getDataResponse(['vehicles' => $this->vehicleRepository->vehicleDefleet($request)], HttpFoundationResponse::HTTP_OK);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
 
         return $this->deleteDataResponse($this->vehicleRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function deleteMassive(Request $request){
+    public function returnVehicle(Request $request, $id)
+    {
+        $data = $this->vehicleRepository->returnVehicle($request, $id);
+        return $this->deleteDataResponse($data, HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function deleteMassive(Request $request)
+    {
         return $this->deleteDataResponse($this->vehicleRepository->deleteMassive($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function createFromExcel(Request $request){
+    public function createFromExcel(Request $request)
+    {
 
         $this->validate($request, [
             'vehicles' => 'required'
@@ -95,12 +111,14 @@ class VehicleController extends Controller
         return $this->createDataResponse($this->vehicleRepository->createFromExcel($request), HttpFoundationResponse::HTTP_CREATED);
     }
 
-    public function getVehiclesWithReservationWithoutOrderCampa(Request $request){
+    public function getVehiclesWithReservationWithoutOrderCampa(Request $request)
+    {
 
         return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutOrderCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function getVehiclesWithReservationWithoutContractCampa(Request $request){
+    public function getVehiclesWithReservationWithoutContractCampa(Request $request)
+    {
 
         $this->validate($request, [
             'campas' => 'required'
@@ -109,11 +127,18 @@ class VehicleController extends Controller
         return $this->getDataResponse($this->vehicleRepository->getVehiclesWithReservationWithoutContractCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function filterVehicle(Request $request){
+    public function filterVehicle(Request $request)
+    {
         return $this->getDataResponse($this->vehicleRepository->filterVehicle($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function vehicleReserved(Request $request){
+    public function filterVehicleDownloadFile(Request $request)
+    {
+        return $this->getDataResponse($this->vehicleRepository->filterVehicleDownloadFile($request), HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function vehicleReserved(Request $request)
+    {
         return $this->getDataResponse($this->vehicleRepository->vehicleReserved($request), HttpFoundationResponse::HTTP_OK);
     }
 
@@ -122,11 +147,13 @@ class VehicleController extends Controller
         return $this->getDataResponse($this->vehicleRepository->vehicleTotalsState($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function vehicleRequestDefleet(Request $request){
+    public function vehicleRequestDefleet(Request $request)
+    {
         return $this->getDataResponse($this->vehicleRepository->vehicleRequestDefleet($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function verifyPlateReception(Request $request){
+    public function verifyPlateReception(Request $request)
+    {
 
         $this->validate($request, [
             'plate' => 'required|string',
@@ -134,11 +161,13 @@ class VehicleController extends Controller
 
         return $this->vehicleRepository->verifyPlateReception($request);
     }
-    public function unapprovedTask(){
+    public function unapprovedTask()
+    {
         return $this->vehicleRepository->unapprovedTask();
     }
 
-    public function vehicleByState(Request $request){
+    public function vehicleByState(Request $request)
+    {
 
         $this->validate($request, [
             'states' => 'required',
@@ -150,39 +179,46 @@ class VehicleController extends Controller
         return $this->getDataResponse($this->vehicleRepository->vehiclesByState($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function changeSubState(Request $request){
+    public function changeSubState(Request $request)
+    {
         return $this->updateDataResponse($this->vehicleRepository->changeSubState($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function setVehicleRented(Request $request){
+    public function setVehicleRented(Request $request)
+    {
         return $this->updateDataResponse($this->vehicleRepository->setVehicleRented($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function setSubStateNull(Request $request){
+    public function setSubStateNull(Request $request)
+    {
         return $this->updateDataResponse($this->vehicleRepository->setSubStateNull($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function defleet($id){
+    public function defleet($id)
+    {
         return $this->updateDataResponse($this->vehicleRepository->defleet($id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function unDefleet($id){
+    public function unDefleet($id)
+    {
         return $this->updateDataResponse($this->vehicleRepository->unDefleet($id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function defleeting(Request $request){
-        foreach($request->input('plates') as $plate){
+    public function defleeting(Request $request)
+    {
+        foreach ($request->input('plates') as $plate) {
 
             $vehicle = Vehicle::where('plate', $plate)->first();
-            if($vehicle){
+            if ($vehicle) {
                 $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
-                $vehicle->type_model_order_id = TypeModelOrder::VO;
+                // $vehicle->type_model_order_id = TypeModelOrder::VO;
                 $vehicle->save();
             }
         }
     }
 
-    public function lastGroupTasks(Request $request){
+    public function lastGroupTasks(Request $request)
+    {
         $data = $this->vehicleRepository->lastGroupTasks($request);
         return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }

@@ -13,24 +13,28 @@ class ReceptionController extends Controller
         $this->receptionRepository = $receptionRepository;
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         return $this->getDataResponse($this->receptionRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
         $this->validate($request, [
             'vehicle_id' => 'required|integer'
         ]);
-
-        return $this->createDataResponse($this->receptionRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
+        $data = $this->receptionRepository->create($request);
+        return $this->createDataResponse($data, HttpFoundationResponse::HTTP_CREATED);
     }
 
-    public function getById($id){
+    public function getById($id)
+    {
         return $this->getDataResponse($this->receptionRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
-    public function updateReception(Request $request, $id){  
+    public function updateReception(Request $request, $id)
+    {
         return $this->updateDataResponse($this->receptionRepository->updateReception($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 }

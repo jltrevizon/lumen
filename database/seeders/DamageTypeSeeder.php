@@ -15,10 +15,19 @@ class DamageTypeSeeder extends Seeder
      */
     public function run()
     {
-        $types = $this->data();
+        $types[] = [
+            'id' => 1,
+            'description' => 'Tarea'
+        ];
+        $types[] = [
+            'id' => 2,
+            'description' => 'Anotación'
+        ];
         foreach($types as $type){
-            DamageType::create([
-                'description' => $type
+            DamageType::updateOrCreate([
+                'id' => $type['id']
+            ], [
+                'description' => $type['description']
             ]);
         }
     }

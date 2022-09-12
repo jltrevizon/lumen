@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ald;
 use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
 use App\Models\GroupTask;
+use App\Models\QuestionAnswer;
 use App\Models\Role;
 use App\Models\StateChange;
 use App\Models\StatePendingTask;
@@ -22,6 +23,8 @@ use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Console\Input\Input;
 
 class PendingTaskAldController extends Controller
 {
@@ -51,7 +54,7 @@ class PendingTaskAldController extends Controller
                 $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
             }
             else {
-                $groupTask = $this->groupTaskRepository->create($request);
+                $groupTask = $this->groupTaskRepository->create($request->all());
                 $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
                 $reception->group_task_id = $groupTask->id;
                 $reception->save();
@@ -110,6 +113,13 @@ class PendingTaskAldController extends Controller
             $pending_task->task_id = $task['task_id'];
             $pending_task->approved = $task['approved'];
             $pending_task->created_from_checklist = true;
+            
+            $question_answer = QuestionAnswer::where('task_id', $task['task_id'])
+            ->where('questionnaire_id', $vehicle->lastQuestionnaire?->id)->first();
+            if (!is_null($question_answer)) {
+                $pending_task->question_answer_id = $question_answer->id;
+            }
+            Log::debug($task);
             if($task['approved'] == true && $isPendingTaskAssign == false){
                 if (!isset($task['without_state_pending_task'])) {
                     $pending_task->state_pending_task_id = StatePendingTask::PENDING;
@@ -125,10 +135,8 @@ class PendingTaskAldController extends Controller
                 $order++;
             }
             $pending_task->save();
-            if($pending_task->state_pending_task_id == StatePendingTask::PENDING){
-                $this->stateChangeRepository->createOrUpdate($vehicleId, $pending_task, $pending_task);
-            }
         }
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
     }
 
     public function updatePendingTask(Request $request){

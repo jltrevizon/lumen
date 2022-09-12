@@ -36,6 +36,7 @@ class BudgetPendingTaskRepository extends Repository {
     public function index($request){
         return BudgetPendingTask::with($this->getWiths($request->with))
                     ->filter($request->all())
+                    ->orderBy('created_at', 'DESC')
                     ->paginate($request->input('per_page'));
     }
 }

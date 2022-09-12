@@ -21,8 +21,10 @@ class PendingTask extends Model
         'vehicle_id',
         'reception_id',
         'task_id',
+        'question_answer_id',
         'campa_id',
         'state_pending_task_id',
+        'type_model_order_id',
         'user_start_id',
         'user_end_id',
         'group_task_id',
@@ -43,7 +45,7 @@ class PendingTask extends Model
     ];
 
     public function vehicle(){
-        return $this->belongsTo(Vehicle::class)->withTrashed();
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function typeModelOrder(){
@@ -52,6 +54,10 @@ class PendingTask extends Model
 
     public function reception(){
         return $this->belongsTo(Reception::class);
+    }
+
+    public function questionAnswer(){
+        return $this->belongsTo(QuestionAnswer::class);
     }
 
     public function user(){

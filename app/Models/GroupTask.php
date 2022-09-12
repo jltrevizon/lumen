@@ -7,6 +7,7 @@ use App\Models\PendingTask;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class GroupTask extends Model
 {
@@ -29,8 +30,9 @@ class GroupTask extends Model
 
     public function allPendingTasks() {
         return $this->hasMany(PendingTask::class, 'group_task_id')
-        ->orderByRaw("FIELD(state_pending_task_id,1, 2, 3, null) desc")
-        ->orderBy('order');
+        ->orderBy('state_pending_task_id', 'desc')
+        ->orderBy('order')
+        ->orderBy('datetime_finish', 'desc');
     }
 
     public function approvedPendingTasks(){
@@ -43,6 +45,19 @@ class GroupTask extends Model
         ->orderBy('state_pending_task_id', 'desc')
         ->orderBy('order')
         ->orderBy('datetime_finish', 'desc');
+    }
+
+    public function defaultOrderApprovedPendingTasks(){
+        return $this->hasMany(PendingTask::class, 'group_task_id')
+        ->where('approved', true)
+        ->where(function ($query) {
+            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->orderByRaw('FIELD(task_id,39, 11, 2, 3, 4, 41, 5, 6, 7, 8)');
+        // ->orderBy('state_pending_task_id', 'desc')
+        // ->orderBy('order')
+        // ->orderBy('datetime_finish', 'desc');
     }
 
     public function allApprovedPendingTasks(){
@@ -60,8 +75,34 @@ class GroupTask extends Model
 
     public function lastPendingTaskWithState(){
         return $this->hasOne(PendingTask::class)
-            ->where('state_pending_task_id', StatePendingTask::PENDING)
-            ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            ->where('approved', true)
+            ->where(function ($query) {
+                $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            });       
+    }
+
+    public function lastTaskWithState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->where(function ($query) {
+                $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
+                ->orWhere('state_pending_task_id', StatePendingTask::FINISHED);
+            });       
+    }
+
+    public function lastChangeState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
+            ->whereNotNull('last_change_state');            
+    }
+
+    public function lastChangeSubState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->whereNotNull('last_change_sub_state');            
     }
 
     public function vehicle(){

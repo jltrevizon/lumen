@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Vehicle;
+use App\Models\Campa;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class KpiInpuOutExport implements FromArray, WithHeadings
 {
-    protected $header = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+    protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
     public function __construct($request)
     {
         $this->request = $request;
@@ -21,6 +22,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
     {
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
+        $campas = $this->request->input('campas') ?? null;
 
         $in_data = InKpiView::with(['typeModelOrder'])
             ->where('in_year', $year)
@@ -59,9 +61,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
         }
 
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
-
-        $value[0][0] = 'Año ' . $year;
+        $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
         $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
@@ -122,10 +122,9 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             ];
         }
 
-        $stok = Vehicle::withTrashed()
-            ->with(['typeModelOrder'])
+        $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -133,6 +132,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
                 DB::raw('YEAR(created_at) year, MONTH(created_at) month'),
                 DB::raw('type_model_order_id')
             )
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id', 'year', 'month')
             ->get();
 
@@ -142,15 +142,15 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['month']] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
         }
 
-        $stok_now = Vehicle::withTrashed()
-            ->with(['typeModelOrder'])
-            ->filter($this->request->all())
+        $stok_now = Vehicle::with(['typeModelOrder'])
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
                 DB::raw("DATE_FORMAT(created_at, '%m-%Y') date"),
                 DB::raw('type_model_order_id')
             )
+            ->whereRaw('id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->groupBy('type_model_order_id')
             ->get();
 
@@ -165,15 +165,23 @@ class KpiInpuOutExport implements FromArray, WithHeadings
         $value[] = ['', '', '', '', ''];
         $value[] = ['', '', '', '', ''];
 
-        $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
+        $campas = Campa::filter(['ids' => $campas])
+            ->select(
+                DB::raw('sum(ocupation) as `ocupacion`')
+            )
+            ->get();
+        $ocupacion = $campas[0]['ocupacion'];
+
+        $value[] =  ['Stock campa actual', 'Totales', '%', 'Ocupacion', '%'];
+        $value[] =  ['TOTAL', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {
             $value[] = [
                 $key,
                 strval($v[1] ?? 0),
                 strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $total)),
-                500,
-                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, 500)),
+                $ocupacion,
+                strval($this->obtenerPorcentaje((int) $v[1] ?? 0, $ocupacion)),
             ];
         }
 

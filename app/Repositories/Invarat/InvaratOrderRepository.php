@@ -4,20 +4,22 @@ namespace App\Repositories\Invarat;
 
 use App\Models\Order;
 use App\Models\State;
-use App\Models\StatePendingTask;
 use App\Repositories\Repository;
+use App\Repositories\StateChangeRepository;
 
 class InvaratOrderRepository extends Repository {
 
     public function __construct(
         InvaratWorkshopRepository $invaratWorkshopRepository,
         InvaratVehicleRepository $invaratVehicleRepository,
-        InvaratPendingTaskRepository $invaratPendingTaskRepository
+        InvaratPendingTaskRepository $invaratPendingTaskRepository,
+        StateChangeRepository $stateChangeRepository,
     )
     {
         $this->invaratWorkshopRepository = $invaratWorkshopRepository;
         $this->invaratVehicleRepository = $invaratVehicleRepository;
         $this->invaratPendingTaskRepository = $invaratPendingTaskRepository;
+        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function createOrder($request){

@@ -16,7 +16,9 @@ class TypeModelOrderSeeder extends Seeder
     {
         $types = $this->data();
         foreach($types as $type){
-            TypeModelOrder::create([
+            TypeModelOrder::updateOrCreate([
+                'id' => $type['id']
+            ],[
                 'name' => $type['name']
             ]);
         }
@@ -25,25 +27,40 @@ class TypeModelOrderSeeder extends Seeder
     public function data(){
         return [
             [
+                'id' => 1,
                 'name' => 'BIPI'
             ],
             [
+                'id' => 2,
                 'name' => 'REDRIVE'
             ],
             [
-                'name' => '2D'
+                'id' => 3,
+                'name' => '2ND'
             ],
             [
+                'id' => 4,
                 'name' => 'ALD Flex'
             ],
             [
+                'id' => 5,
                 'name' => 'CARMARKET'
             ],
             [
+                'id' => 6,
                 'name' => 'DEVOLUCIÓN'
             ],
             [
+                'id' => 7,
                 'name' => 'VO'
+            ],
+            [
+                'id' => 8,
+                'name' => 'VO-ENTREGADO-ALD-FLEX'
+            ],
+            [
+                'id' => 9,
+                'name' => 'ALD FLEX NUEVO'
             ]
         ];
     }
