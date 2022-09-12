@@ -38,7 +38,6 @@ class GroupTask extends Model
     public function approvedPendingTasks(){
         return $this->hasMany(PendingTask::class, 'group_task_id')
         ->where('approved', true)
-        // ->whereNotIn('task_id', [61, 64])
         ->where(function ($query) {
             $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
                 ->orWhereNull('state_pending_task_id');
