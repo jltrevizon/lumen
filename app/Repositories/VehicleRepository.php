@@ -406,10 +406,8 @@ class VehicleRepository extends Repository
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
         
-        $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 1])->get())->map(function ($item) {
-            return $item->id;
-        })->toArray();
-
+        $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {return $item->id;})->toArray();
+        Log::debug($vehicle_ids);
         if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
             $reception = new Reception();
         } else {
