@@ -274,10 +274,9 @@ class VehicleRepository extends Repository
             $vehicle->company_id = $user->company_id;
         }
         $vehicle->created_by = Auth::id();
-        // $vehicle->sub_state_id = SubState::CHECK_BLOCKED;
         $vehicle->save();
         $this->newReception($vehicle->id);
-        // $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return $vehicle;
     }
 
