@@ -58,6 +58,11 @@ class GspRepository extends Repository {
         $vehicle->first_plate = $request->input('first_plate');
         $vehicle->save();
 
+        Order::create(array(
+            "vehicle_id" => $vehicle->id,
+            "id_gsp" => $request->input("id_gsp"),
+        ));
+
         return $vehicle;
     }
 
@@ -129,6 +134,59 @@ class GspRepository extends Repository {
 
             Log::debug("ERROR --> ". $e->getMessage()." - ".$e->getFile()." - ".$e->getLine());
 
+            return [
+                "type" => "error",
+                "msg" => $e->getMessage()
+            ];
+
+        }
+
+    }
+
+
+    /**
+     * Finalización vehículo
+     *
+     * @param $request
+     * @return mixed
+     */
+    public function falloCheckVehicle($request)
+    {
+
+        try{
+
+            Log::debug("VEHICLE --> ". print_r($request->input("id_gsp"),true));
+
+
+            $order = Order::query()->where("id_gsp", $request->input("id_gsp"))->first();
+
+            Log::debug("VEHICLE --> ". print_r($order,true));
+
+            $order->vehicle->sub_state_id = SubState::PENDING_BUDGET;
+
+            if(!$order->vehicle->save()){
+                throw new \Exception("Error al finalizar el vehículo en FOCUS");
+            }
+
+            $lastPendingTask = PendingTask::query()->where("vehicle_id",$order->vehicle_id)->latest()->first();
+
+            // Generamos nueava tarea de prespuesto por si la tiene que modificar.
+            PendingTask::create(array(
+                "vehicle_id" => $lastPendingTask->vehicle_id,
+                "task_id" => 31,
+                "state_pending_task_id" => StatePendingTask::PENDING,
+                "group_task_id" => $lastPendingTask->group_task_id,
+                "duration" => 6,
+                "order" => $lastPendingTask->order + 1
+            ));
+
+            return [
+                "type" => "success",
+                "msg" => ""
+            ];
+
+        }catch (\Exception $e){
+            Log::debug("ERROR --> ". $e->getMessage()." - ".$e->getFile()." - ".$e->getLine());
             return [
                 "type" => "error",
                 "msg" => $e->getMessage()

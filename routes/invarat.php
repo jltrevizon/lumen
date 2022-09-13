@@ -31,6 +31,7 @@ $router->group(['prefix' => 'api'], function () use ($router){
     $router->post('/invarat/gsp20/create-order', 'Invarat\GspController@createVehicle');
     $router->get('/invarat/gsp20/getVehicleForPlate', 'Invarat\GspController@getVehicleForPlate');
     $router->post('/invarat/gsp20/createBudgeForType', 'Invarat\GspController@createBudgeForType');
+    $router->post('/invarat/gsp20/falloCheckVehicle', 'Invarat\GspController@falloCheckVehicle');
 
 
 
