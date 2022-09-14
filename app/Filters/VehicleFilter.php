@@ -261,10 +261,7 @@ class VehicleFilter extends ModelFilter
     }
 
     public function withoutSubState($value) {
-        return $this->whereNull('deleted_at')
-            ->whereNull('sub_state_id')
-            ->where('campa_id', '3')
-            ->get();
+        return $this->orWhereNull('sub_state_id')
     }
 
     public function hasDamage($value){
