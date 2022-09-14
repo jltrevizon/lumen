@@ -260,6 +260,19 @@ class VehicleFilter extends ModelFilter
         return $this->whereIn('id', $vehicle_ids);
     }
 
+    public function withoutSubState($value) {
+        $vehicle_ids = collect(
+            Vehicles::where('campa_id', 3)
+            ->where('sub_state_id', null)
+            ->whereRaw(Db::raw('deleted_at is null'))
+            ->get('id')
+            )->map(function ($item){ return $item->id;})->toArray();
+        if ($value == 1) {
+            return $this->whereIn('id', $vehicle_ids);
+        }
+        return $this->whereIn('id', $vehicle_ids);
+    }
+
     public function hasDamage($value){
         return $this->whereHas('lastGroupTask.damages');
     }
