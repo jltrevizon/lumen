@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Log;
 class StateChangeRepository extends Repository
 {
 
-    public function updateSubStateVehicle($vehicle, $param_sub_state_id = null)
+    public function updateSubStateVehicle($vehicle, $param_sub_state_id = null, $force_sub_state_id = null)
     {
         $vehicle = Vehicle::find($vehicle->id);
         $sub_state_id = $vehicle->sub_state_id;
@@ -99,7 +99,20 @@ class StateChangeRepository extends Repository
             Log::debug('Bug: vehicle ' . $vehicle->id . ' Sin grupo de tareas');
         }
 
-        $vehicle->sub_state_id = $sub_state_id;
+        if ($sub_state_id != $vehicle->sub_state_id) {
+            $vehicle->last_change_sub_state = Carbon::now();
+        }
+
+        $state_id = SubState::find($sub_state_id)->state_id;
+        if ($state_id != $vehicle->sub_state?->state_id) {
+            $vehicle->last_change_state = Carbon::now();
+        }
+
+        if ($force_sub_state_id) {
+            $vehicle->sub_state_id = $force_sub_state_id;
+        } else {
+            $vehicle->sub_state_id = $sub_state_id;
+        }
         $vehicle->save();
 
         $this->store($vehicle->id, $vehicle->sub_state_id);

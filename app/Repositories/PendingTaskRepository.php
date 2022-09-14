@@ -245,25 +245,25 @@ class PendingTaskRepository extends Repository
             } else {
                 $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();
                 $vehicle = $this->vehicleRepository->pendingOrInProgress($pendingTaskOld->vehicle_id);
-                $this->createPendingTaskCampa($vehicle, $pendingTask['group_task_id']);
+                $this->createPendingTaskCampa($vehicle, $pendingTask['group_task_id'], Task::TOCAMPA);
                 $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             }
         }
     }
 
-    private function createPendingTaskCampa($vehicle, $groupTaskId)
+    private function createPendingTaskCampa($vehicle, $groupTaskId, $task_id)
     {
         PendingTask::create([
             'vehicle_id' => $vehicle->id,
             'reception_id' => $vehicle->lastReception->id ?? null,
-            'task_id' => Task::TOCAMPA,
+            'task_id' => $task_id,
             'campa_id' => $vehicle->campa_id,
             'state_pending_task_id' => StatePendingTask::FINISHED,
             'user_id' => Auth::id(),
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
             'group_task_id' => $groupTaskId,
-            'order' => 100,
+            'order' => -1,
             'duration' => 0,
             'approved' => true,
             'datetime_pending' => date('Y-m-d H:i:s'),
@@ -376,24 +376,8 @@ class PendingTaskRepository extends Repository
                     $vehicle->ready_to_delivery = true;
                     $vehicle->save();
                 }
-                PendingTask::create([
-                    'vehicle_id' => $vehicle->id,
-                    'reception_id' => $vehicle->lastReception->id ?? null,
-                    'task_id' => Task::TOCAMPA,
-                    'campa_id' => $vehicle->campa_id,
-                    'state_pending_task_id' => StatePendingTask::FINISHED,
-                    'user_id' => Auth::id(),
-                    'user_start_id' => Auth::id(),
-                    'user_end_id' => Auth::id(),
-                    'group_task_id' => $pending_task->group_task_id,
-                    'order' => -1,
-                    'duration' => 0,
-                    'approved' => true,
-                    'datetime_pending' => date('Y-m-d H:i:s'),
-                    'datetime_start' => date('Y-m-d H:i:s'),
-                    'datetime_finish' => date('Y-m-d H:i:s')
-                ]);
-                $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+                $this->createPendingTaskCampa($vehicle, $pending_task->group_task_id, $pending_task->task_id === Task::CHECK_BLOCKED ? Task::CHECK_RELEASE : Task::TOCAMPA);
+                $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $pending_task->task_id === Task::CHECK_BLOCKED ? SubState::CHECK_RELEASE : SubState::CAMPA);
                 return [
                     "status" => "OK",
                     "message" => "No hay más tareas"

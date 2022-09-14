@@ -42,14 +42,16 @@ class ReceptionRepository extends Repository
             ->first();
 
         if($receptionDuplicate){
-
             $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
-
         }
 
-        Reception::where('vehicle_id', $request->input('vehicle_id'))
-            ->whereDate('created_at', date('Y-m-d'))
-            ->delete();
+
+        if ($request->input('trash_reception')) {
+            $pending_tasks = PendingTask::where('reception_id', $request->input('trash_reception'))->get();
+            if (count($pending_tasks) === 0) {
+                Reception::where('id', $request->input('trash_reception'))->delete();
+            }
+        }
 
         $reception = new Reception();
         $campa = Auth::user()->campas->first();

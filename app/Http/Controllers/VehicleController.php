@@ -60,7 +60,7 @@ class VehicleController extends Controller
         if (!is_null($data['code'])) {
             return $this->failResponse(['message' => 'Esta matrícula ya está registrada', 'vehicle' => $data['vehicle']], $data['code']);
         }
-        return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_CREATED);
+        return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id)

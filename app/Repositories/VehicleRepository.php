@@ -23,10 +23,13 @@ use App\Repositories\UserRepository;
 use App\Repositories\TypeModelOrderRepository;
 use App\Repositories\DeliveryVehicleRepository;
 use App\Repositories\VehicleExitRepository;
+use App\Repositories\StateChangeRepository;
+
 use App\Repositories\CampaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use SebastianBergmann\Environment\Console;
 
 class VehicleRepository extends Repository
 {
@@ -45,7 +48,8 @@ class VehicleRepository extends Repository
         CampaRepository $campaRepository,
         DeliveryNoteRepository $deliveryNoteRepository,
         SquareRepository $squareRepository,
-        StateChangeRepository $stateChangeRepository
+        StateChangeRepository $stateChangeRepository,
+        HistoryLocationRepository $historyLocationRepository
     ) {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -61,6 +65,7 @@ class VehicleRepository extends Repository
         $this->squareRepository = $squareRepository;
         $this->deliveryNoteRepository = $deliveryNoteRepository;
         $this->stateChangeRepository = $stateChangeRepository;
+        $this->historyLocationRepository = $historyLocationRepository;
     }
 
     public function getAll($request)
@@ -270,13 +275,16 @@ class VehicleRepository extends Repository
         }
         $vehicle->created_by = Auth::id();
         $vehicle->save();
+        $this->newReception($vehicle->id);
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return $vehicle;
     }
 
     public function update($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        return $vehicle->update($request->all());
+        $vehicle->update($request->all());
+        return Vehicle::with($this->getWiths($request->with) ?? [])->findOrFail($id);
     }
 
     public function updateBack($request)
@@ -304,33 +312,22 @@ class VehicleRepository extends Repository
 
     public function verifyPlate($request)
     {
-        $vehicleDefleet = Vehicle::with($this->getWiths($request->with))
-            ->byPlate($request->input('plate'))
-            ->byPendingRequestDefleet()
-            ->filter($request->all())
-            ->first();
-        $vehicleDefleet = null;
-
-        if ($vehicleDefleet) {
-            $defleetingAndDelivery = Vehicle::where('id', $vehicleDefleet?->id)->filter(['defleetingAndDelivery' => 0])->first();
-        }
-        if ($vehicleDefleet) {
-            return ['defleet' => true, 'vehicle' => $vehicleDefleet, 'vehicle_delivery' => $defleetingAndDelivery];
-        }
-
         $vehicle = Vehicle::with($this->getWiths($request->with))
-            ->where('plate', $request->input('plate'))
+        ->filter($request->all())
+        ->first();;
+
+        $vehicleDefleet = Vehicle::where('id', $vehicle?->id)
+            ->byPendingRequestDefleet()
             ->first();
 
-        if ($vehicle) {
-            $defleetingAndDelivery = Vehicle::where('id', $vehicle?->id)->filter(['defleetingAndDelivery' => 0])->first();
-        }
+        $defleetingAndDelivery = Vehicle::where('id', $vehicle?->id)->filter(['defleetingAndDelivery' => 0])->first();
 
-        if ($vehicle) {
+        if ($vehicleDefleet) {
+            return ['vehicle' => $vehicle, 'defleet' => true, 'vehicle_delivery' => $defleetingAndDelivery];
+        } else if ($vehicle) {
             return ['vehicle' => $vehicle, 'registered' => true, 'vehicle_delivery' => $defleetingAndDelivery];
-        } else {
-            return ['registered' => false];
         }
+        return ['registered' => false];
     }
 
     public function verifyPlateReception($request)
@@ -404,16 +401,24 @@ class VehicleRepository extends Repository
         return $vehicle;
     }
 
-    public function newReception($vehicle_id, $group_task_id = null)
+    public function newReception($vehicle_id, $group_task_id = null, $approved = true)
     {
         $user = $this->userRepository->getById([], Auth::id());
-        $reception = new Reception();
         $vehicle = Vehicle::find($vehicle_id);
+        
+        $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {return $item->id;})->toArray();
+        Log::debug($vehicle_ids);
+        if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
+            $reception = new Reception();
+        } else {
+            $reception = $vehicle->lastReception;
+        } 
+
         if (is_null($group_task_id)) {
             $group_task = $this->groupTaskRepository->create([
                 'vehicle_id' => $vehicle_id,
-                'approved_available' => true,
-                'approved' => true
+                'approved_available' => $approved,
+                'approved' => $approved
             ]);
             $group_task_id = $group_task->id;
         } else {
@@ -600,6 +605,7 @@ class VehicleRepository extends Repository
     {
         $square = $vehicle->square()->first();
         if (!is_null($square)) {
+            $this->historyLocationRepository->saveFromBack($square->vehicle_id, null, Auth::id());
             $square->vehicle_id = null;
             $square->save();
         }
@@ -715,9 +721,9 @@ class VehicleRepository extends Repository
                 $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             }
         }
-        return Vehicle::with(array_merge($this->getWiths($request->with), ['groupTasks' => function ($query) use ($vehicle) {
+        return Vehicle::with(array_merge($this->getWiths($request->with), ['allApprovedPendingTasks' => function ($query) use ($vehicle) {
             return $query
-                ->where('id', '=', $vehicle->lastReception?->group_task_id)
+                ->where('group_task_id', '=', $vehicle->lastReception?->group_task_id)
                 // ->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
                 ->orderBy('id', 'desc')
                 ->orderBy('created_at', 'desc');

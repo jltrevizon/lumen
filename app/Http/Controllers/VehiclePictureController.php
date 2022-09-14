@@ -33,6 +33,10 @@ class VehiclePictureController extends Controller
         return $this->deleteDataResponse($this->vehiclePictureRepository->delete($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    public function deletePictureByPlace($request){
+        return $this->deleteDataResponse($this->vehiclePictureRepository->deletePictureByPlace($request), HttpFoundationResponse::HTTP_OK);
+    }
+
     public function getPicturesByVehicle(Request $request){
 
         $this->validate($request, [
