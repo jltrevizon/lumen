@@ -261,7 +261,7 @@ class VehicleFilter extends ModelFilter
     }
 
     public function withoutSubState($value) {
-        return $this->whereRaw(Db::raw('sub_state_id is null and campa_id = 3'))
+        return $this->whereRaw(Db::raw('sub_state_id is null and campa_id = 3'));
     }
 
     public function hasDamage($value){
