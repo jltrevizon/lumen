@@ -304,6 +304,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->post('/vehicle-pictures', 'VehiclePictureController@create');
         $router->delete('/vehicle-pictures/{id}', 'VehiclePictureController@delete');
+        $router->post('/vehicle-pictures/delete-pic-by-place', 'VehiclePictureController@deletePictureByPlace');
         $router->post('/vehicle-pictures/by-vehicle', 'VehiclePictureController@getPicturesByVehicle');
 
         /**
