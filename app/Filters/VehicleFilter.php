@@ -261,7 +261,7 @@ class VehicleFilter extends ModelFilter
     }
 
     public function withoutSubState($value) {
-        return $this->orWhereNull('sub_state_id')
+        return $this->orWhereNull('sub_state_id');
     }
 
     public function hasDamage($value){
