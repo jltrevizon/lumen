@@ -132,6 +132,13 @@ class Vehicle extends Model
         return $this->hasMany(VehicleExit::class);
     }
 
+    public function lastVehicleExit(){
+        return $this->hasOne(VehicleExit::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
+
     public function operations(){
         return $this->hasMany(Operation::class);
     }
