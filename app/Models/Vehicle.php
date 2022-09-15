@@ -12,6 +12,7 @@ use App\Models\PendingTask;
 use App\Models\GroupTask;
 use App\Models\VehiclePicture;
 use App\Models\Reservation;
+use App\Models\HistoryLocation;
 use App\Models\Reception;
 use App\Models\TradeState;
 use Illuminate\Database\Eloquent\Builder;
@@ -149,6 +150,10 @@ class Vehicle extends Model
 
     public function damages(){
         return $this->hasMany(Damage::class);
+    }
+
+    public function historyLocations(){
+        return $this->hasMany(HistoryLocation::class);
     }
 
     public function accessories(){
