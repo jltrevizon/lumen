@@ -385,7 +385,6 @@ class VehicleRepository extends Repository
         $vehicle = Vehicle::where('id', $id)->withTrashed()->first();
         $vehicle->deleted_user_id = Auth::id();
         $vehicle->deleted_at = null;
-        $vehicle->sub_state_id = null;
         $vehicle->update($request->all());
         $user = Auth::user();
         if (is_null($vehicle->campa_id)) {
@@ -624,19 +623,6 @@ class VehicleRepository extends Repository
         }
 
         return response()->json(['message' => 'Done!']);
-    }
-
-    public function setSubStateNull($request)
-    {
-        $plates = $request->get('plates');
-        foreach ($plates as $plate) {
-            $vehicle = Vehicle::where('plate', $plate)->first();
-            if ($vehicle) {
-                $vehicle->sub_state_id = null;
-                $vehicle->save();
-                $this->deletePendingTasks($vehicle->id);
-            }
-        }
     }
 
     private function deletePendingTasks($vehicleId)

@@ -54,6 +54,10 @@ class VehicleFilter extends ModelFilter
         return $this->byTypeModelOrderIds($ids);
     }
 
+    public function accessorieTypeIds($ids){
+        return $this->byAccessorieTypeIds($ids);
+    }
+
     public function budgetPendingTaskIds($ids){
         return $this->byBudgetPendingTaskIds($ids);
     }
@@ -261,10 +265,12 @@ class VehicleFilter extends ModelFilter
     }
 
     public function withoutSubState($value) {
-        return $this->orWhereNull('sub_state_id')
-            ->where('campa_id', '3')
-            ->whereNull('deleted_at');
-    }
+        if($value == 1) {
+            return $this->orWhereNull('sub_state_id')
+                ->where('campa_id', '3')
+                ->whereNull('deleted_at');
+        }
+    }  
 
     public function hasDamage($value){
         return $this->whereHas('lastGroupTask.damages');

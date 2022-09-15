@@ -132,6 +132,13 @@ class Vehicle extends Model
         return $this->hasMany(VehicleExit::class);
     }
 
+    public function lastVehicleExit(){
+        return $this->hasOne(VehicleExit::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
+
     public function operations(){
         return $this->hasMany(Operation::class);
     }
@@ -310,6 +317,12 @@ class Vehicle extends Model
     }
 
     public function scopeSubStateIds($query, array $ids){
+        $idNull = count(array_filter($ids)) < count($ids) || in_array("null", $ids);
+        if ($idNull) {
+            return $query->where(function ($query) use ($ids) {
+                $query->whereIn('sub_state_id', $ids)->orWhereNull('sub_state_id');
+            });
+        }
         return $query->whereIn('sub_state_id', $ids);
     }
 
@@ -334,6 +347,12 @@ class Vehicle extends Model
     public function scopeBrandIds($query, array $ids){
         return $query->whereHas('vehicleModel', function (Builder $builder) use($ids) {
             return $builder->whereIn('brand_id', $ids);
+        });
+    }
+
+    public function scopeByAccessorieTypeIds($query, array $ids){
+        return $query->whereHas('accessories', function (Builder $builder) use($ids) {
+            return $builder->whereIn('accessory_type_id', $ids);
         });
     }
 

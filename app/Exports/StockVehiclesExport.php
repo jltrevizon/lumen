@@ -21,19 +21,15 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
 
     public function collection()
     {
-        if($this->campaId == 3) {
-            return Vehicle::where('campa_id', $this->campaId)
-                ->whereRaw('(sub_state_id is null or sub_state_id != '.SubState::ALQUILADO.')')
-                ->filter([ 'defleetingAndDelivery' => 1 ])
-                ->get();
-        } if($this->campaId == null) {
-            return Vehicle::where('sub_state_id', '!=', SubState::ALQUILADO)
-            ->filter([ 'defleetingAndDelivery' => 1 ])
+        $ids = collect(SubState::where('id', '<>', SubState::ALQUILADO)->get())->map(function ($item){ return $item->id;})->toArray();
+        $filter = array_merge([ 'defleetingAndDelivery' => 1, 'subStates' => array_merge($ids, [null]) ]);
+        if($this->campaId == null) {
+            return Vehicle::whereIn('sub_state_id', $ids)
+            ->filter($filter)
             ->get();
         } else {
             return Vehicle::where('campa_id', $this->campaId)
-                    ->where('sub_state_id', '!=', SubState::ALQUILADO)
-                    ->filter([ 'defleetingAndDelivery' => 1 ])
+                    ->filter($filter)
                     ->get();
         }
     }
