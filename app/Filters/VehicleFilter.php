@@ -54,6 +54,10 @@ class VehicleFilter extends ModelFilter
         return $this->byTypeModelOrderIds($ids);
     }
 
+    public function accessorieTypeIds($ids){
+        return $this->byAccessorieTypeIds($ids);
+    }
+
     public function budgetPendingTaskIds($ids){
         return $this->byBudgetPendingTaskIds($ids);
     }

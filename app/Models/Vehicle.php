@@ -344,6 +344,12 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeByAccessorieTypeIds($query, array $ids){
+        return $query->whereHas('accessories', function (Builder $builder) use($ids) {
+            return $builder->whereIn('accessory_type_id', $ids);
+        });
+    }
+
     public function scopeByTypeModelOrderIds($query, array $ids){
         return $query->whereIn('type_model_order_id', $ids);
     }
