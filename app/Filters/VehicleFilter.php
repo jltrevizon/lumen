@@ -260,6 +260,12 @@ class VehicleFilter extends ModelFilter
         return $this->whereIn('id', $vehicle_ids);
     }
 
+    public function withoutSubState($value) {
+        return $this->orWhereNull('sub_state_id')
+            ->where('campa_id', '3')
+            ->whereNull('deleted_at');
+    }
+
     public function hasDamage($value){
         return $this->whereHas('lastGroupTask.damages');
     }
