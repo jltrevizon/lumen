@@ -266,13 +266,7 @@ class VehicleFilter extends ModelFilter
                 ->where('campa_id', '3')
                 ->whereNull('deleted_at');
         }
-    }
-
-    public function testSubStateNull($value) {
-        return $this->orWhereNull('sub_state_id');
-    }
-
-    
+    }  
 
     public function hasDamage($value){
         return $this->whereHas('lastGroupTask.damages');
