@@ -625,19 +625,6 @@ class VehicleRepository extends Repository
         return response()->json(['message' => 'Done!']);
     }
 
-    public function setSubStateNull($request)
-    {
-        $plates = $request->get('plates');
-        foreach ($plates as $plate) {
-            $vehicle = Vehicle::where('plate', $plate)->first();
-            if ($vehicle) {
-                $vehicle->sub_state_id = null;
-                $vehicle->save();
-                $this->deletePendingTasks($vehicle->id);
-            }
-        }
-    }
-
     private function deletePendingTasks($vehicleId)
     {
         PendingTask::where('vehicle_id', $vehicleId)
