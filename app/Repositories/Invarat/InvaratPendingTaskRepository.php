@@ -75,6 +75,7 @@ class InvaratPendingTaskRepository extends Repository {
             ->where('group_task_id',$request->group_task_id)
             ->where('vehicle_id',$request->vehicle_id)
             ->where('order',">",$request->order)
+            ->where('state_pending_task_id',"!=",StatePendingTask::FINISHED)
             ->orderBy("order", "ASC")
             ->first();
 

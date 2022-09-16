@@ -177,10 +177,12 @@ class InvaratVehicleRepository extends Repository {
     public function update($request, $id)
     {
 
+
         $vehicle = Vehicle::findOrFail($id);
         $order= Order::where("vehicle_id",$id)->first();
 
-        $order->fx_entrada = $request->fx_entrada;
+        $order->fx_entrada = $request->fx_entrada != "" ? $request->fx_entrada : null;
+        $order->fx_first_budget = $request->fx_first_budget != "" ? $request->fx_first_budget : null ;
         $order->save();
 
         return $vehicle->update($request->all());
