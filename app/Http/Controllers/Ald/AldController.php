@@ -82,7 +82,8 @@ class AldController extends Controller
             if (!$vehicle->lastReception) {
                 $this->vehicleRepository->newReception($vehicle->id);
             }
-
+            
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             $groupTask = $this->lastGroupTask($vehicle->id);
             if (is_null($groupTask) || count($groupTask->approvedPendingTasks) === 0) {
                 $group_task = $this->groupTaskRepository->create([
