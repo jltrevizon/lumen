@@ -48,8 +48,10 @@ class QuestionAnswerRepository
 
     public function create($request)
     {
-        $questionnaire = null;
+        $questionnaire = null;            
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        $this->vehicleRepository->newReception($vehicle->id, null, false);
+
         if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
             $questionnaire = $this->questionnaireRepository->create($request);
             $questions = $request->input('questions');
@@ -70,9 +72,7 @@ class QuestionAnswerRepository
                     $this->notificationItvMail->build($request->input('vehicle_id'));
                 }
             }
-    
-            $this->receptionRepository->lastReception($request->input('vehicle_id'));
-    
+        
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
     
             $pendingTasks = $vehicle->lastGroupTask->pendingTasks ?? null;
@@ -99,8 +99,6 @@ class QuestionAnswerRepository
                 }
             }
     
-            $this->vehicleRepository->newReception($vehicle->id, null, false);
-            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
             $groupTask = GroupTask::findOrFail($vehicle->lastGroupTask->id);
     
