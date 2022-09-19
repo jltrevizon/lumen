@@ -50,7 +50,7 @@ class QuestionAnswerRepository
     {
         $questionnaire = null;            
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        $this->vehicleRepository->newReception($vehicle->id, null, false);
+        $this->vehicleRepository->newReception($vehicle->id, null, false, true);
 
         if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
             $questionnaire = $this->questionnaireRepository->create($request);
