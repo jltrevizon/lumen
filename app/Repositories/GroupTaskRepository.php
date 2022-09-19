@@ -66,6 +66,9 @@ class GroupTaskRepository extends Repository
         $group_task->approved_available = true;
         $group_task->approved = true;
         $group_task->datetime_approved = Carbon::now();
+        if($request->input('questionnaire_id')) {
+            $group_task->questionnaire_id = $request->input('questionnaire_id');   
+        }
         $group_task->save();
 
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
