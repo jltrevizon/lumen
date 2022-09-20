@@ -38,31 +38,6 @@ class InvaratPendingTaskRepository extends Repository {
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
     }
 
-    public function create($vehicleId){
-        $tasks = $this->taskRepository->getByCompany(Company::INVARAT);
-        $reception = $this->vehicleRepository->newReception($vehicleId);
-        $groupTask = $reception->groupTask;
-        $order = 1;
-        foreach($tasks as $task){
-            $pendingTask = new PendingTask();
-            $pendingTask->vehicle_id = $vehicleId;
-            $pendingTask->user_id = Auth::id();
-            $pendingTask->task_id = $task['id'];
-            $pendingTask->approved = true;
-            if($order == 1) {
-                $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
-                $pendingTask->datetime_pending = date('Y-m-d H:i:s');
-            }
-            $pendingTask->group_task_id = $groupTask['id'];
-            $pendingTask->duration = $task['duration'];
-            $pendingTask->order = $order;
-            $pendingTask->save();
-            $order++;
-        }
-        $this->stateChangeRepository->updateSubStateVehicle($groupTask->vehicle);
-    }
-
-
     /**
      * Método que trae la siguiente task de un grupo de tareas
      *

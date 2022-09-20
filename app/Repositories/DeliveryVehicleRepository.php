@@ -17,10 +17,12 @@ class DeliveryVehicleRepository extends Repository
 
     public function __construct(
         SquareRepository $squareRepository,
+        VehicleRepository $vehicleRepository,
         GroupTaskRepository $groupTaskRepository,
     ) {
         $this->squareRepository = $squareRepository;
         $this->groupTaskRepository = $groupTaskRepository;
+        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function index($request)
@@ -31,11 +33,16 @@ class DeliveryVehicleRepository extends Repository
             ->paginate($request->input('per_page'));
     }
 
-    public function createDeliveryVehicles($vehicleId, $data, $deliveryNoteId, $count, $groupTaskId)
+    public function createDeliveryVehicles($vehicleId, $data, $deliveryNoteId, $count)
     {
         $user = User::with('campas')
             ->findOrFail(Auth::id());
+        $this->vehicleRepository->newReception($vehicleId);
         $vehicle = Vehicle::findOrFail($vehicleId);
+        $groupTaskId = $vehicle->lastReception?->group_task_id ?? null;
+        if (!$groupTaskId) {
+            $groupTaskId = $vehicle->lastReception->group_task_id;
+        }
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
             'campa_id' => $user->campas[0]->id,
@@ -60,6 +67,10 @@ class DeliveryVehicleRepository extends Repository
             'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
             'campa_id' => $vehicle->campa_id
         ]);
+        if ($vehicle->lastReception) {
+            $vehicle->lastReception->finished = true;
+            $vehicle->lastReception->save();
+        }
     }
 
     public function delete($id)
