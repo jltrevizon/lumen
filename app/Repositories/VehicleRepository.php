@@ -10,6 +10,7 @@ use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
+use App\Models\TypeReception;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -409,6 +410,7 @@ class VehicleRepository extends Repository
         Log::debug($vehicle_ids);
         if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0 || $force_reception) {
             $reception = new Reception();
+            $reception->type_reception_id = TypeReception::CHECK_PENDING;
         } else {
             $reception = $vehicle->lastReception;
         } 

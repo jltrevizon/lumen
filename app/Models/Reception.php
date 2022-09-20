@@ -17,7 +17,8 @@ class Reception extends Model
         'vehicle_id',
         'group_task_id',
         'finished',
-        'has_accessories'
+        'has_accessories',
+        'type_reception_id'
     ];
 
     protected $dates = [
@@ -30,6 +31,10 @@ class Reception extends Model
 
     public function typeModelOrder(){
         return $this->belongsTo(TypeModelOrder::class);
+    }
+
+    public function typeReception(){
+        return $this->belongsTo(TypeReception::class);
     }
 
     public function accessories(){
