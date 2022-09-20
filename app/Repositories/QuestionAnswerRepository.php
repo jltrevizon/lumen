@@ -48,9 +48,10 @@ class QuestionAnswerRepository
 
     public function create($request)
     {
-        $questionnaire = null;            
+        $questionnaire = null;
+        $this->vehicleRepository->newReception($request->input('vehicle_id'), null, false, true);
+
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        $this->vehicleRepository->newReception($vehicle->id, null, false, true);
 
         if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
             $questionnaire = $this->questionnaireRepository->create($request);

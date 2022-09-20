@@ -78,11 +78,7 @@ class AldController extends Controller
     public function createTaskVehiclesAvalible(Request $request)
     {
         try {
-            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-            if (!$vehicle->lastReception) {
-                $this->vehicleRepository->newReception($vehicle->id);
-            }
-            
+            $this->vehicleRepository->newReception($request->input('vehicle_id'));            
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             $groupTask = $this->lastGroupTask($vehicle->id);
             if (is_null($groupTask) || count($groupTask->approvedPendingTasks) === 0) {
@@ -119,6 +115,10 @@ class AldController extends Controller
                 $vehicle->save();
             }
             $pending_task->task_id = $request->input('task_id');
+            if ($pending_task->task_id === Task::CHECK_RELEASE) {
+                $vehicle->lastResception->created_at = date('Y-m-d H:i:s');
+                $vehicle->lastResception->save();
+            }
             $taskDescription = $this->taskRepository->getById([], $pending_task->task_id);
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->approved = true;

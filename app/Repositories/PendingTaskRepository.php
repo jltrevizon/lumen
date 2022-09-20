@@ -548,13 +548,8 @@ class PendingTaskRepository extends Repository
             }
         }
         if ($task->need_authorization == false) {
-            $reception_id = null;
-            if ($vehicle->lastReception?->id) {
-                $reception_id = $vehicle->lastReception?->id;
-            } else {
-                $reception = $this->vehicleRepository->newReception($vehicleId);
-                $reception_id = $reception->id;
-            }
+            
+            $this->vehicleRepository->newReception($vehicleId);
             $vehicle = Vehicle::findOrFail($vehicleId);
 
             $groupTask = $vehicle->lastReception->groupTask;
@@ -570,7 +565,7 @@ class PendingTaskRepository extends Repository
             PendingTask::create([
                 'vehicle_id' => $vehicleId,
                 'task_id' => $taskId,
-                'reception_id' => $reception_id,
+                'reception_id' => $vehicle->lastReception->id,
                 'campa_id' => $vehicle->campa_id,
                 'group_task_id' => $damage->group_task_id,
                 'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,
