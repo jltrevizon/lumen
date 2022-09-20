@@ -17,12 +17,10 @@ class DeliveryVehicleRepository extends Repository
 
     public function __construct(
         SquareRepository $squareRepository,
-        VehicleRepository $vehicleRepository,
         GroupTaskRepository $groupTaskRepository,
     ) {
         $this->squareRepository = $squareRepository;
         $this->groupTaskRepository = $groupTaskRepository;
-        $this->vehicleRepository = $vehicleRepository;
     }
 
     public function index($request)
@@ -37,7 +35,6 @@ class DeliveryVehicleRepository extends Repository
     {
         $user = User::with('campas')
             ->findOrFail(Auth::id());
-        $this->vehicleRepository->newReception($vehicleId);
         $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTaskId = $vehicle->lastReception?->group_task_id ?? null;
         if (!$groupTaskId) {
