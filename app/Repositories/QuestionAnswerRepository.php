@@ -249,9 +249,11 @@ class QuestionAnswerRepository
             }
             $pendingTask = $pending_task;
         }
-        foreach ($vehicle?->lastGroupTask->defaultOrderApprovedPendingTasks as $key => $value) {
-            $value->order = $key + 1;
-            $value->save();
+        if($vehicle) {
+            foreach ($vehicle->lastGroupTask->defaultOrderApprovedPendingTasks as $key => $value) {
+                $value->order = $key + 1;
+                $value->save();
+            }    
         }
         return $questionAnswer;
     }
