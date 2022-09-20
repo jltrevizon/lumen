@@ -249,7 +249,7 @@ class QuestionAnswerRepository
             }
             $pendingTask = $pending_task;
         }
-        if($vehicle) {
+        if(isset($variable)) {
             foreach ($vehicle->lastGroupTask->defaultOrderApprovedPendingTasks as $key => $value) {
                 $value->order = $key + 1;
                 $value->save();
