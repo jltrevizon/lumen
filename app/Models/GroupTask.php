@@ -17,7 +17,8 @@ class GroupTask extends Model
     protected $fillable = [
         'vehicle_id',
         'questionnaire_id',
-        'approved'
+        'approved',
+        'approved_available'
     ];
 
     public function pendingTasks(){

@@ -46,11 +46,6 @@ class StateChangeRepository extends Repository
         } else if ($sub_state_id == SubState::SOLICITUD_DEFLEET && !is_null($vehicle->lastGroupTask)) {
             $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
             $count = count($approvedPendingTasks);
-            Log::debug([
-                'bug' => $sub_state_id,
-                'Bug2' => $param_sub_state_id,
-                'count' => $count
-            ]);
             if ($count > 0) {
                 foreach ($approvedPendingTasks as $key => $pendingTask) {
                     if ($param_sub_state_id === SubState::ALQUILADO) {

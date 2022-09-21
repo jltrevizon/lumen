@@ -32,7 +32,6 @@ class ReapirPendingTaskFromCkeckListSeeder extends Seeder
                 $pending_task->question_answer_id = $question_answer->id;
                 $pending_task->save();
                 if ($question_answer->response == 0 && $pending_task->approved == 1) {
-                    // Log::debug($question_answer->id);
                     $pending_task_ids[] = $pending_task->id;
                 }
             }

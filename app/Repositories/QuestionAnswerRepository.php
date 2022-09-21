@@ -49,6 +49,8 @@ class QuestionAnswerRepository
     public function create($request)
     {
         $questionnaire = null;
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+
         $this->vehicleRepository->newReception($request->input('vehicle_id'));
 
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
@@ -73,7 +75,11 @@ class QuestionAnswerRepository
                     $this->notificationItvMail->build($request->input('vehicle_id'));
                 }
             }
-        
+            $vehicle->lastReception->groupTask->questionnaire_id = $questionnaire['id'];
+            $vehicle->lastReception->groupTask->approved_available = false;
+            $vehicle->lastReception->groupTask->approved = false;
+            $vehicle->lastReception->groupTask->save();
+
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
     
             $pendingTasks = $vehicle->lastGroupTask->pendingTasks ?? null;
@@ -133,7 +139,6 @@ class QuestionAnswerRepository
                 if (!is_null($question_answer)) {
                     $pending_task->question_answer_id = $question_answer->id;
                 }
-                Log::debug($task);
                 if ($task['approved'] == true && $isPendingTaskAssign == false) {
                     if (!isset($task['without_state_pending_task'])) {
                         $pending_task->state_pending_task_id = StatePendingTask::PENDING;
