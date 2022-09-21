@@ -102,7 +102,9 @@ class QuestionAnswerRepository
     
 
             $groupTask = GroupTask::findOrFail($vehicle->lastGroupTask->id);
-    
+            $groupTask->$questionnaireId = $questionnaire['id'];
+            $groupTask->save();
+                
             $user = Auth::user();
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
     
