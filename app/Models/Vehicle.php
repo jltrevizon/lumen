@@ -181,6 +181,12 @@ class Vehicle extends Model
         ]);
     }
 
+    public function lastReceptionPending(){
+        return $this->hasOne(Reception::class)->ofMany([
+            'type_reception_id' => 'max',
+            'id' => 'max'
+        ]);
+    }
 
     public function orders(){
         return $this->hasMany(Order::class);
