@@ -402,7 +402,7 @@ class VehicleRepository extends Repository
         return $vehicle;
     }
 
-    public function newReception($vehicle_id, $group_task_id = null)
+    public function newReception($vehicle_id)
     {
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
@@ -420,7 +420,7 @@ class VehicleRepository extends Repository
 
         $approved = $vehicle->vehicle_model_id !== TypeModelOrder::ALDFLEX;
 
-        if (is_null($vehicle->lastGroupTask) || count($vehicle->lastGroupTask->allApprovedPendingTasks) === 0) {
+        if (is_null($vehicle->lastGroupTask) || (count($vehicle->lastGroupTask->approvedPendingTasks) === 0 && count($vehicle->lastGroupTask->allPendingTasks) > 0)) {
             $group_task = $this->groupTaskRepository->create([
                 'vehicle_id' => $vehicle_id,
                 'approved_available' => $approved,
@@ -568,7 +568,6 @@ class VehicleRepository extends Repository
                                 $pending_task->save();
                             }
                         }
-                        $this->newReception($vehicle['id']);
                         $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1);
                         if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
                             $vehicle->sub_state_id = null;
