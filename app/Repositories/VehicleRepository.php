@@ -10,6 +10,7 @@ use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
+use App\Models\TypeModelOrder;
 use App\Models\TypeReception;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
@@ -401,7 +402,7 @@ class VehicleRepository extends Repository
         return $vehicle;
     }
 
-    public function newReception($vehicle_id, $group_task_id = null, $approved = true)
+    public function newReception($vehicle_id, $group_task_id = null)
     {
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
@@ -414,23 +415,22 @@ class VehicleRepository extends Repository
         } else {
             $reception = $vehicle->lastReception;
             $reception->created_at = date('Y-m-d H:i:s');
+            $reception->updated_at = date('Y-m-d H:i:s');
         } 
 
-        if (is_null($group_task_id)) {
+        $approved = $vehicle->vehicle_model_id !== TypeModelOrder::ALDFLEX;
+
+        if (is_null($vehicle->lastGroupTask) || count($vehicle->lastGroupTask->allApprovedPendingTasks) === 0) {
             $group_task = $this->groupTaskRepository->create([
                 'vehicle_id' => $vehicle_id,
                 'approved_available' => $approved,
                 'approved' => $approved
             ]);
-            $group_task_id = $group_task->id;
+            $reception->group_task_id = $group_task->id;
         } else {
-            if ($vehicle->lastGroupTask && count($vehicle->lastGroupTask->allApprovedPendingTasks) > 0) {
-                $reception->created_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->created_at;
-                $reception->updated_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->updated_at;
-            }
+            $reception->group_task_id = $vehicle->lastGroupTask->id;
         }
 
-        $reception->group_task_id = $group_task_id;
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
