@@ -401,18 +401,19 @@ class VehicleRepository extends Repository
         return $vehicle;
     }
 
-    public function newReception($vehicle_id, $group_task_id = null, $approved = true, $force_reception = false)
+    public function newReception($vehicle_id, $group_task_id = null, $approved = true)
     {
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
         
         $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {return $item->id;})->toArray();
         Log::debug($vehicle_ids);
-        if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0 || $force_reception) {
+        if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
             $reception = new Reception();
             $reception->type_reception_id = TypeReception::CHECK_PENDING;
         } else {
             $reception = $vehicle->lastReception;
+            $reception->created_at = date('Y-m-d H:i:s');
         } 
 
         if (is_null($group_task_id)) {

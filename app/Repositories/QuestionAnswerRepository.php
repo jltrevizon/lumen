@@ -49,7 +49,7 @@ class QuestionAnswerRepository
     public function create($request)
     {
         $questionnaire = null;
-        $this->vehicleRepository->newReception($request->input('vehicle_id'), null, false, true);
+        $this->vehicleRepository->newReception($request->input('vehicle_id'), null, false);
 
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
