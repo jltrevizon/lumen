@@ -102,7 +102,7 @@ class QuestionAnswerRepository
     
 
             $groupTask = GroupTask::findOrFail($vehicle->lastGroupTask->id);
-            $groupTask->$questionnaireId = $questionnaire['id'];
+            $groupTask->$questionnaire = $questionnaire['id'];
             $groupTask->save();
                 
             $user = Auth::user();
