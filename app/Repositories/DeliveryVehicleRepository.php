@@ -47,23 +47,25 @@ class DeliveryVehicleRepository extends Repository
             'data_delivery' => json_encode($data),
             'delivery_by' => $user->name
         ]);
-        PendingTask::updateOrCreate([
-            'vehicle_id' => $vehicleId,
-            'reception_id' => $vehicle->lastReception->id ?? null,
-            'task_id' => Task::TOALQUILADO,
-            'group_task_id' => $groupTaskId,
-        ], [
-            'state_pending_task_id' => StatePendingTask::PENDING,
-            'user_id' => Auth::id(),
-            'user_start_id' => Auth::id(),
-            'user_end_id' => Auth::id(),
-            'order' => 1,
-            'approved' => true,
-            'datetime_pending' => Carbon::now()->addSeconds($count * 1),
-            'datetime_start' => Carbon::now()->addSeconds($count * 2),
-            'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
-            'campa_id' => $vehicle->campa_id
-        ]);
+        if (!is_null($groupTaskId)) {
+            PendingTask::updateOrCreate([
+                'vehicle_id' => $vehicleId,
+                'reception_id' => $vehicle->lastReception->id ?? null,
+                'task_id' => Task::TOALQUILADO,
+                'group_task_id' => $groupTaskId,
+            ], [
+                'state_pending_task_id' => StatePendingTask::PENDING,
+                'user_id' => Auth::id(),
+                'user_start_id' => Auth::id(),
+                'user_end_id' => Auth::id(),
+                'order' => 1,
+                'approved' => true,
+                'datetime_pending' => Carbon::now()->addSeconds($count * 1),
+                'datetime_start' => Carbon::now()->addSeconds($count * 2),
+                'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
+                'campa_id' => $vehicle->campa_id
+            ]);
+        }
         if ($vehicle->lastReception) {
             $vehicle->lastReception->finished = true;
             $vehicle->lastReception->save();
