@@ -576,6 +576,9 @@ class VehicleRepository extends Repository
                                 $pending_task->save();
                             }
                         }
+                        if (is_null($vehicle->lastGroupTask)) {
+                            $this->newReception($vehicle['id']);
+                        }
                         $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1);
                         if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
                             $vehicle->sub_state_id = null;
