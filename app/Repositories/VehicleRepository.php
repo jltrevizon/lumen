@@ -414,8 +414,6 @@ class VehicleRepository extends Repository
             $reception = new Reception();
         } else {
             $reception = $vehicle->lastReception;
-            $reception->created_at = date('Y-m-d H:i:s');
-            $reception->updated_at = date('Y-m-d H:i:s');
         }
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
         $reception->vehicle_id = $vehicle_id;
