@@ -38,7 +38,7 @@ class DeliveryVehicleRepository extends Repository
         $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTaskId = $vehicle->lastReception?->group_task_id ?? null;
         if (!$groupTaskId) {
-            $groupTaskId = $vehicle->lastReception->group_task_id;
+            $groupTaskId = $vehicle->lastReception?->group_task_id;
         }
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
