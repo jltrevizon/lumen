@@ -48,11 +48,6 @@ class ReceptionFilter extends ModelFilter
         });
     }
 
-    public function typeReceptionIds($ids)
-    {
-        return $this->whereIn('type_reception_id', $ids);
-    }
-
     public function orderDesc($field)
     {
         return $this->orderByDesc($field);

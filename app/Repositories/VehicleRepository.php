@@ -412,7 +412,6 @@ class VehicleRepository extends Repository
         })->toArray();
         if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
             $reception = new Reception();
-            $reception->type_reception_id = TypeReception::CHECK_PENDING;
         } else {
             $reception = $vehicle->lastReception;
             $reception->created_at = date('Y-m-d H:i:s');

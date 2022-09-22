@@ -17,8 +17,7 @@ class Reception extends Model
         'vehicle_id',
         'group_task_id',
         'finished',
-        'has_accessories',
-        'type_reception_id'
+        'has_accessories'
     ];
 
     protected $dates = [

@@ -106,7 +106,6 @@ class AldController extends Controller
             $pending_task->task_id = $request->input('task_id');
             if ($pending_task->task_id === Task::CHECK_RELEASE) {
                 $vehicle->lastResception->created_at = date('Y-m-d H:i:s');
-                $vehicle->lastResception->type_reception_id = TypeReception::CHECK_PENDING;
                 $vehicle->lastResception->save();
             }
             $taskDescription = $this->taskRepository->getById([], $pending_task->task_id);
