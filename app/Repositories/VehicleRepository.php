@@ -621,22 +621,6 @@ class VehicleRepository extends Repository
         return response()->json(['message' => 'Done!']);
     }
 
-    private function deletePendingTasks($vehicleId)
-    {
-        PendingTask::where('vehicle_id', $vehicleId)
-            ->where('approved', true)
-            ->where(function ($query) {
-                return $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
-                    ->orWhereNull('state_pending_task_id');
-            })
-            ->chunk(200, function ($pendingTasks) {
-                foreach ($pendingTasks as $pendingTask) {
-                    $pendingTask->update(['approved' => false]);
-                }
-            });
-    }
-
     public function defleet($id)
     {
         $vehicle = Vehicle::findOrFail($id);
@@ -690,6 +674,10 @@ class VehicleRepository extends Repository
     public function lastGroupTasks($request)
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        if ($vehicle->lastReception && is_null($vehicle->lastReception->group_task_id) && $vehicle->lastGroupTask) {
+            $vehicle->lastReception->group_task_id = $vehicle->lastGroupTask->id;
+            $vehicle->lastReception->save();
+        }
         return Vehicle::with(array_merge($this->getWiths($request->with), ['allApprovedPendingTasks' => function ($query) use ($vehicle) {
             return $query
                 ->where('group_task_id', '=', $vehicle->lastReception?->group_task_id)
