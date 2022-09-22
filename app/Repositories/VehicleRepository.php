@@ -422,11 +422,8 @@ class VehicleRepository extends Repository
         $reception->finished = false;
         $reception->has_accessories = false;
         $reception->type_model_order_id = $vehicle->type_model_order_id;
-        $reception->save();
-
-        $vehicle = Vehicle::find($vehicle_id);
-
-        $groupTask = $vehicle->lastReception->groupTask;
+        
+        $groupTask = $vehicle->lastGroupTask;
 
         if (is_null($groupTask) || ($groupTask->approved && count($groupTask->approvedPendingTasks) === 0 && count($groupTask->pendingTasks) > 0)) {
             Log::debug([
@@ -440,9 +437,13 @@ class VehicleRepository extends Repository
                 'approved_available' => true,
                 'approved' => true
             ]);
-            $reception->group_task_id = $groupTask->id;
-            $reception->save();
         }
+        
+        $reception->group_task_id = $groupTask->id;        
+        $reception->save();
+
+        $vehicle = Vehicle::find($vehicle_id);
+        
 
         return $reception;
     }
