@@ -73,6 +73,11 @@ class GroupTaskRepository extends Repository
 
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         if (!is_null($vehicle->lastGroupTask)) {
+            if ($vehicle->lastReception && $vehicle->lastReception->group_task_id !== $vehicle->lastGroupTask->id) {
+                $vehicle->lastReception->group_task_id = $vehicle->lastGroupTask->id;
+                $vehicle->lastReception->save();
+            }
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
             $data_update =  [
                 'reception_id' => $vehicle->lastReception->id ?? null,
                 'state_pending_task_id' => StatePendingTask::FINISHED,
