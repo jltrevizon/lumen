@@ -162,6 +162,10 @@ class QuestionAnswerRepository
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             $vehicle->has_environment_label = $has_environment_label;
             $vehicle->save();
+        } else if ($vehicle->lastReception) {
+            $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
+            $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
+            $vehicle->lastReception->save();
         }
        
         if ($request->input('square_id')) {
