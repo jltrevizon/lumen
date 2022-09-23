@@ -444,8 +444,10 @@ class Vehicle extends Model
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'
         ], function ($query) {
-            $query->where('approved', false)
-                 ->where('approved_available', false);
+            $query
+                ->whereRaw('id = (Select max(gt.id) from group_tasks gt where gt.vehicle_id = group_tasks.vehicle_id)')
+                ->where('approved', false)
+                ->where('approved_available', false);
         });
     }
 
