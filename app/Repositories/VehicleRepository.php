@@ -51,7 +51,8 @@ class VehicleRepository extends Repository
         DeliveryNoteRepository $deliveryNoteRepository,
         SquareRepository $squareRepository,
         StateChangeRepository $stateChangeRepository,
-        HistoryLocationRepository $historyLocationRepository
+        HistoryLocationRepository $historyLocationRepository,
+        VehiclePictureRepository $vehiclePictureRepository
     ) {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -68,6 +69,7 @@ class VehicleRepository extends Repository
         $this->deliveryNoteRepository = $deliveryNoteRepository;
         $this->stateChangeRepository = $stateChangeRepository;
         $this->historyLocationRepository = $historyLocationRepository;
+        $this->vehiclePictureRepository = $vehiclePictureRepository;
     }
 
     public function getAll($request)
@@ -411,6 +413,10 @@ class VehicleRepository extends Repository
             return $item->id;
         })->toArray();
         if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
+            $receptionDuplicate = Reception::where('vehicle_id', $vehicle->id)->first();
+            if($receptionDuplicate){
+                $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
+            }
             $reception = new Reception();
         } else {
             $reception = $vehicle->lastReception;
