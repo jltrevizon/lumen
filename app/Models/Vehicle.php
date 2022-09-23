@@ -445,7 +445,7 @@ class Vehicle extends Model
             'id' => 'max'
         ], function ($query) {
             $query
-                ->whereRaw('id = (Select max(gt.id) from group_tasks gt where gt.vehicle_id = group_tasks.vehicle_id)')
+                ->whereRaw('id = (Select r2.group_task_id from receptions r2 where r2.id = (Select max(r.id) from receptions r where r.vehicle_id = group_tasks.vehicle_id))')
                 ->where('approved', false)
                 ->where('approved_available', false);
         });
