@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
+use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TypeReception;
 use App\Models\Vehicle;
@@ -151,11 +152,13 @@ class AldController extends Controller
                     $groupTask->approvedPendingTasks[0]->state_pending_task_id = StatePendingTask::IN_PROGRESS;
                     $groupTask->approvedPendingTasks[0]->datetime_start = date('Y-m-d H:i:s');
                     $groupTask->approvedPendingTasks[0]->save();
+                    $vehicle->sub_state_id = SubState::CHECK_BLOCKED;
+                    $vehicle->save();
                 }
+            } else {
+                $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+                $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             }
-            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-            
-            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             if ($request->input('square_id')) {
                 $this->squareRepository->update($request, $request->input('square_id'));
             }
