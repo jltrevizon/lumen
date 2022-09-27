@@ -162,6 +162,7 @@ class AldController extends Controller
             if ($request->input('square_id')) {
                 $this->squareRepository->update($request, $request->input('square_id'));
             }
+            
             return $this->createDataResponse([
                 'data' => $groupTask->approvedPendingTasks, 
                 'vehicle' => Vehicle::find($vehicle->id)
