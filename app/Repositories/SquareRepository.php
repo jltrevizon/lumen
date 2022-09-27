@@ -39,15 +39,19 @@ class SquareRepository extends Repository
     public function update($request, $id)
     {
         $square = Square::findOrFail($id);
-        if ($request->input('vehicle_id')) {
-            $this->freeSquare($request->input('vehicle_id'));
-        } else if ($square->vehicle_id) {
-            $this->historyLocationRepository->saveFromBack($square->vehicle_id, null, Auth::id());
+        
+        if ($square->vehicle_id != $request->input('vehicle_id') ) {
+            if ($request->input('vehicle_id')) {
+                $this->freeSquare($request->input('vehicle_id'));
+            } else if ($square->vehicle_id) {
+                $this->historyLocationRepository->saveFromBack($square->vehicle_id, null, Auth::id());
+            }
+            $square->update($request->all());
+            $square->user_id = Auth::id();
+            $square->save();
+            $this->historyLocationRepository->saveFromBack($request->input('vehicle_id'), $id, Auth::id());
         }
-        $square->update($request->all());
-        $square->user_id = Auth::id();
-        $square->save();
-        $this->historyLocationRepository->saveFromBack($request->input('vehicle_id'), $id, Auth::id());
+        
         return $square;
     }
 

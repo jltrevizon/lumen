@@ -32,6 +32,10 @@ class Reception extends Model
         return $this->belongsTo(TypeModelOrder::class);
     }
 
+    public function typeReception(){
+        return $this->belongsTo(TypeReception::class);
+    }
+
     public function accessories(){
         return $this->hasMany(Accessory::class);
     }

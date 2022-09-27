@@ -50,6 +50,11 @@ class QuestionAnswerRepository
     {
         $questionnaire = null;
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+
+        $this->vehicleRepository->newReception($request->input('vehicle_id'));
+
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+
         if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
             $questionnaire = $this->questionnaireRepository->create($request);
             $questions = $request->input('questions');
@@ -70,9 +75,11 @@ class QuestionAnswerRepository
                     $this->notificationItvMail->build($request->input('vehicle_id'));
                 }
             }
-    
-            $this->receptionRepository->lastReception($request->input('vehicle_id'));
-    
+            $vehicle->lastReception->groupTask->questionnaire_id = $questionnaire['id'];
+            $vehicle->lastReception->groupTask->approved_available = false;
+            $vehicle->lastReception->groupTask->approved = false;
+            $vehicle->lastReception->groupTask->save();
+
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
     
             $pendingTasks = $vehicle->lastGroupTask->pendingTasks ?? null;
@@ -99,11 +106,11 @@ class QuestionAnswerRepository
                 }
             }
     
-            $this->vehicleRepository->newReception($vehicle->id, null, false);
-            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
             $groupTask = GroupTask::findOrFail($vehicle->lastGroupTask->id);
-    
+            $groupTask->questionnaire_id = $questionnaire['id'];
+            $groupTask->save();
+                
             $user = Auth::user();
             $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
     
@@ -132,7 +139,6 @@ class QuestionAnswerRepository
                 if (!is_null($question_answer)) {
                     $pending_task->question_answer_id = $question_answer->id;
                 }
-                Log::debug($task);
                 if ($task['approved'] == true && $isPendingTaskAssign == false) {
                     if (!isset($task['without_state_pending_task'])) {
                         $pending_task->state_pending_task_id = StatePendingTask::PENDING;
@@ -156,6 +162,10 @@ class QuestionAnswerRepository
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             $vehicle->has_environment_label = $has_environment_label;
             $vehicle->save();
+        } else if ($vehicle->lastReception) {
+            $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
+            $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
+            $vehicle->lastReception->save();
         }
        
         if ($request->input('square_id')) {
@@ -210,7 +220,7 @@ class QuestionAnswerRepository
     }
 
     /**
-     * 11, 2, 3, 4, 41, 5, 6, 7, 8
+     * 11, 2, 3, 4, 41, 5, 6, 7, 8 
      */
     public function updateResponse($request, $id)
     {
@@ -251,9 +261,11 @@ class QuestionAnswerRepository
             }
             $pendingTask = $pending_task;
         }
-        foreach ($vehicle->lastGroupTask->defaultOrderApprovedPendingTasks as $key => $value) {
-            $value->order = $key + 1;
-            $value->save();
+        if(isset($variable)) {
+            foreach ($vehicle->lastGroupTask->defaultOrderApprovedPendingTasks as $key => $value) {
+                $value->order = $key + 1;
+                $value->save();
+            }    
         }
         return $questionAnswer;
     }

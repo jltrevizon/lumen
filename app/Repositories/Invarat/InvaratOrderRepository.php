@@ -3,31 +3,15 @@
 namespace App\Repositories\Invarat;
 
 use App\Models\Order;
-use App\Models\State;
 use App\Repositories\Repository;
-use App\Repositories\StateChangeRepository;
 
 class InvaratOrderRepository extends Repository {
 
-    public function __construct(
-        InvaratWorkshopRepository $invaratWorkshopRepository,
-        InvaratVehicleRepository $invaratVehicleRepository,
-        InvaratPendingTaskRepository $invaratPendingTaskRepository,
-        StateChangeRepository $stateChangeRepository,
-    )
+    public function __construct()
     {
-        $this->invaratWorkshopRepository = $invaratWorkshopRepository;
-        $this->invaratVehicleRepository = $invaratVehicleRepository;
-        $this->invaratPendingTaskRepository = $invaratPendingTaskRepository;
-        $this->stateChangeRepository = $stateChangeRepository;
     }
 
     public function createOrder($request){
-
-//        $workshop = $this->invaratWorkshopRepository->createWorkshop($request->input('workshop'));
-//        $vehicle = $this->invaratVehicleRepository->createVehicle($request);
-//        $this->invaratPendingTaskRepository->create($vehicle['id']);
-
         try{
 
             $order = new Order();

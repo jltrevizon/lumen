@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Invarat;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Invarat\InvaratPendingTaskRepository;
-use App\Repositories\Invarat\InvaratVehicleRepository;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
