@@ -46,31 +46,6 @@ class PendingTaskAldController extends Controller
         $this->stateChangeRepository = $stateChangeRepository;
     }
 
-    public function createFromArray(Request $request){
-        try {
-            $this->finishPendingTaskLastGroupTask($request->input('vehicle_id'));
-            $groupTask = null;
-            if ($request->input('group_task_id')) {
-                $groupTask = GroupTask::findOrFail($request->input('group_task_id'));
-            }
-            else {
-                $groupTask = $this->groupTaskRepository->create($request->all());
-                $reception = $this->receptionRepository->lastReception($request->input('vehicle_id'));
-                $reception->group_task_id = $groupTask->id;
-                $reception->save();
-            }
-            $user = $this->userRepository->getById($request, Auth::id());
-            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-
-            $this->createTasks($request->input('tasks'), $request->input('vehicle_id'), $groupTask->id);
-            $this->vehicleRepository->updateBack($request);
-
-            return [ 'message' => 'OK' ];
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 409);
-        }
-    }
-
     private function finishPendingTaskLastGroupTask($vehicleId){
         $vehicle = Vehicle::findOrFail($vehicleId);
             $pendingTasks = $vehicle->lastGroupTask->pendingTasks ?? null;
