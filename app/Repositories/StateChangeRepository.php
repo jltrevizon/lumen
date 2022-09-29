@@ -21,10 +21,8 @@ class StateChangeRepository extends Repository
     {
         $vehicle = Vehicle::find($vehicle->id);
         $sub_state_id = $vehicle->sub_state_id;
-        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::WORKSHOP_EXTERNAL && $sub_state_id !== SubState::TRANSIT) {
-            if (is_null($vehicle->lastGroupTask)) {
-                $sub_state_id = null;
-            } else {
+        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::WORKSHOP_EXTERNAL) {
+            if (!is_null($vehicle->lastGroupTask)) {
                 $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {

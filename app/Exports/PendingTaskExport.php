@@ -72,62 +72,6 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
 
     public function map($data): array
     {
-        /*$array = [];
-        if (count($vehicle->pendingTasks) > 0) {
-            foreach ($vehicle->pendingTasks as $pendingTask) {
-                $line = [
-                    $vehicle->plate,
-                    $pendingTask->reception ? date('d/m/Y', strtotime($pendingTask->reception->created_at)) : null,
-                    $vehicle->kms,
-                    $vehicle->vehicleModel->brand->name ?? null,
-                    $vehicle->vehicleModel->name ?? null,
-                    $vehicle->color->name ?? null,
-                    $pendingTask->task->subState->state->name ?? null,
-                    $pendingTask->task->subState->name ?? null,
-                    $pendingTask->observations,
-                    $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
-                    $vehicle->has_environment_label == true ? 'Si' : 'No',
-                    $pendingTask->campa->name ?? null,
-                    $vehicle->category->name ?? null,
-                    $pendingTask->task->name ?? null,
-                    $pendingTask->statePendingTask->name ?? null,
-                    $pendingTask->datetime_start ? date('d/m/Y H:i:s', strtotime($pendingTask->datetime_start)) : null,
-                    $pendingTask->datetime_finish ? date('d/m/Y H:i:s', strtotime($pendingTask->datetime_finish)) : null,
-                    round(($pendingTask->total_paused / 60), 2),
-                    $vehicle->typeModelOrder->name ?? null,
-                    $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
-                    $pendingTask->estimatedDates?->pluck('estimated_date')->implode(',') ?? null,
-                ];
-                array_push($array, $line);
-            }
-        } else {
-            $line = [
-                $vehicle->plate,
-                $vehicle->lastReception ? date('d/m/Y', strtotime($vehicle->lastReception->created_at)) : null,
-                $vehicle->kms,
-                $vehicle->vehicleModel->brand->name ?? null,
-                $vehicle->vehicleModel->name ?? null,
-                $vehicle->color->name ?? null,
-                $vehicle->subState->state->name ?? null,
-                $vehicle->subState->name ?? null,
-                null,
-                $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
-                $vehicle->has_environment_label == true ? 'Si' : 'No',
-                $vehicle->campa->name ?? null,
-                $vehicle->category->name ?? null,
-                $vehicle->task->name ?? null,
-                null,
-                null,
-                null,
-                null,
-                $vehicle->typeModelOrder->name ?? null,
-                $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
-                null,
-            ];
-            array_push($array, $line);
-        }
-
-        return $array;*/
         $array = [];
         $line = [];
         if ($data->vehicle) {
