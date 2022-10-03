@@ -100,7 +100,12 @@ class PendingTaskRepository extends Repository
                     $query->select('id', 'name');
                 },
                 'GroupTask' => function ($query) {
-                    $query->select('id', 'created_at',);
+                    $query->select('id', 'created_at', 'reception_id')
+                    ->with(array(
+                        'reception' => function ($query) {
+                            $query->select('id', 'created_at');
+                        }
+                    ));
                 }
             ))
             ->filter($request->all())

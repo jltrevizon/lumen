@@ -692,6 +692,7 @@ class VehicleRepository extends Repository
         return Vehicle::with(array_merge($this->getWiths($request->with), ['allApprovedPendingTasks' => function ($query) use ($vehicle) {
             return $query
                 ->where('reception_id', $vehicle->lastReception?->id)
+                ->orderBy('group_task_id', 'desc')
                 ->orderBy('id', 'desc')
                 ->orderBy('created_at', 'desc');
         }]))
