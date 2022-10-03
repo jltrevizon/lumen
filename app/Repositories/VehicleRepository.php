@@ -582,12 +582,16 @@ class VehicleRepository extends Repository
                         if (is_null($vehicle->lastReception)) {
                             $this->newReception($vehicle['id']);
                         }
-                        $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1);
                         if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
                             $vehicle->sub_state_id = null;
                         }
+                    
                         $vehicle->save();
+                    
                         $this->stateChangeRepository->updateSubStateVehicle($vehicle, SubState::ALQUILADO);
+                    
+                        $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1);
+                    
                     } else if ($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT) {
                         $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
                         $vehicle->sub_state_id = $request->input('sub_state_id');
