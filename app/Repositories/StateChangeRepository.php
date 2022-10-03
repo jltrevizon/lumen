@@ -8,6 +8,7 @@ use App\Models\StateChange;
 use App\Models\SubState;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\Task;
 use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -26,7 +27,10 @@ class StateChangeRepository extends Repository
                 $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {
-                    if ($sub_state_id != SubState::ALQUILADO) {
+                    $pendingTasks = PendingTask::where('vehicle_id', $vehicle->id)->where('appreved', 1)->where('task_id', Task::TOALQUILADO)->get();
+                    if (count($pendingTasks) > 0) {
+                        $sub_state_id = SubState::ALQUILADO;
+                    } else if ($sub_state_id != SubState::ALQUILADO) {
                         $sub_state_id = SubState::CAMPA;
                     }
                 } else {
