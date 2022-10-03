@@ -60,7 +60,6 @@ class StateChangeRepository extends Repository
                         $sub_state_id = SubState::ALQUILADO;
                     } else if ($sub_state_id != SubState::ALQUILADO) {
                         $sub_state_id = $param_sub_state_id ?? SubState::CAMPA;
-                            Log::debug('ERRRRROOOOOOOOOO');
                     }
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
@@ -133,7 +132,9 @@ class StateChangeRepository extends Repository
             'BUG' =>  $sub_state_id
         ]);
 
-        $state_id = SubState::find($sub_state_id)->state_id;
+        $subState = SubState::find($sub_state_id);
+
+        $state_id = $subState?->state_id ?? null;
         if ($state_id != $vehicle->sub_state?->state_id) {
             $vehicle->last_change_state = Carbon::now();
         }
