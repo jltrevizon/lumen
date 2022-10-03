@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\GroupTask;
 use App\Models\PendingTask;
 use App\Models\SubStateChangeHistory;
 use App\Models\StateChange;
@@ -21,17 +22,45 @@ class StateChangeRepository extends Repository
     public function updateSubStateVehicle($vehicle, $param_sub_state_id = null, $force_sub_state_id = null)
     {
         $vehicle = Vehicle::find($vehicle->id);
+        $groupTask = $vehicle?->lastReception?->groupTask;
+    
+
+        if (!$vehicle?->lastReception?->group_task_id && $vehicle->lastGroupTask) {
+            $vehicle->lastReception->group_task_id = $vehicle->lastGroupTask->id;
+            $vehicle->lastReception->save();
+            $vehicle = Vehicle::find($vehicle->id);
+            $groupTask = $vehicle?->lastReception?->groupTask;
+        } else if (!$vehicle?->lastReception?->group_task_id) {
+            $group_task = new GroupTask();
+            $group_task->vehicle_id = $vehicle->id;
+            $group_task->questionnaire_id = null;
+            $group_task->approved_available = 1;
+            $group_task->approved = 1;
+            $group_task->save();
+            
+            $vehicle = Vehicle::find($vehicle->id);
+            $groupTask = $vehicle?->lastReception?->groupTask;
+            
+            $vehicle->lastReception->group_task_id = $groupTask->id;
+            $vehicle->lastReception->save();
+
+            $vehicle = Vehicle::find($vehicle->id);
+            $groupTask = $vehicle?->lastReception?->groupTask;
+        }
+
         $sub_state_id = $vehicle->sub_state_id;
+
         if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::WORKSHOP_EXTERNAL) {
-            if (!is_null($vehicle->lastGroupTask)) {
-                $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
+            if (!is_null($groupTask)) {
+                $approvedPendingTasks = $groupTask->approvedPendingTasks;
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {
                     $pendingTasks = PendingTask::where('vehicle_id', $vehicle->id)->where('approved', 1)->where('task_id', Task::TOALQUILADO)->get();
                     if (count($pendingTasks) > 0) {
                         $sub_state_id = SubState::ALQUILADO;
                     } else if ($sub_state_id != SubState::ALQUILADO) {
-                        $sub_state_id = SubState::CAMPA;
+                        $sub_state_id = $param_sub_state_id ?? SubState::CAMPA;
+                            Log::debug('ERRRRROOOOOOOOOO');
                     }
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
@@ -40,13 +69,13 @@ class StateChangeRepository extends Repository
                         $sub_state_id = SubState::ALQUILADO;
                         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
                         $pendingTask->save();
-                    } else if (!$vehicle->lastGroupTask->approved && !$vehicle->lastGroupTask->approved_available) {
+                    } else if (!$groupTask->approved && !$groupTask->approved_available) {
                         $sub_state_id = SubState::CHECK;
                     }
                 }
             }
-        } else if ($sub_state_id == SubState::SOLICITUD_DEFLEET && !is_null($vehicle->lastGroupTask)) {
-            $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
+        } else if ($sub_state_id == SubState::SOLICITUD_DEFLEET && !is_null($groupTask)) {
+            $approvedPendingTasks = $groupTask->approvedPendingTasks;
             $count = count($approvedPendingTasks);
             if ($count > 0) {
                 foreach ($approvedPendingTasks as $key => $pendingTask) {
@@ -65,7 +94,7 @@ class StateChangeRepository extends Repository
             }
         }
 
-        if (!is_null($vehicle->lastGroupTask)) {
+        if (!is_null($groupTask)) {
             $currentPendingTask = null;
             $lastPendingTask = null;
             $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
@@ -99,6 +128,10 @@ class StateChangeRepository extends Repository
         if ($sub_state_id != $vehicle->sub_state_id) {
             $vehicle->last_change_sub_state = Carbon::now();
         }
+
+        Log::debug([
+            'BUG' =>  $sub_state_id
+        ]);
 
         $state_id = SubState::find($sub_state_id)->state_id;
         if ($state_id != $vehicle->sub_state?->state_id) {

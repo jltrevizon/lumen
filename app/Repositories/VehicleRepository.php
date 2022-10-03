@@ -419,11 +419,6 @@ class VehicleRepository extends Repository
             $reception = new Reception();
         } else {
             $reception = $vehicle->lastReception;
-            /*if ($vehicle->lastGroupTask && count($vehicle->lastGroupTask->approvedPendingTasks) == 0) {
-                $reception->created_at = date('Y-m-d H:i:s');
-                $reception->updated_at = date('Y-m-d H:i:s');
-                $reception->save();
-            }*/
         }
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
         $reception->vehicle_id = $vehicle_id;
@@ -584,7 +579,7 @@ class VehicleRepository extends Repository
                                 $pending_task->save();
                             }
                         }
-                        if (is_null($vehicle->lastGroupTask)) {
+                        if (is_null($vehicle->lastReception)) {
                             $this->newReception($vehicle['id']);
                         }
                         $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1);

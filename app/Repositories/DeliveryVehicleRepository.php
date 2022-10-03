@@ -37,9 +37,6 @@ class DeliveryVehicleRepository extends Repository
             ->findOrFail(Auth::id());
         $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTaskId = $vehicle->lastReception?->group_task_id ?? null;
-        if (!$groupTaskId) {
-            $groupTaskId = $vehicle->lastReception?->group_task_id;
-        }
         DeliveryVehicle::create([
             'vehicle_id' => $vehicleId,
             'campa_id' => $user->campas[0]->id,
