@@ -86,7 +86,8 @@ class PendingTaskRepository extends Repository
             'datetime_start',
             'datetime_finish',
             'total_paused',
-            'group_task_id'
+            'group_task_id',
+            'reception_id'
         ])
             ->with(array(
                 'task'  => function ($query) {
@@ -99,13 +100,11 @@ class PendingTaskRepository extends Repository
                 'statePendingTask' => function ($query) {
                     $query->select('id', 'name');
                 },
-                'GroupTask' => function ($query) {
-                    $query->select('id', 'created_at', 'reception_id')
-                    ->with(array(
-                        'reception' => function ($query) {
-                            $query->select('id', 'created_at');
-                        }
-                    ));
+                'groupTask' => function ($query) {
+                    $query->select('id', 'created_at',);
+                },
+                'reception' => function ($query) {
+                    $query->select('id', 'created_at',);
                 }
             ))
             ->filter($request->all())
