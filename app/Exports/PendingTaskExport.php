@@ -4,13 +4,8 @@ namespace App\Exports;
 
 use App\Models\Company;
 use App\Models\PendingTask;
-use App\Models\State;
 use App\Models\StatePendingTask;
-use App\Models\SubState;
-use App\Models\Vehicle;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -22,12 +17,6 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
      */
     public function collection()
     {
-        /*return Vehicle::with(['pendingTasks' => function ($query) {
-            return $query->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED]);
-        }])
-            ->where('company_id', Company::ALD)
-            ->get();*/
-      //  $vehicle_ids = collect(Vehicle::filter([ 'defleetingAndDelivery' => 0 ])->get())->map(function ($item){ return $item->id;})->toArray();
         return PendingTask::select(['datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
             ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
             ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
@@ -64,6 +53,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     ]);
                 }
             ))
+            ->whereNotNull('reception_id')
             ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
        //     ->whereNotIn('vehicle_id', $vehicle_ids)
