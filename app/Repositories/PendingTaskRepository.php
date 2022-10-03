@@ -95,16 +95,20 @@ class PendingTaskRepository extends Repository
                 }, 'vehicle' => function ($query) {
                     $query->select('id', 'plate');
                 },
-                'userStart',
-                'userEnd',
+                'userStart' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'userEnd' => function ($query) {
+                    $query->select('id', 'name');
+                },
                 'statePendingTask' => function ($query) {
                     $query->select('id', 'name');
                 },
                 'groupTask' => function ($query) {
-                    $query->select('id', 'created_at',);
+                    $query->select('id', 'created_at');
                 },
                 'reception' => function ($query) {
-                    $query->select('id', 'created_at',);
+                    $query->select('id', 'created_at');
                 }
             ))
             ->filter($request->all())
