@@ -175,6 +175,7 @@ class GroupTaskRepository extends Repository
 
         $pendingTask = new PendingTask();
         $pendingTask->vehicle_id = $group_task->vehicle_id;
+        $pendingTask->reception_id = $group_task->vehicle->lastReception->id;
         $pendingTask->task_id = Task::UBICATION;
         $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
         $pendingTask->group_task_id = $group_task->id;

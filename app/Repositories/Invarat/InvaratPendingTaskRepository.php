@@ -184,6 +184,7 @@ class InvaratPendingTaskRepository extends Repository {
         $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))->orderBy("order","DESC")->first();
         $task = $this->taskRepository->getById([], $request->input('task_id'));
         $pendingTask = new PendingTask();
+        $pendingTask->reception_id = $vehicle->lastReception->id;
         $pendingTask->task_id = $task['id'];
         $pendingTask->campa_id = $vehicle->campa_id;
         $pendingTask->vehicle_id = $request->input('vehicle_id');

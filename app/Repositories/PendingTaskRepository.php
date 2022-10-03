@@ -464,6 +464,7 @@ class PendingTaskRepository extends Repository
         $pendingTask->campa_id = $vehicle->campa_id;
         $pendingTask->vehicle_id = $request->input('vehicle_id');
         $pendingTask->group_task_id = $request->input('group_task_id');
+        $pendingTask->reception_id = $vehicle->lastReception->id;
         $pendingTask->duration = $task['duration'];
         $pendingTask->order = count($pendingTasks) - 1;
         $pendingTask->user_id = Auth::id();
@@ -481,6 +482,7 @@ class PendingTaskRepository extends Repository
         $pendingTask->vehicle_id = $vehicle->id;
         $pendingTask->task_id = $task->id;
         $pendingTask->campa_id = $vehicle->campa_id;
+        $pendingTask->reception_id = $vehicle->lastReception->id;
         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
         $pendingTask->group_task_id = $vehicle['lastGroupTask']['id'];
         $pendingTask->duration = $task['duration'];
