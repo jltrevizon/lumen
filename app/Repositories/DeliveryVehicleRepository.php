@@ -51,7 +51,7 @@ class DeliveryVehicleRepository extends Repository
                 'task_id' => Task::TOALQUILADO,
                 'group_task_id' => $groupTaskId,
             ], [
-                'state_pending_task_id' => StatePendingTask::PENDING,
+                'state_pending_task_id' => StatePendingTask::FINISHED,
                 'user_id' => Auth::id(),
                 'user_start_id' => Auth::id(),
                 'user_end_id' => Auth::id(),
