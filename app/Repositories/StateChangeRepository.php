@@ -39,7 +39,7 @@ class StateChangeRepository extends Repository
             $group_task->save();
             
             $vehicle = Vehicle::find($vehicle->id);
-            $groupTask = $vehicle?->lastReception?->groupTask;
+            $groupTask = $vehicle?->lastGroupTask;
             
             $vehicle->lastReception->group_task_id = $groupTask->id;
             $vehicle->lastReception->save();
