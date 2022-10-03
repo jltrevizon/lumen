@@ -72,9 +72,9 @@ class PendingTaskFilter extends ModelFilter
     public function receptionNull($value)
     {
         if ($value) {
-            return $this->whereNotNull('reception_id');
+            return $this->whereNull('reception_id');
         }
-        return $this->whereNull('reception_id');
+        return $this->whereNotNull('reception_id');
     }
 
     public function createdAt($dateTime)
