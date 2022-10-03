@@ -51,7 +51,13 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                             $query->select('id', 'name');
                         }
                     ]);
-                }
+                },
+                'userStart' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'userEnd' => function ($query) {
+                    $query->select('id', 'name');
+                },
             ))
             ->whereNotNull('reception_id')
             ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
@@ -83,6 +89,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->state_pending_task_name,
                 $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
+                $data->user_start?->name ?? null,
+                $data->user_end?->name ?? null,
                 round(($data->total_paused / 60), 2),
                 $data->reception?->typeModelOrder?->name,
                 $data->vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($data->vehicle->lastDeliveryVehicle->created_at)) : null,
@@ -113,6 +121,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Estado tarea',
             'Fecha inicio tarea',
             'Fecha fin tarea',
+            'Operario Inicio la Tarea',
+            'Operario Finalizo la Tarea',
             'Tiempo (horas)',
             'Negocio',
             'última salida',
