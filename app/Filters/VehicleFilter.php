@@ -255,7 +255,7 @@ class VehicleFilter extends ModelFilter
             PendingTask::where('state_pending_task_id', 3)
             ->where('approved', 1)
             ->where('task_id', 38)
-            ->whereRaw('reception_id = (Select max(r.id) from receptions r where receptions.vehicle_id = pending_tasks.vehicle_id)')
+            ->whereRaw(Db::raw('reception_id = (Select max(r.id) from receptions r where receptions.vehicle_id = pending_tasks.vehicle_id)'))
             ->whereRaw(Db::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))
             ->get('vehicle_id')
             )->map(function ($item){ return $item->vehicle_id;})->toArray();
