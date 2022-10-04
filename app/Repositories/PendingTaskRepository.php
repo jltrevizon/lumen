@@ -23,6 +23,7 @@ use App\Repositories\PendingAuthorizationRepository as RepositoriesPendingAuthor
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PendingTaskRepository extends Repository
 {
@@ -182,8 +183,7 @@ class PendingTaskRepository extends Repository
         if ($request->input('approved') == 0 && $pending_task->damage_id != null) {
             $this->closeDamage($pending_task->damage_id);
         }
-        $this->realignPendingTask($pending_task);
-        return ['pending_task' => $pending_task];
+        return ['pending_task' => $this->realignPendingTask($pending_task)];
     }
 
     private function isPause($request, $pending_task)
@@ -219,9 +219,11 @@ class PendingTaskRepository extends Repository
     }
 
     private function realignPendingTask($pendingTask)
-    {
-
-        PendingTask::where('group_task_id', $pendingTask['group_task_id'])
+    { 
+        $this->vehicleRepository->newReception($pendingTask->vehicle_id);
+        $reception = $pendingTask->vehicle->lastReception;
+        PendingTask::where('reception_id', $reception->id)
+            ->where('approved', true)
             ->where(function ($query) {
                 return $query->whereNull('state_pending_task_id')
                     ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
@@ -231,11 +233,11 @@ class PendingTaskRepository extends Repository
                     $pendingTask->update(['state_pending_task_id' => null]);
                 }
             });
-        $pendingInProgress = PendingTask::where('group_task_id', $pendingTask['group_task_id'])
+        $pendingInProgress = PendingTask::where('reception_id', $reception->id)
             ->where('state_pending_task_id', StatePendingTask::IN_PROGRESS)
             ->get();
         if (count($pendingInProgress) == 0) {
-            $firstPendingTask = PendingTask::where('group_task_id', $pendingTask['group_task_id'])
+            $firstPendingTask = PendingTask::where('reception_id', $reception->id)
                 ->where(function ($query) {
                     return $query->whereNull('state_pending_task_id')
                         ->orWhere('state_pending_task_id', StatePendingTask::PENDING);
@@ -243,23 +245,19 @@ class PendingTaskRepository extends Repository
                 ->where('approved', true)
                 ->orderBy('order', 'ASC')
                 ->first();
-            $vehicle = null;
             if (!is_null($firstPendingTask)) {
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $firstPendingTask->datetime_pending = date('Y-m-d H:i:s');
-                $firstPendingTask->save();
-                $vehicle = $this->vehicleRepository->pendingOrInProgress($firstPendingTask->vehicle_id);
-                $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-            } else {
-                $pendingTaskOld = PendingTask::where('group_task_id', $pendingTask['group_task_id'])->first();
-                $vehicle = $this->vehicleRepository->pendingOrInProgress($pendingTaskOld->vehicle_id);
-                $this->createPendingTaskCampa($vehicle, $pendingTask['group_task_id'], Task::TOCAMPA);
-                $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+                $firstPendingTask->save();                
+            } else {                
+                $this->createPendingTaskCampa($pendingTask->vehicle, Task::TOCAMPA);
             }
         }
+        $this->stateChangeRepository->updateSubStateVehicle($pendingTask->vehicle);
+        return $pendingTask;
     }
 
-    private function createPendingTaskCampa($vehicle, $groupTaskId, $task_id)
+    private function createPendingTaskCampa($vehicle, $task_id)
     {
         PendingTask::create([
             'vehicle_id' => $vehicle->id,
@@ -270,7 +268,7 @@ class PendingTaskRepository extends Repository
             'user_id' => Auth::id(),
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
-            'group_task_id' => $groupTaskId,
+            'group_task_id' => $vehicle->lastReception->group_task_id,
             'order' => -1,
             'duration' => 0,
             'approved' => true,
@@ -384,7 +382,7 @@ class PendingTaskRepository extends Repository
                     $vehicle->ready_to_delivery = true;
                     $vehicle->save();
                 }
-                $this->createPendingTaskCampa($vehicle, $pending_task->group_task_id, $pending_task->task_id === Task::CHECK_BLOCKED ? Task::CHECK_RELEASE : Task::TOCAMPA);
+                $this->createPendingTaskCampa($vehicle, $pending_task->task_id === Task::CHECK_BLOCKED ? Task::CHECK_RELEASE : Task::TOCAMPA);
                 $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $pending_task->task_id === Task::CHECK_BLOCKED ? SubState::CHECK_RELEASE : SubState::CAMPA);
                 return [
                     "status" => "OK",

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\GroupTask;
 use App\Models\PendingTask;
+use App\Models\Reception;
 use App\Models\SubStateChangeHistory;
 use App\Models\StateChange;
 use App\Models\SubState;
@@ -23,11 +24,10 @@ class StateChangeRepository extends Repository
     {
         $vehicle = Vehicle::find($vehicle->id);
         $groupTask = $vehicle?->lastReception?->groupTask;
-    
-
         if (!$vehicle?->lastReception?->group_task_id && $vehicle->lastGroupTask) {
-            $vehicle->lastReception->group_task_id = $vehicle->lastGroupTask->id;
-            $vehicle->lastReception->save();
+            $reception = Reception::find($vehicle->lastReception->id);
+            $reception->group_task_id = $vehicle->lastGroupTask->id;
+            $reception->save();
             $vehicle = Vehicle::find($vehicle->id);
             $groupTask = $vehicle?->lastReception?->groupTask;
         } else if (!$vehicle?->lastReception?->group_task_id) {
@@ -127,10 +127,6 @@ class StateChangeRepository extends Repository
         if ($sub_state_id != $vehicle->sub_state_id) {
             $vehicle->last_change_sub_state = Carbon::now();
         }
-
-        Log::debug([
-            'BUG' =>  $sub_state_id
-        ]);
 
         $subState = SubState::find($sub_state_id);
 
