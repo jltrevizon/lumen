@@ -23,6 +23,7 @@ class Order extends Model
         'fx_entrada',
         'fx_fallo_check',
         'fx_first_budget',
+        'fx_prevista_reparacion',
     ];
 
     public function vehicle(){

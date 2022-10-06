@@ -183,6 +183,7 @@ class InvaratVehicleRepository extends Repository {
 
         $order->fx_entrada = $request->fx_entrada != "" ? $request->fx_entrada : null;
         $order->fx_first_budget = $request->fx_first_budget != "" ? $request->fx_first_budget : null ;
+        $order->fx_prevista_reparacion = $request->fx_prevista_reparacion != "" ? $request->fx_prevista_reparacion : null ;
         $order->save();
 
         return $vehicle->update($request->all());
