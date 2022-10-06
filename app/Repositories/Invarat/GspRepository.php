@@ -98,7 +98,7 @@ class GspRepository extends Repository {
             }
 
             // Orden 3 en negativo para colocar las 3 tareas por el orden (mecanica, ext_int, neumaticos)
-            $order = 3;
+            $order = 4;
 
             foreach ($request->input("ref_docs") as $task_id => $docs){
 
@@ -155,16 +155,12 @@ class GspRepository extends Repository {
 
         try{
 
-            Log::debug("VEHICLE --> ". print_r($request->input("id_gsp"),true));
-
-
-            $order = Order::query()->where("id_gsp", $request->input("id_gsp"))->first();
-
-            Log::debug("VEHICLE --> ". print_r($order,true));
+            $order = Order::query()->where("id_gsp_certificado", $request->input("orden_id"))->first();
 
             $order->vehicle->sub_state_id = SubState::PENDING_BUDGET;
+            $order->fx_fallo_check = date("Y-m-d H:i:s");
 
-            if(!$order->vehicle->save()){
+            if(!$order->save() && !$order->vehicle->save()){
                 throw new \Exception("Error al finalizar el vehículo en FOCUS");
             }
 

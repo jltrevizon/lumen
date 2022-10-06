@@ -30,9 +30,25 @@ class InvaratOrderRepository extends Repository {
 
         try{
 
-            $order = new Order();
-            $order->vehicle_id = $request->input("vehicle_id");
-            $order->id_gsp = $request->input("id_gsp");
+            $order = Order::query()->where("vehicle_id",$request->input("vehicle_id"))->first();
+
+            if(!$order){
+
+                $order = new Order();
+                $order->vehicle_id =         $request->input("vehicle_id");
+            }
+
+            if($request->input("id_gsp") != ""){
+                $order->id_gsp =             $request->input("id_gsp");
+            }
+
+            if($request->input("id_gsp_peritacion") != ""){
+                $order->id_gsp_peritacion =  $request->input("id_gsp_peritacion");
+            }
+
+            if($request->input("id_gsp_certificado") != ""){
+                $order->id_gsp_certificado = $request->input("id_gsp_certificado");
+            }
 
             if(!$order->save()){
                 throw new \Exception("Error al generar el registro orden de GSP20");
