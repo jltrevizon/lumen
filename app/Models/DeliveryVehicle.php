@@ -13,6 +13,7 @@ class DeliveryVehicle extends Model
     use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
+        'pending_task_id',
         'vehicle_id',
         'campa_id',
         'delivery_note_id',

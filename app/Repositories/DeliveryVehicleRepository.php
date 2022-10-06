@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class DeliveryVehicleRepository extends Repository
 {
@@ -37,15 +38,9 @@ class DeliveryVehicleRepository extends Repository
             ->findOrFail(Auth::id());
         $vehicle = Vehicle::findOrFail($vehicleId);
         $groupTaskId = $vehicle->lastReception?->group_task_id ?? null;
-        DeliveryVehicle::create([
-            'vehicle_id' => $vehicleId,
-            'campa_id' => $user->campas[0]->id,
-            'delivery_note_id' => $deliveryNoteId,
-            'data_delivery' => json_encode($data),
-            'delivery_by' => $user->name
-        ]);
+        
         if (!is_null($groupTaskId)) {
-            PendingTask::updateOrCreate([
+            $pending_task = PendingTask::updateOrCreate([
                 'vehicle_id' => $vehicleId,
                 'reception_id' => $vehicle->lastReception->id ?? null,
                 'task_id' => Task::TOALQUILADO,
@@ -61,6 +56,15 @@ class DeliveryVehicleRepository extends Repository
                 'datetime_start' => Carbon::now()->addSeconds($count * 2),
                 'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
                 'campa_id' => $vehicle->campa_id
+            ]);
+            Log::debug($pending_task);
+            DeliveryVehicle::create([
+                'vehicle_id' => $vehicleId,
+                'campa_id' => $user->campas[0]->id,
+                'delivery_note_id' => $deliveryNoteId,
+                'data_delivery' => json_encode($data),
+                'delivery_by' => $user->name,
+                'pending_task_id' => $pending_task->id
             ]);
         }
         if ($vehicle->lastReception) {

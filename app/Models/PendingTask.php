@@ -56,6 +56,12 @@ class PendingTask extends Model
         return $this->belongsTo(Reception::class);
     }
 
+    public function lastDeliveryVehicle(){
+        return $this->hasOne(DeliveryVehicle::class)->ofMany([
+            'pending_task_id' => 'max'
+        ]);
+    }
+
     public function questionAnswer(){
         return $this->belongsTo(QuestionAnswer::class);
     }

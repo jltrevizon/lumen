@@ -124,6 +124,10 @@ class StateChangeRepository extends Repository
             Log::debug('Bug: vehicle ' . $vehicle->id . ' Sin grupo de tareas');
         }
 
+        if ($force_sub_state_id) {
+            $sub_state_id = $force_sub_state_id;
+        }
+
         if ($sub_state_id != $vehicle->sub_state_id) {
             $vehicle->last_change_sub_state = Carbon::now();
         }
@@ -134,12 +138,9 @@ class StateChangeRepository extends Repository
         if ($state_id != $vehicle->sub_state?->state_id) {
             $vehicle->last_change_state = Carbon::now();
         }
-
-        if ($force_sub_state_id) {
-            $vehicle->sub_state_id = $force_sub_state_id;
-        } else {
-            $vehicle->sub_state_id = $sub_state_id;
-        }
+        
+        $vehicle->sub_state_id = $sub_state_id;
+        
         $vehicle->save();
 
         $this->store($vehicle->id, $vehicle->sub_state_id);
