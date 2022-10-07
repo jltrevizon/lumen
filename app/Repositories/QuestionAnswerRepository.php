@@ -170,7 +170,7 @@ class QuestionAnswerRepository
             $vehicle->lastReception->save();
         }
 
-        $pictures = $request->input('pictures');
+        $pictures = $request->input('pictures') ?? [];
 
         foreach ($pictures as $url) {
             $this->vehiclePictureRepository->create([
