@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Vehicle extends Model
 {
@@ -108,7 +109,8 @@ class Vehicle extends Model
     }
 
     public function vehiclePictures(){
-        return $this->hasMany(VehiclePicture::class);
+        return $this->hasMany(VehiclePicture::class)
+        ->whereRaw(DB::raw('reception_id = (Select max(r.id) from receptions r where r.vehicle_id = vehicle_pictures.vehicle_id)'));
     }
 
     public function reservations(){
