@@ -409,9 +409,6 @@ class VehicleRepository extends Repository
             return $item->id;
         })->toArray();
         if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
-            if($vehicle->lastReception){
-               // $this->vehiclePictureRepository->deletePictureByReception($vehicle->lastReception);
-            }
             $reception = new Reception();
         } else {
             $reception = $vehicle->lastReception;

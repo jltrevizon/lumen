@@ -173,13 +173,13 @@ class QuestionAnswerRepository
         $pictures = $request->input('pictures');
 
         foreach ($pictures as $url) {
-            $data = [
+            $this->vehiclePictureRepository->create([
                 'vehicle_id' => $vehicle->id,
+                'place' => 'Recepción',
                 'url' => $url,
                 'latitude' => $vehicle->latitude,
                 'longitude' => $vehicle->longitude
-            ];
-            $this->vehiclePictureRepository->create($data);
+            ]);
         }
        
         if ($request->input('square_id')) {

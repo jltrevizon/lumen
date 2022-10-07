@@ -13,19 +13,19 @@ class VehiclePictureRepository extends Repository {
         $this->userRepository = $userRepository;
     }
 
-    public function create($request){
+    public function create($data){
         $vehicle = Vehicle::with(['lastReception'])
-                    ->findOrFail($request->input('vehicle_id'));
+                    ->findOrFail($data['vehicle_id']);
         $vehicle_picture = new VehiclePicture();
         $vehicle_picture->reception_id = $vehicle['lastReception']['id'] ?? null;
-        $vehicle_picture->vehicle_id = $request->input('vehicle_id');
+        $vehicle_picture->vehicle_id = $vehicle->id;
         $vehicle_picture->user_id = Auth::id();
-        $vehicle_picture->url = $request->input('url');
-        $vehicle_picture->place = $request->input('place');
-        $vehicle_picture->latitude = $request->input('latitude');
-        $vehicle_picture->longitude = $request->input('longitude');
+        $vehicle_picture->url = $data['url'];
+        $vehicle_picture->place = $data['place'];
+        $vehicle_picture->latitude = $data['latitude'];
+        $vehicle_picture->longitude = $data['longitude'];
         $vehicle_picture->save();
-        return VehiclePicture::where('vehicle_id', $request->input('vehicle_id'))
+        return VehiclePicture::where('vehicle_id', $vehicle->id)->where('reception_id', $vehicle_picture->reception_id)
                 ->get();
     }
 
