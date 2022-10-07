@@ -36,7 +36,7 @@ class VehiclePictureRepository extends Repository {
     }
 
     public function deletePictureByReception($reception){
-        VehiclePicture::where('reception_id', $reception['id'])
+        VehiclePicture::where('vehicle_id', $reception['id'])
             ->delete();
         return ['message' => 'Pictures deleted'];
     }

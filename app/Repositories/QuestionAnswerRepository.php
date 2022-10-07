@@ -32,7 +32,8 @@ class QuestionAnswerRepository
         NotificationDAMail $notificationDAMail,
         NotificationItvMail $notificationItvMail,
         SquareRepository $squareRepository,
-        StateChangeRepository $stateChangeRepository
+        StateChangeRepository $stateChangeRepository,
+        VehiclePictureRepository $vehiclePictureRepository
     ) {
         $this->taskRepository = $taskRepository;
         $this->questionnaireRepository = $questionnaireRepository;
@@ -44,6 +45,7 @@ class QuestionAnswerRepository
         $this->notificationItvMail = $notificationItvMail;
         $this->stateChangeRepository = $stateChangeRepository;
         $this->squareRepository = $squareRepository;
+        $this->vehiclePictureRepository = $vehiclePictureRepository;
     }
 
     public function create($request)
@@ -166,6 +168,18 @@ class QuestionAnswerRepository
             $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
             $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
             $vehicle->lastReception->save();
+        }
+
+        $pictures = $request->input('pictures');
+
+        foreach ($pictures as $url) {
+            $data = [
+                'vehicle_id' => $vehicle->id,
+                'url' => $url,
+                'latitude' => $vehicle->latitude,
+                'longitude' => $vehicle->longitude
+            ];
+            $this->vehiclePictureRepository->create($data);
         }
        
         if ($request->input('square_id')) {

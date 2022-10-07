@@ -42,7 +42,7 @@ class ReceptionRepository extends Repository
             ->first();
 
         if($receptionDuplicate){
-            $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
+           // $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
         }
 
 
