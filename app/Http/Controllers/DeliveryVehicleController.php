@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DeliveryVehiclesExport;
 use App\Repositories\DeliveryVehicleRepository;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response;
 
 class DeliveryVehicleController extends Controller
@@ -88,5 +90,15 @@ class DeliveryVehicleController extends Controller
     public function destroy($id)
     {
        return $this->deleteDataResponse($this->deliveryVehicleRepository->delete($id), Response::HTTP_OK);
+    }
+
+    public function export(Request $request)
+    {
+        ini_set("memory_limit", "-1");
+        ini_set('max_execution_time', '-1');
+        $date = microtime(true);
+        $array = explode('.', $date);
+        ob_clean();
+        return Excel::download(new DeliveryVehiclesExport($request->all()), 'Salidas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
 }

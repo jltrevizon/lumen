@@ -10,7 +10,6 @@ use App\Models\PeopleForReport;
 use App\Models\Role;
 use App\Models\TypeReport;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -39,43 +38,47 @@ class StockVehicles extends Mailable
     public function build()
     {
         $campas = Campa::where('active', true)->get();
-        foreach($campas as $campa) {
+        foreach ($campas as $campa) {
 
             $peopleForReport = PeopleForReport::with(['user'])
-                    ->where('type_report_id', TypeReport::STOCK)
-                    ->where('campa_id', $campa->id)
-                    ->get();
+                ->where('type_report_id', TypeReport::STOCK)
+                ->where('campa_id', $campa->id)
+                ->get();
             $data = [
                 'title' => 'Stock de vehículos',
                 'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d/m/Y')
             ];
-            
+
             $file = Excel::download(new StockVehiclesExport($campa->id), 'entradas.xlsx')->getFile();
             rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
             $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
-           
+
             $file = Excel::download(new EntriesVehiclesExport($campa->id), 'entradas.xlsx')->getFile();
             rename($file->getRealPath(), $file->getPath() . '/' . 'entries.xlsx');
             $fileRename2 = $file->getPath() . '/entries.xlsx';
-    
-    
-            $file = Excel::download(new DeliveryVehiclesExport($campa->id), 'entradas.xlsx')->getFile();
+
+            $file = Excel::download(new DeliveryVehiclesExport([
+                'pendindTaskNull' => 0,
+                'vehicleDeleted' => 0,
+                'campaIds' => [$campa->id]
+            ]), 'entradas.xlsx')->getFile();
+
             rename($file->getRealPath(), $file->getPath() . '/' . 'deliveries.xlsx');
             $fileRename3 = $file->getPath() . '/deliveries.xlsx';
-    
+
             $attachments = [
                 $fileRename1 => ['as' => 'Stock-vehículos.xlsx'],
                 $fileRename2 => ['as' => 'Entradas.xlsx'],
                 $fileRename3 => ['as' => 'Salidas.xlsx']
             ];
-    
-            foreach($peopleForReport as $user){
-                if($user['user']['role_id'] != Role::GLOBAL_MANAGER) {
-                    Mail::send('report-generic', $data, function($message) use($user, $attachments){
+
+            foreach ($peopleForReport as $user) {
+                if ($user['user']['role_id'] != Role::GLOBAL_MANAGER) {
+                    Mail::send('report-generic', $data, function ($message) use ($user, $attachments) {
                         $message->to($user['user']['email'], $user['user']['name']);
                         $message->subject('Stock de vehículos');
                         $message->from('no-reply.focus@grupomobius.com', 'Focus');
-                        foreach($attachments as $filePath => $fileParameters){
+                        foreach ($attachments as $filePath => $fileParameters) {
                             $message->attach($filePath, $fileParameters);
                         }
                     });
@@ -88,7 +91,7 @@ class StockVehicles extends Mailable
 
         $peopleForReport = PeopleForReport::with(['user'])
             ->where('type_report_id', TypeReport::STOCK)
-            ->whereHas('user', function (Builder $builder){
+            ->whereHas('user', function (Builder $builder) {
                 return $builder->where('role_id', Role::GLOBAL_MANAGER);
             })
             ->get();
@@ -97,13 +100,17 @@ class StockVehicles extends Mailable
         $file = Excel::download(new StockVehiclesExport(null), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
         $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
-        
+
         $file = Excel::download(new EntriesVehiclesExport(null), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'entries.xlsx');
         $fileRename2 = $file->getPath() . '/entries.xlsx';
 
 
-        $file = Excel::download(new DeliveryVehiclesExport(null), 'entradas.xlsx')->getFile();
+        $file = Excel::download(new DeliveryVehiclesExport([
+            'pendindTaskNull' => 0,
+            'vehicleDeleted' => 0
+        ]), 'entradas.xlsx')->getFile();
+
         rename($file->getRealPath(), $file->getPath() . '/' . 'deliveries.xlsx');
         $fileRename3 = $file->getPath() . '/deliveries.xlsx';
 
@@ -113,12 +120,12 @@ class StockVehicles extends Mailable
             $fileRename3 => ['as' => 'Salidas.xlsx']
         ];
 
-        foreach($peopleForReport as $user){
-            Mail::send('report-generic', $data, function($message) use($user, $attachments){
+        foreach ($peopleForReport as $user) {
+            Mail::send('report-generic', $data, function ($message) use ($user, $attachments) {
                 $message->to($user['user']['email'], $user['user']['name']);
                 $message->subject('Stock de vehículos');
                 $message->from('no-reply.focus@grupomobius.com', 'Focus');
-                foreach($attachments as $filePath => $fileParameters){
+                foreach ($attachments as $filePath => $fileParameters) {
                     $message->attach($filePath, $fileParameters);
                 }
             });

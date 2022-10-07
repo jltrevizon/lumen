@@ -3,15 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\Damage;
-use App\Models\PendingTask;
 use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
-use App\Models\TypeModelOrder;
-use App\Models\TypeReception;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +28,6 @@ use App\Repositories\CampaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use SebastianBergmann\Environment\Console;
 
 class VehicleRepository extends Repository
 {

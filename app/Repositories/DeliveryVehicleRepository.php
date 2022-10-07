@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class DeliveryVehicleRepository extends Repository
 {
@@ -57,7 +56,6 @@ class DeliveryVehicleRepository extends Repository
                 'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
                 'campa_id' => $vehicle->campa_id
             ]);
-            Log::debug($pending_task);
             DeliveryVehicle::create([
                 'vehicle_id' => $vehicleId,
                 'campa_id' => $user->campas[0]->id,

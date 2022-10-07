@@ -565,6 +565,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Delivery vehicles
          */
         $router->get('/delivery-vehicles','DeliveryVehicleController@index');
+        $router->get('/delivery-vehicles/export','DeliveryVehicleController@export');
         $router->delete('/delivery-vehicles/{id}', 'DeliveryVehicleController@destroy');
 
         /**
