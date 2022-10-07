@@ -40,6 +40,10 @@ class DeliveryVehicle extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function pendingTask(){
+        return $this->belongsTo(PendingTask::class);
+    }
+
     public function campa(){
         return $this->belongsTo(Campa::class);
     }
