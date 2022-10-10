@@ -55,7 +55,11 @@ class StateChangeRepository extends Repository
                 $approvedPendingTasks = $groupTask->approvedPendingTasks;
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {
-                    $pendingTasks = PendingTask::where('vehicle_id', $vehicle->id)->where('approved', 1)->where('task_id', Task::TOALQUILADO)->get();
+                    $pendingTasks = PendingTask::where('vehicle_id', $vehicle->id)
+                    ->where('reception_id', $vehicle->lastReception?->id)
+                    ->where('approved', 1)
+                    ->where('task_id', Task::TOALQUILADO)
+                    ->get();
                     if (count($pendingTasks) > 0) {
                         $sub_state_id = SubState::ALQUILADO;
                     } else if ($sub_state_id != SubState::ALQUILADO) {
