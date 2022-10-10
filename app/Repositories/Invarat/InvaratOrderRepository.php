@@ -4,8 +4,10 @@ namespace App\Repositories\Invarat;
 
 use App\Models\Order;
 use App\Models\State;
+use App\Models\Vehicle;
 use App\Repositories\Repository;
 use App\Repositories\StateChangeRepository;
+use Illuminate\Support\Facades\DB;
 
 class InvaratOrderRepository extends Repository {
 
@@ -74,6 +76,27 @@ class InvaratOrderRepository extends Repository {
         return Order::with($this->getWiths($request->with))
                     ->filter($request->all())
                     ->paginate($request->input('per_page'));
+    }
+
+    public function getVehiclesForIdGspOrder($request){
+
+        $idsGsp = $request->ordersIds;
+
+        $query = Vehicle::with($this->getWiths($request->with))
+            ->whereHas("orders", function ($order) use ($idsGsp){
+                $order->whereIn("id_gsp",array($idsGsp));
+            })
+            ->filter($request->all());
+
+        if ($request->input('noPaginate')) {
+            $vehicles = [
+                'data' => $query->get()
+            ];
+        } else {
+            $vehicles =  $query->paginate($request->input('per_page') ?? 5);
+        }
+
+        return ['vehicles' => $vehicles];
     }
 
 }
