@@ -100,7 +100,7 @@ class Vehicle extends Model
             ->where('approved', true)
             ->where('task_id', Task::TOALQUILADO)
             ->where(function($query){
-                return $query->where('state_pending_task_id', StatePendingTask::FINISHED);
+                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
             });
     }
 

@@ -74,6 +74,17 @@ class DeliveryVehicleRepository extends Repository
     public function delete($id)
     {
         $deliveryVehicle = DeliveryVehicle::findOrFail($id);
+        $user = Auth::user();
+        $deliveryVehicle->canceled_by = $user->name;
+        $deliveryVehicle->save();
+
+        $pendingTask = $deliveryVehicle->pendingTask;
+
+        if (!is_null($pendingTask)) {
+            $pendingTask->state_pending_task_id = StatePendingTask::CANCELED;
+            $pendingTask->save();
+        }
+
         $vehicle = Vehicle::findOrFail($deliveryVehicle->vehicle_id);
         $vehicle->campa_id = $deliveryVehicle->campa_id;
 

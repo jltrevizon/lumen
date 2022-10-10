@@ -19,13 +19,16 @@ class DeliveryVehicle extends Model
         'delivery_note_id',
         'data_delivery',
         'delivery_by',
+        'canceled_by',
     ];
 
     protected $casts = [
     	'vehicle_id' => 'integer',
         'campa_id' => 'integer',
         'delivery_note_id' => 'integer',
-    	'data_delivery' => 'json'
+    	'data_delivery' => 'json',
+        'delivery_by' => 'string',
+        'canceled_by' => 'string'
     ];
 
     protected $dates = [

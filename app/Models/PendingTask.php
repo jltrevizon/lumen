@@ -57,7 +57,7 @@ class PendingTask extends Model
     }
 
     public function lastDeliveryVehicle(){
-        return $this->hasOne(DeliveryVehicle::class)->ofMany([
+        return $this->hasOne(DeliveryVehicle::class)->withTrashed()->ofMany([
             'pending_task_id' => 'max'
         ]);
     }
