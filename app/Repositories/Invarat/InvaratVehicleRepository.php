@@ -3,6 +3,7 @@
 namespace App\Repositories\Invarat;
 
 use App\Models\Company;
+use App\Models\Order;
 use App\Models\QuestionAnswer;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
@@ -104,7 +105,7 @@ class InvaratVehicleRepository extends Repository {
 				c.`name` as service_name,
                 c.id as type_model_order_id,
                 d.id as sub_state_id,
-				d.`name` as task_name,
+				f.`name` as task_name,
                 (
                     CASE
                         WHEN DATEDIFF((SELECT max(datetime_start) from pending_tasks e where e.state_pending_task_id = 2 and e.vehicle_id = a.id), now()) > -9 THEN "1"
@@ -112,13 +113,14 @@ class InvaratVehicleRepository extends Repository {
                         ELSE "3"
                     END
                 ) AS total
-                from vehicles a,type_model_orders c, sub_states d
+                from vehicles a,type_model_orders c, sub_states d, states f
                 where a.type_model_order_id = c.id
                 and a.sub_state_id = d.id
+                and d.state_id = f.id
                 and a.company_id = 2
                 and a.type_model_order_id = :service
                 and (SELECT max(e.id) from pending_tasks e where e.state_pending_task_id != 3 and e.vehicle_id = a.id) > 0
-                GROUP BY  a.sub_state_id, total
+                GROUP BY a.id,a.sub_state_id, total
                 ORDER BY total DESC'
             ), array('service' => $service)
         );
@@ -138,6 +140,7 @@ class InvaratVehicleRepository extends Repository {
             $t_compare = '<';
         }
 
+
         $vehicles = DB::select(
             DB::raw('
             select
@@ -145,15 +148,18 @@ class InvaratVehicleRepository extends Repository {
                 c.`name` as canal,
                 e.`name` as modelo,
                 f.`name` as ubicación,
-                a.created_at as fecha_entrada,
+                h.fx_entrada as fecha_entrada,
+                h.fx_fallo_check as fecha_fallo_check,
                 (SELECT max(g.comment_state) from pending_tasks g where g.state_pending_task_id != 3 and g.vehicle_id = a.id) as observaciones
-            from vehicles a, type_model_orders c, sub_states d, vehicle_models e, campas f
+            from vehicles a, type_model_orders c, sub_states d, vehicle_models e, campas f, states g, orders h
             where a.type_model_order_id = c.id
             and a.sub_state_id = d.id
             and a.vehicle_model_id = e.id
             and a.campa_id = f.id
+            and d.state_id = g.id
+            and a.id = h.vehicle_id
             and a.company_id = 2
-            and a.sub_state_id = :sub_state
+            and g.`name` = :sub_state
             and a.type_model_order_id = :type_model
             and (SELECT max(e.id) from pending_tasks e where e.state_pending_task_id != 3 and e.vehicle_id = a.id) > 0
             and (DATEDIFF((SELECT max(datetime_start) from pending_tasks e where e.state_pending_task_id = 2 and e.vehicle_id = a.id), now()))
@@ -165,7 +171,23 @@ class InvaratVehicleRepository extends Repository {
             )
         );
 
+
         return $vehicles;
 
+    }
+
+    public function update($request, $id)
+    {
+
+
+        $vehicle = Vehicle::findOrFail($id);
+        $order= Order::where("vehicle_id",$id)->first();
+
+        $order->fx_entrada = $request->fx_entrada != "" ? $request->fx_entrada : null;
+        $order->fx_first_budget = $request->fx_first_budget != "" ? $request->fx_first_budget : null ;
+        $order->fx_prevista_reparacion = $request->fx_prevista_reparacion != "" ? $request->fx_prevista_reparacion : null ;
+        $order->save();
+
+        return $vehicle->update($request->all());
     }
 }

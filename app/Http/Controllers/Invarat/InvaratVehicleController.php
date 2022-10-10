@@ -34,4 +34,8 @@ class InvaratVehicleController extends Controller
         return $this->getDataResponse($this->invaratVehicleRepository->getVehicleDetails($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    public function update(Request $request, $id)
+    {
+        return $this->updateDataResponse(['vehicle' => $this->invaratVehicleRepository->update($request, $id)], HttpFoundationResponse::HTTP_OK);
+    }
 }
