@@ -441,7 +441,7 @@ class Vehicle extends Model
     public function allApprovedPendingTasks(){
         return $this->hasMany(PendingTask::class, 'vehicle_id')
             ->where('approved', 1)->with('groupTask')
-            ->orderBy('state_pending_task_id', 'desc')
+            ->orderBy('group_task_id', 'desc')
             ->orderBy('order')
             ->orderBy('datetime_finish', 'desc');
     }
