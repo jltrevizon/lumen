@@ -14,8 +14,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PendingTask extends Model
 {
-
     use HasFactory, Filterable;
+
+    const ORDER_TASKS = [39, 11, 2, 3, 4, 41, 5, 6, 7, 8]; 
 
     protected $fillable = [
         'vehicle_id',

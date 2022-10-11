@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Damage;
+use App\Models\PendingTask;
 use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
@@ -322,10 +323,12 @@ class VehicleRepository extends Repository
 
         $defleetingAndDelivery = Vehicle::where('id', $vehicle?->id)->filter(['defleetingAndDelivery' => 0])->first();
 
+        $order_tasks = PendingTask::ORDER_TASKS;
+
         if ($vehicleDefleet) {
-            return ['vehicle' => $vehicle, 'defleet' => true, 'vehicle_delivery' => $defleetingAndDelivery];
+            return ['vehicle' => $vehicle, 'defleet' => true, 'vehicle_delivery' => $defleetingAndDelivery, 'order_tasks' => $order_tasks];
         } else if ($vehicle) {
-            return ['vehicle' => $vehicle, 'registered' => true, 'vehicle_delivery' => $defleetingAndDelivery];
+            return ['vehicle' => $vehicle, 'registered' => true, 'vehicle_delivery' => $defleetingAndDelivery, 'order_tasks' => $order_tasks];
         }
         return ['registered' => false];
     }
