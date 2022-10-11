@@ -37,19 +37,12 @@ class ReceptionRepository extends Repository
 
     public function create($request)
     {
-        $receptionDuplicate = Reception::where('vehicle_id', $request->input('vehicle_id'))
-            ->whereDate('created_at', date('Y-m-d'))
-            ->first();
-
-        if($receptionDuplicate){
-
-            $this->vehiclePictureRepository->deletePictureByReception($receptionDuplicate);
-
+        if ($request->input('trash_reception')) {
+            $pending_tasks = PendingTask::where('reception_id', $request->input('trash_reception'))->get();
+            if (count($pending_tasks) === 0) {
+                Reception::where('id', $request->input('trash_reception'))->delete();
+            }
         }
-
-        Reception::where('vehicle_id', $request->input('vehicle_id'))
-            ->whereDate('created_at', date('Y-m-d'))
-            ->delete();
 
         $reception = new Reception();
         $campa = Auth::user()->campas->first();

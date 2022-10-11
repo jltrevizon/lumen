@@ -31,41 +31,60 @@ class DeliveryVehicleRepository extends Repository
             ->paginate($request->input('per_page'));
     }
 
-    public function createDeliveryVehicles($vehicleId, $data, $deliveryNoteId, $count, $groupTaskId)
+    public function createDeliveryVehicles($vehicleId, $data, $deliveryNoteId, $count)
     {
-        $this->squareRepository->freeSquare($vehicleId);
         $user = User::with('campas')
             ->findOrFail(Auth::id());
         $vehicle = Vehicle::findOrFail($vehicleId);
-        DeliveryVehicle::create([
-            'vehicle_id' => $vehicleId,
-            'campa_id' => $user->campas[0]->id,
-            'delivery_note_id' => $deliveryNoteId,
-            'data_delivery' => json_encode($data),
-            'delivery_by' => $user->name
-        ]);
-        PendingTask::updateOrCreate([
-            'vehicle_id' => $vehicleId,
-            'reception_id' => $vehicle->lastReception->id ?? null,
-            'task_id' => Task::TOALQUILADO,
-            'group_task_id' => $groupTaskId,
-        ], [
-            'state_pending_task_id' => StatePendingTask::PENDING,
-            'user_id' => Auth::id(),
-            'user_start_id' => Auth::id(),
-            'user_end_id' => Auth::id(),
-            'order' => 1,
-            'approved' => true,
-            'datetime_pending' => Carbon::now()->addSeconds($count * 1),
-            'datetime_start' => Carbon::now()->addSeconds($count * 2),
-            'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
-            'campa_id' => $vehicle->campa_id
-        ]);
+        $groupTaskId = $vehicle->lastReception?->group_task_id ?? null;
+        
+        if (!is_null($groupTaskId)) {
+            $pending_task = PendingTask::updateOrCreate([
+                'vehicle_id' => $vehicleId,
+                'reception_id' => $vehicle->lastReception->id ?? null,
+                'task_id' => Task::TOALQUILADO,
+                'group_task_id' => $groupTaskId,
+            ], [
+                'state_pending_task_id' => StatePendingTask::FINISHED,
+                'user_id' => Auth::id(),
+                'user_start_id' => Auth::id(),
+                'user_end_id' => Auth::id(),
+                'order' => 1,
+                'approved' => true,
+                'datetime_pending' => Carbon::now()->addSeconds($count * 1),
+                'datetime_start' => Carbon::now()->addSeconds($count * 2),
+                'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
+                'campa_id' => $vehicle->campa_id
+            ]);
+            DeliveryVehicle::create([
+                'vehicle_id' => $vehicleId,
+                'campa_id' => $user->campas[0]->id,
+                'delivery_note_id' => $deliveryNoteId,
+                'data_delivery' => json_encode($data),
+                'delivery_by' => $user->name,
+                'pending_task_id' => $pending_task->id
+            ]);
+        }
+        if ($vehicle->lastReception) {
+            $vehicle->lastReception->finished = true;
+            $vehicle->lastReception->save();
+        }
     }
 
     public function delete($id)
     {
         $deliveryVehicle = DeliveryVehicle::findOrFail($id);
+        $user = Auth::user();
+        $deliveryVehicle->canceled_by = $user->name;
+        $deliveryVehicle->save();
+
+        $pendingTask = $deliveryVehicle->pendingTask;
+
+        if (!is_null($pendingTask)) {
+            $pendingTask->state_pending_task_id = StatePendingTask::CANCELED;
+            $pendingTask->save();
+        }
+
         $vehicle = Vehicle::findOrFail($deliveryVehicle->vehicle_id);
         $vehicle->campa_id = $deliveryVehicle->campa_id;
 

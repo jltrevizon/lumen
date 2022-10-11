@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class KpiInpuOutExport implements FromArray, WithHeadings
 {
-    protected $header = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
+    protected $header = ['Entradas y salidas', '', '', '', '', '', '', '', '', '', '', '', ''];
     public function __construct($request)
     {
         $this->request = $request;
@@ -61,9 +61,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
         }
 
-        $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
-
-        $value[0][0] = 'Año ' . $year;
+        $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Nobiembre', 'Diciembre'];
 
         $value[] = ['Entradas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
         $value[] = ['Salidas', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'];
@@ -174,7 +172,7 @@ class KpiInpuOutExport implements FromArray, WithHeadings
             ->get();
         $ocupacion = $campas[0]['ocupacion'];
 
-        $value[] =  ['Stock ' . date('m/Y'), 'Totales', '%', 'Ocupacion', '%'];
+        $value[] =  ['Stock campa actual', 'Totales', '%', 'Ocupacion', '%'];
         $value[] =  ['TOTAL', strval($total ?? 0), strval($this->obtenerPorcentaje((int) $total ?? 0, $total)), $ocupacion, strval($this->obtenerPorcentaje((int) $total ?? 0, $ocupacion))];
 
         foreach ($variable as $key => $v) {

@@ -12,6 +12,7 @@ class VehicleExitRepository extends Repository {
     public function getAll($request){
         return VehicleExit::with($this->getWiths($request->with))
             ->filter($request->all())
+            ->orderByDesc('created_at')
             ->paginate($request->input('per_page'));
     }
 

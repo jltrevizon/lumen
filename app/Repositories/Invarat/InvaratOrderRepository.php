@@ -3,56 +3,40 @@
 namespace App\Repositories\Invarat;
 
 use App\Models\Order;
-use App\Models\State;
 use App\Models\Vehicle;
 use App\Repositories\Repository;
-use App\Repositories\StateChangeRepository;
-use Illuminate\Support\Facades\DB;
 
-class InvaratOrderRepository extends Repository {
+class InvaratOrderRepository extends Repository
+{
 
-    public function __construct(
-        InvaratWorkshopRepository $invaratWorkshopRepository,
-        InvaratVehicleRepository $invaratVehicleRepository,
-        InvaratPendingTaskRepository $invaratPendingTaskRepository,
-        StateChangeRepository $stateChangeRepository,
-    )
+    public function __construct()
     {
-        $this->invaratWorkshopRepository = $invaratWorkshopRepository;
-        $this->invaratVehicleRepository = $invaratVehicleRepository;
-        $this->invaratPendingTaskRepository = $invaratPendingTaskRepository;
-        $this->stateChangeRepository = $stateChangeRepository;
     }
 
-    public function createOrder($request){
+    public function createOrder($request)
+    {
+        try {
 
-//        $workshop = $this->invaratWorkshopRepository->createWorkshop($request->input('workshop'));
-//        $vehicle = $this->invaratVehicleRepository->createVehicle($request);
-//        $this->invaratPendingTaskRepository->create($vehicle['id']);
+            $order = Order::query()->where("vehicle_id", $request->input("vehicle_id"))->first();
 
-        try{
-
-            $order = Order::query()->where("vehicle_id",$request->input("vehicle_id"))->first();
-
-            if(!$order){
-
+            if (!$order) {
                 $order = new Order();
-                $order->vehicle_id =         $request->input("vehicle_id");
+                $order->vehicle_id = $request->input("vehicle_id");
             }
 
-            if($request->input("id_gsp") != ""){
-                $order->id_gsp =             $request->input("id_gsp");
+            if ($request->input("id_gsp") != "") {
+                $order->id_gsp = $request->input("id_gsp");
             }
 
-            if($request->input("id_gsp_peritacion") != ""){
-                $order->id_gsp_peritacion =  $request->input("id_gsp_peritacion");
+            if ($request->input("id_gsp_peritacion") != "") {
+                $order->id_gsp_peritacion = $request->input("id_gsp_peritacion");
             }
 
-            if($request->input("id_gsp_certificado") != ""){
+            if ($request->input("id_gsp_certificado") != "") {
                 $order->id_gsp_certificado = $request->input("id_gsp_certificado");
             }
 
-            if(!$order->save()){
+            if (!$order->save()) {
                 throw new \Exception("Error al generar el registro orden de GSP20");
             }
 
@@ -60,31 +44,30 @@ class InvaratOrderRepository extends Repository {
                 "type" => "success",
                 "msg" => ""
             ];
-
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
 
             return [
                 "type" => "error",
                 "msg" => $e->getMessage()
             ];
-
         }
-
     }
 
-    public function orderFilter($request){
+    public function orderFilter($request)
+    {
         return Order::with($this->getWiths($request->with))
-                    ->filter($request->all())
-                    ->paginate($request->input('per_page'));
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
-    public function getVehiclesForIdGspOrder($request){
+    public function getVehiclesForIdGspOrder($request)
+    {
 
         $idsGsp = $request->ordersIds;
 
         $query = Vehicle::with($this->getWiths($request->with))
-            ->whereHas("orders", function ($order) use ($idsGsp){
-                $order->whereIn("id_gsp",array($idsGsp));
+            ->whereHas("orders", function ($order) use ($idsGsp) {
+                $order->whereIn("id_gsp", array($idsGsp));
             })
             ->filter($request->all());
 
@@ -98,5 +81,4 @@ class InvaratOrderRepository extends Repository {
 
         return ['vehicles' => $vehicles];
     }
-
 }

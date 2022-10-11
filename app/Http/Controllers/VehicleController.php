@@ -60,7 +60,7 @@ class VehicleController extends Controller
         if (!is_null($data['code'])) {
             return $this->failResponse(['message' => 'Esta matrícula ya está registrada', 'vehicle' => $data['vehicle']], $data['code']);
         }
-        return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_CREATED);
+        return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_OK);
     }
 
     public function update(Request $request, $id)
@@ -187,11 +187,6 @@ class VehicleController extends Controller
     public function setVehicleRented(Request $request)
     {
         return $this->updateDataResponse($this->vehicleRepository->setVehicleRented($request), HttpFoundationResponse::HTTP_OK);
-    }
-
-    public function setSubStateNull(Request $request)
-    {
-        return $this->updateDataResponse($this->vehicleRepository->setSubStateNull($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function defleet($id)

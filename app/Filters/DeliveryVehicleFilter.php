@@ -21,6 +21,13 @@ class DeliveryVehicleFilter extends ModelFilter
         return $this->whereIn('campa_id', $ids);
     }
 
+    public function pendindTaskNull($value){
+        if ($value) {
+            return $this->whereNull('pending_task_id');
+        }
+        return $this->whereNotNull('pending_task_id');
+    }
+
     public function createdAt($date){
         return $this->whereDate('created_at', $date);
     }
@@ -33,6 +40,15 @@ class DeliveryVehicleFilter extends ModelFilter
     public function createdAtTo($dateTime)
     {
         return $this->whereDate('created_at','<=', $dateTime);
+    }
+
+    public function vehicleDeleted($value){
+        return $this->whereHas('vehicle', function(Builder $builder) use($value){
+            if ($value) {
+                return $builder->whereNotNull('deleted_at');
+            }
+            return $builder->whereNull('deleted_at');
+        });
     }
 
     public function vehiclePlate($plate){

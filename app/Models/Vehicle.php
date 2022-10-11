@@ -12,6 +12,7 @@ use App\Models\PendingTask;
 use App\Models\GroupTask;
 use App\Models\VehiclePicture;
 use App\Models\Reservation;
+use App\Models\HistoryLocation;
 use App\Models\Reception;
 use App\Models\TradeState;
 use Illuminate\Database\Eloquent\Builder;
@@ -92,12 +93,24 @@ class Vehicle extends Model
             })->whereHas('budgetPendingTasks');
     }
 
+    public function lastPendingTaskDelivery(){
+        return $this->hasOne(PendingTask::class, 'vehicle_id')->ofMany([
+            'id' => 'max'
+            ])
+            ->where('approved', true)
+            ->where('task_id', Task::TOALQUILADO)
+            ->where(function($query){
+                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
+            });
+    }
+
     public function groupTasks(){
         return $this->hasMany(GroupTask::class);
     }
 
     public function vehiclePictures(){
-        return $this->hasMany(VehiclePicture::class);
+        return $this->hasMany(VehiclePicture::class)
+        ->whereRaw(DB::raw('reception_id = (Select max(r.id) from receptions r where r.vehicle_id = vehicle_pictures.vehicle_id)'));
     }
 
     public function reservations(){
@@ -132,6 +145,13 @@ class Vehicle extends Model
         return $this->hasMany(VehicleExit::class);
     }
 
+    public function lastVehicleExit(){
+        return $this->hasOne(VehicleExit::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
+
+
     public function operations(){
         return $this->hasMany(Operation::class);
     }
@@ -142,6 +162,10 @@ class Vehicle extends Model
 
     public function damages(){
         return $this->hasMany(Damage::class);
+    }
+
+    public function historyLocations(){
+        return $this->hasMany(HistoryLocation::class);
     }
 
     public function accessories(){
@@ -168,7 +192,6 @@ class Vehicle extends Model
             'id' => 'max'
         ]);
     }
-
 
     public function orders(){
         return $this->hasMany(Order::class);
@@ -310,6 +333,12 @@ class Vehicle extends Model
     }
 
     public function scopeSubStateIds($query, array $ids){
+        $idNull = count(array_filter($ids)) < count($ids) || in_array("null", $ids);
+        if ($idNull) {
+            return $query->where(function ($query) use ($ids) {
+                $query->whereIn('sub_state_id', $ids)->orWhereNull('sub_state_id');
+            });
+        }
         return $query->whereIn('sub_state_id', $ids);
     }
 
@@ -334,6 +363,12 @@ class Vehicle extends Model
     public function scopeBrandIds($query, array $ids){
         return $query->whereHas('vehicleModel', function (Builder $builder) use($ids) {
             return $builder->whereIn('brand_id', $ids);
+        });
+    }
+
+    public function scopeByAccessorieTypeIds($query, array $ids){
+        return $query->whereHas('accessories', function (Builder $builder) use($ids) {
+            return $builder->whereIn('accessory_type_id', $ids);
         });
     }
 
@@ -421,8 +456,10 @@ class Vehicle extends Model
         return $this->hasOne(GroupTask::class)->ofMany([
             'id' => 'max'
         ], function ($query) {
-            $query->where('approved', false)
-                 ->where('approved_available', false);
+            $query
+                ->whereRaw('id = (Select r2.group_task_id from receptions r2 where r2.id = (Select max(r.id) from receptions r where r.vehicle_id = group_tasks.vehicle_id))')
+                ->where('approved', false)
+                ->where('approved_available', false);
         });
     }
 
@@ -555,5 +592,14 @@ class Vehicle extends Model
         return $query->whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($ids){
             return $builder->whereIn('task_id', $ids);
         });
+    }
+
+    public function checkListApproved() {
+        return $this->hasMany(PendingTask::class, 'vehicle_id')
+        ->where('approved', true)
+        ->where('task_id', Task::VALIDATE_CHECKLIST)
+        ->where(function ($query) {
+            $query->where('state_pending_task_id', StatePendingTask::FINISHED);
+        })->whereRaw('reception_id = 3976');
     }
 }

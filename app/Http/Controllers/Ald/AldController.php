@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
+use App\Models\SubState;
+use App\Models\Task;
+use App\Models\TypeReception;
 use App\Models\Vehicle;
 use App\Repositories\GroupTaskRepository;
+use App\Repositories\SquareRepository;
 use App\Repositories\StateChangeRepository;
 use App\Repositories\TaskRepository;
 use App\Repositories\VehicleRepository;
@@ -25,12 +29,14 @@ class AldController extends Controller
         TaskRepository $taskRepository,
         GroupTaskRepository $groupTaskRepository,
         StateChangeRepository $stateChangeRepository,
-        VehicleRepository $vehicleRepository
+        VehicleRepository $vehicleRepository,
+        SquareRepository $squareRepository
     ) {
         $this->taskRepository = $taskRepository;
         $this->groupTaskRepository = $groupTaskRepository;
         $this->stateChangeRepository = $stateChangeRepository;
         $this->vehicleRepository = $vehicleRepository;
+        $this->squareRepository = $squareRepository;
     }
 
     public function unapprovedTask(Request $request)
@@ -74,18 +80,9 @@ class AldController extends Controller
     public function createTaskVehiclesAvalible(Request $request)
     {
         try {
+            $this->vehicleRepository->newReception($request->input('vehicle_id'));
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-            if (!$vehicle->lastReception) {
-                return $this->failResponse(['message' => 'Reception not found'], HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
             $groupTask = $this->lastGroupTask($vehicle->id);
-            if (is_null($groupTask) || count($groupTask->approvedPendingTasks) === 0) {
-                $this->vehicleRepository->newReception($vehicle->id);
-                $vehicle = Vehicle::find($vehicle->id);
-                $groupTask = $this->lastGroupTask($vehicle->id);
-            }
-
             $pending_task = new PendingTask();
 
             $tasksApproved = count($groupTask->approvedPendingTasks);
@@ -108,6 +105,12 @@ class AldController extends Controller
                 $vehicle->save();
             }
             $pending_task->task_id = $request->input('task_id');
+            if ($pending_task->task_id === Task::CHECK_RELEASE) {
+                $reception = $vehicle->lastResception;
+                $reception->created_at = date('Y-m-d H:i:s');
+                $reception->updated_at = date('Y-m-d H:i:s');
+                $reception->save();
+            }
             $taskDescription = $this->taskRepository->getById([], $pending_task->task_id);
             $pending_task->duration = $taskDescription['duration'];
             $pending_task->approved = true;
@@ -141,8 +144,27 @@ class AldController extends Controller
                 $update_pending_task->save();
                 $order++;
             }
-            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-            return $this->createDataResponse(['data' => $groupTask->approvedPendingTasks], HttpFoundationResponse::HTTP_CREATED);
+
+            $groupTask = $this->lastGroupTask($vehicle->id);
+
+            if (count($groupTask->approvedPendingTasks) > 0 && $groupTask->approvedPendingTasks[0]->task_id == Task::CHECK_BLOCKED) {
+                $groupTask->approvedPendingTasks[0]->state_pending_task_id = StatePendingTask::IN_PROGRESS;
+                $groupTask->approvedPendingTasks[0]->datetime_start = date('Y-m-d H:i:s');
+                $groupTask->approvedPendingTasks[0]->save();
+                $vehicle->sub_state_id = SubState::CHECK_BLOCKED;
+                $vehicle->save();
+            } else {
+                $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+                $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+            }
+            if ($request->input('square_id')) {
+                $this->squareRepository->update($request, $request->input('square_id'));
+            }
+
+            return $this->createDataResponse([
+                'data' => $groupTask->approvedPendingTasks,
+                'vehicle' => Vehicle::find($vehicle->id)
+            ], HttpFoundationResponse::HTTP_CREATED);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage(),], 400);
         }

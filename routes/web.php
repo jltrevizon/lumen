@@ -276,7 +276,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
         $router->post('/vehicles/return/{id}', 'VehicleController@returnVehicle');
         $router->post('/vehicles/delete-massive', 'VehicleController@deleteMassive');
-        $router->post('/vehicles/set-sub-state-null', 'VehicleController@setSubStateNull');
         $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
         $router->get('/vehicles/defleet/{id}', 'VehicleController@defleet');
         $router->get('/vehicles/undefleet/{id}', 'VehicleController@unDefleet');
@@ -566,6 +565,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Delivery vehicles
          */
         $router->get('/delivery-vehicles','DeliveryVehicleController@index');
+        $router->get('/delivery-vehicles/export','DeliveryVehicleController@export');
         $router->delete('/delivery-vehicles/{id}', 'DeliveryVehicleController@destroy');
 
         /**

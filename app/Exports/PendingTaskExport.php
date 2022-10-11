@@ -4,13 +4,8 @@ namespace App\Exports;
 
 use App\Models\Company;
 use App\Models\PendingTask;
-use App\Models\State;
 use App\Models\StatePendingTask;
-use App\Models\SubState;
-use App\Models\Vehicle;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -22,12 +17,6 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
      */
     public function collection()
     {
-        /*return Vehicle::with(['pendingTasks' => function ($query) {
-            return $query->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED]);
-        }])
-            ->where('company_id', Company::ALD)
-            ->get();*/
-        $vehicle_ids = collect(Vehicle::filter([ 'defleetingAndDelivery' => 0 ])->get())->map(function ($item){ return $item->id;})->toArray();
         return PendingTask::select(['datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
             ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
             ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
@@ -62,72 +51,23 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                             $query->select('id', 'name');
                         }
                     ]);
-                }
+                },
+                'userStart' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'userEnd' => function ($query) {
+                    $query->select('id', 'name');
+                },
             ))
+            ->whereNotNull('reception_id')
             ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->whereNotIn('vehicle_id', $vehicle_ids)
+       //     ->whereNotIn('vehicle_id', $vehicle_ids)
             ->get();
     }
 
     public function map($data): array
     {
-        /*$array = [];
-        if (count($vehicle->pendingTasks) > 0) {
-            foreach ($vehicle->pendingTasks as $pendingTask) {
-                $line = [
-                    $vehicle->plate,
-                    $pendingTask->reception ? date('d/m/Y', strtotime($pendingTask->reception->created_at)) : null,
-                    $vehicle->kms,
-                    $vehicle->vehicleModel->brand->name ?? null,
-                    $vehicle->vehicleModel->name ?? null,
-                    $vehicle->color->name ?? null,
-                    $pendingTask->task->subState->state->name ?? null,
-                    $pendingTask->task->subState->name ?? null,
-                    $pendingTask->observations,
-                    $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
-                    $vehicle->has_environment_label == true ? 'Si' : 'No',
-                    $pendingTask->campa->name ?? null,
-                    $vehicle->category->name ?? null,
-                    $pendingTask->task->name ?? null,
-                    $pendingTask->statePendingTask->name ?? null,
-                    $pendingTask->datetime_start ? date('d/m/Y H:i:s', strtotime($pendingTask->datetime_start)) : null,
-                    $pendingTask->datetime_finish ? date('d/m/Y H:i:s', strtotime($pendingTask->datetime_finish)) : null,
-                    round(($pendingTask->total_paused / 60), 2),
-                    $vehicle->typeModelOrder->name ?? null,
-                    $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
-                    $pendingTask->estimatedDates?->pluck('estimated_date')->implode(',') ?? null,
-                ];
-                array_push($array, $line);
-            }
-        } else {
-            $line = [
-                $vehicle->plate,
-                $vehicle->lastReception ? date('d/m/Y', strtotime($vehicle->lastReception->created_at)) : null,
-                $vehicle->kms,
-                $vehicle->vehicleModel->brand->name ?? null,
-                $vehicle->vehicleModel->name ?? null,
-                $vehicle->color->name ?? null,
-                $vehicle->subState->state->name ?? null,
-                $vehicle->subState->name ?? null,
-                null,
-                $vehicle->accessoriesTypeAccessory->pluck('name')->implode(', ') ?? null,
-                $vehicle->has_environment_label == true ? 'Si' : 'No',
-                $vehicle->campa->name ?? null,
-                $vehicle->category->name ?? null,
-                $vehicle->task->name ?? null,
-                null,
-                null,
-                null,
-                null,
-                $vehicle->typeModelOrder->name ?? null,
-                $vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
-                null,
-            ];
-            array_push($array, $line);
-        }
-
-        return $array;*/
         $array = [];
         $line = [];
         if ($data->vehicle) {
@@ -149,6 +89,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->state_pending_task_name,
                 $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
+                $data->user_start?->name ?? null,
+                $data->user_end?->name ?? null,
                 round(($data->total_paused / 60), 2),
                 $data->reception?->typeModelOrder?->name,
                 $data->vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($data->vehicle->lastDeliveryVehicle->created_at)) : null,
@@ -179,6 +121,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Estado tarea',
             'Fecha inicio tarea',
             'Fecha fin tarea',
+            'Operario Inicio la Tarea',
+            'Operario Finalizo la Tarea',
             'Tiempo (horas)',
             'Negocio',
             'última salida',

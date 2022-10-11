@@ -66,6 +66,10 @@ class RoleSeeder extends Seeder
             [
                 'id' => 10,
                 'description' => 'Tecnico'
+            ],
+            [
+                'id' => 11,
+                'description' => 'Gestor técnico'
             ]
         ];
     }
