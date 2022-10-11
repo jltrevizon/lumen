@@ -22,4 +22,8 @@ class InvaratOrderController extends Controller
     public function orderFilter(Request $request){
         return $this->getDataResponse($this->invaratOrderRepository->orderFilter($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    public function getVehiclesForIdGspOrder(Request $request){
+        return $this->getDataResponse($this->invaratOrderRepository->getVehiclesForIdGspOrder($request), HttpFoundationResponse::HTTP_OK);
+    }
 }
