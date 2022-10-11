@@ -55,7 +55,7 @@ class GroupTask extends Model
             $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
                 ->orWhereNull('state_pending_task_id');
         })
-        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).')');
+        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).') desc');
         // ->orderBy('state_pending_task_id', 'desc')
         // ->orderBy('order')
         // ->orderBy('datetime_finish', 'desc');
