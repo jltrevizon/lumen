@@ -29,7 +29,7 @@ class InvaratOrderRepository extends Repository
             }
 
             if ($request->input("id_gsp_peritacion") != "") {
-                $order->id_gsp_peritacion =  $request->input("id_gsp_peritacion");
+                $order->id_gsp_peritacion = $request->input("id_gsp_peritacion");
             }
 
             if ($request->input("id_gsp_certificado") != "") {
