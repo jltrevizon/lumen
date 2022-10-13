@@ -14,11 +14,16 @@ class Questionnaire extends Model
     protected $fillable = [
         'user_id',
         'vehicle_id',
+        'reception_id',
         'file'
     ];
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function reception(){
+        return $this->belongsTo(Reception::class);
     }
 
     public function questionAnswers(){

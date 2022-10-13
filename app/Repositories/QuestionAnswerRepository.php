@@ -59,6 +59,8 @@ class QuestionAnswerRepository
 
         if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
             $questionnaire = $this->questionnaireRepository->create($request);
+            $questionnaire->reception_id = $vehicle->lastReception->id;
+            $questionnaire->save();
             $questions = $request->input('questions');
             $has_environment_label = null;
             foreach ($questions as $question) {
