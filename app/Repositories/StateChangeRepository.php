@@ -59,6 +59,7 @@ class StateChangeRepository extends Repository
                     ->where('reception_id', $vehicle->lastReception?->id)
                     ->where('approved', 1)
                     ->where('task_id', Task::TOALQUILADO)
+                    ->where('state_pending_task_id', StatePendingTask::FINISHED)
                     ->get();
                     if (count($pendingTasks) > 0) {
                         $sub_state_id = SubState::ALQUILADO;
