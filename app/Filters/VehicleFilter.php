@@ -213,6 +213,13 @@ class VehicleFilter extends ModelFilter
         });
     }
 
+    public function approvedQuestionnaires($value)
+    {
+        return $this->whereHas('receptions.groupTask', function($query) use ($value) {
+            return $query->where('approved', $value)->where('approved_available', $value); 
+        });
+    }
+
     public function approvedPendingTasksNotNull($value)
     {
         if ($value) {
