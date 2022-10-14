@@ -154,7 +154,6 @@ class AldController extends Controller
                 $vehicle->sub_state_id = SubState::CHECK_BLOCKED;
                 $vehicle->save();
             } else {
-                $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
                 $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             }
             if ($request->input('square_id')) {

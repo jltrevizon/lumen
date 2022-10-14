@@ -117,8 +117,12 @@ class Vehicle extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function questionnaries(){
+        return $this->hasMany(Questionnaire::class);
+    }
+
     public function receptions(){
-        return $this->hasMany(Reception::class);
+        return $this->hasMany(Reception::class)->whereNotNull('group_task_id')->orderBy('id', 'desc');
     }
 
     public function reception(){

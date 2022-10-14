@@ -91,6 +91,13 @@ class DeliveryVehicleRepository extends Repository
         $vehicle->sub_state_id = SubState::CAMPA;
         $vehicle->save();
 
+        $groupTask = $vehicle->lastReception?->groupTask;
+        if (!!$groupTask) {
+            $groupTask->approved_available = 1;
+            $groupTask->approved = 1;
+            $groupTask->save();
+        }
+
         $deliveryVehicle->delete();
         return $deliveryVehicle;
     }

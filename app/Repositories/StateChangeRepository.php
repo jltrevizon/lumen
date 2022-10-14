@@ -37,10 +37,10 @@ class StateChangeRepository extends Repository
             $group_task->approved_available = 1;
             $group_task->approved = 1;
             $group_task->save();
-            
+
             $vehicle = Vehicle::find($vehicle->id);
             $groupTask = $vehicle?->lastGroupTask;
-            
+
             $vehicle->lastReception->group_task_id = $groupTask->id;
             $vehicle->lastReception->save();
 
@@ -56,11 +56,14 @@ class StateChangeRepository extends Repository
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {
                     $pendingTasks = PendingTask::where('vehicle_id', $vehicle->id)
-                    ->where('reception_id', $vehicle->lastReception?->id)
-                    ->where('approved', 1)
-                    ->where('task_id', Task::TOALQUILADO)
-                    ->where('state_pending_task_id', StatePendingTask::FINISHED)
-                    ->get();
+                        ->where('reception_id', $vehicle->lastReception?->id)
+                        ->where('approved', 1)
+                        ->where('task_id', Task::TOALQUILADO)
+                        ->where('state_pending_task_id', StatePendingTask::FINISHED)
+                        ->get();
+
+                    Log::debug($pendingTasks);
+                    
                     if (count($pendingTasks) > 0) {
                         $sub_state_id = SubState::ALQUILADO;
                     } else if ($sub_state_id != SubState::ALQUILADO) {
@@ -69,7 +72,7 @@ class StateChangeRepository extends Repository
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
                     $sub_state_id = $pendingTask->task->sub_state_id;
-                    if ($sub_state_id === SubState::ALQUILADO) {
+                    if ($sub_state_id === SubState::ALQUILADO && $pendingTask->state_pending_task_id === StatePendingTask::FINISHED) {
                         $sub_state_id = SubState::ALQUILADO;
                         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
                         $pendingTask->save();
@@ -143,9 +146,9 @@ class StateChangeRepository extends Repository
         if ($state_id != $vehicle->sub_state?->state_id) {
             $vehicle->last_change_state = Carbon::now();
         }
-        
+
         $vehicle->sub_state_id = $sub_state_id;
-        
+
         $vehicle->save();
 
         $this->store($vehicle->id, $vehicle->sub_state_id);
