@@ -400,6 +400,7 @@ class VehicleRepository extends Repository
         $vehicle->restore();
         $this->finishPendingTaskLastGroupTask($vehicle->id);
         $this->newReception($vehicle->id);
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return $vehicle;
     }
 
