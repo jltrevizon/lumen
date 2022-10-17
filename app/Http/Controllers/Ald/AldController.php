@@ -90,6 +90,7 @@ class AldController extends Controller
             if ($tasksApproved == 0) {
                 $pending_task->order = 1;
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                $pending_task->datetime_pending = date('Y-m-d H:i:s');
             } else {
                 $pending_task->order = $tasksApproved + 1;
             }

@@ -58,7 +58,7 @@ class QuestionAnswerRepository
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
         if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
-            $questionnaire = $this->questionnaireRepository->create($request);
+            $questionnaire = $this->questionnaireRepository->create($vehicle->id);
             $questionnaire->reception_id = $vehicle->lastReception->id;
             $questionnaire->save();
             $questions = $request->input('questions');
@@ -194,7 +194,7 @@ class QuestionAnswerRepository
 
     public function createChecklist($request)
     {
-        $questionnaire = $this->questionnaireRepository->create($request);
+        $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
         $questions = $request->input('questions');
         foreach ($questions as $question) {
             $questionAnswer = new QuestionAnswer();

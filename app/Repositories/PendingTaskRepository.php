@@ -203,6 +203,7 @@ class PendingTaskRepository extends Repository
             if ($nextPendingTask) {
                 $nextPendingTask->order = $oldOrder;
                 $nextPendingTask->state_pending_task_id = StatePendingTask::PENDING;
+                $nextPendingTask->datetime_pending = date('Y-m-d H:i:s');
                 $nextPendingTask->save();
             }
         }
@@ -577,6 +578,7 @@ class PendingTaskRepository extends Repository
                 'campa_id' => $vehicle->campa_id,
                 'group_task_id' => $damage->group_task_id,
                 'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,
+                'datetime_pending' => $orderLastPendingTask > 0 ? null : date('Y-m-d H:i:s'),
                 'damage_id' => $damage->id,
                 'duration' => $task->duration,
                 'order' => $orderLastPendingTask + 1,

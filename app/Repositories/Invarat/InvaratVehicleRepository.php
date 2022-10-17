@@ -67,7 +67,7 @@ class InvaratVehicleRepository extends Repository {
     {
         try{
 
-            $questionnaire = $this->questionnaireRepository->create($request);
+            $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
             $questions = $request->input('questions');
 
             foreach ($questions as $question) {

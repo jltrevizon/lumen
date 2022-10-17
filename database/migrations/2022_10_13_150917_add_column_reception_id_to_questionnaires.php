@@ -15,7 +15,7 @@ class AddColumnReceptionIdToQuestionnaires extends Migration
     {
         Schema::table('questionnaires', function (Blueprint $table) {
             $table->unsignedBigInteger('reception_id')->after('id')->nullable();
-            $table->foreign('reception_id')->references('id')->on('pending_tasks');
+            $table->foreign('reception_id')->references('id')->on('receptions');
         });
     }
 
