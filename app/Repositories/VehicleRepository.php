@@ -400,12 +400,12 @@ class VehicleRepository extends Repository
         }
         $vehicle->restore();
         $this->finishPendingTaskLastGroupTask($vehicle->id);
-        $this->newReception($vehicle->id);
+        $this->newReception($vehicle->id, true);
         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return $vehicle;
     }
 
-    public function newReception($vehicle_id)
+    public function newReception($vehicle_id, $force = false)
     {
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
@@ -413,7 +413,7 @@ class VehicleRepository extends Repository
         $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {
             return $item->id;
         })->toArray();
-        if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
+        if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0 || $force) {
             $reception = new Reception();
         } else {
             $reception = $vehicle->lastReception;
