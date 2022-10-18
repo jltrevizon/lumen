@@ -378,6 +378,7 @@ class VehicleRepository extends Repository
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->deleted_user_id = Auth::id();
         $this->squareRepository->freeSquare($vehicle->id);
+        $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
         $vehicle->save();
         $vehicle->delete();
         return ['message' => 'Vehicle deleted'];
@@ -422,7 +423,7 @@ class VehicleRepository extends Repository
         $reception->finished = false;
         $reception->has_accessories = false;
         $reception->type_model_order_id = $vehicle->type_model_order_id;
-        
+
         $groupTask = $vehicle->lastGroupTask;
 
         if (is_null($groupTask) || ($groupTask->approved && count($groupTask->approvedPendingTasks) === 0 && count($groupTask->pendingTasks) > 0)) {
@@ -438,12 +439,12 @@ class VehicleRepository extends Repository
                 'approved' => true
             ]);
         }
-        
-        $reception->group_task_id = $groupTask->id;        
+
+        $reception->group_task_id = $groupTask->id;
         $reception->save();
 
         $vehicle = Vehicle::find($vehicle_id);
-        
+
 
         return $reception;
     }
@@ -582,13 +583,13 @@ class VehicleRepository extends Repository
                         if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
                             $vehicle->sub_state_id = null;
                         }
-                    
+
                         $vehicle->save();
-                    
+
                         $this->stateChangeRepository->updateSubStateVehicle($vehicle, SubState::ALQUILADO);
-                    
+
                         $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1);
-                    
+
                     } else if ($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT) {
                         $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
                         $vehicle->sub_state_id = $request->input('sub_state_id');
