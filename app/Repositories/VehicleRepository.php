@@ -630,12 +630,12 @@ class VehicleRepository extends Repository
 
     public function defleet($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
+        $reception = Reception::findOrFail($id);
+        $vehicle = $reception->vehicle;
         $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
-        // $vehicle->type_model_order_id = TypeModelOrder::VO;
         $vehicle->save();
-        if ($vehicle->lastUnapprovedGroupTask) {
-            $this->groupTaskRepository->disablePendingTasks($vehicle->lastUnapprovedGroupTask);
+        if (is_null($reception->groupTask->datetime_defleeting)) {
+            $this->groupTaskRepository->disablePendingTasks($reception->groupTask);
         }
         return $vehicle;
     }

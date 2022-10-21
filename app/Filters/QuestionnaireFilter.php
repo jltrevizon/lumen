@@ -27,6 +27,33 @@ class QuestionnaireFilter extends ModelFilter
         return $this->orderBy($field);
     }
 
+    public function receptionNull($value) {
+        if ($value) {
+            return $this->whereNull('reception_id');
+        }
+        return $this->whereNotNull('reception_id');
+    }
+
+    public function approvedGroupTask($value) {
+        return $this->whereHas('reception.groupTask', function ($query) use ($value) {
+            return $query->where('approved_available', $value)->where('approved', $value);
+        });
+    }
+
+    public function isDefleeting($value) {
+        return $this->whereHas('reception.groupTask', function ($query) use ($value) {
+            if ($value) {
+                return $query->whereNotNull('datetime_defleeting');
+            }
+            return $query->whereNull('datetime_defleeting');
+        });
+    }
+
+    public function vehiclePlate($plate) {
+        return $this->whereHas('vehicle', function ($query) use ($plate) {
+            return $query->where('plate','like',"%$plate%");
+        });
+    }
 
     /**
     * Related Models that have ModelFilters as well as the method on the ModelFilter
