@@ -34,6 +34,16 @@ class ReceptionFilter extends ModelFilter
         return $this->whereDate('created_at', $date);
     }
 
+    public function createdAtFrom($dateTime)
+    {
+        return $this->where('created_at','>=', $dateTime);
+    }
+
+    public function createdAtTo($dateTime)
+    {
+        return $this->where('created_at','<=', $dateTime);
+    }
+
     public function brandIds($ids)
     {
         return $this->whereHas('vehicle.vehicleModel', function ($query) use ($ids) {

@@ -214,14 +214,14 @@ class VehicleFilter extends ModelFilter
     public function lastReceptionCreatedAtFrom($dateTime)
     {
         return $this->whereHas('lastReception', function ($query) use ($dateTime) {
-            return $query->whereDate('created_at', '>=', $dateTime);
+            return $query->where('created_at', '>=', $dateTime);
         });
     }
 
     public function lastReceptionCreatedAtTo($dateTime)
     {
         return $this->whereHas('lastReception', function ($query) use ($dateTime) {
-            return $query->whereDate('created_at', '<=', $dateTime);
+            return $query->where('created_at', '<=', $dateTime);
         });
     }
 
@@ -262,12 +262,12 @@ class VehicleFilter extends ModelFilter
     {
         if ($value) {
             $sql = <<<SQL
-                select pt.task_id 
-                from pending_tasks pt 
-                WHERE pt.state_pending_task_id <> 3 
-                AND pt.approved = 1 
-                AND pt.vehicle_id = vehicles.id 
-                ORDER BY pt.state_pending_task_id DESC, pt.order, pt.datetime_finish DESC 
+                select pt.task_id
+                from pending_tasks pt
+                WHERE pt.state_pending_task_id <> 3
+                AND pt.approved = 1
+                AND pt.vehicle_id = vehicles.id
+                ORDER BY pt.state_pending_task_id DESC, pt.order, pt.datetime_finish DESC
                 limit 1
             SQL;
             return $this->selectRaw('*,(' . $sql . ') as task_id')

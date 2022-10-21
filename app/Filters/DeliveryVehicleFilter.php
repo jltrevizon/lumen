@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Filters;
 
@@ -34,12 +34,12 @@ class DeliveryVehicleFilter extends ModelFilter
 
     public function createdAtFrom($dateTime)
     {
-        return $this->whereDate('created_at','>=', $dateTime);
+        return $this->where('created_at','>=', $dateTime);
     }
 
     public function createdAtTo($dateTime)
     {
-        return $this->whereDate('created_at','<=', $dateTime);
+        return $this->where('created_at','<=', $dateTime);
     }
 
     public function vehicleDeleted($value){
@@ -71,7 +71,7 @@ class DeliveryVehicleFilter extends ModelFilter
 
     public function notNullId($value){
         return $this->whereNotNull('delivery_note_id');
-    }   
+    }
 
     public function deletedAt($value){
         if ($value == 1) {
@@ -81,11 +81,11 @@ class DeliveryVehicleFilter extends ModelFilter
         } else {
             return $this->withTrashed()->whereNull('deleted_at');
         }
-    }   
+    }
 
     public function deliveryNoteIds($ids){
         return $this->whereIn('delivery_note_id', $ids);
-    }    
+    }
 
     public function orderDesc($field){
         return $this->orderByDesc($field);
