@@ -24,6 +24,13 @@ class ReceptionFilter extends ModelFilter
         });
     }
 
+    public function hasApprovedGroup($value)
+    {
+        return $this->whereHas('groupTask', function ($query) use ($value) {
+            return $query->where('approved', $value);
+        });
+    }
+
     public function finished($value)
     {
         return $this->where('finished', $value);

@@ -40,6 +40,22 @@ class Reception extends Model
         return $this->hasMany(Accessory::class);
     }
 
+    public function pendingTasks() {
+        return $this->hasMany(PendingTask::class);
+    }
+
+    public function approvedPendingTasks() {
+        return $this->hasMany(PendingTask::class, 'reception_id')
+        ->where('approved', true)
+        ->where(function ($query) {
+            $query->whereNotIn('state_pending_task_id',[StatePendingTask::FINISHED, StatePendingTask::CANCELED])
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->orderBy('state_pending_task_id', 'desc')
+        ->orderBy('order')
+        ->orderBy('datetime_finish', 'desc');
+    }
+
     public function vehiclePictures(){
         return $this->hasMany(VehiclePicture::class);
     }

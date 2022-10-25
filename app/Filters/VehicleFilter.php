@@ -325,4 +325,31 @@ class VehicleFilter extends ModelFilter
     {
         return $this->orderBy($field);
     }
+
+    public function withUbication()
+    {
+        return $this->with(array(
+            'square' => function ($query) {
+                $query->select('vehicle_id', 'id', 'street_id', 'name')
+                    ->with(array(
+                        'street' => function ($query) {
+                            $query->select('id', 'name', 'zone_id')
+                                ->with(array(
+                                    'zone' => function ($query) {
+                                        $query->select('id', 'name');
+                                    }
+                                ));
+                        }
+                    ));
+            }
+        ));
+    }
+
+    public function hasLastReceptionApprovedGroup($value)
+    {
+        return $this->whereHas('lastReception.groupTask', function ($query) use ($value) {
+            return $query->where('approved', $value)
+            ->where('approved_available', $value);
+        });
+    }
 }
