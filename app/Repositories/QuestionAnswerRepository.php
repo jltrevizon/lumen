@@ -163,7 +163,6 @@ class QuestionAnswerRepository
             $this->vehicleRepository->updateBack($request);
     
             $vehicle = Vehicle::find($request->input('vehicle_id'));
-            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
             $vehicle->has_environment_label = $has_environment_label;
             $vehicle->save();
         } else if ($vehicle->lastReception) {
@@ -171,6 +170,8 @@ class QuestionAnswerRepository
             $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
             $vehicle->lastReception->save();
         }
+
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
 
         $pictures = $request->input('pictures') ?? [];
 
