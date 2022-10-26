@@ -28,7 +28,6 @@ class QuestionRepository extends Repository {
 
     public function filter($request){
         return Question::with($this->getWiths($request->with))
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->filter($request->all())
             ->paginate($request->input('per_page'));
     }
