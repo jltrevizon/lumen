@@ -3,8 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Questionnaire;
+use App\Models\Vehicle;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class QuestionnaireRepository extends Repository {
 
@@ -19,11 +21,13 @@ class QuestionnaireRepository extends Repository {
             ->paginate($request->input('per_page'));
     }
 
-    public function create($request){
-        $questionnaire = Questionnaire::create($request->all());
-        $questionnaire->user_id = Auth::id();
-        $questionnaire->save();
-        return $questionnaire;
+    public function create($vehicleId){
+        $vehicle = Vehicle::findOrFail($vehicleId);
+        return  Questionnaire::create([
+            'user_id' => Auth::id(),
+            'vehicle_id' => $vehicle->id,
+            'reception_id' =>  $vehicle->lastReception->id
+        ]);
     }
 
     public function getById($request, $id){

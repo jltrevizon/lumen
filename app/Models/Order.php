@@ -17,7 +17,13 @@ class Order extends Model
         'workshop_id',
         'state_id',
         'type_model_order_id',
-        'id_gsp'
+        'id_gsp',
+        'id_gsp_peritacion',
+        'id_gsp_certificado',
+        'fx_entrada',
+        'fx_fallo_check',
+        'fx_first_budget',
+        'fx_prevista_reparacion',
     ];
 
     public function vehicle(){

@@ -19,7 +19,8 @@ class VehicleExit extends Model
         'delivery_to',
         'name_place',
         'is_rolling',
-        'date_delivery'
+        'date_delivery',
+        'canceled_by'
     ];
 
     public function vehicle(){

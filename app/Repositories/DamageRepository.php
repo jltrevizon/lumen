@@ -58,7 +58,6 @@ class DamageRepository extends Repository {
             $isDamageTask = true;
         }
 
-        $vehicle = $this->vehicleRepository->pendingOrInProgress($request->input('vehicle_id'));
         if($isDamageTask) { 
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);         
         }

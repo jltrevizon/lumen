@@ -29,7 +29,6 @@ use App\Repositories\CampaRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use SebastianBergmann\Environment\Console;
 
 class VehicleRepository extends Repository
 {
@@ -49,7 +48,8 @@ class VehicleRepository extends Repository
         DeliveryNoteRepository $deliveryNoteRepository,
         SquareRepository $squareRepository,
         StateChangeRepository $stateChangeRepository,
-        HistoryLocationRepository $historyLocationRepository
+        HistoryLocationRepository $historyLocationRepository,
+        VehiclePictureRepository $vehiclePictureRepository
     ) {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -66,6 +66,7 @@ class VehicleRepository extends Repository
         $this->deliveryNoteRepository = $deliveryNoteRepository;
         $this->stateChangeRepository = $stateChangeRepository;
         $this->historyLocationRepository = $historyLocationRepository;
+        $this->vehiclePictureRepository = $vehiclePictureRepository;
     }
 
     public function getAll($request)
@@ -313,8 +314,8 @@ class VehicleRepository extends Repository
     public function verifyPlate($request)
     {
         $vehicle = Vehicle::with($this->getWiths($request->with))
-        ->filter($request->all())
-        ->first();;
+            ->filter($request->all())
+            ->first();;
 
         $vehicleDefleet = Vehicle::where('id', $vehicle?->id)
             ->byPendingRequestDefleet()
@@ -322,10 +323,12 @@ class VehicleRepository extends Repository
 
         $defleetingAndDelivery = Vehicle::where('id', $vehicle?->id)->filter(['defleetingAndDelivery' => 0])->first();
 
+        $order_tasks = PendingTask::ORDER_TASKS;
+
         if ($vehicleDefleet) {
-            return ['vehicle' => $vehicle, 'defleet' => true, 'vehicle_delivery' => $defleetingAndDelivery];
+            return ['vehicle' => $vehicle, 'defleet' => true, 'vehicle_delivery' => $defleetingAndDelivery, 'order_tasks' => $order_tasks];
         } else if ($vehicle) {
-            return ['vehicle' => $vehicle, 'registered' => true, 'vehicle_delivery' => $defleetingAndDelivery];
+            return ['vehicle' => $vehicle, 'registered' => true, 'vehicle_delivery' => $defleetingAndDelivery, 'order_tasks' => $order_tasks];
         }
         return ['registered' => false];
     }
@@ -375,6 +378,7 @@ class VehicleRepository extends Repository
         $vehicle = Vehicle::findOrFail($id);
         $vehicle->deleted_user_id = Auth::id();
         $this->squareRepository->freeSquare($vehicle->id);
+        $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
         $vehicle->save();
         $vehicle->delete();
         return ['message' => 'Vehicle deleted'];
@@ -385,7 +389,6 @@ class VehicleRepository extends Repository
         $vehicle = Vehicle::where('id', $id)->withTrashed()->first();
         $vehicle->deleted_user_id = Auth::id();
         $vehicle->deleted_at = null;
-        $vehicle->sub_state_id = null;
         $vehicle->update($request->all());
         $user = Auth::user();
         if (is_null($vehicle->campa_id)) {
@@ -397,44 +400,52 @@ class VehicleRepository extends Repository
         }
         $vehicle->restore();
         $this->finishPendingTaskLastGroupTask($vehicle->id);
-        $this->newReception($vehicle->id);
+        $this->newReception($vehicle->id, true);
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return $vehicle;
     }
 
-    public function newReception($vehicle_id, $group_task_id = null, $approved = true)
+    public function newReception($vehicle_id, $force = false)
     {
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
-        
-        $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {return $item->id;})->toArray();
-        Log::debug($vehicle_ids);
-        if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0) {
+
+        $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {
+            return $item->id;
+        })->toArray();
+        if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0 || $force) {
             $reception = new Reception();
         } else {
             $reception = $vehicle->lastReception;
-        } 
-
-        if (is_null($group_task_id)) {
-            $group_task = $this->groupTaskRepository->create([
-                'vehicle_id' => $vehicle_id,
-                'approved_available' => $approved,
-                'approved' => $approved
-            ]);
-            $group_task_id = $group_task->id;
-        } else {
-            if ($vehicle->lastGroupTask && count($vehicle->lastGroupTask->allApprovedPendingTasks) > 0) {
-                $reception->created_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->created_at;
-                $reception->updated_at = $vehicle->lastGroupTask->allApprovedPendingTasks[0]->updated_at;
-            }
         }
-
-        $reception->group_task_id = $group_task_id;
         $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
         $reception->has_accessories = false;
         $reception->type_model_order_id = $vehicle->type_model_order_id;
+
+        $groupTask = $vehicle->lastGroupTask;
+
+        if (is_null($groupTask) || ($groupTask->approved && count($groupTask->approvedPendingTasks) === 0 && count($groupTask->pendingTasks) > 0)) {
+            Log::debug([
+                'vehicle' => $vehicle->id,
+                'text' => 'SE CREO EL GRUPO ' . $groupTask?->id,
+                'approvedPendingTasks' => count($groupTask?->approvedPendingTasks ?? []),
+                'pendingTasks' => count($groupTask?->pendingTasks ?? [])
+            ]);
+            $groupTask = $this->groupTaskRepository->create([
+                'vehicle_id' => $vehicle_id,
+                'approved_available' => true,
+                'approved' => true
+            ]);
+        }
+
+        $reception->group_task_id = $groupTask->id;
         $reception->save();
+
+        $vehicle = Vehicle::find($vehicle_id);
+
+
         return $reception;
     }
 
@@ -564,31 +575,22 @@ class VehicleRepository extends Repository
                                     $pending_task->user_end_id = Auth::id();
                                 }
                                 $pending_task->save();
-                                $reception = $pending_task->reception;
-                                if (!is_null($reception)) {
-                                    $reception->finished = 1;
-                                    $reception->save();
-                                }
                             }
                         }
-                        $hasLastGroupTask = $vehicle->lastReception?->groupTask?->id ?? null;
-                        if (!$hasLastGroupTask) {
-                            $reception = $this->newReception($vehicle->id);
-                            $hasLastGroupTask = $reception->groupTask->id;
-                        }
-                        $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1, $hasLastGroupTask);
-                        $reception = $vehicle->lastReception;
-                        if ($reception) {
-                            $reception->finished = true;
-                            $reception->save();
+                        if (is_null($vehicle->lastReception)) {
+                            $this->newReception($vehicle['id']);
                         }
                         if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
                             $vehicle->sub_state_id = null;
                         }
+
                         $vehicle->save();
+
                         $this->stateChangeRepository->updateSubStateVehicle($vehicle, SubState::ALQUILADO);
-                    }
-                    if ($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT) {
+
+                        $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id, $count + 1);
+
+                    } else if ($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT) {
                         $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
                         $vehicle->sub_state_id = $request->input('sub_state_id');
                         $vehicle->save();
@@ -626,43 +628,14 @@ class VehicleRepository extends Repository
         return response()->json(['message' => 'Done!']);
     }
 
-    public function setSubStateNull($request)
-    {
-        $plates = $request->get('plates');
-        foreach ($plates as $plate) {
-            $vehicle = Vehicle::where('plate', $plate)->first();
-            if ($vehicle) {
-                $vehicle->sub_state_id = null;
-                $vehicle->save();
-                $this->deletePendingTasks($vehicle->id);
-            }
-        }
-    }
-
-    private function deletePendingTasks($vehicleId)
-    {
-        PendingTask::where('vehicle_id', $vehicleId)
-            ->where('approved', true)
-            ->where(function ($query) {
-                return $query->where('state_pending_task_id', StatePendingTask::PENDING)
-                    ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
-                    ->orWhereNull('state_pending_task_id');
-            })
-            ->chunk(200, function ($pendingTasks) {
-                foreach ($pendingTasks as $pendingTask) {
-                    $pendingTask->update(['approved' => false]);
-                }
-            });
-    }
-
     public function defleet($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
+        $reception = Reception::findOrFail($id);
+        $vehicle = $reception->vehicle;
         $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
-        // $vehicle->type_model_order_id = TypeModelOrder::VO;
         $vehicle->save();
-        if ($vehicle->lastUnapprovedGroupTask) {
-            $this->groupTaskRepository->disablePendingTasks($vehicle->lastUnapprovedGroupTask);
+        if (is_null($reception->groupTask->datetime_defleeting)) {
+            $this->groupTaskRepository->disablePendingTasks($reception->groupTask);
         }
         return $vehicle;
     }
@@ -708,23 +681,15 @@ class VehicleRepository extends Repository
     public function lastGroupTasks($request)
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        if ($vehicle->lastReception?->group_task_id < $vehicle->lastGroupTask?->id) {
-            $value = [
-                'fix' => 'ESTA RECEPCION ESTA EN UN GRUPO ANTERIOR',
-                'last_reception_group_id' => $vehicle->lastReception?->group_task_id,
-                'last_group_id' => $vehicle->lastGroupTask?->id,
-                'count_reception_approved_pending_tasks' => count($vehicle->lastReception?->groupTask?->approvedPendingTasks ?? []),
-                'count_last_group_task_approved_pending_tasks' => count($vehicle->lastGroupTask?->approvedPendingTasks ?? [])
-            ];
-            if ($value['count_reception_approved_pending_tasks'] === 0) {
-                $this->newReception($vehicle->id, $vehicle->lastGroupTask?->id);
-                $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-            }
+        if ($vehicle->lastReception && is_null($vehicle->lastReception->group_task_id) && $vehicle->lastGroupTask) {
+            $vehicle->lastReception->group_task_id = $vehicle->lastGroupTask->id;
+            $vehicle->lastReception->save();
         }
+        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         return Vehicle::with(array_merge($this->getWiths($request->with), ['allApprovedPendingTasks' => function ($query) use ($vehicle) {
             return $query
-                ->where('group_task_id', '=', $vehicle->lastReception?->group_task_id)
-                // ->where('created_at', '>=', $vehicle->lastReception->created_at ?? Carbon::now())
+                ->where('reception_id', $vehicle->lastReception?->id)
+                ->orderBy('group_task_id', 'desc')
                 ->orderBy('id', 'desc')
                 ->orderBy('created_at', 'desc');
         }]))

@@ -21,19 +21,15 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
 
     public function collection()
     {
-        if($this->campaId == 3) {
-            return Vehicle::where('campa_id', $this->campaId)
-                ->whereRaw('(sub_state_id is null or sub_state_id != '.SubState::ALQUILADO.')')
-                ->filter([ 'defleetingAndDelivery' => 1 ])
-                ->get();
-        } if($this->campaId == null) {
-            return Vehicle::where('sub_state_id', '!=', SubState::ALQUILADO)
-            ->filter([ 'defleetingAndDelivery' => 1 ])
+        $ids = collect(SubState::where('id', '<>', SubState::ALQUILADO)->get())->map(function ($item){ return $item->id;})->toArray();
+        $filter = array_merge([ 'defleetingAndDelivery' => 1, 'subStates' => array_merge($ids, [null]) ]);
+        if($this->campaId == null) {
+            return Vehicle::whereIn('sub_state_id', $ids)
+            ->filter($filter)
             ->get();
         } else {
             return Vehicle::where('campa_id', $this->campaId)
-                    ->where('sub_state_id', '!=', SubState::ALQUILADO)
-                    ->filter([ 'defleetingAndDelivery' => 1 ])
+                    ->filter($filter)
                     ->get();
         }
     }
@@ -64,7 +60,6 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             $pendingTask->statePendingTask->name ?? null,
             $pendingTask?->datetime_start ? $this->fixTime($vehicle->lastGroupTask?->lastPendingTaskWithState->datetime_start ?? null) : null,
             $vehicle->square && $vehicle->square->street && $vehicle->square->street->zone ? ($vehicle->square->street->zone->name . ' ' . $vehicle->square->street->name . ' ' . $vehicle->square->name) : null,
-            // $vehicle->lastDeliveryVehicle ? ($vehicle->sub_state_id == SubState::ALQUILADO ? date('d/m/Y', strtotime($this->fixTime($vehicle->lastDeliveryVehicle->created_at ?? null))) : null) : null,
             $pendingTask?->observations ?? null
         ];
     }
@@ -101,7 +96,6 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
             'Estado',
             'Fecha Inicio Tarea',
             'Ubicación',
-            // 'Fecha de Salida',
             'Observaciones'
         ];
     }

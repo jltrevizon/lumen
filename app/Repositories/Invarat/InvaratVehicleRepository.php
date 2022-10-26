@@ -3,6 +3,7 @@
 namespace App\Repositories\Invarat;
 
 use App\Models\Company;
+use App\Models\Order;
 use App\Models\QuestionAnswer;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
@@ -14,6 +15,7 @@ use App\Repositories\Repository;
 use App\Repositories\VehicleModelRepository;
 use App\Repositories\VehicleRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class InvaratVehicleRepository extends Repository {
@@ -65,7 +67,7 @@ class InvaratVehicleRepository extends Repository {
     {
         try{
 
-            $questionnaire = $this->questionnaireRepository->create($request);
+            $questionnaire = $this->questionnaireRepository->create($request->input('vehicle_id'));
             $questions = $request->input('questions');
 
             foreach ($questions as $question) {
@@ -90,4 +92,102 @@ class InvaratVehicleRepository extends Repository {
         }
     }
 
+
+    public function getVehicleResults($request){
+
+        $service = $request->service;
+
+        $vehicles = DB::select(
+            DB::raw('
+            select
+				a.id,
+				count(*) as cantidad,
+				c.`name` as service_name,
+                c.id as type_model_order_id,
+                d.id as sub_state_id,
+				f.`name` as task_name,
+                (
+                    CASE
+                        WHEN DATEDIFF((SELECT max(datetime_start) from pending_tasks e where e.state_pending_task_id = 2 and e.vehicle_id = a.id), now()) > -9 THEN "1"
+                        WHEN DATEDIFF((SELECT max(datetime_start) from pending_tasks e where e.state_pending_task_id = 2 and e.vehicle_id = a.id), now()) < -9 THEN "2"
+                        ELSE "3"
+                    END
+                ) AS total
+                from vehicles a,type_model_orders c, sub_states d, states f
+                where a.type_model_order_id = c.id
+                and a.sub_state_id = d.id
+                and d.state_id = f.id
+                and a.company_id = 2
+                and a.type_model_order_id = :service
+                and (SELECT max(e.id) from pending_tasks e where e.state_pending_task_id != 3 and e.vehicle_id = a.id) > 0
+                GROUP BY a.id,a.sub_state_id, total
+                ORDER BY total DESC'
+            ), array('service' => $service)
+        );
+
+        return $vehicles;
+
+    }
+
+    public function getVehicleDetails($request){
+
+        $tiempo = $request->tiempo;
+        $v_compare = -9;
+
+        if($tiempo == "1"){
+            $t_compare = '>';
+        }else{
+            $t_compare = '<';
+        }
+
+
+        $vehicles = DB::select(
+            DB::raw('
+            select
+                a.plate as matricula,
+                c.`name` as canal,
+                e.`name` as modelo,
+                f.`name` as ubicación,
+                h.fx_entrada as fecha_entrada,
+                h.fx_fallo_check as fecha_fallo_check,
+                (SELECT max(g.comment_state) from pending_tasks g where g.state_pending_task_id != 3 and g.vehicle_id = a.id) as observaciones
+            from vehicles a, type_model_orders c, sub_states d, vehicle_models e, campas f, states g, orders h
+            where a.type_model_order_id = c.id
+            and a.sub_state_id = d.id
+            and a.vehicle_model_id = e.id
+            and a.campa_id = f.id
+            and d.state_id = g.id
+            and a.id = h.vehicle_id
+            and a.company_id = 2
+            and g.`name` = :sub_state
+            and a.type_model_order_id = :type_model
+            and (SELECT max(e.id) from pending_tasks e where e.state_pending_task_id != 3 and e.vehicle_id = a.id) > 0
+            and (DATEDIFF((SELECT max(datetime_start) from pending_tasks e where e.state_pending_task_id = 2 and e.vehicle_id = a.id), now()))
+            '.$t_compare.' :t_compare'
+            ), array(
+                't_compare' => $v_compare,
+                'sub_state' => $request->sub_state_id,
+                'type_model' => $request->type_model_order_id
+            )
+        );
+
+
+        return $vehicles;
+
+    }
+
+    public function update($request, $id)
+    {
+
+
+        $vehicle = Vehicle::findOrFail($id);
+        $order= Order::where("vehicle_id",$id)->first();
+
+        $order->fx_entrada = $request->fx_entrada != "" ? $request->fx_entrada : null;
+        $order->fx_first_budget = $request->fx_first_budget != "" ? $request->fx_first_budget : null ;
+        $order->fx_prevista_reparacion = $request->fx_prevista_reparacion != "" ? $request->fx_prevista_reparacion : null ;
+        $order->save();
+
+        return $vehicle->update($request->all());
+    }
 }

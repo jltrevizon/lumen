@@ -17,7 +17,8 @@ class GroupTask extends Model
     protected $fillable = [
         'vehicle_id',
         'questionnaire_id',
-        'approved'
+        'approved',
+        'approved_available'
     ];
 
     public function pendingTasks(){
@@ -39,7 +40,7 @@ class GroupTask extends Model
         return $this->hasMany(PendingTask::class, 'group_task_id')
         ->where('approved', true)
         ->where(function ($query) {
-            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
+            $query->whereNotIn('state_pending_task_id',[StatePendingTask::FINISHED, StatePendingTask::CANCELED])
                 ->orWhereNull('state_pending_task_id');
         })
         ->orderBy('state_pending_task_id', 'desc')
@@ -54,7 +55,7 @@ class GroupTask extends Model
             $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
                 ->orWhereNull('state_pending_task_id');
         })
-        ->orderByRaw('FIELD(task_id,39, 11, 2, 3, 4, 41, 5, 6, 7, 8)');
+        ->orderByRaw('FIELD(task_id,'.implode(','.PendingTask::ORDER_TASKS).') desc');
         // ->orderBy('state_pending_task_id', 'desc')
         // ->orderBy('order')
         // ->orderBy('datetime_finish', 'desc');

@@ -3,37 +3,28 @@
 namespace App\Exports;
 
 use App\Models\DeliveryVehicle;
-use App\Models\Reception;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
-    public function __construct($campaId)
-    {   
-        $this->campaId = $campaId;
+    public function __construct($params)
+    {
+        $this->params = $params;
     }
 
     public function collection()
     {
-        if($this->campaId == null) {
-            return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
-                ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-                ->get();
-        } else {
-            return DeliveryVehicle::whereDate('created_at', date('Y-m-d'))
-                ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-                ->where('campa_id', $this->campaId)
-                ->get();
-        }
+        return DeliveryVehicle::filter($this->params)->get();
     }
 
     public function map($deliveryVehicle): array
     {
         $data = json_decode($deliveryVehicle->data_delivery);
         return [
-            date('d/m/Y'),
+            $this->fixTime($deliveryVehicle->created_at),
             $deliveryVehicle->campa->name ?? null,
             $deliveryVehicle->vehicle->typeModelOrder->name ?? null,
             $deliveryVehicle->vehicle->vin ?? null,
@@ -48,12 +39,19 @@ class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeading
         ];
     }
 
+    public function fixTime($date) {
+        if ($date) {
+            return (new  Carbon($date))->addHours(2)->format('d/m/Y H:m:i');
+        }
+        return $date;
+    }
+
     public function headings(): array
     {
         return [
-            'Fecha',
+            'Entregado',
             'Campa',
-            'cliente',
+            'Negocio',
             'Chasis',
             'Matrícula',
             'Marca',

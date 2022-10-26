@@ -25,7 +25,7 @@ class PendingTaskFilter extends ModelFilter
 
     public function campasIds($campasIds)
     {
-        return $this->whereHas('vehicle', function(Builder $builder) use($campasIds){
+        return $this->whereHas('reception', function(Builder $builder) use($campasIds){
             $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0); 
             if (count($ids) == count($campasIds)) {
                 return $builder->whereIn('campa_id', $ids);
@@ -67,6 +67,14 @@ class PendingTaskFilter extends ModelFilter
         return $this->whereHas('vehicle', function(Builder $builder) use($plate){
             return $builder->where('plate','like',"%$plate%");
         });
+    }
+
+    public function receptionNull($value)
+    {
+        if ($value) {
+            return $this->whereNull('reception_id');
+        }
+        return $this->whereNotNull('reception_id');
     }
 
     public function createdAt($dateTime)

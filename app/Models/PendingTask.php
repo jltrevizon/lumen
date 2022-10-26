@@ -14,8 +14,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PendingTask extends Model
 {
-
     use HasFactory, Filterable;
+
+    const ORDER_TASKS = [39, 11, 2, 3, 4, 41, 5, 6, 7, 8]; 
 
     protected $fillable = [
         'vehicle_id',
@@ -54,6 +55,12 @@ class PendingTask extends Model
 
     public function reception(){
         return $this->belongsTo(Reception::class);
+    }
+
+    public function lastDeliveryVehicle(){
+        return $this->hasOne(DeliveryVehicle::class)->withTrashed()->ofMany([
+            'pending_task_id' => 'max'
+        ]);
     }
 
     public function questionAnswer(){

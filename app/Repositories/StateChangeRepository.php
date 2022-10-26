@@ -2,12 +2,15 @@
 
 namespace App\Repositories;
 
+use App\Models\GroupTask;
 use App\Models\PendingTask;
+use App\Models\Reception;
 use App\Models\SubStateChangeHistory;
 use App\Models\StateChange;
 use App\Models\SubState;
 use App\Models\State;
 use App\Models\StatePendingTask;
+use App\Models\Task;
 use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -20,37 +23,67 @@ class StateChangeRepository extends Repository
     public function updateSubStateVehicle($vehicle, $param_sub_state_id = null, $force_sub_state_id = null)
     {
         $vehicle = Vehicle::find($vehicle->id);
+        $groupTask = $vehicle?->lastReception?->groupTask;
+        if (!$vehicle?->lastReception?->group_task_id && $vehicle->lastGroupTask) {
+            $reception = Reception::find($vehicle->lastReception->id);
+            $reception->group_task_id = $vehicle->lastGroupTask->id;
+            $reception->save();
+            $vehicle = Vehicle::find($vehicle->id);
+            $groupTask = $vehicle?->lastReception?->groupTask;
+        } else if (!$vehicle?->lastReception?->group_task_id) {
+            $group_task = new GroupTask();
+            $group_task->vehicle_id = $vehicle->id;
+            $group_task->questionnaire_id = null;
+            $group_task->approved_available = 1;
+            $group_task->approved = 1;
+            $group_task->save();
+
+            $vehicle = Vehicle::find($vehicle->id);
+            $groupTask = $vehicle?->lastGroupTask;
+
+            $vehicle->lastReception->group_task_id = $groupTask->id;
+            $vehicle->lastReception->save();
+
+            $vehicle = Vehicle::find($vehicle->id);
+            $groupTask = $vehicle?->lastReception?->groupTask;
+        }
+
         $sub_state_id = $vehicle->sub_state_id;
-        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::WORKSHOP_EXTERNAL && $sub_state_id !== SubState::TRANSIT) {
-            if (is_null($vehicle->lastGroupTask)) {
-                $sub_state_id = null;
-            } else {
-                $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
+
+        if (!is_null($vehicle) && $sub_state_id !== SubState::SOLICITUD_DEFLEET && $sub_state_id !== SubState::WORKSHOP_EXTERNAL) {
+            if (!is_null($groupTask)) {
+                $approvedPendingTasks = $groupTask->approvedPendingTasks;
                 $count = count($approvedPendingTasks);
                 if ($count === 0) {
-                    if ($sub_state_id != SubState::ALQUILADO) {
-                        $sub_state_id = SubState::CAMPA;
+                    $pendingTasks = PendingTask::where('vehicle_id', $vehicle->id)
+                        ->where('reception_id', $vehicle->lastReception?->id)
+                        ->where('approved', 1)
+                        ->where('task_id', Task::TOALQUILADO)
+                        ->where('state_pending_task_id', StatePendingTask::FINISHED)
+                        ->get();
+
+                    Log::debug($pendingTasks);
+                    
+                    if (count($pendingTasks) > 0) {
+                        $sub_state_id = SubState::ALQUILADO;
+                    } else if ($sub_state_id != SubState::ALQUILADO) {
+                        $sub_state_id = $param_sub_state_id ?? SubState::CAMPA;
                     }
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
                     $sub_state_id = $pendingTask->task->sub_state_id;
-                    if ($sub_state_id === SubState::ALQUILADO) {
+                    if ($sub_state_id === SubState::ALQUILADO && $pendingTask->state_pending_task_id === StatePendingTask::FINISHED) {
                         $sub_state_id = SubState::ALQUILADO;
                         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
                         $pendingTask->save();
-                    } else if (!$vehicle->lastGroupTask->approved && !$vehicle->lastGroupTask->approved_available) {
+                    } else if (!$groupTask->approved && !$groupTask->approved_available) {
                         $sub_state_id = SubState::CHECK;
                     }
                 }
             }
-        } else if ($sub_state_id == SubState::SOLICITUD_DEFLEET && !is_null($vehicle->lastGroupTask)) {
-            $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
+        } else if ($sub_state_id == SubState::SOLICITUD_DEFLEET && !is_null($groupTask)) {
+            $approvedPendingTasks = $groupTask->approvedPendingTasks;
             $count = count($approvedPendingTasks);
-            Log::debug([
-                'bug' => $sub_state_id,
-                'Bug2' => $param_sub_state_id,
-                'count' => $count
-            ]);
             if ($count > 0) {
                 foreach ($approvedPendingTasks as $key => $pendingTask) {
                     if ($param_sub_state_id === SubState::ALQUILADO) {
@@ -68,7 +101,7 @@ class StateChangeRepository extends Repository
             }
         }
 
-        if (!is_null($vehicle->lastGroupTask)) {
+        if (!is_null($groupTask)) {
             $currentPendingTask = null;
             $lastPendingTask = null;
             $approvedPendingTasks = $vehicle->lastGroupTask->approvedPendingTasks;
@@ -99,20 +132,23 @@ class StateChangeRepository extends Repository
             Log::debug('Bug: vehicle ' . $vehicle->id . ' Sin grupo de tareas');
         }
 
+        if ($force_sub_state_id) {
+            $sub_state_id = $force_sub_state_id;
+        }
+
         if ($sub_state_id != $vehicle->sub_state_id) {
             $vehicle->last_change_sub_state = Carbon::now();
         }
 
-        $state_id = SubState::find($sub_state_id)->state_id;
+        $subState = SubState::find($sub_state_id);
+
+        $state_id = $subState?->state_id ?? null;
         if ($state_id != $vehicle->sub_state?->state_id) {
             $vehicle->last_change_state = Carbon::now();
         }
 
-        if ($force_sub_state_id) {
-            $vehicle->sub_state_id = $force_sub_state_id;
-        } else {
-            $vehicle->sub_state_id = $sub_state_id;
-        }
+        $vehicle->sub_state_id = $sub_state_id;
+
         $vehicle->save();
 
         $this->store($vehicle->id, $vehicle->sub_state_id);

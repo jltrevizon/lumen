@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Filters;
 
@@ -26,6 +26,16 @@ class VehicleExitFilter extends ModelFilter
 
     public function createdAt($date){
         return $this->whereDate('created_at', $date);
+    }
+
+    public function createdAtFrom($dateTime)
+    {
+        return $this->where('created_at','>=', $dateTime);
+    }
+
+    public function createdAtTo($dateTime)
+    {
+        return $this->where('created_at','<=', $dateTime);
     }
 
     public function vehiclePlate($plate){

@@ -26,11 +26,15 @@ class VehiclePictureController extends Controller
             'longitude' => 'required|string'
         ]);
 
-        return $this->getDataResponse($this->vehiclePictureRepository->create($request), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($this->vehiclePictureRepository->create($request->all()), HttpFoundationResponse::HTTP_OK);
     }
 
     public function delete($id){
         return $this->deleteDataResponse($this->vehiclePictureRepository->delete($id), HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function deletePictureByPlace($request){
+        return $this->deleteDataResponse($this->vehiclePictureRepository->deletePictureByPlace($request), HttpFoundationResponse::HTTP_OK);
     }
 
     public function getPicturesByVehicle(Request $request){

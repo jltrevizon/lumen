@@ -26,4 +26,16 @@ class InvaratVehicleController extends Controller
         return $this->getDataResponse($this->invaratVehicleRepository->createChecklistEmpty($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    public function getVehicleResults(Request $request){
+        return $this->getDataResponse($this->invaratVehicleRepository->getVehicleResults($request), HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function getVehicleDetails(Request $request){
+        return $this->getDataResponse($this->invaratVehicleRepository->getVehicleDetails($request), HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function update(Request $request, $id)
+    {
+        return $this->updateDataResponse(['vehicle' => $this->invaratVehicleRepository->update($request, $id)], HttpFoundationResponse::HTTP_OK);
+    }
 }
