@@ -196,6 +196,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $stok_now = Vehicle::with(['typeModelOrder'])
             ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->where('sub_state_id', '<>', 10)
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
