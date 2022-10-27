@@ -7,6 +7,7 @@ use App\Models\Campa;
 use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\Reception;
+use App\Models\SubState;
 use App\Views\InKpiView;
 use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
@@ -172,7 +173,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 strval($v['11'] ?? 0),
                 strval($v['12'] ?? 0)
             ];
-        }        
+        }
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
@@ -194,9 +195,13 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $variable[$v['typeModelOrder']['name']][(int) $v['month']] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
         }
 
+        $idSubState = collect(SubState::where('id', '<>', SubState::ALQUILADO)->whereIn('state_id', [1, 2, 3, 4, 6])->get())->map(function ($item) {
+            return $item->id;
+        })->toArray();
+
         $stok_now = Vehicle::with(['typeModelOrder'])
             ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
-            ->where('sub_state_id', '<>', 10)
+            ->whereIn('sub_state_id', $idSubState)
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -431,7 +436,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $total_no_disponibles = $total_taller + $total_predisponible + $total_pendiente_venta;
         $total_general = $total_disponibles + $total_no_disponibles;
-       
+
         $value[$base_index][2] = strval($total_general);
         $value[$base_index + 1][2] = strval($total_no_disponibles);
 
@@ -515,7 +520,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         }
 
         return $value;
-
     }
 
     public function obtenerPorcentaje($cantidad, $total)
@@ -536,8 +540,8 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
-                $cellRange = 'A1:W1'; 
+            AfterSheet::class => function (AfterSheet $event) {
+                $cellRange = 'A1:W1';
                 $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
 
                 $styleArray = [
@@ -545,18 +549,16 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                         'bold' => true,
                     ]
                 ];
-                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A17:W17')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A28:W28')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A38:W38')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A49:W49')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A77:W77')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A87:W87')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A92:W92')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A17:W17')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A28:W28')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A38:W38')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A49:W49')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A77:W77')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A87:W87')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A92:W92')->ApplyFromArray($styleArray);
             },
         ];
     }
-
 }
-
