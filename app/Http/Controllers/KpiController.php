@@ -12,13 +12,9 @@ use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
 use App\Exports\KpiSubStateMonthExport;
 use App\Exports\StockVehiclesExport;
-use App\Models\Company;
-use App\Models\PendingTask;
-use App\Models\StatePendingTask;
+use App\Models\DeliveryVehicle;
 use App\Models\Vehicle;
 use App\Models\Reception;
-use App\Views\InKpiView;
-use App\Views\OutKpiView;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -33,31 +29,28 @@ class KpiController extends Controller
 
     public function inpu(Request $request)
     {
-        $data = InKpiView::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->select(
-                DB::raw('count(in_kpi) as `total`'),
-                DB::raw('view_kpis.type_model_order_id'),
-                DB::raw('view_kpis.in_month')
-            )
-            ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
-            ->get();
+        $in_data = Reception::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 0]))
+        ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
+        ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
+        ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
+        ->orderBy('year')
+        ->orderBy('in_month')
+        ->get();
 
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($in_data, HttpFoundationResponse::HTTP_OK);
     }
 
     public function out(Request $request)
     {
-        $data = OutKpiView::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->select(
-                DB::raw('count(out_kpi) as `total`'),
-                DB::raw('view_kpis.type_model_order_id'),
-                DB::raw('view_kpis.out_month')
-            )
-            ->groupBy('type_model_order_id', 'out_kpi', 'out_month')
-            ->get();
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
+        
+        $out_data = DeliveryVehicle::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 1]))
+        ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
+        ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
+        ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
+        ->orderBy('year')
+        ->orderBy('out_month')
+        ->get();
+        return $this->getDataResponse($out_data, HttpFoundationResponse::HTTP_OK);
     }
 
     public function subStates(Request $request)

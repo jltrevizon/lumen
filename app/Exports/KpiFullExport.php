@@ -5,11 +5,10 @@ namespace App\Exports;
 use App\Models\Vehicle;
 use App\Models\Campa;
 use App\Models\Company;
+use App\Models\DeliveryVehicle;
 use App\Models\PendingTask;
 use App\Models\Reception;
 use App\Models\SubState;
-use App\Views\InKpiView;
-use App\Views\OutKpiView;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -28,42 +27,27 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
     public function array(): array
     {
+        ini_set("memory_limit", "-1");
 
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
         $campas = $this->request->input('campas') ?? null;
 
-        $in_data = InKpiView::with(['typeModelOrder'])
-            ->where('in_year', $year)
-            ->where(function ($query) use ($ids) {
-                if ($ids) {
-                    $query->whereIn('type_model_order_id', $ids);
-                }
-            })
-            ->select(
-                DB::raw('count(in_kpi) as `total`'),
-                DB::raw('type_model_order_id'),
-                DB::raw('in_month')
-            )
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
-            ->get();
+        $in_data = Reception::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 1]))
+        ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
+        ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
+        ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
+        ->orderBy('year')
+        ->orderBy('in_month')
+        ->get();
 
-        $out_data = OutKpiView::with(['typeModelOrder'])
-            ->where('out_year', $year)
-            ->where(function ($query) use ($ids) {
-                if ($ids) {
-                    $query->whereIn('type_model_order_id', $ids);
-                }
-            })
-            ->select(
-                DB::raw('count(out_kpi) as `total`'),
-                DB::raw('type_model_order_id'),
-                DB::raw('out_month')
-            )
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->groupBy('type_model_order_id', 'out_kpi', 'out_month')
-            ->get();
+        $out_data = DeliveryVehicle::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 1]))
+        ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
+        ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
+        ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
+        ->orderBy('year')
+        ->orderBy('out_month')
+        ->get();
 
         $variable = [];
         foreach ($in_data as $key => $v) {

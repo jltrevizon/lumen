@@ -43,12 +43,12 @@ class ReceptionFilter extends ModelFilter
 
     public function createdAtFrom($dateTime)
     {
-        return $this->where('created_at','>=', $dateTime);
+        return $this->where('receptions.created_at','>=', $dateTime);
     }
 
     public function createdAtTo($dateTime)
     {
-        return $this->where('created_at','<=', $dateTime);
+        return $this->where('receptions.created_at','<=', $dateTime);
     }
 
     public function brandIds($ids)

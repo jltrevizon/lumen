@@ -47,6 +47,10 @@ class DeliveryVehicle extends Model
         return $this->belongsTo(PendingTask::class);
     }
 
+    public function typeModelOrder(){
+        return $this->belongsTo(TypeModelOrder::class);
+    }
+
     public function campa(){
         return $this->belongsTo(Campa::class);
     }
