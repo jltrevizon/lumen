@@ -10,6 +10,7 @@ use App\Models\TradeState;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
+use App\Models\TypeModelOrder;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -582,6 +583,8 @@ class VehicleRepository extends Repository
                         }
                         if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
                             $vehicle->sub_state_id = null;
+                        } else {
+                            $vehicle->type_model_order_id = TypeModelOrder::VO_ENTREGADO;
                         }
 
                         $vehicle->save();
