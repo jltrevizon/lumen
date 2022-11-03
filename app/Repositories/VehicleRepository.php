@@ -680,23 +680,4 @@ class VehicleRepository extends Repository
             ->first();
     }
 
-    // GroupTasks of last reception
-    public function lastGroupTasks($request)
-    {
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        if ($vehicle->lastReception && is_null($vehicle->lastReception->group_task_id) && $vehicle->lastGroupTask) {
-            $vehicle->lastReception->group_task_id = $vehicle->lastGroupTask->id;
-            $vehicle->lastReception->save();
-        }
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        return Vehicle::with(array_merge($this->getWiths($request->with), ['allApprovedPendingTasks' => function ($query) use ($vehicle) {
-            return $query
-                ->where('reception_id', $vehicle->lastReception?->id)
-                ->orderBy('group_task_id', 'desc')
-                ->orderBy('id', 'desc')
-                ->orderBy('created_at', 'desc');
-        }]))
-            ->filter($request->all())
-            ->findOrFail($request->input('vehicle_id'));
-    }
 }

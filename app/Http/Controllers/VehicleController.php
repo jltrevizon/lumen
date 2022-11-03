@@ -212,9 +212,4 @@ class VehicleController extends Controller
         }
     }
 
-    public function lastGroupTasks(Request $request)
-    {
-        $data = $this->vehicleRepository->lastGroupTasks($request);
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
-    }
 }

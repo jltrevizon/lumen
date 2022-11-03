@@ -289,7 +289,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
         $router->post('/vehicles/set-vehicle-rented', 'VehicleController@setVehicleRented');
-        $router->post('/vehicles/last-group-tasks','VehicleController@lastGroupTasks');
 
         /**
          * Vehicle model

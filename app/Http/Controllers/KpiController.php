@@ -31,26 +31,26 @@ class KpiController extends Controller
     public function inpu(Request $request)
     {
         $in_data = Reception::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 0]))
-        ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
-        ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
-        ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
-        ->orderBy('year')
-        ->orderBy('in_month')
-        ->get();
+            ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
+            ->orderBy('year')
+            ->orderBy('in_month')
+            ->get();
 
         return $this->getDataResponse($in_data, HttpFoundationResponse::HTTP_OK);
     }
 
     public function out(Request $request)
     {
-        
+
         $out_data = DeliveryVehicle::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 1]))
-        ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
-        ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
-        ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
-        ->orderBy('year')
-        ->orderBy('out_month')
-        ->get();
+            ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
+            ->orderBy('year')
+            ->orderBy('out_month')
+            ->get();
         return $this->getDataResponse($out_data, HttpFoundationResponse::HTTP_OK);
     }
 
@@ -104,6 +104,22 @@ class KpiController extends Controller
 
     public function kpiFull(Request $request)
     {
+        $data_now = PendingTask::with(['task', 'vehicle'])
+            ->filter(array_merge($request->all(), ['states' => [1, 2, 3, 4, 6]]))
+            ->select(
+                DB::raw('vehicle_id'),
+                DB::raw('task_id'),
+                DB::raw('state_pending_task_id'),
+        //        DB::raw('COUNT(id) as total')
+            )
+            ->whereRaw('reception_id IN(SELECT MAX(id) FROM receptions g GROUP BY vehicle_id)')
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->whereIn('state_pending_task_id', [1, 2])
+            ->where('approved', 1)
+         //   ->groupBy('task_id', 'state_pending_task_id')
+            ->orderBy('task_id')
+            ->get();
+        return $data_now;
         ob_clean();
         return Excel::download(new KpiFullExport($request), 'Kpi-' . date('Y-m-d') . '.xlsx');
     }
@@ -133,7 +149,4 @@ class KpiController extends Controller
         ob_clean();
         return Excel::download(new StockVehiclesExport($request->input('campaId')), 'stock-vehículos-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
-
-
-    
 }

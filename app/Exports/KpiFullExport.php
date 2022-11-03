@@ -465,12 +465,11 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /** KPI PendingTasks */
 
         $data_now = PendingTask::with(['task'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1], ['states' => [1, 2, 3, 4, 6]]))
+            ->filter(array_merge($this->request->all(), ['states' => [1, 2, 3, 4, 6]]))
             ->select(
                 DB::raw('task_id'),
                 DB::raw('state_pending_task_id'),
-                DB::raw('COUNT(id) as total'),
-                DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = pending_tasks.vehicle_id) as type_model_order_id')
+                DB::raw('COUNT(id) as total')
             )
             ->whereRaw('reception_id IN(SELECT MAX(id) FROM receptions g GROUP BY vehicle_id)')
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
