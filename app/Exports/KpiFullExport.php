@@ -34,20 +34,20 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $campas = $this->request->input('campas') ?? null;
 
         $in_data = Reception::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 1]))
-        ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
-        ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
-        ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
-        ->orderBy('year')
-        ->orderBy('in_month')
-        ->get();
+            ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
+            ->orderBy('year')
+            ->orderBy('in_month')
+            ->get();
 
         $out_data = DeliveryVehicle::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 1]))
-        ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
-        ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
-        ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
-        ->orderBy('year')
-        ->orderBy('out_month')
-        ->get();
+            ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
+            ->orderBy('year')
+            ->orderBy('out_month')
+            ->get();
 
         $variable = [];
         foreach ($in_data as $key => $v) {
@@ -465,9 +465,8 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /** KPI PendingTasks */
 
         $data_now = PendingTask::with(['task'])
-            ->filter($this->request->all())
+            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1], ['states' => [1, 2, 3, 4, 6]]))
             ->select(
-                DB::raw('id'),
                 DB::raw('task_id'),
                 DB::raw('state_pending_task_id'),
                 DB::raw('COUNT(id) as total'),

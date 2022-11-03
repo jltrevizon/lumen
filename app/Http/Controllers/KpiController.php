@@ -13,6 +13,7 @@ use App\Exports\KpiSubStateExport;
 use App\Exports\KpiSubStateMonthExport;
 use App\Exports\StockVehiclesExport;
 use App\Models\DeliveryVehicle;
+use App\Models\PendingTask;
 use App\Models\Vehicle;
 use App\Models\Reception;
 use Illuminate\Database\Eloquent\Builder;

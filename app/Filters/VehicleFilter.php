@@ -264,7 +264,7 @@ class VehicleFilter extends ModelFilter
             $sql = <<<SQL
                 select pt.task_id
                 from pending_tasks pt
-                WHERE pt.state_pending_task_id <> 3
+                WHERE pt.state_pending_task_id in (1, 2)
                 AND pt.approved = 1
                 AND pt.vehicle_id = vehicles.id
                 ORDER BY pt.state_pending_task_id DESC, pt.order, pt.datetime_finish DESC

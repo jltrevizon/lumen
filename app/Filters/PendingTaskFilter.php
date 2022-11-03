@@ -2,10 +2,12 @@
 
 namespace App\Filters;
 
+use App\Models\PendingTask;
 use App\Models\State;
 use App\Models\Vehicle;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class PendingTaskFilter extends ModelFilter
 {
@@ -44,6 +46,18 @@ class PendingTaskFilter extends ModelFilter
     public function withWorkshop($value) {
         return $this->whereHas('vehicle.orders', function(Builder $builder) use ($value) {
             return $builder->where('workshop_id', $value);
+        });
+    }
+
+    public function states($value) {
+        return $this->whereHas('vehicle.subState', function(Builder $builder) use ($value) {
+            return $builder->whereIn('state_id', $value);
+        });
+    }
+
+    public function campas($value) {
+        return $this->whereHas('vehicle', function(Builder $builder) use ($value) {
+            return $builder->whereIn('campa_id', $value);
         });
     }
 
@@ -160,5 +174,22 @@ class PendingTaskFilter extends ModelFilter
         return $this->orderBy($field);
     }
 
+    public function defleetingAndDelivery($value)
+    {
+        $vehicle_ids = collect(
+            PendingTask::where('state_pending_task_id', 3)
+                ->where('approved', 1)
+                ->where('task_id', 38)
+                ->whereRaw(DB::raw('reception_id = (Select max(r.id) from receptions r where r.vehicle_id = pending_tasks.vehicle_id)'))
+                ->whereRaw(DB::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))
+                ->get('vehicle_id')
+        )->map(function ($item) {
+            return $item->vehicle_id;
+        })->toArray();
+        if ($value == 1) {
+            return $this->whereNotIn('vehicle_id', $vehicle_ids);
+        }
+        return $this->whereIn('vehicle_id', $vehicle_ids);
+    }
 
 }
