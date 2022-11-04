@@ -45,7 +45,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                         ));
                 },
                 'reception' => function($q) {
-                    $q->select('id', 'created_at', 'type_model_order_id')
+                    $q->select('id', 'created_at', 'type_model_order_id', 'campa_id')
                     ->with([
                         'typeModelOrder' => function($query) {
                             $query->select('id', 'name');
