@@ -19,7 +19,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
     {
         return PendingTask::select(['datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
             ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
-            ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
+            // ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
             ->with(array(
                 'vehicle' => function ($query) {
                     $query->select(['id', 'plate', 'kms', 'has_environment_label', 'company_id', 'vehicle_model_id'])
@@ -48,6 +48,9 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                     $q->select('id', 'created_at', 'type_model_order_id')
                     ->with([
                         'typeModelOrder' => function($query) {
+                            $query->select('id', 'name');
+                        },
+                        'campa' => function($query) {
                             $query->select('id', 'name');
                         }
                     ]);
@@ -83,7 +86,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->observations,
                 $data->vehicle->accesory_name ?? null,
                 $data->vehicle->has_environment_label == true ? 'Si' : 'No',
-                $data->campa_name ?? null,
+                $data->reception?->campa?->name ?? null,
                 $data->vehicle->category_name ?? null,
                 $data->task->name ?? null,
                 $data->state_pending_task_name,
