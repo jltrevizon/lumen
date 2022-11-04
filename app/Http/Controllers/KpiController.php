@@ -104,22 +104,6 @@ class KpiController extends Controller
 
     public function kpiFull(Request $request)
     {
-        $data_now = PendingTask::with(['task', 'vehicle'])
-            ->filter(array_merge($request->all(), ['states' => [1, 2, 3, 4, 6]]))
-            ->select(
-                DB::raw('vehicle_id'),
-                DB::raw('task_id'),
-                DB::raw('state_pending_task_id'),
-        //        DB::raw('COUNT(id) as total')
-            )
-            ->whereRaw('reception_id IN(SELECT MAX(id) FROM receptions g GROUP BY vehicle_id)')
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->whereIn('state_pending_task_id', [1, 2])
-            ->where('approved', 1)
-         //   ->groupBy('task_id', 'state_pending_task_id')
-            ->orderBy('task_id')
-            ->get();
-        return $data_now;
         ob_clean();
         return Excel::download(new KpiFullExport($request), 'Kpi-' . date('Y-m-d') . '.xlsx');
     }
