@@ -12,10 +12,12 @@ use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
 use App\Exports\KpiSubStateMonthExport;
 use App\Exports\StockVehiclesExport;
+use App\Models\Company;
 use App\Models\DeliveryVehicle;
 use App\Models\PendingTask;
 use App\Models\Vehicle;
 use App\Models\Reception;
+use App\Models\StatePendingTask;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -116,6 +118,56 @@ class KpiController extends Controller
 
     public function pendingTask(Request $request)
     {
+       /* return PendingTask::select(['datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
+            ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
+            // ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
+            ->with(array(
+                'vehicle' => function ($query) {
+                    $query->select(['id', 'plate', 'kms', 'has_environment_label', 'company_id', 'vehicle_model_id'])
+                        ->selectRaw(DB::raw('(select c.name from colors c where c.id = vehicles.color_id) as color_name'))
+                        ->selectRaw(DB::raw('(select c.name from categories c where c.id = vehicles.category_id) as category_name'))
+                        ->selectRaw(DB::raw('(SELECT GROUP_CONCAT((SELECT a.name from accessories a where a.id = av.accessory_id)) as accesory_name from accessory_vehicle av where av.vehicle_id = vehicles.id group By av.vehicle_id) as accesory_name'))
+                        ->with([
+                            'vehicleModel' => function ($q) {
+                                $q->select('id', 'name', 'brand_id')
+                                    ->selectRaw(DB::raw('(select b.name from brands b where b.id = vehicle_models.brand_id) as brand_name'));
+                            }
+                        ])
+                        ->where('company_id', Company::ALD);
+                },
+                'task' => function ($query) {
+                    $query->select(['id', 'name', 'sub_state_id'])
+                        ->with(array(
+                            'subState' => function ($q) {
+                                $q->select('id', 'name', 'state_id')->with(['state' => function ($q) {
+                                    $q->select('id', 'name');
+                                }]);
+                            }
+                        ));
+                },
+                'reception' => function($q) {
+                    $q->select('id', 'created_at', 'type_model_order_id', 'campa_id')
+                    ->with([
+                        'typeModelOrder' => function($query) {
+                            $query->select('id', 'name');
+                        },
+                        'campa' => function($query) {
+                            $query->select('id', 'name');
+                        }
+                    ]);
+                },
+                'userStart' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'userEnd' => function ($query) {
+                    $query->select('id', 'name');
+                },
+            ))
+            ->whereNotNull('reception_id')
+            ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+       //     ->whereNotIn('vehicle_id', $vehicle_ids)
+            ->get();*/
         ini_set("memory_limit", "-1");
         ini_set('max_execution_time', '-1');
         $date = microtime(true);
