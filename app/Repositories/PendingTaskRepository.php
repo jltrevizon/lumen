@@ -389,7 +389,11 @@ class PendingTaskRepository extends Repository
                     $vehicle->save();
                 }
                 $this->createPendingTaskCampa($vehicle, $pending_task->task_id === Task::CHECK_BLOCKED ? Task::CHECK_RELEASE : Task::TOCAMPA);
-                $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $pending_task->task_id === Task::CHECK_BLOCKED ? SubState::CHECK_RELEASE : SubState::CAMPA);
+                $force_sub_state_id = $pending_task->task_id === Task::CHECK_BLOCKED ? SubState::CHECK_RELEASE : SubState::CAMPA;
+                if ($vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET) {
+                    $force_sub_state_id = SubState::SOLICITUD_DEFLEET;
+                }
+                $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $force_sub_state_id);
                 return [
                     "status" => "OK",
                     "message" => "No hay más tareas"
