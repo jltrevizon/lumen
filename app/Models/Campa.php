@@ -52,6 +52,10 @@ class Campa extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function campaTypeModelOrders(){
+        return $this->hasMany(CampaTypeModelOrder::class);
+    }
+
     public function province(){
         return $this->belongsTo(Province::class, 'province_id');
     }
