@@ -20,7 +20,7 @@ class CampaTypeModelOrder extends Model
         return $this->belongsTo(Campa::class, 'campa_id');
     }
 
-    public function typeModelOrderId(){
+    public function typeModelOrder(){
         return $this->belongsTo(TypeModelOrder::class, 'type_model_order_id');
     }
 }
