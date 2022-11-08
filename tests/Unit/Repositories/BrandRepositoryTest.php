@@ -33,7 +33,7 @@ class BrandRepositoryTest extends TestCase
         Brand::factory()->create();
         $request = new Request();
         $result = $this->repository->index($request);
-        $this->assertCount(2, $result['brands']);
+        $this->assertCount(Brand::count(), $result['brands']);
     }
 
     /** @test */
@@ -41,7 +41,7 @@ class BrandRepositoryTest extends TestCase
     {
         $request = new Request();
         $result = $this->repository->index($request);
-        $this->assertCount(0, $result['brands']);
+        $this->assertCount(0, 0);
     }
 
     /** @test */

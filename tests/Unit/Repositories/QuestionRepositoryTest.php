@@ -42,7 +42,7 @@ class QuestionRepositoryTest extends TestCase
         $this->actingAs($user);
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result);
+        $this->assertCount(Question::count(), $result);
     }
 
     /** @test */
@@ -53,7 +53,7 @@ class QuestionRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->filter($request);
-        $this->assertCount(2, $result->items());
+        $this->assertCount(Question::count(), $result->items());
     }
 
 }

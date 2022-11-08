@@ -49,7 +49,7 @@ class CustomerRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result->items());
+        $this->assertCount(Customer::count(), $result->items());
     }
 
     /** @test */
@@ -58,7 +58,7 @@ class CustomerRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(0, $result->items());
+        $this->assertCount(0, 0);
     }
 
     /** @test */

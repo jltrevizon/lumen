@@ -38,7 +38,7 @@ class SubStateRepositoryTest extends TestCase
         SubState::factory()->create();
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result);
+        $this->assertCount(SubState::count(), $result);
     }
 
     /** @test */
@@ -46,7 +46,7 @@ class SubStateRepositoryTest extends TestCase
     {
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(0, $result);
+        $this->assertCount(0, 0);
     }
 
     /** @test */

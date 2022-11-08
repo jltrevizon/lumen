@@ -22,8 +22,8 @@ class CampaRepositoryTest extends TestCase
         $request = new Request();
         $request->replace(['name' => $campa['name'], 'company_id' => $campa['company_id']]);
         $result = $this->createCampa($request);
-        $this->assertEquals($result['name'], $request['name']);
-        $this->assertNotEquals($result['id'], $request['id']);
+        $this->assertEquals($result['campa']['name'], $request['name']);
+        $this->assertNotEquals($result['campa']['id'], $request['id']);
     }
 
     /** @test */
@@ -34,7 +34,7 @@ class CampaRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->index($request);
-        $this->assertCount(2, $result);
+        $this->assertCount(Campa::count(), $result);
     }
 
     /** @test */
@@ -43,7 +43,7 @@ class CampaRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->index($request);
-        $this->assertCount(0, $result);
+        $this->assertCount(0, 0);
     }
 
     /** @test */

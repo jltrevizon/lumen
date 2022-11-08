@@ -57,7 +57,7 @@ class ProvinceRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result->items());
+        $this->assertCount(Province::count(), $result->items());
     }
 
     /** @test */

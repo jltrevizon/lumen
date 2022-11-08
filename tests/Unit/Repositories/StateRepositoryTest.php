@@ -39,15 +39,15 @@ class StateRepositoryTest extends TestCase
         $this->assertInstanceOf(State::class, $result['state']);
     }
 
-    /** @test /
+    /** @test */
     public function should_return_two_states()
     {
         State::factory()->create();
         State::factory()->create();
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result);
-    }*/
+        $this->assertCount(State::count(), $result);
+    }
 
     /** @test */
     public function should_updated_a_state_correctly()

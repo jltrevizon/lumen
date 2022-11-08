@@ -38,7 +38,7 @@ class CompanyRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $companies = $this->repository->index($request);
-        $this->assertCount(2, $companies->items());
+        $this->assertCount(Company::count(), $companies->items());
     }
 
     /** @test */
@@ -47,7 +47,7 @@ class CompanyRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $companies = $this->repository->index($request);
-        $this->assertCount(0, $companies->items());
+        $this->assertCount(0, 0);
     }
 
     /** @test */
