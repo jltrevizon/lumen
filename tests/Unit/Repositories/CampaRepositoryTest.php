@@ -68,12 +68,12 @@ class CampaRepositoryTest extends TestCase
     /** @test */
     public function should_update_a_campa_correctly()
     {
-      /*  $campa = Campa::factory()->create();
+        $campa = Campa::factory()->create();
         $request = new Request();
-        $request->replace(['name' => 'Campa prueba 1',]);
+        $request->replace(['name' => 'Campa prueba 1']);
         $result = $this->repository->update($request, $campa->id);
         $this->assertEquals($campa->id, $result['campa']['id']);
-        $this->assertNotEquals($campa->name, $result['campa']['name']);*/
+        $this->assertNotEquals($campa->name, $result['campa']['name']);
     }
 
     private function createCampa($data)
