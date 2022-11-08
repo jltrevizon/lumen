@@ -33,7 +33,8 @@ class GroupTaskRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(15, $result->items());
+        $count = GroupTask::count();
+        $this->assertCount($count < 15 ? $count : 15, $result->items());
     }
 
     /** @test */
