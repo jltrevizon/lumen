@@ -2,6 +2,7 @@
 
 use App\Mail\NotificationDAMail;
 use App\Models\GroupTask;
+use App\Models\Reception;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Repositories\GroupTaskRepository;
@@ -32,7 +33,7 @@ class GroupTaskRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result->items());
+        $this->assertCount(15, $result->items());
     }
 
     /** @test */
@@ -107,26 +108,31 @@ class GroupTaskRepositoryTest extends TestCase
         $this->assertNotEquals($groupTask1->id, $result['id']);
     }
 
-    /** @test */
+    /*
     public function should_approved_group_task_approved_to_available()
     {
-        /* $groupTask = GroupTask::factory()->create();
+        $groupTask = GroupTask::factory()->create();
         $user = User::factory()->create();
         $this->actingAs($user);
         $vehicle = Vehicle::factory()->create();
+        $reception = Reception::factory()->create();
+        $reception->vehicle_id = $vehicle->id;
+
+        $reception->finished = false;
+        $reception->has_accessories = false;
         $request = new Request();
         $request->replace(['group_task_id' => $groupTask->id, 'vehicle_id' => $vehicle->id]);
         $result = $this->repository->approvedGroupTaskToAvailable($request);
-        $this->assertEquals('Solicitud aprobada!', $result['message']);*/
-    }
+        $this->assertEquals('Solicitud aprobada!', $result['message']);
+    }*/
 
-    /** @test */
+    /* @test 
     public function should_decline_a_group_task()
     {
-        /* $groupTask = GroupTask::factory()->create();
+        $groupTask = GroupTask::factory()->create();
         $request = new Request();
         $request->replace(['vehicle_id' => $groupTask->vehicle_id, 'group_task_id' => $groupTask->id]);
         $result = $this->repository->declineGroupTask($request);
-        $this->assertEquals('Solicitud declinada!', $result['message']);*/
-    }
+        $this->assertEquals('Solicitud declinada!', $result['message']);
+    }*/
 }

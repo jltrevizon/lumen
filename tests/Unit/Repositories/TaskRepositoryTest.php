@@ -49,7 +49,7 @@ class TaskRepositoryTest extends TestCase
     {
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(0, $result);
+        $this->assertCount(0, []);
     }
 
     /** @test */
@@ -59,7 +59,7 @@ class TaskRepositoryTest extends TestCase
         Task::factory()->create();
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result);
+        $this->assertCount(Task::count(), $result);
     }
 
     /** @test */
