@@ -6,7 +6,7 @@ use App\Models\Transport;
 use App\Models\TypeModelOrder;
 use Exception;
 
-class TypeModelOrderRepository {
+class TypeModelOrderRepository extends Repository {
 
     public function getAll(){
         return TypeModelOrder::with($this->getWiths($request->with))
