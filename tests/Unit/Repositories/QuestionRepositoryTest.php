@@ -4,7 +4,6 @@ use App\Models\Question;
 use App\Models\User;
 use App\Repositories\QuestionRepository;
 use Illuminate\Http\Request;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class QuestionRepositoryTest extends TestCase

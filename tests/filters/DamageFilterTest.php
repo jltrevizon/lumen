@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Damage;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class DamageFilterTest extends TestCase
