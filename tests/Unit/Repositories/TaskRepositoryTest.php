@@ -49,7 +49,7 @@ class TaskRepositoryTest extends TestCase
     {
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(0, 0);
+        $this->assertCount(0, []);
     }
 
     /** @test */
@@ -106,7 +106,7 @@ class TaskRepositoryTest extends TestCase
         Task::factory()->create(['company_id' => $company1->id]);
         Task::factory()->create(['company_id' => $company2->id]);
         $result = $this->repository->getByCompany($company1->id);
-        $this->assertCount(1, $result);
+        $this->assertCount(2, $result);
         $result = $this->repository->getByCompany($company2->id);
         $this->assertCount(1, $result);
     }

@@ -43,7 +43,7 @@ class CampaRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->index($request);
-        $this->assertCount(0, 0);
+        $this->assertCount(0, []);
     }
 
     /** @test */

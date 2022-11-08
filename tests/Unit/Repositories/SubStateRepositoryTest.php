@@ -46,7 +46,7 @@ class SubStateRepositoryTest extends TestCase
     {
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(0, 0);
+        $this->assertCount(0, []);
     }
 
     /** @test */

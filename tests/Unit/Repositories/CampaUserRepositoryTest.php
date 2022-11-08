@@ -35,7 +35,7 @@ class CampaUserRepositoryTest extends TestCase
             ]
         ]);
         $result = $this->repository->create($request);
-        $this->assertCount(Campa::count(), $result['campas']);
+        $this->assertCount(2, $result['campas']);
         $this->assertEquals($campa1->id, $result['campas'][0]['id']);
         $this->assertEquals($campa2->id, $result['campas'][1]['id']);
     }
