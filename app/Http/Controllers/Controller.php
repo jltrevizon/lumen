@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Controller extends BaseController
 {
     protected function responseWithToken($token){
-        $user = User::with(['role','campas.company'])
+        $user = User::with(['role','campas.company', 'campas.campaTypeModelOrders.typeModelOrder'])
                     ->where('id', Auth::id())
                     ->first();
         return response()->json([
