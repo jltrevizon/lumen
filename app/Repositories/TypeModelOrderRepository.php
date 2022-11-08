@@ -6,12 +6,10 @@ use App\Models\Transport;
 use App\Models\TypeModelOrder;
 use Exception;
 
-class TypeModelOrderRepository extends Repository {
+class TypeModelOrderRepository {
 
     public function getAll(){
-        return TypeModelOrder::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->paginate($request->input('per_page'));
+        return TypeModelOrder::all();
     }
 
     public function getByName($name){

@@ -14,6 +14,6 @@ class TypeModelOrderController extends Controller
     }
 
     public function getAll(){
-        return $this->getDataResponse($this->typeModelOrderRepository->getAll(), HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse(['type_model_orders' => $this->typeModelOrderRepository->getAll()], HttpFoundationResponse::HTTP_OK);
     }
 }
