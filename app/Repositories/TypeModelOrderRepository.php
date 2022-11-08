@@ -9,7 +9,9 @@ use Exception;
 class TypeModelOrderRepository {
 
     public function getAll(){
-        return TypeModelOrder::all();
+        return TypeModelOrder::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->paginate($request->input('per_page'));
     }
 
     public function getByName($name){
