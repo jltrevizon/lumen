@@ -604,11 +604,14 @@ class PendingTaskRepository extends Repository
         foreach ($request->input('vehicle_ids') as $id) {
             $vehicle = Vehicle::findOrFail($id);
             $task = $this->taskRepository->getById([], Task::TRANSFER);
-            $groupTask = $this->groupTaskRepository->create([
-                'vehicle_id' => $vehicle->id,
-                'approved_available' => 1,
-                'approved' => 1
-            ]);
+            $groupTask = $vehicle->lastReception?->groupTask;
+            if ($groupTask) {
+                $groupTask->approved = 1;
+                $groupTask->approved_available = 1;
+            } else {
+                $reception = $this->vehicleRepository->newReception($vehicle->id);
+                $groupTask = $reception->groupTask;
+            }
             PendingTask::create([
                 'vehicle_id' => $vehicle->id,
                 'reception_id' => $vehicle->lastReception->id ?? null,
