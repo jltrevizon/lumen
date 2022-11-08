@@ -55,5 +55,4 @@ class QuestionRepositoryTest extends TestCase
         $result = $this->repository->filter($request);
         $this->assertCount(15, $result->items());
     }
-
 }
