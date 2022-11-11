@@ -51,9 +51,9 @@ class DeliveryVehicleRepository extends Repository
                 'user_end_id' => Auth::id(),
                 'order' => 1,
                 'approved' => true,
-                'datetime_pending' => Carbon::now()->addSeconds($count * 1),
-                'datetime_start' => Carbon::now()->addSeconds($count * 2),
-                'datetime_finish' =>  Carbon::now()->addSeconds($count * 3),
+                'datetime_pending' => Carbon::now(),
+                'datetime_start' => Carbon::now(),
+                'datetime_finish' =>  Carbon::now(),
                 'campa_id' => $vehicle->campa_id
             ]);
             DeliveryVehicle::create([

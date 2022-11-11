@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Company;
 use App\Models\PendingTask;
 use App\Models\StatePendingTask;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -17,7 +18,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
      */
     public function collection()
     {
-        return PendingTask::select(['datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
+        return PendingTask::select(['datetime_pending', 'datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
             ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
             // ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
             ->with(array(
@@ -68,7 +69,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             ->whereNotNull('reception_id')
             ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-       //     ->whereNotIn('vehicle_id', $vehicle_ids)
+            // ->limit(100)
+            // ->where('vehicle_id', 15181)
             ->get();
     }
 
@@ -80,7 +82,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             $line = [
                 $data->vehicle->plate,
                 $this->dateFaormat($data->reception?->created_at),
-                $this->dateFaormat($data->reception?->group_task?->datetime_approved),
+                $this->dateFaormat($data->reception?->groupTask?->datetime_approved),
                 $data->vehicle->kms,
                 $data->vehicle->vehicleModel->brand->name ?? null,
                 $data->vehicle->vehicleModel->name ?? null,
@@ -94,8 +96,10 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->vehicle->category_name ?? null,
                 $data->task->name ?? null,
                 $data->state_pending_task_name,
+                $data->datetime_pending ? date('d/m/Y H:i:s', strtotime($data->datetime_pending)) : null,
                 $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
+                round(($this->diffDateTimes($data->datetime_pending, $data->datetime_finish) / 60), 4),
                 $data->user_start?->name ?? null,
                 $data->user_end?->name ?? null,
                 round(($data->total_paused / 60), 4),
@@ -113,6 +117,19 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             return date('d/m/Y', strtotime($date));
         }
         return '-';
+    }
+
+    private function diffDateTimes($datetime, $datetime2)
+    {
+        if (is_null($datetime) || is_null($datetime2)) {
+            return 0;
+        }
+        $datetime1 = new DateTime($datetime);
+        $diference = date_diff($datetime1, new DateTime($datetime2));
+        $minutes = $diference->days * 24 * 60;
+        $minutes += $diference->h * 60;
+        $minutes += $diference->i;
+        return $minutes;
     }
 
     public function headings(): array
@@ -134,8 +151,10 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Categoría',
             'Tarea',
             'Estado tarea',
+            'Fecha pendiente tarea',
             'Fecha inicio tarea',
             'Fecha fin tarea',
+            'Tiempo pendiente',
             'Operario Inicio la Tarea',
             'Operario Finalizo la Tarea',
             'Tiempo (horas)',
