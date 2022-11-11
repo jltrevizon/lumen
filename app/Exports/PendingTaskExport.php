@@ -157,7 +157,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             $minutes += $diference->h * 60;
             $minutes += $diference->i;
         }
-        return $minutes > 0 ? round($minutes / 60, 4) : '-';
+        return $minutes > 0 ? round($minutes / 60, 4) : 0;
     }
 
     public function headings(): array
