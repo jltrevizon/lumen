@@ -65,7 +65,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 },
                 'statePendingTask' => function ($query) {
                     $query->select('id', 'name');
-                } 
+                }
             ))
             ->whereNotNull('reception_id')
             ->where('approved', true)
@@ -101,7 +101,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->datetime_pending ? date('d/m/Y H:i:s', strtotime($data->datetime_pending)) : null,
                 $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
-                round(($this->diffDateTimes($data->datetime_pending, $data->state_pending_task_id === 1 ? new DateTime() : $data->datetime_finish) / 60), 4),
+                round(($this->diffDateTimes($data->datetime_pending, $data->state_pending_task_id === 1 ? date() : $data->datetime_finish) / 60), 4),
                 $data->user_start?->name ?? null,
                 $data->user_end?->name ?? null,
                 round(($data->total_paused / 60), 4),
