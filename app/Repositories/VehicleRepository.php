@@ -410,12 +410,13 @@ class VehicleRepository extends Repository
     {
         $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
-
+        $is_new_reception = false;
         $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {
             return $item->id;
         })->toArray();
         if (is_null($vehicle->lastReception) || $vehicle->sub_state_id === SubState::ALQUILADO || count($vehicle_ids) > 0 || $force) {
             $reception = new Reception();
+            $is_new_reception = true;
         } else {
             $reception = $vehicle->lastReception;
         }
@@ -427,13 +428,7 @@ class VehicleRepository extends Repository
 
         $groupTask = $vehicle->lastGroupTask;
 
-        if (is_null($groupTask) || ($groupTask->approved && count($groupTask->approvedPendingTasks) === 0 && count($groupTask->pendingTasks) > 0)) {
-            Log::debug([
-                'vehicle' => $vehicle->id,
-                'text' => 'SE CREO EL GRUPO ' . $groupTask?->id,
-                'approvedPendingTasks' => count($groupTask?->approvedPendingTasks ?? []),
-                'pendingTasks' => count($groupTask?->pendingTasks ?? [])
-            ]);
+        if (is_null($groupTask) || $is_new_reception) {
             $groupTask = $this->groupTaskRepository->create([
                 'vehicle_id' => $vehicle_id,
                 'approved_available' => true,
@@ -446,8 +441,7 @@ class VehicleRepository extends Repository
 
         $vehicle = Vehicle::find($vehicle_id);
 
-
-        return $reception;
+        return $vehicle->lastReception;
     }
 
     private function finishPendingTaskLastGroupTask($vehicleId)

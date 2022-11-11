@@ -106,6 +106,8 @@ class KpiController extends Controller
 
     public function kpiFull(Request $request)
     {
+        ini_set("memory_limit", "-1");
+        ini_set('max_execution_time', '-1');
         ob_clean();
         return Excel::download(new KpiFullExport($request), 'Kpi-' . date('Y-m-d') . '.xlsx');
     }

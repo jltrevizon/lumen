@@ -18,7 +18,9 @@ class GroupTask extends Model
         'vehicle_id',
         'questionnaire_id',
         'approved',
-        'approved_available'
+        'approved_available',
+        'datetime_approved',
+        'datetime_defleeting'
     ];
 
     public function pendingTasks(){
@@ -55,7 +57,7 @@ class GroupTask extends Model
             $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
                 ->orWhereNull('state_pending_task_id');
         })
-        ->orderByRaw('FIELD(task_id,'.implode(','.PendingTask::ORDER_TASKS).') desc');
+        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).') desc');
         // ->orderBy('state_pending_task_id', 'desc')
         // ->orderBy('order')
         // ->orderBy('datetime_finish', 'desc');
@@ -63,7 +65,10 @@ class GroupTask extends Model
 
     public function allApprovedPendingTasks(){
         return $this->hasMany(PendingTask::class)
-            ->where('approved', 1);
+            ->where('approved', 1)
+            ->selectRaw('*, (CASE WHEN pending_tasks.order > 0 THEN pending_tasks.order Else 100000000000 END) as order_str')
+            ->orderByRaw('order_str asc')
+            ->orderBy('datetime_finish', 'desc');
     }
 
     public function lastPendingTaskApproved(){

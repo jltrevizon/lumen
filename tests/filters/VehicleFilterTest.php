@@ -2,7 +2,6 @@
 
 use App\Models\Vehicle;
 use Carbon\Carbon;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class VehicleFilterTest extends TestCase
@@ -13,7 +12,7 @@ class VehicleFilterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Vehicle::factory()->count(3)->create();
+        Vehicle::factory(3)->create();
     }
 
 
