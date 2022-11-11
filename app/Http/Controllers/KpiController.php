@@ -125,7 +125,7 @@ class KpiController extends Controller
         $date = microtime(true);
         $array = explode('.', $date);
         ob_clean();
-        return Excel::download(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
+        return Excel::download(new ExportsPendingTaskExport($request), 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
 
     public function stockVehicle(Request $request)
