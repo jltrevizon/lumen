@@ -18,8 +18,15 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
      */
     public function collection()
     {
+        $sql = <<<SQL
+            (SELECT MAX(pt.id)
+            FROM pending_tasks as pt
+            WHERE pt.vehicle_id = pending_tasks.vehicle_id AND pt.task_id = 38
+            AND state_pending_task_id = 3 AND pt.reception_id = pending_tasks.reception_id) as last_delivered_pending_task_id
+        SQL;
         return PendingTask::select(['datetime_pending', 'datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id', 'state_pending_task_id'])
-            ->with(array(
+        ->selectRaw(DB::raw($sql))
+        ->with(array(
                 'vehicle' => function ($query) {
                     $query->select(['id', 'plate', 'kms', 'has_environment_label', 'company_id', 'vehicle_model_id'])
                         ->selectRaw(DB::raw('(select c.name from colors c where c.id = vehicles.color_id) as color_name'))
@@ -65,22 +72,29 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 },
                 'statePendingTask' => function ($query) {
                     $query->select('id', 'name');
-                }
+                },
+                'lastDeliveredPendingTask' => function ($query) {
+                    $query->select('id', 'datetime_finish');
+                },
             ))
+
             ->whereNotNull('reception_id')
             ->where('approved', true)
             ->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             // ->limit(100)
-            // ->where('vehicle_id', 15181)
+            ->where('vehicle_id', 15181)
             ->get();
     }
-
     public function map($data): array
     {
         $array = [];
         $line = [];
         if ($data->vehicle) {
+            $time_pending = round(($this->diffDateTimes($data->datetime_pending, $data->state_pending_task_id === 1 ? date('Y-m-d') : $data->datetime_finish) / 60), 4);
+            if (!!$data->last_delivered_pending_task_id  && $data->state_pening_task_id == StatePendingTask::PENDING && $data->task_id == Taks::VALIDATE_CHECKLIST ){
+                $time_pending = round(($this->diffDateTimes($data->datetime_pending, $data->lastDeliveredPendingTask->detime_finish) / 60), 4);
+            }
             $line = [
                 $data->vehicle->plate,
                 $this->dateFaormat($data->reception?->created_at),
@@ -101,13 +115,14 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->datetime_pending ? date('d/m/Y H:i:s', strtotime($data->datetime_pending)) : null,
                 $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
-                round(($this->diffDateTimes($data->datetime_pending, $data->state_pending_task_id === 1 ? date('Y-m-d') : $data->datetime_finish) / 60), 4),
+                $time_pending,
                 $data->user_start?->name ?? null,
                 $data->user_end?->name ?? null,
                 round(($data->total_paused / 60), 4),
                 $data->reception?->typeModelOrder?->name,
                 $data->vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($data->vehicle->lastDeliveryVehicle->created_at)) : null,
                 $data->estimatedDates?->pluck('estimated_date')->implode(',') ?? null,
+                $data->lastDeliveredPendingTask->detime_finish ?? ''
             ];
             array_push($array, $line);
         }
@@ -162,7 +177,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Tiempo (horas)',
             'Negocio',
             'última salida',
-            'Fecha estimada'
+            'Fecha estimada',
+            'last_delivered_pending_task'
         ];
     }
 }
