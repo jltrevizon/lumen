@@ -16,7 +16,7 @@ class PendingTask extends Model
 {
     use HasFactory, Filterable;
 
-    const ORDER_TASKS = [39, 11, 2, 3, 4, 41, 5, 6, 7, 8]; 
+    const ORDER_TASKS = [39, 11, 2, 3, 4, 41, 5, 6, 7, 8];
 
     protected $fillable = [
         'vehicle_id',
@@ -61,6 +61,10 @@ class PendingTask extends Model
         return $this->hasOne(DeliveryVehicle::class)->withTrashed()->ofMany([
             'pending_task_id' => 'max'
         ]);
+    }
+
+    public function lastDeliveredPendingTask(){
+        return $this->belongsTo(PendingTask::class, 'last_delivered_pending_task_id', 'id');
     }
 
     public function questionAnswer(){
