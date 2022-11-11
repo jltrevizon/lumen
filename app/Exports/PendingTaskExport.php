@@ -68,7 +68,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             ->whereNotNull('reception_id')
             ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-       //     ->whereNotIn('vehicle_id', $vehicle_ids)
+            // ->limit(100)
             ->get();
     }
 
@@ -80,7 +80,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             $line = [
                 $data->vehicle->plate,
                 $this->dateFaormat($data->reception?->created_at),
-                $this->dateFaormat($data->reception?->group_task?->datetime_approved),
+                $this->dateFaormat($data->reception?->groupTask?->datetime_approved),
                 $data->vehicle->kms,
                 $data->vehicle->vehicleModel->brand->name ?? null,
                 $data->vehicle->vehicleModel->name ?? null,
