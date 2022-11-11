@@ -67,7 +67,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 },
             ))
             ->whereNotNull('reception_id')
-            ->where('approved', true)->whereIn('state_pending_task_id', [StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
+            ->where('approved', true)
+            ->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             // ->limit(100)
             // ->where('vehicle_id', 15181)
