@@ -45,14 +45,17 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                         ));
                 },
                 'reception' => function($q) {
-                    $q->select('id', 'created_at', 'type_model_order_id', 'campa_id')
+                    $q->select('id', 'created_at', 'type_model_order_id', 'campa_id', 'group_task_id')
                     ->with([
                         'typeModelOrder' => function($query) {
                             $query->select('id', 'name');
                         },
                         'campa' => function($query) {
                             $query->select('id', 'name');
-                        }
+                        },
+                        'groupTask' => function($query) {
+                            $query->select('id', 'datetime_approved');
+                        },
                     ]);
                 },
                 'userStart' => function ($query) {
@@ -77,6 +80,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             $line = [
                 $data->vehicle->plate,
                 $data->reception ? date('d/m/Y', strtotime($data->reception->created_at)) : null,
+                $data->reception?->group_task ? date('d/m/Y', strtotime($data->reception->group_task->datetime_approved)) : null,
                 $data->vehicle->kms,
                 $data->vehicle->vehicleModel->brand->name ?? null,
                 $data->vehicle->vehicleModel->name ?? null,
@@ -94,7 +98,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
                 $data->user_start?->name ?? null,
                 $data->user_end?->name ?? null,
-                round(($data->total_paused / 60), 2),
+                round(($data->total_paused / 60), 4),
                 $data->reception?->typeModelOrder?->name,
                 $data->vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($data->vehicle->lastDeliveryVehicle->created_at)) : null,
                 $data->estimatedDates?->pluck('estimated_date')->implode(',') ?? null,
@@ -109,6 +113,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
         return [
             'Matrícula',
             'Fecha de recepción',
+            'Fecha de aprobación',
             'Kilómetros',
             'Marca',
             'Modelo',

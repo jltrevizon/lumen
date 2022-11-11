@@ -18,7 +18,9 @@ class GroupTask extends Model
         'vehicle_id',
         'questionnaire_id',
         'approved',
-        'approved_available'
+        'approved_available',
+        'datetime_approved',
+        'datetime_defleeting'
     ];
 
     public function pendingTasks(){
