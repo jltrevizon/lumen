@@ -18,9 +18,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
      */
     public function collection()
     {
-        return PendingTask::select(['datetime_pending', 'datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
-            ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
-            // ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
+        return PendingTask::select(['datetime_pending', 'datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id', 'state_pending_task_id'])
             ->with(array(
                 'vehicle' => function ($query) {
                     $query->select(['id', 'plate', 'kms', 'has_environment_label', 'company_id', 'vehicle_model_id'])
@@ -65,6 +63,9 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 'userEnd' => function ($query) {
                     $query->select('id', 'name');
                 },
+                'statePendingTask' => function ($query) {
+                    $query->select('id', 'name');
+                } 
             ))
             ->whereNotNull('reception_id')
             ->where('approved', true)
@@ -96,11 +97,11 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->reception &&  $data->reception->campa ? $data->reception->campa->name : null,
                 $data->vehicle->category_name ?? null,
                 $data->task->name ?? null,
-                $data->state_pending_task_name,
+                $data->statePendingTask->name,
                 $data->datetime_pending ? date('d/m/Y H:i:s', strtotime($data->datetime_pending)) : null,
                 $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
-                round(($this->diffDateTimes($data->datetime_pending, $data->datetime_finish) / 60), 4),
+                round(($this->diffDateTimes($data->datetime_pending, $data->state_pending_task_id === 1 ? new DateTime() : $data->datetime_finish) / 60), 4),
                 $data->user_start?->name ?? null,
                 $data->user_end?->name ?? null,
                 round(($data->total_paused / 60), 4),
