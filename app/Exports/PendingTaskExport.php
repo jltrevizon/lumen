@@ -17,7 +17,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
      */
     public function collection()
     {
-        return PendingTask::select(['datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
+        return PendingTask::select(['datetime_pending', 'datetime_start', 'datetime_finish', 'observations', 'vehicle_id', 'task_id', 'total_paused', 'reception_id'])
             ->selectRaw(DB::raw('(select sp.name from state_pending_tasks sp where sp.id = pending_tasks.state_pending_task_id) as state_pending_task_name'))
             // ->selectRaw(DB::raw('(select c.name from campas c where c.id = pending_tasks.campa_id) as campa_name'))
             ->with(array(
@@ -94,6 +94,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->vehicle->category_name ?? null,
                 $data->task->name ?? null,
                 $data->state_pending_task_name,
+                $data->datetime_pending ? date('d/m/Y H:i:s', strtotime($data->datetime_pending)) : null,
                 $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
                 $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
                 $data->user_start?->name ?? null,
@@ -134,6 +135,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             'Categoría',
             'Tarea',
             'Estado tarea',
+            'Fecha pendiente tarea',
             'Fecha inicio tarea',
             'Fecha fin tarea',
             'Operario Inicio la Tarea',
