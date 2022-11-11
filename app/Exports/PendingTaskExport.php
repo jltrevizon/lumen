@@ -79,8 +79,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
         if ($data->vehicle) {
             $line = [
                 $data->vehicle->plate,
-                $data->reception ? date('d/m/Y', strtotime($data->reception->created_at)) : null,
-                $data->reception?->group_task ? date('d/m/Y', strtotime($data->reception->group_task->datetime_approved)) : null,
+                $this->dateFaormat($data->reception?->created_at),
+                $this->dateFaormat($data->reception?->group_task?->datetime_approved),
                 $data->vehicle->kms,
                 $data->vehicle->vehicleModel->brand->name ?? null,
                 $data->vehicle->vehicleModel->name ?? null,
@@ -106,6 +106,13 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             array_push($array, $line);
         }
         return $array;
+    }
+
+    public function dateFaormat($date) {
+        if ($date) {
+            return date('d/m/Y', strtotime($date));
+        }
+        return '-';
     }
 
     public function headings(): array
