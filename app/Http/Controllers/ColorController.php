@@ -19,9 +19,9 @@ class ColorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->getDataResponse($this->colorRepository->index(), Response::HTTP_OK);
+        return $this->getDataResponse($this->colorRepository->index($request), Response::HTTP_OK);
     }
 
     /**
