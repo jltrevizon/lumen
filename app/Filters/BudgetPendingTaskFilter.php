@@ -53,7 +53,7 @@ class BudgetPendingTaskFilter extends ModelFilter
     }
 
     public function hasVehicle($value) {
-        return $this->has('vehicle');
+        return $this->has('pendingTask.vehicle');
     }
 
 }
