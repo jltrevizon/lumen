@@ -352,6 +352,12 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeStateNotIds($query, array $ids){
+        return $query->whereHas('subState', function (Builder $builder) use ($ids) {
+            return $builder->whereNotIn('state_id', $ids);
+        });
+    }
+
     public function scopeByCompanies($query, array $ids){
         return $query->whereIn('company_id', $ids);
     }

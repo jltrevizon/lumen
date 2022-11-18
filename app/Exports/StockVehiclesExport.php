@@ -2,9 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Company;
-use App\Models\StatePendingTask;
-use App\Models\SubState;
 use App\Models\Vehicle;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -21,8 +18,6 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
 
     public function collection()
     {
-        // $ids = collect(SubState::where('id', '<>', SubState::ALQUILADO)->get())->map(function ($item){ return $item->id;})->toArray();
-        // $filter = array_merge([ 'defleetingAndDelivery' => 1, 'subStates' => array_merge($ids, [null]) ]);
         $request = $this->request;
         return Vehicle::filter($request->all())->get();
     }

@@ -22,6 +22,11 @@ class VehicleFilter extends ModelFilter
         return $this->campasIds($ids);
     }
 
+    public function campaIds($ids)
+    {
+        return $this->campasIds($ids);
+    }
+
     public function companyIds($ids)
     {
         return $this->byCompanies($ids);
@@ -40,6 +45,11 @@ class VehicleFilter extends ModelFilter
     public function states($ids)
     {
         return $this->stateIds($ids);
+    }
+
+    public function statesNotIds($ids)
+    {
+        return $this->stateNotIds($ids);
     }
 
     public function plate($plate)

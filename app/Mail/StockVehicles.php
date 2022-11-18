@@ -8,6 +8,7 @@ use App\Exports\StockVehiclesExport;
 use App\Models\Campa;
 use App\Models\PeopleForReport;
 use App\Models\Role;
+use App\Models\SubState;
 use App\Models\TypeReport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,7 +50,14 @@ class StockVehicles extends Mailable
                 'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d/m/Y')
             ];
 
-            $file = Excel::download(new StockVehiclesExport($campa->id), 'entradas.xlsx')->getFile();
+            $request = request();
+            $request->merge([
+                'campaIds[]' => $campa->id,
+                'statesNotIds' => [4, 5, 10],
+                'defleetingAndDelivery' => 1
+            ]);
+
+            $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
             rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
             $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
 
@@ -97,7 +105,7 @@ class StockVehicles extends Mailable
             ->get();
 
 
-        $file = Excel::download(new StockVehiclesExport(null), 'entradas.xlsx')->getFile();
+        $file = Excel::download(new StockVehiclesExport(request()), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
         $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
 
