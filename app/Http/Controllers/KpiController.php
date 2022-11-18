@@ -135,6 +135,6 @@ class KpiController extends Controller
         $date = microtime(true);
         $array = explode('.', $date);
         ob_clean();
-        return Excel::download(new StockVehiclesExport($request->input('campaId')), 'stock-vehículos-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
+        return Excel::download(new StockVehiclesExport($request), 'stock-vehículos-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
 }

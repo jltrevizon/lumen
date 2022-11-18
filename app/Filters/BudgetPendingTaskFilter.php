@@ -52,4 +52,8 @@ class BudgetPendingTaskFilter extends ModelFilter
         return $this->orderBy($field);
     }
 
+    public function hasVehicle($value) {
+        return $this->has('vehicle');
+    }
+
 }
