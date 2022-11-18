@@ -54,7 +54,7 @@ class StockVehicles extends Mailable
             $request->merge([
                 'campaIds[]' => $campa->id,
                 'statesNotIds' => [4, 5, 10],
-                'defleetingAndDelivery' => 1
+                'defleetingAndDelivery' => 0
             ]);
 
             $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
