@@ -39,10 +39,13 @@ class StockVehicles extends Mailable
     public function build()
     {
         $campas = Campa::where('active', true)->get();
-        $params = [
+        $request = request();
+        $request->merge([
             'statesNotIds' => [4, 5, 10],
-            'defleetingAndDelivery' => 1
-        ];
+            'defleetingAndDelivery' => 1,
+            'campaIds' => [3]
+        ]);
+
         foreach ($campas as $campa) {
 
             $peopleForReport = PeopleForReport::with(['user'])
@@ -53,11 +56,6 @@ class StockVehicles extends Mailable
                 'title' => 'Stock de vehículos',
                 'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d/m/Y')
             ];
-
-            $request = request();
-            $request->merge(array_merge($params, [
-                'campaIds[]' => $campa->id,
-            ]));
 
             $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
             rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
@@ -105,9 +103,6 @@ class StockVehicles extends Mailable
                 return $builder->where('role_id', Role::GLOBAL_MANAGER);
             })
             ->get();
-
-        $request = request();
-        $request->merge($params);
 
         $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
