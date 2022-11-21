@@ -41,7 +41,7 @@ class StockVehicles extends Mailable
         $campas = Campa::where('active', true)->get();
         $params = [
             'statesNotIds' => [4, 5, 10],
-            'defleetingAndDelivery' => 0
+            'defleetingAndDelivery' => 1
         ];
         foreach ($campas as $campa) {
 
