@@ -39,6 +39,10 @@ class StockVehicles extends Mailable
     public function build()
     {
         $campas = Campa::where('active', true)->get();
+        $params = [
+            'statesNotIds' => [4, 5, 10],
+            'defleetingAndDelivery' => 0
+        ];
         foreach ($campas as $campa) {
 
             $peopleForReport = PeopleForReport::with(['user'])
@@ -51,11 +55,9 @@ class StockVehicles extends Mailable
             ];
 
             $request = request();
-            $request->merge([
+            $request->merge(array_merge($params, [
                 'campaIds[]' => $campa->id,
-                'statesNotIds' => [4, 5, 10],
-                'defleetingAndDelivery' => 0
-            ]);
+            ]));
 
             $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
             rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
@@ -104,8 +106,10 @@ class StockVehicles extends Mailable
             })
             ->get();
 
+        $request = request();
+        $request->merge($params);
 
-        $file = Excel::download(new StockVehiclesExport(request()), 'entradas.xlsx')->getFile();
+        $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
         $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
 
