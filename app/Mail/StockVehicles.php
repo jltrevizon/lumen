@@ -40,11 +40,7 @@ class StockVehicles extends Mailable
     {
         $campas = Campa::where('active', true)->get();
         $request = request();
-        $request->merge([
-            'statesNotIds' => [4, 5, 10],
-            'defleetingAndDelivery' => 1,
-            'campaIds' => [3]
-        ]);
+        $request->merge(['statesNotIds' => [4, 5, 10], 'defleetingAndDelivery' => 1, 'campaIds' => [3] ]);
 
         foreach ($campas as $campa) {
 
