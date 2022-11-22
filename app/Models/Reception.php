@@ -79,4 +79,12 @@ class Reception extends Model
         }
         return $this->whereIn('vehicle_id', $vehicle_ids);
     }
+
+    public function allApprovedPendingTasks(){
+        return $this->hasMany(PendingTask::class)
+            ->where('approved', 1)
+            ->selectRaw('*, (CASE WHEN pending_tasks.order > 0 THEN pending_tasks.order Else 100000000000 END) as order_str')
+            ->orderByRaw('order_str asc')
+            ->orderBy('datetime_finish', 'desc');
+    }
 }
