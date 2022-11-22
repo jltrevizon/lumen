@@ -87,4 +87,13 @@ class Reception extends Model
             ->orderByRaw('order_str asc')
             ->orderBy('datetime_finish', 'desc');
     }
+
+    public function lastPendingTaskDelivery(){
+        return $this->hasOne(PendingTask::class)
+            ->where('task_id', Task::TOALQUILADO)
+            ->where('approved', true)
+            ->where(function($query){
+                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
+            });
+    }
 }
