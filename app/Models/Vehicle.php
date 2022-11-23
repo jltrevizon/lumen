@@ -93,17 +93,6 @@ class Vehicle extends Model
             })->whereHas('budgetPendingTasks');
     }
 
-    public function lastPendingTaskDelivery(){
-        return $this->hasOne(PendingTask::class, 'vehicle_id')->ofMany([
-            'id' => 'max'
-            ])
-            ->where('approved', true)
-            ->where('task_id', Task::TOALQUILADO)
-            ->where(function($query){
-                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
-            });
-    }
-
     public function groupTasks(){
         return $this->hasMany(GroupTask::class);
     }
