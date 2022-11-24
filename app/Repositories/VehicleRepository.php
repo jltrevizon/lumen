@@ -276,8 +276,21 @@ class VehicleRepository extends Repository
             $vehicle->company_id = $user->company_id;
         }
         $vehicle->created_by = Auth::id();
+        $date = $request->input('created_at');
+        if (!is_null($date)) {
+            $vehicle->created_at = $date;
+            $vehicle->updated_at = $date;
+        }
         $vehicle->save();
         $this->newReception($vehicle->id);
+   
+        $vehicle = Vehicle::find($vehicle->id);
+        $reception = $vehicle->lastReception;
+        if (!is_null($date) && !is_null($reception)) {
+            $reception->created_at = $date;
+            $reception->updated_at = $date;
+            $reception->save();
+        }
         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return $vehicle;
     }

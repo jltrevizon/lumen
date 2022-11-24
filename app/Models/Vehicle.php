@@ -54,7 +54,9 @@ class Vehicle extends Model
         'documentation',
         'ready_to_delivery',
         'deleted_user_id',
-        'seater'
+        'seater',
+        'created_at',
+        'updated_at'
     ];
 
     public function category(){
