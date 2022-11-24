@@ -165,13 +165,14 @@ class QuestionAnswerRepository
             $vehicle = Vehicle::find($request->input('vehicle_id'));
             $vehicle->has_environment_label = $has_environment_label;
             $vehicle->save();
+            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         } else if ($vehicle->lastReception) {
             $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
             $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
             $vehicle->lastReception->save();
+            $sub_state_id = $vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET ? $vehicle->sub_state_id : SubState::CAMPA;
+            $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $sub_state_id);
         }
-
-        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
 
         $pictures = $request->input('pictures') ?? [];
 
