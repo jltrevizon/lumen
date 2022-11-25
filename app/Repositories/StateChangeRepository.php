@@ -62,13 +62,11 @@ class StateChangeRepository extends Repository
                         ->where('state_pending_task_id', StatePendingTask::FINISHED)
                         ->get();
 
-                    Log::debug($pendingTasks);
-                    
                     if (count($pendingTasks) > 0) {
                         $sub_state_id = SubState::ALQUILADO;
                     } else if ($sub_state_id != SubState::ALQUILADO) {
                         $sub_state_id = $param_sub_state_id ?? SubState::CAMPA;
-                    }
+                    }                    
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
                     $sub_state_id = $pendingTask->task->sub_state_id;
@@ -148,7 +146,6 @@ class StateChangeRepository extends Repository
         }
 
         $vehicle->sub_state_id = $sub_state_id;
-
         $vehicle->save();
 
         $this->store($vehicle->id, $vehicle->sub_state_id);

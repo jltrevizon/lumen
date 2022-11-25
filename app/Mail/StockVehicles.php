@@ -14,6 +14,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -40,7 +41,13 @@ class StockVehicles extends Mailable
     {
         $campas = Campa::where('active', true)->get();
         $request = request();
-        $request->merge(['statesNotIds' => [4, 5, 10], 'defleetingAndDelivery' => 1, 'campaIds' => [3] ]);
+        $request->merge([
+            'statesNotIds' => [4, 5, 10],
+            'defleetingAndDelivery' => 1,
+            'campaIds' => [3],
+            'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+            'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
+        ]);
 
         foreach ($campas as $campa) {
 
