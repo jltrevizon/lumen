@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
@@ -97,7 +98,7 @@ class Reception extends Model
             });
     }
 
-    public function scopeSubStateNotIds($query, array $ids){
+    public function scopeBySubStatesNotIds($query, array $ids){
         return $query->whereHas('vehicle', function (Builder $builder) use ($ids) {
             return $builder->whereNotIn('sub_state_id', $ids);
         });

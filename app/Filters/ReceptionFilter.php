@@ -19,7 +19,7 @@ class ReceptionFilter extends ModelFilter
 
     public function subStatesNotIds($ids)
     {
-        return $this->subStateNotIds($ids);
+        return $this->bySubStatesNotIds($ids);
     }
 
     public function vehiclePlate($plate)
