@@ -40,17 +40,16 @@ class StockVehicles extends Mailable
     public function build()
     {
         $campas = Campa::where('active', true)->get();
-        $request = request();
-        $request->merge([
-            'statesNotIds' => [4, 5, 10],
-            'defleetingAndDelivery' => 1,
-            'campaIds' => [3],
-            'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
-            'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
-        ]);
 
         foreach ($campas as $campa) {
-
+            $request = request();
+            $request->merge([
+                'statesNotIds' => [4, 5, 10],
+                'defleetingAndDelivery' => 1,
+                'campaIds' => [$campa->id],
+              //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+              //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
+            ]);
             $peopleForReport = PeopleForReport::with(['user'])
                 ->where('type_report_id', TypeReport::STOCK)
                 ->where('campa_id', $campa->id)
@@ -106,7 +105,12 @@ class StockVehicles extends Mailable
                 return $builder->where('role_id', Role::GLOBAL_MANAGER);
             })
             ->get();
-
+        $request->merge([
+                'statesNotIds' => [4, 5, 10],
+                'defleetingAndDelivery' => 1
+              //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+              //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
+        ]);
         $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
         $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
