@@ -97,7 +97,7 @@ class Reception extends Model
             });
     }
 
-    public function subStateNotIds($query, array $ids){
+    public function scopeSubStateNotIds($query, array $ids){
         return $query->whereHas('vehicle', function (Builder $builder) use ($ids) {
             return $builder->whereNotIn('sub_state_id', $ids);
         });
