@@ -96,4 +96,10 @@ class Reception extends Model
                 return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
             });
     }
+
+    public function subStateNotIds($query, array $ids){
+        return $query->whereHas('vehicle', function (Builder $builder) use ($ids) {
+            return $builder->whereNotIn('sub_state_id', $ids);
+        });
+    }
 }
