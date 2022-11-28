@@ -132,16 +132,6 @@ class KpiController extends Controller
         $date = microtime(true);
         $array = explode('.', $date);
         ob_clean();
-
-        $request2 = request();
-        $request2->merge([
-                'statesNotIds' => [4, 5, 10],
-                'defleetingAndDelivery' => 1
-              //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
-              //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
-        ]);
-        return Excel::download(new StockVehiclesExport($request2), 'entradas.xlsx');
-
         return Excel::download(new StockVehiclesExport($request), 'stock-vehículos-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
 }

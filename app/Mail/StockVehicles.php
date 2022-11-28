@@ -42,14 +42,6 @@ class StockVehicles extends Mailable
         $campas = Campa::where('active', true)->get();
 
         foreach ($campas as $campa) {
-            $request = request();
-            $request->merge([
-                'statesNotIds' => [4, 5, 10],
-                'defleetingAndDelivery' => 1,
-                'campaIds' => [$campa->id],
-              //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
-              //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
-            ]);
             $peopleForReport = PeopleForReport::with(['user'])
                 ->where('type_report_id', TypeReport::STOCK)
                 ->where('campa_id', $campa->id)
@@ -58,8 +50,14 @@ class StockVehicles extends Mailable
                 'title' => 'Stock de vehículos',
                 'sub_title' => 'Adjunto se encuentra un documento con el stock de los vehículos al día ' . date('d/m/Y')
             ];
-
-            $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
+            $arr = collect([
+                'statesNotIds' => [4, 5, 10],
+                'defleetingAndDelivery' => 1,
+                'campaIds' => [$campa->id],
+              //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+              //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
+            ]);
+            $file = Excel::download(new StockVehiclesExport($arr), 'entradas.xlsx')->getFile();
             rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
             $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
 
@@ -108,14 +106,13 @@ class StockVehicles extends Mailable
             })
             ->get();
         
-        $request2 = request();
-        $request2->merge([
+        $arr = collect([
                 'statesNotIds' => [4, 5, 10],
                 'defleetingAndDelivery' => 1
               //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
               //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
         ]);
-        $file = Excel::download(new StockVehiclesExport($request2), 'entradas.xlsx')->getFile();
+        $file = Excel::download(new StockVehiclesExport($arr), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
         $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
 
