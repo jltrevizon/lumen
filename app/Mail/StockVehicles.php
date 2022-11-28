@@ -70,7 +70,9 @@ class StockVehicles extends Mailable
             $file = Excel::download(new DeliveryVehiclesExport([
                 'pendindTaskNull' => 0,
                 'vehicleDeleted' => 0,
-                'campaIds' => [$campa->id]
+                'campaIds' => [$campa->id],
+                'createdAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+                'createdAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
             ]), 'entradas.xlsx')->getFile();
 
             rename($file->getRealPath(), $file->getPath() . '/' . 'deliveries.xlsx');
@@ -124,7 +126,9 @@ class StockVehicles extends Mailable
 
         $file = Excel::download(new DeliveryVehiclesExport([
             'pendindTaskNull' => 0,
-            'vehicleDeleted' => 0
+            'vehicleDeleted' => 0,
+            'createdAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+            'createdAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
         ]), 'entradas.xlsx')->getFile();
 
         rename($file->getRealPath(), $file->getPath() . '/' . 'deliveries.xlsx');
