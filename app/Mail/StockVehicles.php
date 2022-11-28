@@ -105,13 +105,15 @@ class StockVehicles extends Mailable
                 return $builder->where('role_id', Role::GLOBAL_MANAGER);
             })
             ->get();
-        $request->merge([
+        
+        $request2 = request();
+        $request2->merge([
                 'statesNotIds' => [4, 5, 10],
                 'defleetingAndDelivery' => 1
               //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
               //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
         ]);
-        $file = Excel::download(new StockVehiclesExport($request), 'entradas.xlsx')->getFile();
+        $file = Excel::download(new StockVehiclesExport($request2), 'entradas.xlsx')->getFile();
         rename($file->getRealPath(), $file->getPath() . '/' . 'stock-vehículos.xlsx');
         $fileRename1 = $file->getPath() . '/stock-vehículos.xlsx';
 
