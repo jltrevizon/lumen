@@ -24,6 +24,17 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
+    Route::get('/send-emails', function () {
+        ini_set("memory_limit", "-1");
+        ini_set('max_execution_time', '-1');
+        ob_clean();
+        
+        $exitCode = Artisan::call('stock:vehicles');
+
+        return $exitCode === 0 ? 'successful run camand' : 'error run camand';
+
+    })->name('send-emails');
+
     $router->post('/defleeting', 'VehicleController@defleeting');
 
     $router->post('/auth/signin', 'AuthController@login');
