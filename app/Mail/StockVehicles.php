@@ -108,7 +108,8 @@ class StockVehicles extends Mailable
         
         $arr = collect([
                 'statesNotIds' => [4, 5, 10],
-                'defleetingAndDelivery' => 1
+                'defleetingAndDelivery' => 1,
+                'campaNull' => 0
               //  'lastReceptionCreatedAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
               //  'lastReceptionCreatedAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
         ]);
