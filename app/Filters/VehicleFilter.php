@@ -347,7 +347,10 @@ class VehicleFilter extends ModelFilter
     }
     public function withReceptionId($id)
     {
-        return $this->selectRaw("*, (SELECT r.id FROM receptions r WHERE r.id = {$id} AND vehicles.id = r.vehicle_id ) AS reception_id");
+        $sql = <<<SQL
+            Select max(r.id) from receptions r where r.vehicle_id = vehicles.id
+        SQL;
+        return $this->selectRaw("*, (SELECT r.id FROM receptions r WHERE r.id = ". ($id ? $id : "({$sql})") ." AND vehicles.id = r.vehicle_id ) AS reception_id");
     }
     public function withUbication()
     {
