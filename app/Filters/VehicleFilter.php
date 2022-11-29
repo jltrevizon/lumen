@@ -27,6 +27,14 @@ class VehicleFilter extends ModelFilter
         return $this->campasIds($ids);
     }
 
+    public function campaNull($value)
+    {
+        if ($value) {
+            return $this->whereNull('campa_id');
+        }
+        return $this->whereNotNull('campa_id');
+    }
+
     public function companyIds($ids)
     {
         return $this->byCompanies($ids);
