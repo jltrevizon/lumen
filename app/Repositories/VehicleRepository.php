@@ -81,7 +81,9 @@ class VehicleRepository extends Repository
 
     public function getById($request, $id)
     {
-        return Vehicle::with($this->getWiths($request->with) ?? [])->findOrFail($id);
+        return Vehicle::with($this->getWiths($request->with) ?? [])
+        ->filter($request->all())
+        ->findOrFail($id);
     }
 
     public function filterVehicle($request)
@@ -283,7 +285,7 @@ class VehicleRepository extends Repository
         }
         $vehicle->save();
         $this->newReception($vehicle->id);
-   
+
         $vehicle = Vehicle::find($vehicle->id);
         $reception = $vehicle->lastReception;
         if (!is_null($date) && !is_null($reception)) {
