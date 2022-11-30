@@ -30,3 +30,5 @@ sudo apt install php8.1-amqp php8.1-common php8.1-gd php8.1-ldap php8.1-odbc php
 
 sudo apt install php8.1-apcu
 sudo apt install php8.1-dev
+
+sudo update-alternatives --config php

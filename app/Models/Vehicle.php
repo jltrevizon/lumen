@@ -311,7 +311,10 @@ class Vehicle extends Model
         'trade_state_id',
         'documentation',
         'ready_to_delivery',
-        'deleted_user_id'
+        'deleted_user_id',
+        'seater',
+        'created_at',
+        'updated_at'
     ];
 
     public function category(){
@@ -349,17 +352,6 @@ class Vehicle extends Model
                 return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             })->whereHas('budgetPendingTasks');
-    }
-
-    public function lastPendingTaskDelivery(){
-        return $this->hasOne(PendingTask::class, 'vehicle_id')->ofMany([
-            'id' => 'max'
-            ])
-            ->where('approved', true)
-            ->where('task_id', Task::TOALQUILADO)
-            ->where(function($query){
-                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
-            });
     }
 
     public function groupTasks(){

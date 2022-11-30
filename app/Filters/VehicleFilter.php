@@ -27,6 +27,14 @@ class VehicleFilter extends ModelFilter
         return $this->campasIds($ids);
     }
 
+    public function campaNull($value)
+    {
+        if ($value) {
+            return $this->whereNull('campa_id');
+        }
+        return $this->whereNotNull('campa_id');
+    }
+
     public function companyIds($ids)
     {
         return $this->byCompanies($ids);
@@ -302,7 +310,8 @@ class VehicleFilter extends ModelFilter
                 ->where('approved', 1)
                 ->where('task_id', 38)
                 ->whereRaw(DB::raw('reception_id = (Select max(r.id) from receptions r where r.vehicle_id = pending_tasks.vehicle_id)'))
-                ->whereRaw(DB::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))
+                ->whereRaw(DB::raw('exists (SELECT v.id from vehicles v where v.sub_state_id = 8 and v.id = vehicle_id)'))
+                //->whereRaw(DB::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))
                 ->get('vehicle_id')
         )->map(function ($item) {
             return $item->vehicle_id;
@@ -336,7 +345,13 @@ class VehicleFilter extends ModelFilter
     {
         return $this->orderBy($field);
     }
-
+    public function withReceptionId($id)
+    {
+        $sql = <<<SQL
+            Select max(r.id) from receptions r where r.vehicle_id = vehicles.id
+        SQL;
+        return $this->selectRaw("*, (SELECT r.id FROM receptions r WHERE r.id = ". ($id ? $id : "({$sql})") ." AND vehicles.id = r.vehicle_id ) AS reception_id");
+    }
     public function withUbication()
     {
         return $this->with(array(

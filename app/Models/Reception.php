@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
@@ -171,5 +172,28 @@ class Reception extends Model
             return $this->whereNotIn('vehicle_id', $vehicle_ids);
         }
         return $this->whereIn('vehicle_id', $vehicle_ids);
+    }
+
+    public function allApprovedPendingTasks(){
+        return $this->hasMany(PendingTask::class)
+            ->where('approved', 1)
+            ->selectRaw('*, (CASE WHEN pending_tasks.order > 0 THEN pending_tasks.order Else 100000000000 END) as order_str')
+            ->orderByRaw('order_str asc')
+            ->orderBy('datetime_finish', 'desc');
+    }
+
+    public function lastPendingTaskDelivery(){
+        return $this->hasOne(PendingTask::class)
+            ->where('task_id', Task::TOALQUILADO)
+            ->where('approved', true)
+            ->where(function($query){
+                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
+            });
+    }
+
+    public function scopeBySubStatesNotIds($query, array $ids){
+        return $query->whereHas('vehicle', function (Builder $builder) use ($ids) {
+            return $builder->whereNotIn('sub_state_id', $ids);
+        });
     }
 }
