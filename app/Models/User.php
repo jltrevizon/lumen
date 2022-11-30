@@ -13,9 +13,160 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * Class User
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="User model",
+ *     description="User model",
+ * )
+ */
+
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
 
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="role_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Role ID",
+     *     title="Role ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="type_user_app_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type of the user in the app ID",
+     *     title="Type of User ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="workshop_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Workshop of the user ID",
+     *     title="Workshop ID",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="name",
+     *     type="string",
+     *     description="Name of the user",
+     *     title="Name",
+     * )
+     *
+     *
+     *
+     * @OA\Property(
+     *     property="surname",
+     *     type="string",
+     *     description="Surname of the user",
+     *     title="Surname",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="password",
+     *     type="string",
+     *     format="password",
+     *     description="Password of the user",
+     *     title="Password",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="email",
+     *     type="string",
+     *     format="email",
+     *     description="Email of the user",
+     *     title="Email",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="avatar",
+     *     type="string",
+     *     description="Avatar of the user",
+     *     title="Avatar",
+     * )
+     *
+     *
+     *
+     * @OA\Property(
+     *     property="phone",
+     *     type="integer",
+     *     format="int32",
+     *     description="Phone of the user",
+     *     title="Phone",
+     * )
+     *
+     * @OA\Property(
+     *     property="first_login",
+     *     type="boolean",
+     *     description="First login of the user",
+     *     title="First login",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="active",
+     *     type="boolean",
+     *     description="Status of the user",
+     *     title="Active",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="company_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Company of the user",
+     *     title="Company ID",
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="deleted_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was deleted",
+     *     title="Deleted at",
+     * )
+     *
+     *
+     */
     use Authenticatable, Authorizable, HasFactory, Notifiable;
 
     protected $fillable = [

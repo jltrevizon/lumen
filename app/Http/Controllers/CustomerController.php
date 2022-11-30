@@ -15,9 +15,51 @@ class CustomerController extends Controller
         $this->customerRepository = $customerRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/customers/getall",
+    *     tags={"customers"},
+    *     summary="Get all customers",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Customer"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(Request $request){
         return $this->getDataResponse($this->customerRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/customers/{id}",
+    *     tags={"customers"},
+    *     summary="Get customer by ID",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Customer"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Customer not found."
+    *     )
+    * )
+    */
 
     public function getById($id){
         return $this->getDataResponse($this->customerRepository->getById($id), HttpFoundationResponse::HTTP_OK);
@@ -31,6 +73,38 @@ class CustomerController extends Controller
 
         return $this->getDataResponse($this->customerRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/customers/update/{id}",
+     *     tags={"customers"},
+     *     summary="Updated customer",
+     *     @OA\RequestBody(
+     *         description="Updated customer object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Customer")
+     *     ),
+     *     operationId="updateCustomer",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Customer"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Customer not found"
+     *     ),
+     * )
+     */
 
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->customerRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);

@@ -28,10 +28,67 @@ class ReceptionController extends Controller
         return $this->createDataResponse($data, HttpFoundationResponse::HTTP_CREATED);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/reception/{id}",
+    *     tags={"receptions"},
+    *     summary="Get reception by ID",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Reception"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Reception not found."
+    *     )
+    * )
+    */
+
     public function getById($id)
     {
         return $this->getDataResponse($this->receptionRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Put(
+     *     path="reception/{id}",
+     *     tags={"receptions"},
+     *     summary="Updated reception",
+     *     @OA\RequestBody(
+     *         description="Updated reception object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Reception")
+     *     ),
+     *     operationId="updateReception",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Reception"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Reception not found"
+     *     ),
+     * )
+     */
 
     public function updateReception(Request $request, $id)
     {

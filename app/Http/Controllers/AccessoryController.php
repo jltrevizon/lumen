@@ -41,6 +41,38 @@ class AccessoryController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/accessories/{id}",
+     *     tags={"accessories"},
+     *     summary="Updated accessory",
+     *     @OA\RequestBody(
+     *         description="Updated accessory object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Accessory")
+     *     ),
+     *     operationId="updateAccessory",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Accessory"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Accessory not found"
+     *     ),
+     * )
+     */
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -35,11 +35,53 @@ class VehicleController extends Controller
         return $this->createDataResponse('Documento generandose, en cuanto esté listo, le llegará a su correo', HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/vehicles/getall",
+    *     tags={"vehicles"},
+    *     summary="Get all vehicles",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Vehicle"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(Request $request)
     {
 
         return $this->getDataResponse($this->vehicleRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/vehicles/{id}",
+    *     tags={"vehicles"},
+    *     summary="Get type vehicle by ID",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Vehicle"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Vehicle not found."
+    *     )
+    * )
+    */
 
     public function getById(Request $request, $id)
     {
@@ -62,6 +104,38 @@ class VehicleController extends Controller
         }
         return $this->createDataResponse(['vehicle' => $data], HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/vehicles/update/{id}",
+     *     tags={"vehicles"},
+     *     summary="Updated vehicle",
+     *     @OA\RequestBody(
+     *         description="Updated vehicle object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Vehicle")
+     *     ),
+     *     operationId="updateVehicle",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Vehicle"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Vehicle not found"
+     *     ),
+     * )
+     */
 
     public function update(Request $request, $id)
     {

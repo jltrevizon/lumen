@@ -17,7 +17,7 @@ class DamageImageController extends Controller
 
     /**
      * Display a listing of the resource.
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -36,6 +36,38 @@ class DamageImageController extends Controller
     {
         return $this->createDataResponse($this->damageImageRepository->store($request), Response::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/damage-images/{id}",
+     *     tags={"damage-images"},
+     *     summary="Updated damage image",
+     *     @OA\RequestBody(
+     *         description="Updated damage image object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/DamageImage")
+     *     ),
+     *     operationId="updateDamageImage",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/DamageImage"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Damage image not found"
+     *     ),
+     * )
+     */
 
     /**
      * Update the specified resource in storage.

@@ -37,6 +37,38 @@ class SquareController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/squares/{id}",
+     *     tags={"squares"},
+     *     summary="Updated square",
+     *     @OA\RequestBody(
+     *         description="Updated square object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Square")
+     *     ),
+     *     operationId="updateSquare",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Square"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Square not found"
+     *     ),
+     * )
+     */
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

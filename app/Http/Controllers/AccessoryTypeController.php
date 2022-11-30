@@ -31,7 +31,7 @@ class AccessoryTypeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         return $this->createDataResponse($this->accessoryTypeRepository->store($request), Response::HTTP_CREATED);
     }
 
@@ -45,6 +45,38 @@ class AccessoryTypeController extends Controller
     {
         return $this->getDataResponse($this->accessoryTypeRepository->show($id), Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/accessory-types/{id}",
+     *     tags={"accessory-types"},
+     *     summary="Updated accessory type",
+     *     @OA\RequestBody(
+     *         description="Updated accessory type object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/AccessoryType")
+     *     ),
+     *     operationId="updateAccessoryType",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/AccessoryType"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Accessory type not found"
+     *     ),
+     * )
+     */
 
     /**
      * Update the specified resource in storage.

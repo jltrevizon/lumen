@@ -9,8 +9,96 @@ use App\Models\Customer;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Company
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Company model",
+ *     description="Company model",
+ * )
+ */
+
 class Company extends Model
 {
+
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="name",
+     *     type="string",
+     *     description="Name",
+     *     title="Name",
+     * )
+     *
+     * @OA\Property(
+     *     property="tradename",
+     *     type="string",
+     *     description="Tradename",
+     *     title="Tradename",
+     * )
+     *
+     * @OA\Property(
+     *     property="nif",
+     *     type="string",
+     *     description="Nif",
+     *     title="Nif",
+     * )
+     *
+     * @OA\Property(
+     *     property="address",
+     *     type="string",
+     *     description="Address",
+     *     title="Address",
+     * )
+     *
+     * @OA\Property(
+     *     property="location",
+     *     type="string",
+     *     description="Location",
+     *     title="Location",
+     * )
+     *
+     * @OA\Property(
+     *     property="phone",
+     *     type="integer",
+     *     format="int32",
+     *     description="Phone",
+     *     title="Phone",
+     * )
+     *
+     * @OA\Property(
+     *     property="logo",
+     *     type="string",
+     *     description="Logo",
+     *     title="Logo",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Updated at",
+     * )
+     */
 
     use HasFactory, Filterable;
 

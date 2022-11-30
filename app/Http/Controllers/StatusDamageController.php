@@ -68,6 +68,38 @@ class StatusDamageController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/status-damages/{id}",
+     *     tags={"status-damages"},
+     *     summary="Updated status damage",
+     *     @OA\RequestBody(
+     *         description="Updated status damage object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StatusDamage")
+     *     ),
+     *     operationId="updateStatusDamage",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/StatusDamage"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Status damage not found"
+     *     ),
+     * )
+     */
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

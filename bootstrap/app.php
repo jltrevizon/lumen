@@ -6,6 +6,8 @@ require_once __DIR__.'/../vendor/autoload.php';
     dirname(__DIR__)
 ))->bootstrap();
 
+require_once __DIR__.'/../config/constants.php';
+
 date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 
 /*
@@ -25,6 +27,8 @@ $app = new Laravel\Lumen\Application(
 
 $app->register(Illuminate\Mail\MailServiceProvider::class);
 $app->configure('mail');
+$app->configure('swagger-lume');
+
 $app->withFacades();
 
 $app->withEloquent();
@@ -111,6 +115,7 @@ $app->register(App\Providers\BroadcastServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->register(Chuckrincon\LumenConfigDiscover\DiscoverServiceProvider::class);
 $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
+$app->register(\SwaggerLume\ServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

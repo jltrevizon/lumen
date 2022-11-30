@@ -21,8 +21,266 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class Vehicle
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Vehicle model",
+ *     description="Vehicle model",
+ * )
+ */
+
 class Vehicle extends Model
 {
+
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="remote_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Remote ID",
+     *     title="Remote ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="company_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Company ID",
+     *     title="Company ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="campa_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Campa ID",
+     *     title="Campa ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="category_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Category ID",
+     *     title="Category ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="sub_state_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Sub State ID",
+     *     title="Sub State ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="color_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Color ID",
+     *     title="Color ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="type_model_order_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type Model Order ID",
+     *     title="Type Model Order ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="ubication",
+     *     type="string",
+     *     description="Ubication",
+     *     title="Ubication",
+     * )
+     *
+     * @OA\Property(
+     *     property="plate",
+     *     type="string",
+     *     description="Plate",
+     *     title="Plate",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_model_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle Model ID",
+     *     title="Vehicle Model ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="kms",
+     *     type="integer",
+     *     format="int32",
+     *     description="KMS",
+     *     title="KMS",
+     * )
+     *
+     * @OA\Property(
+     *     property="last_change_state",
+     *     type="string",
+     *     format="date-time",
+     *     description="Last Change State",
+     *     title="Last Change State",
+     * )
+     *
+     * @OA\Property(
+     *     property="last_change_sub_state",
+     *     type="string",
+     *     format="date-time",
+     *     description="Last Change Sub State",
+     *     title="Last Change Sub State",
+     * )
+     *
+     * @OA\Property(
+     *     property="next_itv",
+     *     type="string",
+     *     format="date-time",
+     *     description="Next ITV",
+     *     title="Next ITV",
+     * )
+     *
+     * @OA\Property(
+     *     property="has_environment_label",
+     *     type="boolean",
+     *     description="Has environment label",
+     *     title="Has environment label",
+     * )
+     *
+     * @OA\Property(
+     *     property="observations",
+     *     type="string",
+     *     description="Observations",
+     *     title="Observations",
+     * )
+     *
+     * @OA\Property(
+     *     property="priority",
+     *     type="boolean",
+     *     description="Priority",
+     *     title="Priority",
+     * )
+     *
+     * @OA\Property(
+     *     property="version",
+     *     type="string",
+     *     description="Version",
+     *     title="Version",
+     * )
+     *
+     * @OA\Property(
+     *     property="vin",
+     *     type="string",
+     *     description="Vin",
+     *     title="Vin",
+     * )
+     *
+     * @OA\Property(
+     *     property="first_plate",
+     *     type="string",
+     *     format="date-time",
+     *     description="First Plate",
+     *     title="First Plate",
+     * )
+     *
+     * @OA\Property(
+     *     property="latitude",
+     *     type="string",
+     *     description="Latitude",
+     *     title="Latitude",
+     * )
+     *
+     * @OA\Property(
+     *     property="longitude",
+     *     type="string",
+     *     description="Longitude",
+     *     title="Longitude",
+     * )
+     *
+     * @OA\Property(
+     *     property="image",
+     *     type="string",
+     *     description="Image",
+     *     title="Image",
+     * )
+     *
+     * @OA\Property(
+     *     property="trade_state_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Trade State ID",
+     *     title="Trade State ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="documentation",
+     *     type="boolean",
+     *     description="Documentation",
+     *     title="Documentation",
+     * )
+     *
+     * @OA\Property(
+     *     property="ready_to_delivery",
+     *     type="boolean",
+     *     description="Ready to delivery",
+     *     title="Ready to delivery",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_by",
+     *     type="integer",
+     *     format="int64",
+     *     description="Created by",
+     *     title="Created by",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was deleted",
+     *     title="Deleted at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_user_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Deleted User ID",
+     *     title="Deleted User ID",
+     * )
+     */
 
     use HasFactory, Filterable, SoftDeletes;
 
@@ -329,7 +587,7 @@ class Vehicle extends Model
     }
 
     public function scopeCampasIds($query, array $campasIds){
-        $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0); 
+        $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0);
         if (count($ids) == count($campasIds)) {
             return $query->whereIn('campa_id', $ids);
         }

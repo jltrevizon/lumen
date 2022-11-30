@@ -15,9 +15,51 @@ class SubStateController extends Controller
         $this->subStateRepository = $subStateRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/sub-states/getall",
+    *     tags={"sub-states"},
+    *     summary="Get all sub states",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/SubState"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(Request $request){
         return $this->getDataResponse($this->subStateRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/sub-states/{id}",
+    *     tags={"sub-states"},
+    *     summary="Get sub state by ID",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/SubState"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Sub State not found."
+    *     )
+    * )
+    */
 
     public function getById($id){
         return $this->getDataResponse($this->subStateRepository->getById($id), HttpFoundationResponse::HTTP_OK);
@@ -32,6 +74,38 @@ class SubStateController extends Controller
 
         return $this->createDataResponse($this->subStateRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/sub-states/update/{id}",
+     *     tags={"sub-states"},
+     *     summary="Updated sub state",
+     *     @OA\RequestBody(
+     *         description="Updated sub state object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/SubState")
+     *     ),
+     *     operationId="updateSubState",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/SubState"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sub state not found"
+     *     ),
+     * )
+     */
 
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->subStateRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);

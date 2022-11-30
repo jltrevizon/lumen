@@ -8,9 +8,91 @@ use App\Models\Request;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Customer
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Customer model",
+ *     description="Customer model",
+ * )
+ */
+
 class Customer extends Model
 {
 
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="company_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Company ID",
+     *     title="Company ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="province_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Province ID",
+     *     title="Province ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="name",
+     *     type="string",
+     *     description="Name",
+     *     title="Name",
+     * )
+     *
+     * @OA\Property(
+     *     property="cif",
+     *     type="string",
+     *     description="Cif",
+     *     title="Cif",
+     * )
+     *
+     * @OA\Property(
+     *     property="phone",
+     *     type="integer",
+     *     format="int32",
+     *     description="Phone",
+     *     title="Phone",
+     * )
+     *
+     * @OA\Property(
+     *     property="address",
+     *     type="string",
+     *     description="Address",
+     *     title="Address",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     */
     use HasFactory, Filterable;
 
     protected $fillable = [

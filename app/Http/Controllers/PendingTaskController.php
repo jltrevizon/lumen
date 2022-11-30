@@ -26,9 +26,51 @@ class PendingTaskController extends Controller
         $this->pendingTaskRepository = $pendingTaskRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/pending-tasks/getall",
+    *     tags={"pending-tasks"},
+    *     summary="Get all pending tasks",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/PendingTask"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(Request $request){
         return $this->getDataResponse($this->pendingTaskRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/pending-tasks/{id}",
+    *     tags={"pending-tasks"},
+    *     summary="Get pending task by ID",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/PendingTask"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Pending Task not found."
+    *     )
+    * )
+    */
 
     public function getById(Request $request, $id){
         return $this->getDataResponse($this->pendingTaskRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
@@ -62,6 +104,38 @@ class PendingTaskController extends Controller
     public function finishAll(Request $request) {
         return $this->updateDataResponse($this->pendingTaskRepository->finishAll($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/pending-tasks/update/{id}",
+     *     tags={"pending-tasks"},
+     *     summary="Updated pending task",
+     *     @OA\RequestBody(
+     *         description="Updated pending task  object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/PendingTask")
+     *     ),
+     *     operationId="updatePendingTask",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/PendingTask"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Pending task not found"
+     *     ),
+     * )
+     */
 
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->pendingTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);

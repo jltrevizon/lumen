@@ -14,6 +14,23 @@ class DefleetVariableController extends Controller
         $this->defleetVariablesRepository = $defleetVariableRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/defleet-variables/getall",
+    *     tags={"defleet-variables"},
+    *     summary="Get all defleet vairables",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/DefleetVariable"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(Request $request){
         return $this->getDataResponse($this->defleetVariablesRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }

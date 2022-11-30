@@ -8,8 +8,67 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Incidence
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Incidence model",
+ *     description="Incidence model",
+ * )
+ */
+
 class Incidence extends Model
 {
+
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="incidence_type_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type of Incidence ID",
+     *     title="Type of Incidence ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="description",
+     *     type="string",
+     *     description="Description",
+     *     title="Description",
+     * )
+     *
+     * @OA\Property(
+     *     property="read",
+     *     type="boolean",
+     *     description="Read",
+     *     title="Read",
+     * )
+     *
+     * @OA\Property(
+     *     property="resolved",
+     *     type="boolean",
+     *     description="Resolved",
+     *     title="Resolved",
+     * )
+     */
 
     use HasFactory, Filterable;
 

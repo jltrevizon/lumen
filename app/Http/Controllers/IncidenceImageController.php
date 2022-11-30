@@ -20,7 +20,7 @@ class IncidenceImageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {   
+    {
         return $this->getDataResponse($this->incidenceImageRepository->index($request), Response::HTTP_OK);
     }
 
@@ -34,6 +34,38 @@ class IncidenceImageController extends Controller
     {
         return $this->createDataResponse($this->incidenceImageRepository->store($request), Response::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/incidence-images/{id}",
+     *     tags={"incidence-images"},
+     *     summary="Updated incidence images",
+     *     @OA\RequestBody(
+     *         description="Updated incidence images object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/IncidenceImage")
+     *     ),
+     *     operationId="updateIncidenceImage",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/IncidenceImage"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Incidence image not found"
+     *     ),
+     * )
+     */
 
     /**
      * Update the specified resource in storage.

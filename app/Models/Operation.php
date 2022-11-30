@@ -6,8 +6,77 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Operation
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Operation model",
+ *     description="Operation model",
+ * )
+ */
+
 class Operation extends Model
 {
+
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="pending_task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Pending Task ID",
+     *     title="Pending Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="operation_type_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type of Operation ID",
+     *     title="Type of Operation ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="description",
+     *     type="string",
+     *     description="Description",
+     *     title="Description",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     */
 
     use HasFactory, Filterable;
 

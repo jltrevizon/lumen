@@ -23,6 +23,30 @@ class QuestionnaireController extends Controller
         return $this->createDataResponse($this->questionnaireRepository->create($vehicle_id), HttpFoundationResponse::HTTP_CREATED);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/questionnaire/{id}",
+    *     tags={"questionnaires"},
+    *     summary="Get questionnaire by ID",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Questionnaire"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Questionnaire not found."
+    *     )
+    * )
+    */
     public function getById(Request $request, $id){
         return $this->getDataResponse($this->questionnaireRepository->getById($request, $id));
     }

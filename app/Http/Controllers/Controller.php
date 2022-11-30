@@ -11,6 +11,24 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+* @OA\Info(title="API Focus", version="1.0")
+*
+* @OA\Server(url=SWAGGER_API_HOST_LOCAL)
+* @OA\Server(url=SWAGGER_API_HOST_DEV)
+* @OA\Server(url=SWAGGER_API_HOST_PROD)
+*
+* @OA\SecurityScheme(
+*      securityScheme="bearerAuth",
+*      in="header",
+*      name="bearerAuth",
+*      type="http",
+*      scheme="bearer",
+*      bearerFormat="JWT",
+* )
+*/
+
+
 class Controller extends BaseController
 {
     protected function responseWithToken($token){

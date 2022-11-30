@@ -15,9 +15,51 @@ class PurchaseOperationController extends Controller
         $this->purchaseOperationRepository = $purchaseOperationRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/purchase-operations/getall",
+    *     tags={"purchase-operations"},
+    *     summary="Get all purchase operatons",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/PurchaseOperation"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(){
         return $this->getDataResponse(PurchaseOperation::all(), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/purchase-operations/{id}",
+    *     tags={"purchase-operations"},
+    *     summary="Get purchase operation by ID",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/PurchaseOperation"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Purchase Operation not found."
+    *     )
+    * )
+    */
 
     public function getById($id){
         return $this->getDataResponse($this->purchaseOperationRepository->getById($id), HttpFoundationResponse::HTTP_OK);
@@ -33,6 +75,38 @@ class PurchaseOperationController extends Controller
 
         return $this->createDataResponse($this->purchaseOperationRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/purchase-operations/update/{id}",
+     *     tags={"purchase-operations"},
+     *     summary="Updated purchase operation",
+     *     @OA\RequestBody(
+     *         description="Updated purchase operation object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/PurchaseOperation")
+     *     ),
+     *     operationId="updatePurchaseOperation",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/PurchaseOperation"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Purchase operation not found"
+     *     ),
+     * )
+     */
 
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->purchaseOperationRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);

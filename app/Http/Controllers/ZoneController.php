@@ -69,6 +69,38 @@ class ZoneController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/zones/{id}",
+     *     tags={"zones"},
+     *     summary="Updated zones",
+     *     @OA\RequestBody(
+     *         description="Updated zone object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Zone")
+     *     ),
+     *     operationId="updateZone",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Zone"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Zone not found"
+     *     ),
+     * )
+     */
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -17,6 +17,23 @@ class QuestionController extends Controller
         $this->questionRepository = $questionRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/questions/getall",
+    *     tags={"questions"},
+    *     summary="Get all type questions",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Question"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(Request $request){
         return $this->getDataResponse($this->questionRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }

@@ -16,6 +16,31 @@ class LoginLogController extends Controller
         $this->loginLogRepository = $loginLogRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/login-logs/getall",
+    *     tags={"login-logs"},
+    *     summary="Get all login logs",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/LoginLog"),
+    *    ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function getAll(Request $request){
         return $this->getDataResponse($this->loginLogRepository->getAll($request), Response::HTTP_OK);
     }

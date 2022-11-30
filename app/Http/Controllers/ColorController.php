@@ -36,6 +36,38 @@ class ColorController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/colors/{id}",
+     *     tags={"colors"},
+     *     summary="Updated color",
+     *     @OA\RequestBody(
+     *         description="Updated color object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Color")
+     *     ),
+     *     operationId="updateColor",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Color"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Color not found"
+     *     ),
+     * )
+     */
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

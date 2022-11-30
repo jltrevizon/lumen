@@ -533,7 +533,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
         $router->post('/accessory-vehicle', 'AccessoryVehicleController@store');
         $router->post('/accessory-vehicle/delete', 'AccessoryVehicleController@destroy');
-    
+
         /**
          * Damage images
          */
@@ -572,7 +572,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/type-delivery-note', 'TypeDeliveryNoteController@index');
 
-        /** 
+        /**
          * Damage Type
          */
         $router->get('/damage-type', 'DamageTypeController@index');
@@ -581,11 +581,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending Authorization
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
-    
+
         /** Estimated dates */
         $router->post('/estimated-dates', 'EstimatedDateController@store');
         $router->put('/estimated-dates/{id}', 'EstimatedDateController@update');
-        
+
         /**
          * Statistics
          */
