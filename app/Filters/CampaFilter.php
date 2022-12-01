@@ -35,7 +35,7 @@ class CampaFilter extends ModelFilter
         return $this->orderBy($field);
     }
     public function withCoincidence($params){
-        $paramArray = explode('|', $params);
+        $paramArray = explode(';', $params);
         if (count($paramArray)===3){ // params: attribute|keyword|ratio
             $attribute = $paramArray[0];
             $keyword = $paramArray[1];
