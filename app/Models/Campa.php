@@ -115,4 +115,9 @@ class Campa extends Model
             return $builder->whereIn('region_id', $ids);
         });
     }
+    public function scopeCoincidence($query, $attribute, $keyword, $ratio){
+        return $query->whereRaw("LEVENSHTEIN_RATIO({$attribute}, '{$keyword}') >= $ratio")
+        ->orderByRaw("LEVENSHTEIN_RATIO({$attribute}, '{$keyword}') DESC")->take(1);
+    }
+
 }
