@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Province;
 use App\Models\Company;
 use App\Models\Vehicle;
+use App\Traits\CoincidenceFilterTrait;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Campa extends Model
 {
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, CoincidenceFilterTrait;
 
     const ROCIAUTO = 1;
     const VIAS_PALANTE = 2;
@@ -115,9 +116,6 @@ class Campa extends Model
             return $builder->whereIn('region_id', $ids);
         });
     }
-    public function scopeCoincidence($query, $attribute, $keyword, $ratio){
-        return $query->whereRaw("LEVENSHTEIN_RATIO({$attribute}, '{$keyword}') >= $ratio")
-        ->orderByRaw("LEVENSHTEIN_RATIO({$attribute}, '{$keyword}') DESC")->take(1);
-    }
+
 
 }

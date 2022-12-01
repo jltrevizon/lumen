@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\CoincidenceFilterTrait;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class VehicleModel extends Model
 {
-    use Filterable;
+    use Filterable, CoincidenceFilterTrait;
     use HasFactory;
 
     protected $fillable = [

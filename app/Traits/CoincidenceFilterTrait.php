@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 trait CoincidenceFilterTrait {
+    
     public function withCoincidence($params){
         $paramArray = explode(';', $params);
         if (count($paramArray)===3){ // params: attribute|keyword|ratio
@@ -15,5 +16,10 @@ trait CoincidenceFilterTrait {
             return $this->limit(0);
         }
         return $this->limit(0);
+    }
+
+    public function scopeCoincidence($query, $attribute, $keyword, $ratio){
+        return $query->whereRaw("LEVENSHTEIN_RATIO({$attribute}, '{$keyword}') >= $ratio")
+        ->orderByRaw("LEVENSHTEIN_RATIO({$attribute}, '{$keyword}') DESC")->take(1);
     }
 }
