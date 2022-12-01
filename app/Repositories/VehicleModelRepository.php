@@ -6,15 +6,17 @@ use App\Models\VehicleModel;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 
-class VehicleModelRepository {
+class VehicleModelRepository extends Repository {
 
     public function __construct()
     {
 
     }
 
-    public function getAll(){
-        return VehicleModel::all();
+    public function getAll($request){
+        return VehicleModel::with($this->getWiths($request->with))
+        ->filter($request->all())
+        ->get();
     }
 
     public function store($request){
