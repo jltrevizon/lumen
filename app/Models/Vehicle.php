@@ -321,7 +321,7 @@ class Vehicle extends Model
     }
 
     public function scopeCampasIds($query, array $campasIds){
-        $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0); 
+        $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0);
         if (count($ids) == count($campasIds)) {
             return $query->whereIn('campa_id', $ids);
         }
@@ -352,6 +352,10 @@ class Vehicle extends Model
 
     public function scopeByCompanies($query, array $ids){
         return $query->whereIn('company_id', $ids);
+    }
+
+    public function scopeByPlates($query, array $plates){
+        return $query->whereIn('plate', $plates);
     }
 
     public function scopeByPlate($query, string $plate){
