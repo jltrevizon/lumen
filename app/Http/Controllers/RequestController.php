@@ -19,11 +19,17 @@ class RequestController extends Controller
     *     path="/api/requests/getall",
     *     tags={"requests"},
     *     summary="Get all requests",
+*     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Request"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Request")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -63,6 +69,41 @@ class RequestController extends Controller
     public function getById($id){
         return $this->getDataResponse(RequestVehicle::findOrFail($id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/requests/delete/{id}",
+     *     summary="Delete request",
+     *     tags={"requests"},
+     *     operationId="deleteRequest",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Request not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         RequestVehicle::where('id', $id)

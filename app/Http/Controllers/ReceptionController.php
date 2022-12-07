@@ -13,10 +13,66 @@ class ReceptionController extends Controller
         $this->receptionRepository = $receptionRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/reception",
+    *     tags={"receptions"},
+    *     summary="Get all receptions",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Reception")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function index(Request $request)
     {
         return $this->getDataResponse($this->receptionRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/reception",
+     *     tags={"receptions"},
+     *     summary="Create reception",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createReception",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Reception"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create reception object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Reception"),
+     *     )
+     * )
+     */
 
     public function create(Request $request)
     {
@@ -33,6 +89,9 @@ class ReceptionController extends Controller
     *     path="/api/reception/{id}",
     *     tags={"receptions"},
     *     summary="Get reception by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -63,6 +122,9 @@ class ReceptionController extends Controller
      *     path="reception/{id}",
      *     tags={"receptions"},
      *     summary="Updated reception",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated reception object",
      *         required=true,

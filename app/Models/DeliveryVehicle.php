@@ -23,6 +23,19 @@ class DeliveryVehicle extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="DeliveryVehicleWithTypeModelOrder",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/DeliveryVehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="type_model_order",
+     *                   ref="#/components/schemas/TypeModelOrder"
+     *              )
+     *          ),
+     *      },
+     * )
+     *
      * @OA\Property(
      *     property="id",
      *     type="integer",

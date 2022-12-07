@@ -27,6 +27,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class PendingTask extends Model
 {
     /**
+     *
+     *
+     * @OA\Schema(
+     *      schema="PendingTaskWithVehicle",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/PendingTask"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle",
+     *                  type="object",
+     *                  ref="#/components/schemas/Vehicle"
+     *              ),
+     *          ),
+     *      },
+     * )
+     *
      * @OA\Property(
      *     property="id",
      *     type="integer",

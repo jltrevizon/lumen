@@ -14,6 +14,40 @@ class IncidenceImageController extends Controller
         $this->incidenceImageRepository = $incidenceImageRepository;
     }
     /**
+    * @OA\Get(
+    *     path="/api/incidence-images",
+    *     tags={"incidence-images"},
+    *     summary="Get all incidence images",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/IncidenceImage")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      * @param \ilumiante\Http\Request $request
      *
@@ -23,6 +57,28 @@ class IncidenceImageController extends Controller
     {
         return $this->getDataResponse($this->incidenceImageRepository->index($request), Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/incidence-images",
+     *     tags={"comments"},
+     *     summary="Create incidence image",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createIncidenceImage",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/IncidenceImage"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create incidence image object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/IncidenceImage"),
+     *     )
+     * )
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -40,6 +96,9 @@ class IncidenceImageController extends Controller
      *     path="/incidence-images/{id}",
      *     tags={"incidence-images"},
      *     summary="Updated incidence images",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated incidence images object",
      *         required=true,

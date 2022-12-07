@@ -16,14 +16,20 @@ class VehicleModelController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/vehicle-models/getall",
+    *     path="/api/vehicle-models",
     *     tags={"vehicle-models"},
-    *     summary="Get all type vehicle models",
+    *     summary="Get all vehicle models",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/VehicleModel"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/VehicleModel")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -35,6 +41,28 @@ class VehicleModelController extends Controller
         return $this->getDataResponse($this->vehicleModelRepository->getAll(), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/vehicle-models",
+     *     tags={"vehicle-models"},
+     *     summary="Create vehicle model",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createVehicleModel",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/VehicleModel"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create vehicle model object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/VehicleModel"),
+     *     )
+     * )
+     */
+
     public function store(Request $request){
         return $this->createDataResponse($this->vehicleModelRepository->store($request), HttpFoundationResponse::HTTP_OK);
     }
@@ -44,6 +72,9 @@ class VehicleModelController extends Controller
      *     path="/vehicle-models/{id}",
      *     tags={"vehicle-models"},
      *     summary="Updated vehicle model",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated vehicle model object",
      *         required=true,

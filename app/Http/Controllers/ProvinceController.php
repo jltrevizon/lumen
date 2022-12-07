@@ -20,11 +20,28 @@ class ProvinceController extends Controller
     *     path="/api/provinces/getall",
     *     tags={"provinces"},
     *     summary="Get all provinces",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Province"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Province")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,6 +58,9 @@ class ProvinceController extends Controller
     *     path="/api/provinces/{id}",
     *     tags={"provinces"},
     *     summary="Get province by ID",
+    *    security={
+    *           {"bearerAuth": {}}
+    *      },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -65,6 +85,28 @@ class ProvinceController extends Controller
         return $this->getDataResponse($this->provinceRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/provinces",
+     *     tags={"provinces"},
+     *     summary="Create provinces",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createProvince",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Province"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create province object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Province"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -81,6 +123,9 @@ class ProvinceController extends Controller
      *     path="/provinces/update/{id}",
      *     tags={"provinces"},
      *     summary="Updated province",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated province object",
      *         required=true,
@@ -111,6 +156,41 @@ class ProvinceController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->provinceRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/provinces/delete/{id}",
+     *     summary="Delete province",
+     *     tags={"provinces"},
+     *     operationId="deleteProvince",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Province not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->provinceRepository->delete($id), HttpFoundationResponse::HTTP_OK);

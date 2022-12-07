@@ -20,11 +20,28 @@ class CategoryController extends Controller
     *     path="/api/categories/getall",
     *     tags={"categories"},
     *     summary="Get all categories",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
-    *         description="successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Category"),
-    *    ),
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Category")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -36,9 +53,59 @@ class CategoryController extends Controller
         return $this->getDataResponse($this->categoryRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/categories/{id}",
+    *     tags={"categories"},
+    *     summary="Get category by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Category"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Category not found."
+    *     )
+    * )
+    */
+
     public function show($id){
         return $this->getDataResponse($this->categoryRepository->show($id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/categories",
+     *     tags={"categories"},
+     *     summary="Create category",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createCategory",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Category"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create category object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Category"),
+     *     )
+     * )
+     */
 
     public function create(Request $request){
 
@@ -54,6 +121,9 @@ class CategoryController extends Controller
      *     path="/categories/update/{id}",
      *     tags={"categories"},
      *     summary="Updated category",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated category object",
      *         required=true,
@@ -84,6 +154,41 @@ class CategoryController extends Controller
     public function update(Request $request, $id){
         return $this->getDataResponse($this->categoryRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/categories/delete/{id}",
+     *     summary="Delete category",
+     *     tags={"categories"},
+     *     operationId="deleteCategory",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         Category::where('id', $id)

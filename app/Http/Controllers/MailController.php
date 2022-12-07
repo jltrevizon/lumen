@@ -21,6 +21,42 @@ class MailController extends Controller
     public function testCode(SendCode $sendCode){
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/password/send-code",
+     *     tags={"passwords"},
+     *     summary="Send Code",
+     *     operationId="SendCode",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful send code",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Email enviado or El usuario no existe",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *        response="409",
+     *        description="",
+     *     ),
+     *     @OA\RequestBody(
+     *         description="",
+     *         required=true,
+     *         value = @OA\JsonContent(
+     *              required={"email"},
+     *              @OA\Property(
+     *                  property="email",
+     *                  type="string",
+     *                  format="email"
+     *              )
+     *         )
+     *     )
+     * )
+     */
+
     public function sendCodePassword(Request $request){
         try {
             $code = $this->generateCode(6);
@@ -44,6 +80,58 @@ class MailController extends Controller
     public function generateCode($length){
         return substr(str_shuffle("0123456789"), 0, $length);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/password/reset",
+     *     tags={"passwords"},
+     *     summary="Reset password",
+     *     operationId="ResetPassword",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful reset password",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Password changed",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *        response="409",
+     *        description="",
+     *        value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="Code not available",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="",
+     *         required=true,
+     *         value = @OA\JsonContent(
+     *              required={"email","password","code"},
+     *              @OA\Property(
+     *                  property="email",
+     *                  type="string",
+     *                  format="email"
+     *              ),
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="integer",
+     *              ),
+     *              @OA\Property(
+     *                  property="password",
+     *                  type="string",
+     *                  format="password"
+     *              )
+     *         )
+     *     )
+     * )
+     */
 
     public function passwordReset(Request $request){
         $user = User::where('email', $request->input('email'))

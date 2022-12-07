@@ -18,11 +18,17 @@ class TypeModelOrderController extends Controller
     *     path="/api/type-model-orders/getall",
     *     tags={"type-model-orders"},
     *     summary="Get all type type model orders",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/TypeModelOrder"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/TypeModelOrder")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."

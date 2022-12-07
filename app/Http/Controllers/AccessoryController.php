@@ -15,6 +15,40 @@ class AccessoryController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/accessories",
+    *     tags={"accessories"},
+    *     summary="Get all accessories",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Accessory")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -24,10 +58,71 @@ class AccessoryController extends Controller
         return $this->getDataResponse($this->accessoryRepository->index($request), Response::HTTP_OK);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/accesories/{id}",
+    *     tags={"accesories"},
+    *     summary="Get accessory by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Accessory"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Accessory not found."
+    *     )
+    * )
+    */
+
     public function show(Request $request, $id)
     {
         return $this->getDataResponse($this->accessoryRepository->show($request, $id));
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/accessories",
+     *     tags={"accessories"},
+     *     summary="Create accessory",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createAccessory",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Accessory"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create accessory object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Accessory"),
+     *     )
+     * )
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -45,6 +140,9 @@ class AccessoryController extends Controller
      *     path="/accessories/{id}",
      *     tags={"accessories"},
      *     summary="Updated accessory",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated accessory object",
      *         required=true,
@@ -83,6 +181,41 @@ class AccessoryController extends Controller
     {
         return $this->updateDataResponse($this->accessoryRepository->update($request, $id), Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/accessories/{id}",
+     *     summary="Delete accessory",
+     *     tags={"accessories"},
+     *     operationId="deleteAccessory",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Accessory not found",
+     *     ),
+     * ),
+     */
 
     public function destroy($id)
     {

@@ -22,6 +22,19 @@ class ReservationTime extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="ReservationTimeWithCompany",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/ReservationTime"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="company",
+     *                   ref="#/components/schemas/Company"
+     *              )
+     *          ),
+     *      },
+     * )
+     *
      * @OA\Property(
      *     property="id",
      *     type="integer",

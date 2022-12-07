@@ -17,14 +17,20 @@ class StatePendingTaskController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/state-pending-tasks/getall",
+    *     path="/api/states-pending-tasks/getall",
     *     tags={"state-pending-tasks"},
     *     summary="Get all state pending tasks",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/StatePendingTask"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/StatePendingTask")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -38,9 +44,12 @@ class StatePendingTaskController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/state-pending-tasks/{id}",
+    *     path="/api/states-pending-tasks/{id}",
     *     tags={"state-pending-tasks"},
     *     summary="Get state pending task by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -65,6 +74,28 @@ class StatePendingTaskController extends Controller
         return $this->getDataResponse($this->statePendingTaskRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/states-pending-tasks",
+     *     tags={"state-pending-tasks"},
+     *     summary="Create state pending task",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createStatePendingTask",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/StatePendingTask"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create state pending task object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StatePendingTask"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -76,9 +107,12 @@ class StatePendingTaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/state-pending-tasks/update/{id}",
+     *     path="/states-pending-tasks/update/{id}",
      *     tags={"state-pending-tasks"},
      *     summary="Updated purchase state pending task",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated purchase operation object",
      *         required=true,
@@ -108,6 +142,41 @@ class StatePendingTaskController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->statePendingTaskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/states-pending-tasks/delete/{id}",
+     *     summary="Delete state pending task",
+     *     tags={"state-pending-tasks"},
+     *     operationId="deleteStatePendingTask",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="State pending task not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->statePendingTaskRepository->delete($id), HttpFoundationResponse::HTTP_OK);

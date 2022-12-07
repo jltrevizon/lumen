@@ -20,11 +20,17 @@ class PurchaseOperationController extends Controller
     *     path="/api/purchase-operations/getall",
     *     tags={"purchase-operations"},
     *     summary="Get all purchase operatons",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/PurchaseOperation"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/PurchaseOperation")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,6 +47,9 @@ class PurchaseOperationController extends Controller
     *     path="/api/purchase-operations/{id}",
     *     tags={"purchase-operations"},
     *     summary="Get purchase operation by ID",
+    *     security={
+    *         {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -64,6 +73,28 @@ class PurchaseOperationController extends Controller
     public function getById($id){
         return $this->getDataResponse($this->purchaseOperationRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/purchase-operations",
+     *     tags={"purchase-operations"},
+     *     summary="Create purchase operation",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createPurchaseOperation",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/PurchaseOperation"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create purchase operation object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/PurchaseOperation"),
+     *     )
+     * )
+     */
 
     public function create(Request $request){
 
@@ -111,6 +142,41 @@ class PurchaseOperationController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->purchaseOperationRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/purchase-operations/delete/{id}",
+     *     summary="Delete purchase operation",
+     *     tags={"purchase-operations"},
+     *     operationId="deletePurchaseOperation",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Purchase operation not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->purchaseOperationRepository->delete($id), HttpFoundationResponse::HTTP_OK);

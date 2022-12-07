@@ -18,11 +18,28 @@ class VehicleExitController extends Controller
     *     path="/api/vehicle-exits/getall",
     *     tags={"vehicle-exits"},
     *     summary="Get all type vehicle exits",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/VehicleExit"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/VehicleExit")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -39,6 +56,20 @@ class VehicleExitController extends Controller
     *     path="/api/vehicle-exits/{id}",
     *     tags={"vehicle-exits"},
     *     summary="Get vehicle exit by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -63,6 +94,28 @@ class VehicleExitController extends Controller
         return $this->getDataResponse($this->vehicleExitRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/vehicle-exits",
+     *     tags={"vehicle-exits"},
+     *     summary="Create vehicle exit",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createVehicleExit",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/VehicleExit"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create vehicle exit object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/VehicleExit"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
         $this->validate($request, [
             'vehicle_id' => 'required|integer',
@@ -79,6 +132,9 @@ class VehicleExitController extends Controller
      *     path="/vehicle-exits/{id}",
      *     tags={"vehicle-exits"},
      *     summary="Updated vehicle exit model",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated vehicle exit object",
      *         required=true,

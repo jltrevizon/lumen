@@ -9,6 +9,29 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 class TaxController extends Controller
 {
     /**
+    * @OA\Get(
+    *     path="/taxes",
+    *     tags={"taxes"},
+    *     summary="Get all taxes",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Tax")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

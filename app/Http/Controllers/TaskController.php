@@ -20,11 +20,28 @@ class TaskController extends Controller
     *     path="/api/tasks/getall",
     *     tags={"tasks"},
     *     summary="Get all tasks",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Task"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Task")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,6 +58,9 @@ class TaskController extends Controller
     *     path="/api/tasks/{id}",
     *     tags={"tasks"},
     *     summary="Get task by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -65,6 +85,28 @@ class TaskController extends Controller
         return $this->getDataResponse($this->taskRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/tasks",
+     *     tags={"tasks"},
+     *     summary="Create task",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createTask",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Task"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create task object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Task"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -82,6 +124,9 @@ class TaskController extends Controller
      *     path="/tasks/update/{id}",
      *     tags={"tasks"},
      *     summary="Updated task",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated task object",
      *         required=true,
@@ -112,6 +157,41 @@ class TaskController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->taskRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/tasks/delete/{id}",
+     *     summary="Delete task",
+     *     tags={"tasks"},
+     *     operationId="deleteTask",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->taskRepository->delete($id), HttpFoundationResponse::HTTP_OK);

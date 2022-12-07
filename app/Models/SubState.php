@@ -25,6 +25,8 @@ class SubState extends Model
 {
 
     /**
+     * 
+     *
      * @OA\Property(
      *     property="id",
      *     type="integer",

@@ -165,8 +165,47 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *     title="Deleted at",
      * )
      *
+     * @OA\Schema(
+     *      schema="UserWithCampasAndRole",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/User"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="role",
+     *                   ref="#/components/schemas/Role"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Campa")
+     *              ),
+     *          )
+     *      }
+     * )
      *
+     * @OA\Schema(
+     *      schema="UserWithCampasAndCompany",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/User"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Campa")
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="company",
+     *                   ref="#/components/schemas/Company"
+     *              )
+     *          ),
+     *      },
+     * )
      */
+
     use Authenticatable, Authorizable, HasFactory, Notifiable;
 
     protected $fillable = [

@@ -15,6 +15,40 @@ class DamageController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/damages",
+    *     tags={"damages"},
+    *     summary="Get all damages",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Damage")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -23,6 +57,28 @@ class DamageController extends Controller
     {
         return $this->getDataResponse($this->damageRepository->index($request), Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/damages",
+     *     tags={"damages"},
+     *     summary="Create damage",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createDamage",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Damage"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create damage object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Damage"),
+     *     )
+     * )
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -41,6 +97,9 @@ class DamageController extends Controller
      *     path="/damages/{id}",
      *     tags={"damages"},
      *     summary="Updated damage",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated damage object",
      *         required=true,

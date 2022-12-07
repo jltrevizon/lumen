@@ -20,11 +20,28 @@ class SubStateController extends Controller
     *     path="/api/sub-states/getall",
     *     tags={"sub-states"},
     *     summary="Get all sub states",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/SubState"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/SubState")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,6 +58,9 @@ class SubStateController extends Controller
     *     path="/api/sub-states/{id}",
     *     tags={"sub-states"},
     *     summary="Get sub state by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -65,6 +85,28 @@ class SubStateController extends Controller
         return $this->getDataResponse($this->subStateRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/sub-states",
+     *     tags={"sub-states"},
+     *     summary="Create sub state",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createSubState",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/SubState"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create sub state object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/SubState"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -79,6 +121,9 @@ class SubStateController extends Controller
      * @OA\Put(
      *     path="/sub-states/update/{id}",
      *     tags={"sub-states"},
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     summary="Updated sub state",
      *     @OA\RequestBody(
      *         description="Updated sub state object",
@@ -110,6 +155,41 @@ class SubStateController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->subStateRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/sub-states/delete/{id}",
+     *     summary="Delete sub state",
+     *     tags={"sub-states"},
+     *     operationId="deleteSubState",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sub state not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->subStateRepository->update($id), HttpFoundationResponse::HTTP_OK);

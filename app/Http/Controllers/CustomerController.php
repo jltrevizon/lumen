@@ -20,11 +20,28 @@ class CustomerController extends Controller
     *     path="/api/customers/getall",
     *     tags={"customers"},
     *     summary="Get all customers",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Customer"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Customer")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,6 +58,9 @@ class CustomerController extends Controller
     *     path="/api/customers/{id}",
     *     tags={"customers"},
     *     summary="Get customer by ID",
+    *    security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -65,6 +85,28 @@ class CustomerController extends Controller
         return $this->getDataResponse($this->customerRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/customers",
+     *     tags={"customers"},
+     *     summary="Create customer",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createCustomer",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Customer"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create customer object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Customer"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -79,6 +121,9 @@ class CustomerController extends Controller
      *     path="/customers/update/{id}",
      *     tags={"customers"},
      *     summary="Updated customer",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated customer object",
      *         required=true,
@@ -109,6 +154,41 @@ class CustomerController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->customerRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/customers/delete/{id}",
+     *     summary="Delete customer",
+     *     tags={"users"},
+     *     operationId="deleteCustomer",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Customer not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         Customer::where('id', $id)

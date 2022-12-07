@@ -25,6 +25,32 @@ class Reservation extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="ReservationWithTransport",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Reservation"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="transport",
+     *                   ref="#/components/schemas/Transport"
+     *              )
+     *          ),
+     *      },
+     * )
+     *
+     * @OA\Schema(
+     *      schema="ReservationWithTypeModelOrder",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Reservation"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="type_model_order",
+     *                   ref="#/components/schemas/TypeModelOrder"
+     *              )
+     *          ),
+     *      },
+     * )
+     *
      * @OA\Property(
      *     property="id",
      *     type="integer",

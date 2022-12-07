@@ -20,11 +20,17 @@ class RegionController extends Controller
     *     path="/api/regions/getall",
     *     tags={"regions"},
     *     summary="Get all regions",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Region"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Region")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,6 +47,9 @@ class RegionController extends Controller
     *     path="/api/regions/{id}",
     *     tags={"regions"},
     *     summary="Get region by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -65,6 +74,28 @@ class RegionController extends Controller
         return $this->getDataResponse($this->regionRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/regions",
+     *     tags={"regions"},
+     *     summary="Create regions",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createRegion",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Region"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create region object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Region"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -79,6 +110,9 @@ class RegionController extends Controller
      *     path="/regions/update/{id}",
      *     tags={"regions"},
      *     summary="Updated region",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated region object",
      *         required=true,
@@ -109,6 +143,41 @@ class RegionController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->regionRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/regions/delete/{id}",
+     *     summary="Delete region",
+     *     tags={"regions"},
+     *     operationId="deleteRegion",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Region not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->regionRepository->delete($id), HttpFoundationResponse::HTTP_OK);

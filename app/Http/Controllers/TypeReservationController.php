@@ -12,16 +12,22 @@ class TypeReservationController extends Controller
     *     path="/api/type-reservations/getall",
     *     tags={"type-reservations"},
     *     summary="Get all type type reservations",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/TypeReservation"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/TypeReservation")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
-    *         description="An error has occurred."
-    *     )
-    * )
+    *         description="An error has occurred.",
+    *     ),
+    * ),
     */
 
     public function getAll(){

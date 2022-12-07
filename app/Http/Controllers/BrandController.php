@@ -13,13 +13,108 @@ class BrandController extends Controller
         $this->brandRepository = $brandRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/brands",
+    *     tags={"brands"},
+    *     summary="Get all brands",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Brand")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function index(Request $request){
         return $this->getDataResponse($this->brandRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/brands/{id}",
+    *     tags={"brands"},
+    *     summary="Get brand by ID",
+    *    security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string"
+    *         )
+    *     ),
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/Brand"),
+    *    ),
+    *     @OA\Response(
+    *         response="404",
+    *         description="Brand not found."
+    *     )
+    * )
+    */
+
     public function show(Request $request, $id){
         return $this->getDataResponse($this->brandRepository->show($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/brands",
+     *     tags={"brands"},
+     *     summary="Create brands",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createBrand",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Brand"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create brand object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Brand"),
+     *     )
+     * )
+     */
 
     public function store(Request $request){
         return $this->createDataResponse($this->brandRepository->store($request), HttpFoundationResponse::HTTP_OK);
@@ -30,6 +125,9 @@ class BrandController extends Controller
      *     path="/brands/{id}",
      *     tags={"brands"},
      *     summary="Updated brand",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated brand object",
      *         required=true,

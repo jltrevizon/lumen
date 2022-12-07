@@ -18,11 +18,28 @@ class OperationController extends Controller
     *     path="/api/operations/getall",
     *     tags={"operations"},
     *     summary="Get all type operations",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Operation"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Operation")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -39,6 +56,9 @@ class OperationController extends Controller
     *     path="/api/operations/{id}",
     *     tags={"operations"},
     *     summary="Get operation by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -63,6 +83,28 @@ class OperationController extends Controller
         return $this->getDataResponse($this->operationRepository->getById($request, $id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/operations",
+     *     tags={"operations"},
+     *     summary="Create operation",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createOperation",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Operation"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create operation object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Operation"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
         $this->validate($request, [
             'vehicle_id' => 'required|integer',
@@ -78,6 +120,9 @@ class OperationController extends Controller
      *     path="/operations/{id}",
      *     tags={"operations"},
      *     summary="Updated operation model",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated operation object",
      *         required=true,

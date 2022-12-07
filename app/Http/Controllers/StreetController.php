@@ -15,6 +15,40 @@ class StreetController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/streets",
+    *     tags={"streets"},
+    *     summary="Get all streets",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Street")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request
@@ -24,6 +58,28 @@ class StreetController extends Controller
     {
         return $this->getDataResponse($this->streetRepository->index($request), Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/streets",
+     *     tags={"streets"},
+     *     summary="Create street",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createStreet",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Street"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create street object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Street"),
+     *     )
+     * )
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -41,6 +97,9 @@ class StreetController extends Controller
      *     path="/streets/{id}",
      *     tags={"streets"},
      *     summary="Updated street",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated street object",
      *         required=true,

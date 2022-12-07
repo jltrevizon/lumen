@@ -37,6 +37,34 @@ class Vehicle extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="VehicleWithAccessories",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Vehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="accesories",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Accessory")
+     *              ),
+     *          ),
+     *      },
+     * )
+     *
+     * @OA\Schema(
+     *      schema="VehicleWithVehicleModel",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Vehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle_model",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/VehicleModel")
+     *              ),
+     *          ),
+     *      },
+     * )
+     *
      * @OA\Property(
      *     property="id",
      *     type="integer",

@@ -17,6 +17,40 @@ class DeliveryVehicleController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/delivery-vehicles",
+    *     tags={"delivery-vehicles"},
+    *     summary="Get all delivery vehicles",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/DeliveryVehicle")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -80,6 +114,41 @@ class DeliveryVehicleController extends Controller
     {
         //
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/delivery-vehicles/{id}",
+     *     summary="Delete delivery vehicle",
+     *     tags={"delivery-vehicles"},
+     *     operationId="deleteDeliveryVehicle",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Delivery vehicle not found",
+     *     )
+     * )
+     */
 
     /**
      * Remove the specified resource from storage.

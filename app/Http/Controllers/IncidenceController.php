@@ -20,11 +20,28 @@ class IncidenceController extends Controller
     *     path="/api/incidences/getall",
     *     tags={"incidences"},
     *     summary="Get all incidences",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Incidence"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Incidence")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,11 +58,17 @@ class IncidenceController extends Controller
     *     path="/api/incidence-types/getall",
     *     tags={"incidence-types"},
     *     summary="Get all incidence types",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/IncidenceType"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/IncidenceType")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -62,6 +85,9 @@ class IncidenceController extends Controller
     *     path="/api/incidences/{id}",
     *     tags={"incidences"},
     *     summary="Get incidence by ID",
+    *    security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -86,6 +112,28 @@ class IncidenceController extends Controller
         return $this->getDataResponse($this->incidenceRepository->getById($id), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/incidences",
+     *     tags={"incidences"},
+     *     summary="Create incidence",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createIncidence",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Incidence"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create group task object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Incidence"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
         return $this->createDataResponse($this->incidenceRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
@@ -103,6 +151,9 @@ class IncidenceController extends Controller
      *     path="/incidences/update/{id}",
      *     tags={"incidences"},
      *     summary="Updated incidence",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated incidence object",
      *         required=true,
@@ -133,6 +184,41 @@ class IncidenceController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->incidenceRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/incidences/delete/{id}",
+     *     summary="Delete incidence",
+     *     tags={"incidences"},
+     *     operationId="deleteIncidence",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Incidence not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->incidenceRepository->delete($id), HttpFoundationResponse::HTTP_OK);

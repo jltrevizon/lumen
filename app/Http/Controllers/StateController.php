@@ -20,11 +20,28 @@ class StateController extends Controller
     *     path="/api/states/getall",
     *     tags={"states"},
     *     summary="Get all states",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/State"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/State")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -41,6 +58,9 @@ class StateController extends Controller
     *     path="/api/states/{id}",
     *     tags={"states"},
     *     summary="Get state by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -73,6 +93,28 @@ class StateController extends Controller
         return $this->getDataResponse($this->stateRepository->getStatesWithVehiclesCampa($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/states",
+     *     tags={"states"},
+     *     summary="Create state",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createState",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/State"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create state object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/State"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -87,6 +129,9 @@ class StateController extends Controller
      *     path="/states/update/{id}",
      *     tags={"states"},
      *     summary="Updated state",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated purchase state object",
      *         required=true,
@@ -117,6 +162,41 @@ class StateController extends Controller
     public function update(Request $request, $id){
         return $this->updateDataResponse($this->stateRepository->update($request, $id), HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/states/delete/{id}",
+     *     summary="Delete state",
+     *     tags={"states"},
+     *     operationId="deleteState",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="State not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->deleteDataResponse($this->stateRepository->delete($id), HttpFoundationResponse::HTTP_OK);

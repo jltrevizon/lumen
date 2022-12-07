@@ -27,6 +27,26 @@ class KpiController extends Controller
     {
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpis/inpu",
+    *     tags={"kpis"},
+    *     summary="Get inpu",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\Items(ref="#/components/schemas/ReceptionWithTypeModelOrder")
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function inpu(Request $request)
     {
         $in_data = Reception::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 0]))
@@ -39,6 +59,26 @@ class KpiController extends Controller
 
         return $this->getDataResponse($in_data, HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpis/out",
+    *     tags={"kpis"},
+    *     summary="Get out",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\Items(ref="#/components/schemas/DeliveryVehicleWithTypeModelOrder")
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
 
     public function out(Request $request)
     {
@@ -53,11 +93,41 @@ class KpiController extends Controller
         return $this->getDataResponse($out_data, HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-sub-states",
+    *     tags={"kpis"},
+    *     summary="get kpi sub states",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
+
     public function subStates(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-sub-states-month",
+    *     tags={"kpis"},
+    *     summary="get kpi sub states month",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function subStatesMonth(Request $request)
     {
@@ -83,11 +153,41 @@ class KpiController extends Controller
         return Excel::download(new KpiSubStateMonthExport($request), 'Kpi_Sub-Estados-Mes' . date('Y-m-d') . '.xlsx');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-diff-reception",
+    *     tags={"kpis"},
+    *     summary="get kpi diff reception",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
+
     public function diffTimeReception(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiDiffTimeReceptionExport($request), 'Kpi_Diferencia_Dias-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-check-list",
+    *     tags={"kpis"},
+    *     summary="get kpi checklist",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function checkList(Request $request)
     {
@@ -95,11 +195,41 @@ class KpiController extends Controller
         return Excel::download(new KpiCheckListExport($request), 'Kpi_Ckeck_List' . date('Y-m-d') . '.xlsx');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-inpu-out-stock",
+    *     tags={"kpis"},
+    *     summary="get kpi inpu out stock",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
+
     public function kpiInpuOut(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiInpuOutExport($request), 'Kpi_Entradas_Salidas-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-all",
+    *     tags={"kpis"},
+    *     summary="get kpi all",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function kpiFull(Request $request)
     {
@@ -109,11 +239,41 @@ class KpiController extends Controller
         return Excel::download(new KpiFullExport($request), 'Kpi-' . date('Y-m-d') . '.xlsx');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-pending-tasks",
+    *     tags={"kpis"},
+    *     summary="get kpi pending tasks",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
+
     public function kpiPendingTask(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiPendingTaskExport($request), 'Kpi_Tareas_Pendientes-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/stock-pending-tasks",
+    *     tags={"kpis"},
+    *     summary="get stock pending tasks",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function pendingTask(Request $request)
     {
@@ -124,6 +284,21 @@ class KpiController extends Controller
         ob_clean();
         return Excel::download(new ExportsPendingTaskExport($request), 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/stock-vehicles",
+    *     tags={"kpis"},
+    *     summary="get stock vehicles",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function stockVehicle(Request $request)
     {

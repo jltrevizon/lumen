@@ -15,6 +15,40 @@ class QuestionnaireController extends Controller
         $this->questionnaireRepository = $questionnaireRepository;
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/questionnaire/",
+    *     tags={"questionnaire"},
+    *     summary="Get all questionnaires",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Questionnaire")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function index(Request $request){
         return $this->getDataResponse($this->questionnaireRepository->index($request), HttpFoundationResponse::HTTP_OK);
     }
@@ -28,6 +62,20 @@ class QuestionnaireController extends Controller
     *     path="/api/questionnaire/{id}",
     *     tags={"questionnaires"},
     *     summary="Get questionnaire by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Parameter(
     *         name="id",
     *         in="path",

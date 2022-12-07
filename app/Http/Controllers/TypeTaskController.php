@@ -19,11 +19,17 @@ class TypeTaskController extends Controller
     *     path="/api/type-tasks/getall",
     *     tags={"type-tasks"},
     *     summary="Get all type tasks",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/TypeTask"),
-    *    ),
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/TypeTask")
+    *         ),
+    *     ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."
@@ -37,9 +43,12 @@ class TypeTaskController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/type-tasks/{id}",
+    *     path="/types-tasks/{id}",
     *     tags={"type-tasks"},
     *     summary="Get type task by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -64,6 +73,28 @@ class TypeTaskController extends Controller
         return $this->typeTaskRepository->getById($id);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/types-tasks",
+     *     tags={"type-tasks"},
+     *     summary="Create type task",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createTypeTask",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/TypeTask"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create type task object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/TypeTask"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -75,9 +106,12 @@ class TypeTaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/type-tasks/update/{id}",
+     *     path="/types-tasks/update/{id}",
      *     tags={"type-tasks"},
      *     summary="Updated type task",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
      *     @OA\RequestBody(
      *         description="Updated type task object",
      *         required=true,
@@ -108,6 +142,41 @@ class TypeTaskController extends Controller
     public function update(Request $request, $id){
         return $this->typeTaskRepository->update($request, $id);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/types-tasks/delete/{id}",
+     *     summary="Delete state",
+     *     tags={"sub-states"},
+     *     operationId="deleteSubState",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The id that needs to be deleted",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sub state not found",
+     *     )
+     * )
+     */
 
     public function delete($id){
         return $this->typeTaskRepository->delete($id);
