@@ -29,7 +29,7 @@ class AccessoryController extends Controller
     *       required=false,
     *       @OA\Schema(
     *           type="array",
-    *           example={"relationship1","relationship2"},
+    *           example={"vehicles","accessoryType"},
     *           @OA\Items(type="string")
     *       )
     *     ),
@@ -60,8 +60,8 @@ class AccessoryController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/accesories/{id}",
-    *     tags={"accesories"},
+    *     path="/api/accessories/{id}",
+    *     tags={"accessories"},
     *     summary="Get accessory by ID",
     *     security={
     *          {"bearerAuth": {}}
@@ -71,7 +71,7 @@ class AccessoryController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Parameter(
@@ -137,7 +137,7 @@ class AccessoryController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/accessories/{id}",
+     *     path="/api/accessories/{id}",
      *     tags={"accessories"},
      *     summary="Updated accessory",
      *     security={
@@ -155,7 +155,7 @@ class AccessoryController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -184,7 +184,7 @@ class AccessoryController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/accessories/{id}",
+     *     path="/api/accessories/{id}",
      *     summary="Delete accessory",
      *     tags={"accessories"},
      *     operationId="deleteAccessory",
@@ -197,7 +197,7 @@ class AccessoryController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -219,7 +219,7 @@ class AccessoryController extends Controller
 
     public function destroy($id)
     {
-        return $this->deleteDataResponse($this->accessoryRepository->delete($id), Response::HTTP_OK);
+        return $this->deleteDataResponse($this->accessoryRepository->destroy($id), Response::HTTP_OK);
     }
 
 }

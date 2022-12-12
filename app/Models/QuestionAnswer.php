@@ -21,6 +21,26 @@ class QuestionAnswer extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="QuestionAnswerWithQuestionAndTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Question"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="question",
+     *                  type="object",
+     *                  ref="#/components/schemas/Question"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="task",
+     *                  type="object",
+     *                  ref="#/components/schemas/Task"
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

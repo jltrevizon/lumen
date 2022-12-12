@@ -16,7 +16,7 @@ class BudgetLineController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/budget-lines",
+    *     path="/api/budget-lines",
     *     tags={"budget-lines"},
     *     summary="Get all budget lines",
     *     security={
@@ -33,13 +33,30 @@ class BudgetLineController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/BudgetLine")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/BudgetLinePaginate")
     *     ),
     *     @OA\Response(
     *         response="500",

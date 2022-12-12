@@ -53,7 +53,7 @@ class VehiclePictureController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/vehicle-pictures/delete/{id}",
+     *     path="/api/vehicle-pictures/delete/{id}",
      *     summary="Delete vehicle pictures",
      *     tags={"vehicle-pictures"},
      *     operationId="deleteVehiclePicture",
@@ -66,7 +66,7 @@ class VehiclePictureController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

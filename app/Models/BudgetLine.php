@@ -22,6 +22,19 @@ class BudgetLine extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="BudgetLinePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/BudgetLine"),
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

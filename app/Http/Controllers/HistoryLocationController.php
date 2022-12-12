@@ -33,13 +33,82 @@ class HistoryLocationController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=15,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="vehicleCampaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="vehiclePlate",
+    *       in="query",
+    *       description="Plate",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="states[]",
+    *       in="query",
+    *       description="A list of states",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="whereHasVehicle",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=0,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/HistoryLocation")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/HistoryLocationPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",

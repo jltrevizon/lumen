@@ -22,6 +22,19 @@ class Street extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="StreetWithZone",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Street"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="zone",
+     *                  type="object",
+     *                  ref="#/components/schemas/Zone"
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

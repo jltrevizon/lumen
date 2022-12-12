@@ -35,13 +35,30 @@ class GroupTaskController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/GroupTask")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/GroupTaskPaginate"),
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -67,7 +84,7 @@ class GroupTaskController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Parameter(
@@ -130,7 +147,7 @@ class GroupTaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/grouptasks/update/{id}",
+     *     path="/api/grouptasks/update/{id}",
      *     tags={"group-tasks"},
      *     summary="Updated group task",
      *     security={
@@ -148,7 +165,7 @@ class GroupTaskController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -169,7 +186,7 @@ class GroupTaskController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/grouptasks/delete/{id}",
+     *     path="/api/grouptasks/delete/{id}",
      *     summary="Delete group task",
      *     tags={"group-tasks"},
      *     operationId="deleteGroupTask",
@@ -182,7 +199,7 @@ class GroupTaskController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

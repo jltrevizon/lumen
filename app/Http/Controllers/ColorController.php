@@ -33,6 +33,16 @@ class ColorController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="nameNull",
+    *       in="query",
+    *       description="Name null",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=0,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
@@ -93,7 +103,7 @@ class ColorController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/colors/{id}",
+     *     path="/api/colors/{id}",
      *     tags={"colors"},
      *     summary="Updated color",
      *     security={
@@ -111,7 +121,7 @@ class ColorController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

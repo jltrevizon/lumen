@@ -22,6 +22,32 @@ class Questionnaire extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="LastQuestionnaire",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Questionnaire"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="question_answers",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/QuestionAnswerWithQuestionAndTask")
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="QuestionnairePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Questionnaire"),
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

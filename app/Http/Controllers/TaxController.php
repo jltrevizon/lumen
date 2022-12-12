@@ -10,7 +10,7 @@ class TaxController extends Controller
 {
     /**
     * @OA\Get(
-    *     path="/taxes",
+    *     path="/api/taxes",
     *     tags={"taxes"},
     *     summary="Get all taxes",
     *     security={
@@ -30,7 +30,7 @@ class TaxController extends Controller
     *     )
     * )
     */
-    
+
     /**
      * Display a listing of the resource.
      *

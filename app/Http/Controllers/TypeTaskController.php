@@ -43,7 +43,7 @@ class TypeTaskController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/types-tasks/{id}",
+    *     path="/api/types-tasks/{id}",
     *     tags={"type-tasks"},
     *     summary="Get type task by ID",
     *     security={
@@ -54,7 +54,7 @@ class TypeTaskController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -106,7 +106,7 @@ class TypeTaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/types-tasks/update/{id}",
+     *     path="/api/types-tasks/update/{id}",
      *     tags={"type-tasks"},
      *     summary="Updated type task",
      *     security={
@@ -124,7 +124,7 @@ class TypeTaskController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -145,7 +145,7 @@ class TypeTaskController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/types-tasks/delete/{id}",
+     *     path="/api/types-tasks/delete/{id}",
      *     summary="Delete state",
      *     tags={"sub-states"},
      *     operationId="deleteSubState",
@@ -158,7 +158,7 @@ class TypeTaskController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

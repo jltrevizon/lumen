@@ -203,6 +203,31 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *              )
      *          ),
      *      },
+     * ),
+     * @OA\Schema(
+     *      schema="UserWithCampasRoleAndCompany",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/User"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Campa")
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="company",
+     *                   ref="#/components/schemas/Company"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="role",
+     *                   ref="#/components/schemas/Role"
+     *              )
+     *          ),
+     *      },
      * )
      */
 

@@ -24,6 +24,19 @@ class DefleetVariable extends Model
 {
 
     /**
+     * @OA\Schema(
+    *      schema="DefleetVariablePaginate",
+    *      allOf = {
+    *          @OA\Schema(ref="#/components/schemas/Paginate"),
+    *          @OA\Schema(
+    *              @OA\Property(
+    *                  property="data",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/DefleetVariable"),
+    *              ),
+    *          ),
+    *      },
+    * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

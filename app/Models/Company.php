@@ -25,6 +25,39 @@ class Company extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="CompanyWithSubStateAndTypeTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Company"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="sub_state",
+     *                  type="object",
+     *                  ref="#/components/schemas/SubStateWithState"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="type_task",
+     *                  type="object",
+     *                  ref="#/components/schemas/TypeTask"
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+    *      schema="CompanyPaginate",
+    *      allOf = {
+    *          @OA\Schema(ref="#/components/schemas/Paginate"),
+    *          @OA\Schema(
+    *              @OA\Property(
+    *                  property="data",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/Company"),
+    *              ),
+    *          ),
+    *      },
+    * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

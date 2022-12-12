@@ -55,7 +55,7 @@ class TransportController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -107,7 +107,7 @@ class TransportController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/transports/update/{id}",
+     *     path="/api/transports/update/{id}",
      *     tags={"transports"},
      *     summary="Updated transport",
      *     security={
@@ -125,7 +125,7 @@ class TransportController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -146,7 +146,7 @@ class TransportController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/transports/delete/{id}",
+     *     path="/api/transports/delete/{id}",
      *     summary="Delete transport",
      *     tags={"transports"},
      *     operationId="deleteTransport",
@@ -159,7 +159,7 @@ class TransportController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

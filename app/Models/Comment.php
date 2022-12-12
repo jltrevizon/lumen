@@ -21,6 +21,19 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     /**
+     * @OA\Schema(
+     *      schema="CommentPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Comment"),
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

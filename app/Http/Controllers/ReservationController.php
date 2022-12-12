@@ -63,7 +63,7 @@ class ReservationController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/get-reservations/by-campa",
+     *     path="/api/get-reservations/by-campa",
      *     tags={"reservations"},
      *     summary="get reservation active by campa",
      *     security={
@@ -112,7 +112,7 @@ class ReservationController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/reservations/update",
+     *     path="/api/reservations/update",
      *     tags={"reservations"},
      *     summary="Updatee",
      *     security={
@@ -143,7 +143,7 @@ class ReservationController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/get-reservation/by-vehicle",
+     *     path="/api/get-reservation/by-vehicle",
      *     tags={"reservations"},
      *     summary="get reservation by vehicle",
      *     security={
@@ -179,7 +179,7 @@ class ReservationController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/reservation/without-order",
+     *     path="/api/reservation/without-order",
      *     tags={"reservations"},
      *     summary="vehicle whitout order",
      *     security={
@@ -220,7 +220,7 @@ class ReservationController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/reservation/without-contract",
+     *     path="/api/reservation/without-contract",
      *     tags={"reservations"},
      *     summary="vehicle whitout contract",
      *     security={

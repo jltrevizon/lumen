@@ -22,8 +22,54 @@ use Illuminate\Support\Facades\DB;
 
 class Square extends Model
 {
-    
+
     /**
+     * @OA\Schema(
+     *      schema="SquarePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/SquareWithStreet"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="SquareWithStreet",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Square"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="street",
+     *                  type="object",
+     *                  ref="#/components/schemas/StreetWithZone"
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="SquareWithStreetAndVehicle",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Square"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="street",
+     *                  type="object",
+     *                  ref="#/components/schemas/StreetWithZone"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle",
+     *                  type="object",
+     *                  ref="#/components/schemas/Vehicle"
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

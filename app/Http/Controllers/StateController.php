@@ -66,7 +66,7 @@ class StateController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -126,7 +126,7 @@ class StateController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/states/update/{id}",
+     *     path="/api/states/update/{id}",
      *     tags={"states"},
      *     summary="Updated state",
      *     security={
@@ -144,7 +144,7 @@ class StateController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -165,7 +165,7 @@ class StateController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/states/delete/{id}",
+     *     path="/api/states/delete/{id}",
      *     summary="Delete state",
      *     tags={"states"},
      *     operationId="deleteState",
@@ -178,7 +178,7 @@ class StateController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

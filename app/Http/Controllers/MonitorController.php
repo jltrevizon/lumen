@@ -18,10 +18,7 @@ class MonitorController extends Controller
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Monitor")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/MonitorPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",

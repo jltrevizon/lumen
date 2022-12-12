@@ -22,6 +22,19 @@ class PeopleForReport extends Model
 {
 
     /**
+     * @OA\Schema(
+    *      schema="PeopleForReportPaginate",
+    *      allOf = {
+    *          @OA\Schema(ref="#/components/schemas/Paginate"),
+    *          @OA\Schema(
+    *              @OA\Property(
+    *                  property="data",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/PeopleForReport"),
+    *              ),
+    *          ),
+    *      },
+    * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

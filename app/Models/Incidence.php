@@ -24,6 +24,19 @@ class Incidence extends Model
 {
 
     /**
+     * @OA\Schema(
+    *      schema="IncidencePaginate",
+    *      allOf = {
+    *          @OA\Schema(ref="#/components/schemas/Paginate"),
+    *          @OA\Schema(
+    *              @OA\Property(
+    *                  property="data",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/Incidence"),
+    *              ),
+    *          ),
+    *      },
+    * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

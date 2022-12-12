@@ -29,12 +29,18 @@ class CampaUserController extends Controller
      *     @OA\Response(
      *         response="201",
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/CampaUser"),
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/CampaUser")
+     *              ),
+     *          ),
      *     ),
      *     @OA\RequestBody(
-     *         description="Create user object",
+     *         description="Return user",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/CampaUser"),
+     *         @OA\JsonContent(ref="#/components/schemas/User"),
      *     )
      * )
      */
@@ -72,11 +78,12 @@ class CampaUserController extends Controller
      *         description="",
      *         required=true,
      *         value = @OA\JsonContent(
-     *                     @OA\Property(
-     *                         property="campas",
-     *                         type="string"
-     *                     ),
-     *                 )
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/CampaUser")
+     *              ),
+     *          ),
      *     )
      * )
      */

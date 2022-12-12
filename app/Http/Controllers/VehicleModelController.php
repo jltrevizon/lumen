@@ -69,7 +69,7 @@ class VehicleModelController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/vehicle-models/{id}",
+     *     path="/api/vehicle-models/{id}",
      *     tags={"vehicle-models"},
      *     summary="Updated vehicle model",
      *     security={
@@ -87,7 +87,7 @@ class VehicleModelController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

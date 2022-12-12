@@ -11,7 +11,7 @@ class TypeUserAppController extends Controller
 {
     /**
     * @OA\Get(
-    *     path="/type-user-app",
+    *     path="/api/type-user-app",
     *     tags={"type-user-apps"},
     *     summary="Get all type user app",
     *     security={

@@ -34,13 +34,30 @@ class DamageImageController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/DamageImage")
-    *         ),
+    *         @OA\Items(ref="#/components/schemas/DamageImagePaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -95,7 +112,7 @@ class DamageImageController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/damage-images/{id}",
+     *     path="/api/damage-images/{id}",
      *     tags={"damage-images"},
      *     security={
      *          {"bearerAuth": {}}
@@ -113,7 +130,7 @@ class DamageImageController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

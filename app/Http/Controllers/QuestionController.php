@@ -93,7 +93,7 @@ class QuestionController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="questions/{id}",
+     *     path="/api/questions/{id}",
      *     summary="Delete question",
      *     tags={"sub-states"},
      *     operationId="deleteQuestion",
@@ -106,7 +106,7 @@ class QuestionController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

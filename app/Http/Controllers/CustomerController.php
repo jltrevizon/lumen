@@ -34,13 +34,30 @@ class CustomerController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Customer")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/CustomerPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -66,7 +83,7 @@ class CustomerController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -118,7 +135,7 @@ class CustomerController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/customers/update/{id}",
+     *     path="/api/customers/update/{id}",
      *     tags={"customers"},
      *     summary="Updated customer",
      *     security={
@@ -136,7 +153,7 @@ class CustomerController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -157,9 +174,9 @@ class CustomerController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/customers/delete/{id}",
+     *     path="/api/customers/delete/{id}",
      *     summary="Delete customer",
-     *     tags={"users"},
+     *     tags={"customers"},
      *     operationId="deleteCustomer",
      *     security={
      *          {"bearerAuth": {}}
@@ -170,7 +187,7 @@ class CustomerController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

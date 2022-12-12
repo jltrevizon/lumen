@@ -34,13 +34,32 @@ class CompanyController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="companies[]",
+    *       in="query",
+    *       description="A list of companies",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           @OA\Items(type="integer"),
+    *           example={1}
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="noIds[]",
+    *       in="query",
+    *       description="A list of no ids",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           @OA\Items(type="integer"),
+    *           example={36,38,39}
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Company")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/CompanyPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -66,7 +85,7 @@ class CompanyController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -118,7 +137,7 @@ class CompanyController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/companies/update/{id}",
+     *     path="/api/companies/update/{id}",
      *     tags={"companies"},
      *     summary="Updated company",
      *     security={
@@ -136,7 +155,7 @@ class CompanyController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -157,7 +176,7 @@ class CompanyController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/companies/delete/{id}",
+     *     path="/api/companies/delete/{id}",
      *     summary="Delete company",
      *     tags={"companies"},
      *     operationId="deleteCompany",
@@ -170,7 +189,7 @@ class CompanyController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

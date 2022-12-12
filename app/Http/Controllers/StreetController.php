@@ -33,12 +33,43 @@ class StreetController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
     *         value= @OA\JsonContent(
     *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Street")
+    *           @OA\Items(ref="#/components/schemas/StreetWithZone")
     *         ),
     *     ),
     *     @OA\Response(
@@ -94,7 +125,7 @@ class StreetController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/streets/{id}",
+     *     path="/api/streets/{id}",
      *     tags={"streets"},
      *     summary="Updated street",
      *     security={
@@ -112,7 +143,7 @@ class StreetController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

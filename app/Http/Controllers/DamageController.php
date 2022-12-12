@@ -33,16 +33,54 @@ class DamageController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="notNullDamageTypeId",
+    *       in="query",
+    *       description="not null damage type id",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="vehicleCampaIds[]",
+    *       in="query",
+    *       description="A list of vehicle campa IDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Damage")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/DamagePaginate")
     *     ),
     *     @OA\Response(
-    *         response="500",
+    *         response=500,
     *         description="An error has occurred."
     *     )
     * )
@@ -94,7 +132,7 @@ class DamageController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/damages/{id}",
+     *     path="/api/damages/{id}",
      *     tags={"damages"},
      *     summary="Updated damage",
      *     security={
@@ -112,7 +150,7 @@ class DamageController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

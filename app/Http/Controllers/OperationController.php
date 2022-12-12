@@ -64,7 +64,7 @@ class OperationController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -117,7 +117,7 @@ class OperationController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/operations/{id}",
+     *     path="/api/operations/{id}",
      *     tags={"operations"},
      *     summary="Updated operation model",
      *     security={
@@ -135,7 +135,7 @@ class OperationController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

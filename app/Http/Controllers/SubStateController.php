@@ -34,12 +34,23 @@ class SubStateController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="stateIds[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"1","2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
     *         value= @OA\JsonContent(
     *           type="array",
-    *           @OA\Items(ref="#/components/schemas/SubState")
+    *           @OA\Items(ref="#/components/schemas/SubStateWithState")
     *         ),
     *     ),
     *     @OA\Response(
@@ -66,7 +77,7 @@ class SubStateController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -119,7 +130,7 @@ class SubStateController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/sub-states/update/{id}",
+     *     path="/api/sub-states/update/{id}",
      *     tags={"sub-states"},
      *     security={
      *          {"bearerAuth": {}}
@@ -137,7 +148,7 @@ class SubStateController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -158,7 +169,7 @@ class SubStateController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/sub-states/delete/{id}",
+     *     path="/api/sub-states/delete/{id}",
      *     summary="Delete sub state",
      *     tags={"sub-states"},
      *     operationId="deleteSubState",
@@ -171,7 +182,7 @@ class SubStateController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

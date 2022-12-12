@@ -114,7 +114,7 @@ class SeverityDamageController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/severity-damages/{id}",
+     *     path="/api/severity-damages/{id}",
      *     tags={"severity-damages"},
      *     summary="Updated severity damage",
      *     security={
@@ -132,7 +132,7 @@ class SeverityDamageController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

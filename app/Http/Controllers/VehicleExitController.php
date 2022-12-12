@@ -15,7 +15,7 @@ class VehicleExitController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/vehicle-exits/getall",
+    *     path="/api/vehicle-exits",
     *     tags={"vehicle-exits"},
     *     summary="Get all type vehicle exits",
     *     security={
@@ -32,13 +32,52 @@ class VehicleExitController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="vehicleIds[]",
+    *       in="query",
+    *       description="A list of vehicle Ids",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/VehicleExit")
-    *         ),
+    *         @OA\Items(ref="#/components/schemas/VehicleExitPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -70,12 +109,13 @@ class VehicleExitController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -129,7 +169,7 @@ class VehicleExitController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/vehicle-exits/{id}",
+     *     path="/api/vehicle-exits/{id}",
      *     tags={"vehicle-exits"},
      *     summary="Updated vehicle exit model",
      *     security={
@@ -147,7 +187,7 @@ class VehicleExitController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

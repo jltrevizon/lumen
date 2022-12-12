@@ -24,6 +24,19 @@ class Customer extends Model
 {
 
     /**
+     * @OA\Schema(
+    *      schema="CustomerPaginate",
+    *      allOf = {
+    *          @OA\Schema(ref="#/components/schemas/Paginate"),
+    *          @OA\Schema(
+    *              @OA\Property(
+    *                  property="data",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/Customer"),
+    *              ),
+    *          ),
+    *      },
+    * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

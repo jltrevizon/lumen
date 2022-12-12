@@ -89,6 +89,10 @@ class ChatController extends Controller
      *                     @OA\Property(
      *                         property="message",
      *                         type="string",
+     *                     ),
+     *                     @OA\Property(
+     *                         property="campa_id",
+     *                         type="integer",
      *                     )
      *          ),
      *     )
@@ -143,11 +147,21 @@ class ChatController extends Controller
     /**
     * @OA\Get(
     *     path="/api/get-message-app",
-    *     tags={"chat"},
+    *     tags={"chats"},
     *     summary="Get message app",
     *     security={
     *          {"bearerAuth": {}}
     *     },
+    *     @OA\Parameter(
+    *       name="id",
+    *       in="query",
+    *       description="id",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
@@ -207,7 +221,7 @@ class ChatController extends Controller
      *                     @OA\Property(
      *                         property="messages",
      *                         type="array",
-     *                         @OA\Items(type="string"),
+     *                         @OA\Items(ref="#/components/schemas/Message"),
      *                     )
      *          ),
      *     )

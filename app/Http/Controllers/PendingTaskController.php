@@ -88,7 +88,7 @@ class PendingTaskController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -199,13 +199,61 @@ class PendingTaskController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=15,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="approved",
+    *       in="query",
+    *       description="Approved",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="receptionNull",
+    *       in="query",
+    *       description="Reception null",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=0,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/PendingTask")
-    *         ),
+    *          @OA\Items(ref="#/components/schemas/PendingTaskPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -238,13 +286,30 @@ class PendingTaskController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/PendingTask"),
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/PendingTaskPaginate"),
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -293,7 +358,7 @@ class PendingTaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/pending-tasks/update/{id}",
+     *     path="/api/pending-tasks/update/{id}",
      *     tags={"pending-tasks"},
      *     summary="Updated pending task",
      *     security={
@@ -311,7 +376,7 @@ class PendingTaskController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -332,7 +397,7 @@ class PendingTaskController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/pending-tasks/delete/{id}",
+     *     path="/api/pending-tasks/delete/{id}",
      *     summary="Delete pending task",
      *     tags={"pending-tasks"},
      *     operationId="deletePendingTask",
@@ -345,7 +410,7 @@ class PendingTaskController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

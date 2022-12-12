@@ -24,13 +24,30 @@ class LoginLogController extends Controller
     *     security={
     *          {"bearerAuth": {}}
     *     },
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/LoginLog")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/LoginLogPaginate"),
     *     ),
     *     @OA\Response(
     *         response="500",

@@ -28,7 +28,7 @@ class VehicleController extends Controller
 
     /**
     * @OA\Get(
-    *     path="api/vehicles/download",
+    *     path="/api/vehicles/download",
     *     tags={"vehicles"},
     *     summary="Download",
     *     security={
@@ -63,7 +63,7 @@ class VehicleController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/vehicles",
+    *     path="/api/vehicles",
     *     tags={"vehicles"},
     *     summary="Get all vehicles",
     *     security={
@@ -80,13 +80,30 @@ class VehicleController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Vehicle")
-    *         ),
+    *         @OA\Items(ref="#/components/schemas/VehiclePaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -103,7 +120,7 @@ class VehicleController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/vehicles/{id}",
+    *     path="/api/vehicles/{id}",
     *     tags={"vehicles"},
     *     summary="Get vehicle by ID",
     *    security={
@@ -125,7 +142,7 @@ class VehicleController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -186,7 +203,7 @@ class VehicleController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/vehicles/update/{id}",
+     *     path="/api/vehicles/update/{id}",
      *     tags={"vehicles"},
      *     summary="Updated vehicle",
      *     security={
@@ -204,7 +221,7 @@ class VehicleController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -305,6 +322,57 @@ class VehicleController extends Controller
         return $this->getDataResponse($this->vehicleRepository->verifyPlate($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/vehicles/defleet",
+    *     tags={"vehicles"},
+    *     summary="Get vehicle defleet ",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\Items(ref="#/components/schemas/VehiclePaginate")
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred"
+    *     )
+    * )
+    */
+
     public function vehicleDefleet(Request $request)
     {
 
@@ -313,7 +381,7 @@ class VehicleController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/vehicles/delete/{id}",
+     *     path="/api/vehicles/delete/{id}",
      *     summary="Delete vehicle",
      *     tags={"vehicles"},
      *     operationId="deleteVehicle",
@@ -326,7 +394,7 @@ class VehicleController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -365,7 +433,7 @@ class VehicleController extends Controller
      *         in="path",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     operationId="returnVehicle",
@@ -493,7 +561,7 @@ class VehicleController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/vehicle-with-reservation-without-order/campa",
+    *     path="/api/vehicle-with-reservation-without-order/campa",
     *     tags={"vehicles"},
     *     summary="get Vehicles With Reservation Without Order Campa",
     *     security={
@@ -583,12 +651,128 @@ class VehicleController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=15,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaNull",
+    *       in="query",
+    *       description="Campa null",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=0,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="withUbication",
+    *       in="query",
+    *       description="With Ubication",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="approvedPendingTasksNotNull",
+    *       in="query",
+    *       description="approved pending tasks not null",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="plate",
+    *       in="query",
+    *       description="Plate",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="defleetingAndDelivery",
+    *       in="query",
+    *       description="defleetingAndDelivery",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campas[]",
+    *       in="query",
+    *       description="A list of campas",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="stateNotIds[]",
+    *       in="query",
+    *       description="A list of stateNotIds",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={10,4,5},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="states[]",
+    *       in="query",
+    *       description="A list of states",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
     *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Vehicle")
+    *           @OA\Property(
+    *                  property="vehicles",
+    *                  type="object",
+    *                  ref="#/components/schemas/VehiclePaginate"
+    *            )
     *         ),
     *     ),
     *     @OA\Response(
@@ -622,13 +806,30 @@ class VehicleController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Vehicle")
-    *         ),
+    *         @OA\Items(ref="#/components/schemas/VehiclePaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -863,7 +1064,7 @@ class VehicleController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/vehicles/defleet/{id}",
+    *     path="/api/vehicles/defleet/{id}",
     *     tags={"vehicles"},
     *     summary="Get defleet by id",
     *    security={
@@ -874,7 +1075,7 @@ class VehicleController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -896,7 +1097,7 @@ class VehicleController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/vehicles/undefleet/{id}",
+    *     path="/api/vehicles/undefleet/{id}",
     *     tags={"vehicles"},
     *     summary="Undefleet by id",
     *    security={
@@ -907,7 +1108,7 @@ class VehicleController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(

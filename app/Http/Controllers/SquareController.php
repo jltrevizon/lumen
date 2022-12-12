@@ -33,16 +33,33 @@ class SquareController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Square")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/SquarePaginate")
     *     ),
     *     @OA\Response(
-    *         response="500",
+    *         response=500,
     *         description="An error has occurred."
     *     )
     * )
@@ -94,7 +111,7 @@ class SquareController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/squares/{id}",
+     *     path="/api/squares/{id}",
      *     tags={"squares"},
      *     summary="Updated square",
      *     security={
@@ -112,7 +129,7 @@ class SquareController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

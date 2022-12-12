@@ -41,7 +41,7 @@ class BudgetPendingTaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/budget-pending-task/{id}",
+     *     path="/api/budget-pending-task/{id}",
      *     tags={"budget-pending-tasks"},
      *     summary="Updated budget pending task",
      *     security={
@@ -59,13 +59,19 @@ class BudgetPendingTaskController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/BudgetPendingTask"),
+     *         value= @OA\JsonContent(
+    *              @OA\Property(
+    *                  property="brands",
+    *                  type="object",
+    *                  ref="#/components/schemas/BudgetPendingTask"
+    *              ),
+    *          ),
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -80,7 +86,7 @@ class BudgetPendingTaskController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/budget-pending-task",
+    *     path="/api/budget-pending-task",
     *     tags={"budget-pending-tasks"},
     *     summary="Get all budget pending tasks",
     *     security={
@@ -97,13 +103,30 @@ class BudgetPendingTaskController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/BudgetPendingTask")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/BudgetPendingTaskPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",

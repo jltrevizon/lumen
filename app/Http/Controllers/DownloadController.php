@@ -94,7 +94,7 @@ class DownloadController extends Controller
     *       name="vehicles",
     *       in="query",
     *       description="string",
-    *       example={"1,2,3"},
+    *       example="1,2,3",
     *       required=true,
     *     ),
     *     @OA\Parameter(

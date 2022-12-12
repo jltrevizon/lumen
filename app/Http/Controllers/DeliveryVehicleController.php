@@ -35,13 +35,61 @@ class DeliveryVehicleController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="pendindTaskNull",
+    *       in="query",
+    *       description="Pending task null",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=0,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="vehicleDeleted",
+    *       in="query",
+    *       description="Vehicle deleted",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=0,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/DeliveryVehicle")
-    *         ),
+    *         @OA\Items(ref="#/components/schemas/DeliveryVehiclePaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -117,7 +165,7 @@ class DeliveryVehicleController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/delivery-vehicles/{id}",
+     *     path="/api/delivery-vehicles/{id}",
      *     summary="Delete delivery vehicle",
      *     tags={"delivery-vehicles"},
      *     operationId="deleteDeliveryVehicle",
@@ -130,7 +178,7 @@ class DeliveryVehicleController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

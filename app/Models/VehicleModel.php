@@ -21,6 +21,19 @@ class VehicleModel extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="VehicleModelWithBrand",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/VehicleModel"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="brand",
+     *                  type="object",
+     *                  ref="#/components/schemas/Brand"
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

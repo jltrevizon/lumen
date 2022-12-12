@@ -39,7 +39,7 @@ class TaskController extends Controller
     *         description="Successful operation",
     *         value= @OA\JsonContent(
     *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Task")
+    *           @OA\Items(ref="#/components/schemas/TaskWithSubStateAndTypeTask")
     *         ),
     *     ),
     *     @OA\Response(
@@ -66,7 +66,7 @@ class TaskController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -121,7 +121,7 @@ class TaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/tasks/update/{id}",
+     *     path="/api/tasks/update/{id}",
      *     tags={"tasks"},
      *     summary="Updated task",
      *     security={
@@ -139,7 +139,7 @@ class TaskController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -160,7 +160,7 @@ class TaskController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/tasks/delete/{id}",
+     *     path="/api/tasks/delete/{id}",
      *     summary="Delete task",
      *     tags={"tasks"},
      *     operationId="deleteTask",
@@ -173,7 +173,7 @@ class TaskController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

@@ -55,7 +55,7 @@ class StatePendingTaskController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -107,7 +107,7 @@ class StatePendingTaskController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/states-pending-tasks/update/{id}",
+     *     path="/api/states-pending-tasks/update/{id}",
      *     tags={"state-pending-tasks"},
      *     summary="Updated purchase state pending task",
      *     security={
@@ -125,7 +125,7 @@ class StatePendingTaskController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -145,7 +145,7 @@ class StatePendingTaskController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/states-pending-tasks/delete/{id}",
+     *     path="/api/states-pending-tasks/delete/{id}",
      *     summary="Delete state pending task",
      *     tags={"state-pending-tasks"},
      *     operationId="deleteStatePendingTask",
@@ -158,7 +158,7 @@ class StatePendingTaskController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

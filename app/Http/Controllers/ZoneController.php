@@ -126,7 +126,7 @@ class ZoneController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/zones/{id}",
+     *     path="/api/zones/{id}",
      *     tags={"zones"},
      *     summary="Updated zones",
      *     security={
@@ -144,7 +144,7 @@ class ZoneController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

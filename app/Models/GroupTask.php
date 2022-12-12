@@ -24,6 +24,19 @@ use Illuminate\Support\Facades\DB;
 class GroupTask extends Model
 {
     /**
+     * @OA\Schema(
+     *      schema="GroupTaskPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/GroupTask"),
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

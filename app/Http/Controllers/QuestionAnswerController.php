@@ -95,7 +95,7 @@ class QuestionAnswerController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/question-answers/update/{id}",
+     *     path="/api/question-answers/update/{id}",
      *     tags={"question-answers"},
      *     summary="Updated question answer",
      *     security={
@@ -113,7 +113,7 @@ class QuestionAnswerController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -134,7 +134,7 @@ class QuestionAnswerController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/question-answers/update-response/{id}",
+     *     path="/api/question-answers/update-response/{id}",
      *     tags={"question-answers"},
      *     summary="Updated question answer",
      *     security={
@@ -152,7 +152,7 @@ class QuestionAnswerController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

@@ -64,7 +64,17 @@ class AccessoryVehicleController extends Controller
      *     @OA\RequestBody(
      *         description="Create accessory vehicle object",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/AccessoryVehicle"),
+     *         value=@OA\JsonContent(
+     *                     @OA\Property(
+     *                         property="vehicle_id",
+     *                         type="integer",
+     *                     ),
+     *                     @OA\Property(
+     *                         property="accesories",
+     *                         type="array",
+     *                         @OA\Items(type="integer")
+     *                     ),
+     *          ),
      *     )
      * )
      */
@@ -83,7 +93,7 @@ class AccessoryVehicleController extends Controller
     /**
      * @OA\Post(
      *     path="/api/accessory-vehicle/delete",
-     *     tags={"accessory-vehicle"},
+     *     tags={"accessory-vehicles"},
      *     summary="Destroy accessory vehicle",
      *     security={
      *          {"bearerAuth": {}}
@@ -95,7 +105,7 @@ class AccessoryVehicleController extends Controller
      *         @OA\JsonContent(ref="#/components/schemas/VehicleWithAccessories"),
      *     ),
      *     @OA\RequestBody(
-     *         description="Create accessory vehicle object",
+     *         description="Destroy accessory vehicle object",
      *         required=true,
      *         value=@OA\JsonContent(
      *                     @OA\Property(
@@ -105,7 +115,7 @@ class AccessoryVehicleController extends Controller
      *                     @OA\Property(
      *                         property="accesories",
      *                         type="array",
-     *                         @OA\Items(ref="#/components/schemas/Accessory")
+     *                         @OA\Items(type="integer")
      *                     ),
      *          ),
      *     )

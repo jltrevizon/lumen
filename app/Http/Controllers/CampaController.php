@@ -34,6 +34,17 @@ class CampaController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="ids[]",
+    *       in="query",
+    *       description="A list of ids",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
@@ -66,7 +77,7 @@ class CampaController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Parameter(
@@ -83,7 +94,13 @@ class CampaController extends Controller
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Campa"),
+    *         value= @OA\JsonContent(
+    *              @OA\Property(
+    *                  property="campa",
+    *                  type="object",
+    *                  ref="#/components/schemas/Campa"
+    *              ),
+    *          ),
     *    ),
     *     @OA\Response(
     *         response="404",
@@ -130,7 +147,7 @@ class CampaController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/campas/update/{id}",
+     *     path="/api/campas/update/{id}",
      *     tags={"campas"},
      *     summary="Updated campa",
      *     security={
@@ -148,13 +165,19 @@ class CampaController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/Campa"),
+     *         value= @OA\JsonContent(
+    *              @OA\Property(
+    *                  property="campa",
+    *                  type="object",
+    *                  ref="#/components/schemas/Campa"
+    *              ),
+    *          ),
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -169,7 +192,7 @@ class CampaController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/campas/delete/{id}",
+     *     path="/api/campas/delete/{id}",
      *     summary="Delete campa",
      *     tags={"campas"},
      *     operationId="deleteCampa",
@@ -182,7 +205,7 @@ class CampaController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

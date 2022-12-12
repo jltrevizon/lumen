@@ -55,7 +55,7 @@ class RegionController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -107,7 +107,7 @@ class RegionController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/regions/update/{id}",
+     *     path="/api/regions/update/{id}",
      *     tags={"regions"},
      *     summary="Updated region",
      *     security={
@@ -125,7 +125,7 @@ class RegionController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -146,7 +146,7 @@ class RegionController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/regions/delete/{id}",
+     *     path="/api/regions/delete/{id}",
      *     summary="Delete region",
      *     tags={"regions"},
      *     operationId="deleteRegion",
@@ -159,7 +159,7 @@ class RegionController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

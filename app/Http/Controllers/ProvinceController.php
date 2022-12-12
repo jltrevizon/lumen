@@ -34,13 +34,30 @@ class ProvinceController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Province")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/ProvincePaginate"),
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -66,7 +83,7 @@ class ProvinceController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -120,7 +137,7 @@ class ProvinceController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/provinces/update/{id}",
+     *     path="/api/provinces/update/{id}",
      *     tags={"provinces"},
      *     summary="Updated province",
      *     security={
@@ -138,7 +155,7 @@ class ProvinceController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -159,7 +176,7 @@ class ProvinceController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/provinces/delete/{id}",
+     *     path="/api/provinces/delete/{id}",
      *     summary="Delete province",
      *     tags={"provinces"},
      *     operationId="deleteProvince",
@@ -172,7 +189,7 @@ class ProvinceController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

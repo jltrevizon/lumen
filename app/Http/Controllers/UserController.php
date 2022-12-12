@@ -39,7 +39,7 @@ class UserController extends Controller
     *         description="Successful operation",
     *         value= @OA\JsonContent(
     *           type="array",
-    *           @OA\Items(ref="#/components/schemas/User")
+    *           @OA\Items(ref="#/components/schemas/UserWithCampasRoleAndCompany")
     *         ),
     *     ),
     *     @OA\Response(
@@ -65,13 +65,24 @@ class UserController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/User")
+    *         value=@OA\JsonContent(
+    *                  allOf = {
+    *                      @OA\Schema(ref="#/components/schemas/User"),
+    *                      @OA\Schema(
+    *                          @OA\Property(
+    *                              property="campas",
+    *                              type="array",
+    *                              @OA\Items(ref="#/components/schemas/Campa")
+    *                           ),
+    *                        ),
+    *                  }
+    *         )
     *    ),
     *     @OA\Response(
     *         response="404",
@@ -151,7 +162,7 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/users/update/{id}",
+     *     path="/api/users/update/{id}",
      *     tags={"users"},
      *     summary="Updated user",
      *     security={
@@ -169,7 +180,7 @@ class UserController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -190,7 +201,7 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/users/delete/{id}",
+     *     path="/api/users/delete/{id}",
      *     summary="Delete user",
      *     tags={"users"},
      *     operationId="deleteUser",
@@ -203,7 +214,7 @@ class UserController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -241,7 +252,7 @@ class UserController extends Controller
      *         in="path",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -273,13 +284,20 @@ class UserController extends Controller
      *     @OA\RequestBody(
      *         description="",
      *         required=true,
-     *          value = @OA\JsonContent(
+     *         value = @OA\JsonContent(
      *              @OA\Property(
-     *                  property="with",
+     *                  property="with[]",
+     *                  example={"relationship_name:campas,company"},
      *                  type="array",
      *                  @OA\Items(
      *                      type="string",
-     *                      example={"relationship_name:campas,company"}
+     *                  ),
+     *              ),
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(
+     *                      type="integer",
      *                  ),
      *              ),
      *         )

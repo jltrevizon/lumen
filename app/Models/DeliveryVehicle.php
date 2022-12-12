@@ -23,6 +23,20 @@ class DeliveryVehicle extends Model
 {
 
     /**
+     * /**
+     * @OA\Schema(
+     *      schema="DeliveryVehiclePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DeliveryVehicle"),
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Schema(
      *      schema="DeliveryVehicleWithTypeModelOrder",
      *      allOf = {

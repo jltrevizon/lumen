@@ -25,6 +25,82 @@ class Damage extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="DamagePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DamageWith"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="DamageWith",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Damage"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="user",
+     *                   type="object",
+     *                   ref="#/components/schemas/User"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="vehicle",
+     *                   type="object",
+     *                   ref="#/components/schemas/Vehicle"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="tasks",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Task"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="roles",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Role"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="comments",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Comment"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="severity_damage",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/SeverityDamage"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="status_damage",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/StatusDamage"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="damage_type",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DamageType"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     *
      * @OA\Property(
      *     property="id",
      *     type="integer",

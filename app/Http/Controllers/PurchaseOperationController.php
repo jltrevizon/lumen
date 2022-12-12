@@ -55,7 +55,7 @@ class PurchaseOperationController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -109,7 +109,7 @@ class PurchaseOperationController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/purchase-operations/update/{id}",
+     *     path="/api/purchase-operations/update/{id}",
      *     tags={"purchase-operations"},
      *     summary="Updated purchase operation",
      *     @OA\RequestBody(
@@ -124,7 +124,7 @@ class PurchaseOperationController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -145,7 +145,7 @@ class PurchaseOperationController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/purchase-operations/delete/{id}",
+     *     path="/api/purchase-operations/delete/{id}",
      *     summary="Delete purchase operation",
      *     tags={"purchase-operations"},
      *     operationId="deletePurchaseOperation",
@@ -158,7 +158,7 @@ class PurchaseOperationController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

@@ -24,6 +24,101 @@ use Illuminate\Support\Facades\DB;
 class Reception extends Model
 {
     /**
+     * @OA\Schema(
+     *      schema="ReceptionPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/ReceptionWithCampaAndVehicle"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * /**
+     * @OA\Schema(
+     *      schema="ReceptionWithCampaAndVehicle",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Reception"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="campa",
+     *                  type="object",
+     *                  ref="#/components/schemas/Campa"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="Vehicle",
+     *                  type="object",
+     *                  ref="#/components/schemas/Vehicle"
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="ReceptionWithAllApprovedPendingTaskAndGroupTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Reception"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="group_task",
+     *                  type="object",
+     *                  ref="#/components/schemas/GroupTask"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="all_approved_pending_task",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/AllApprovedPendingTask"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="last_pending_task_delivery",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/LastPendingTaskDelivery"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="AllApprovedPendingTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/PendingTask"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="state_pending_task",
+     *                  type="object",
+     *                  ref="#/components/schemas/StatePendingTask"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="Task",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Task"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="user",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/User"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="user_start",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/User"),
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

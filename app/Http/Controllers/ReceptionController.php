@@ -15,7 +15,7 @@ class ReceptionController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/reception",
+    *     path="/api/reception",
     *     tags={"receptions"},
     *     summary="Get all receptions",
     *     security={
@@ -32,13 +32,71 @@ class ReceptionController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="campaIds[]",
+    *       in="query",
+    *       description="A list of campaIDs",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="subStatesNotIds[]",
+    *       in="query",
+    *       description="A list of subStatesNotIds",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={1,2},
+    *           @OA\Items(type="integer")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="vehiclePlate",
+    *       in="query",
+    *       description="Plate",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="whereHasVehicle",
+    *       in="query",
+    *       description="Where has vehicle",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=0,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Reception")
-    *         ),
+    *         @OA\Items(ref="#/components/schemas/ReceptionPaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -97,7 +155,7 @@ class ReceptionController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -119,7 +177,7 @@ class ReceptionController extends Controller
 
     /**
      * @OA\Put(
-     *     path="reception/{id}",
+     *     path="/api/reception/{id}",
      *     tags={"receptions"},
      *     summary="Updated reception",
      *     security={
@@ -137,7 +195,7 @@ class ReceptionController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

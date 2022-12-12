@@ -15,7 +15,7 @@ class BrandController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/brands",
+    *     path="/api/brands",
     *     tags={"brands"},
     *     summary="Get all brands",
     *     security={
@@ -36,9 +36,12 @@ class BrandController extends Controller
     *         response=200,
     *         description="Successful operation",
     *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Brand")
-    *         ),
+    *              @OA\Property(
+    *                  property="brands",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/Brand")
+    *              ),
+    *          ),
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -53,7 +56,7 @@ class BrandController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/brands/{id}",
+    *     path="/api/brands/{id}",
     *     tags={"brands"},
     *     summary="Get brand by ID",
     *    security={
@@ -64,7 +67,7 @@ class BrandController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Parameter(
@@ -81,7 +84,13 @@ class BrandController extends Controller
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Brand"),
+    *         value= @OA\JsonContent(
+    *              @OA\Property(
+    *                  property="brand",
+    *                  type="object",
+    *                  ref="#/components/schemas/Brand"
+    *              ),
+    *          ),
     *    ),
     *     @OA\Response(
     *         response="404",
@@ -104,7 +113,7 @@ class BrandController extends Controller
      *     },
      *     operationId="createBrand",
      *     @OA\Response(
-     *         response="201",
+     *         response="200",
      *         description="Successful operation",
      *         @OA\JsonContent(ref="#/components/schemas/Brand"),
      *     ),
@@ -122,7 +131,7 @@ class BrandController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/brands/{id}",
+     *     path="/api/brands/{id}",
      *     tags={"brands"},
      *     summary="Updated brand",
      *     security={
@@ -140,7 +149,7 @@ class BrandController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

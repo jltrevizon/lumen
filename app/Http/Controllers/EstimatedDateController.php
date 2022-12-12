@@ -37,7 +37,7 @@ class EstimatedDateController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/estimated-dates/{id}",
+     *     path="/api/estimated-dates/{id}",
      *     tags={"estimated-dates"},
      *     summary="Updated estimated date",
      *     security={
@@ -55,7 +55,7 @@ class EstimatedDateController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

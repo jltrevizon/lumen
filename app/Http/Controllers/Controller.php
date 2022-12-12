@@ -44,6 +44,77 @@ class Controller extends BaseController
         ], Response::HTTP_OK);
     }
 
+    /**
+     * @OA\Schema(
+     *      schema="Links",
+     *      @OA\Property(
+     *          property="active",
+     *          type="boolean",
+     *      ),
+     *      @OA\Property(
+     *          property="label",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="url",
+     *          type="string",
+     *      ),
+     * ),
+     *
+     * @OA\Schema(
+     *      schema="Paginate",
+     *      @OA\Property(
+     *          property="current_page",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="first_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="from",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="last_page",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="last_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="links",
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/Links")
+     *      ),
+     *      @OA\Property(
+     *          property="next_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="path",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="per_page",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="per_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="to",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="total",
+     *          type="integer",
+     *      ),
+     * ),
+     *
+     */
     public function getDataResponse($data, $code = Response::HTTP_OK): JsonResponse {
         try {
             return response()->json($data, $code);

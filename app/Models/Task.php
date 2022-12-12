@@ -26,6 +26,26 @@ class Task extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="TaskWithSubStateAndTypeTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Task"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="sub_state",
+     *                  type="object",
+     *                  ref="#/components/schemas/SubStateWithState"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="type_task",
+     *                  type="object",
+     *                  ref="#/components/schemas/TypeTask"
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

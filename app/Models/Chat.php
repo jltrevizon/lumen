@@ -20,6 +20,17 @@ use App\Models\User;
 class Chat extends Model
 {
     /**
+     * @OA\Schema(
+     *      schema="Message",
+     *      @OA\Property(
+     *            property="id",
+     *            type="integer",
+     *       ),
+     *       @OA\Property(
+     *            property="message",
+     *            type="string"
+     *        )
+     * ),
      * @OA\Property(
      *     property="id",
      *     type="integer",

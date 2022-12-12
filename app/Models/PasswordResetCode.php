@@ -21,6 +21,19 @@ class PasswordResetCode extends Model
 {
 
     /**
+     * @OA\Schema(
+    *      schema="PasswordResetCodePaginate",
+    *      allOf = {
+    *          @OA\Schema(ref="#/components/schemas/Paginate"),
+    *          @OA\Schema(
+    *              @OA\Property(
+    *                  property="data",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/PasswordResetCode"),
+    *              ),
+    *          ),
+    *      },
+    * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

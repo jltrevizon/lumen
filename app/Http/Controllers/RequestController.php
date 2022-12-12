@@ -46,12 +46,15 @@ class RequestController extends Controller
     *     path="/api/requests/{id}",
     *     tags={"requests"},
     *     summary="Get request by ID",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -72,7 +75,7 @@ class RequestController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/requests/delete/{id}",
+     *     path="/api/requests/delete/{id}",
      *     summary="Delete request",
      *     tags={"requests"},
      *     operationId="deleteRequest",
@@ -85,7 +88,7 @@ class RequestController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

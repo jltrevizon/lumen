@@ -22,6 +22,37 @@ class HistoryLocation extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="HistoryLocationPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/HistoryLocationWithVehicleAndUser"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="HistoryLocationWithVehicleAndUser",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/HistoryLocation"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="user",
+     *                  type="object",
+     *                  ref="#/components/schemas/User",
+     *              ),
+     *              @OA\Property(
+     *                  property="vehicle",
+     *                  type="object",
+     *                  ref="#/components/schemas/VehicleWithTypeModelOrderAndVehicleModel",
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

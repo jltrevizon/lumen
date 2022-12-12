@@ -94,7 +94,7 @@ class AccessoryTypeController extends Controller
     /**
     * @OA\Get(
     *     path="/api/accessory-types/{id}",
-    *     tags={"accesories"},
+    *     tags={"accessory-types"},
     *     summary="Get accessory type by ID",
     *     security={
     *          {"bearerAuth": {}}
@@ -104,7 +104,7 @@ class AccessoryTypeController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -132,7 +132,7 @@ class AccessoryTypeController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/accessory-types/{id}",
+     *     path="/api/accessory-types/{id}",
      *     tags={"accessory-types"},
      *     summary="Updated accessory type",
      *     security={
@@ -179,7 +179,7 @@ class AccessoryTypeController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/accessory-types/{id}",
+     *     path="/api/accessory-types/{id}",
      *     summary="Delete accessory type",
      *     tags={"accessory-types"},
      *     operationId="deleteAccesorType",
@@ -192,7 +192,7 @@ class AccessoryTypeController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

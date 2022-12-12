@@ -15,7 +15,7 @@ class TypeModelOrderController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/type-model-orders/getall",
+    *     path="/api/type-model-order",
     *     tags={"type-model-orders"},
     *     summary="Get all type type model orders",
     *     security={
@@ -24,11 +24,14 @@ class TypeModelOrderController extends Controller
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/TypeModelOrder")
-    *         ),
-    *     ),
+    *         @OA\JsonContent(
+    *              @OA\Property(
+    *                  property="type_model_orders",
+    *                  type="array",
+    *                  @OA\Items(ref="#/components/schemas/TypeModelOrder")
+    *              ),
+    *          ),
+    *      ),
     *     @OA\Response(
     *         response="500",
     *         description="An error has occurred."

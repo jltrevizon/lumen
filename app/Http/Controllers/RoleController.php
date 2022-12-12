@@ -67,7 +67,7 @@ class RoleController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -119,7 +119,7 @@ class RoleController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/roles/update/{id}",
+     *     path="/api/roles/update/{id}",
      *     tags={"roles"},
      *     summary="Updated role",
      *     security={
@@ -137,7 +137,7 @@ class RoleController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -158,7 +158,7 @@ class RoleController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/roles/delete/{id}",
+     *     path="/api/roles/delete/{id}",
      *     summary="Delete role",
      *     tags={"roles"},
      *     operationId="deleteRole",
@@ -171,7 +171,7 @@ class RoleController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

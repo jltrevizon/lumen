@@ -32,13 +32,30 @@ class IncidenceImageController extends Controller
     *           @OA\Items(type="string")
     *       )
     *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/IncidenceImage")
-    *         ),
+    *         @OA\JsonContent(ref="#/components/schemas/IncidenceImagePaginate")
     *     ),
     *     @OA\Response(
     *         response="500",
@@ -93,7 +110,7 @@ class IncidenceImageController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/incidence-images/{id}",
+     *     path="/api/incidence-images/{id}",
      *     tags={"incidence-images"},
      *     summary="Updated incidence images",
      *     security={
@@ -111,7 +128,7 @@ class IncidenceImageController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

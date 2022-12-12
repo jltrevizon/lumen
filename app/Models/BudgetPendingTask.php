@@ -23,6 +23,19 @@ class BudgetPendingTask extends Model
 {
 
     /**
+     * @OA\Schema(
+     *      schema="BudgetPendingTaskPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/BudgetPendingTask"),
+     *              ),
+     *          ),
+     *      },
+     * )
      * @OA\Property(
      *     property="id",
      *     type="integer",

@@ -17,7 +17,7 @@ class TypeRequestController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/types-requests/getall",
+    *     path="/api/types-requests/getall",
     *     tags={"type-requests"},
     *     summary="Get all type requests",
     *     security={
@@ -44,7 +44,7 @@ class TypeRequestController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/types-requests/{id}",
+    *     path="/api/types-requests/{id}",
     *     tags={"type-requests"},
     *     summary="Get type request by ID",
     *     security={
@@ -55,7 +55,7 @@ class TypeRequestController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -102,7 +102,7 @@ class TypeRequestController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/types-requests/update/{id}",
+     *     path="/api/types-requests/update/{id}",
      *     tags={"type-requests"},
      *     summary="Updated type request",
      *     security={
@@ -120,7 +120,7 @@ class TypeRequestController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
@@ -141,7 +141,7 @@ class TypeRequestController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/types-requests/delete/{id}",
+     *     path="/api/types-requests/delete/{id}",
      *     summary="Delete type request",
      *     tags={"type-requests"},
      *     operationId="deleteTypeRequest",
@@ -154,7 +154,7 @@ class TypeRequestController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

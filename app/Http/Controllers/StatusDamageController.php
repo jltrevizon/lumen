@@ -78,7 +78,7 @@ class StatusDamageController extends Controller
      *     )
      * )
      */
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -114,7 +114,7 @@ class StatusDamageController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/status-damages/{id}",
+     *     path="/api/status-damages/{id}",
      *     tags={"status-damages"},
      *     summary="Updated status damage",
      *     security={
@@ -132,7 +132,7 @@ class StatusDamageController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(

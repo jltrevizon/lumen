@@ -10,7 +10,7 @@ class TypeBudgetLineController extends Controller
 {
     /**
     * @OA\Get(
-    *     path="/type-budget-lines",
+    *     path="/api/type-budget-lines",
     *     tags={"type-budget-lines"},
     *     summary="Get all type budget lines",
     *     security={

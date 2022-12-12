@@ -25,7 +25,18 @@ class SubState extends Model
 {
 
     /**
-     * 
+     * @OA\Schema(
+     *      schema="SubStateWithState",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/SubState"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="state",
+     *                   ref="#/components/schemas/State"
+     *              )
+     *          ),
+     *      },
+     * )
      *
      * @OA\Property(
      *     property="id",

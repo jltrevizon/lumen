@@ -66,7 +66,7 @@ class CategoryController extends Controller
     *         in="path",
     *         required=true,
     *         @OA\Schema(
-    *             type="string"
+    *             type="integer"
     *         )
     *     ),
     *     @OA\Response(
@@ -118,7 +118,7 @@ class CategoryController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/categories/update/{id}",
+     *     path="/api/categories/update/{id}",
      *     tags={"categories"},
      *     summary="Updated category",
      *     security={
@@ -136,13 +136,19 @@ class CategoryController extends Controller
      *         description="id that to be updated",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/Category"),
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="category",
+     *                  type="object",
+     *                  ref="#/components/schemas/Category"
+     *              ),
+     *          ),
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -157,7 +163,7 @@ class CategoryController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/categories/delete/{id}",
+     *     path="/api/categories/delete/{id}",
      *     summary="Delete category",
      *     tags={"categories"},
      *     operationId="deleteCategory",
@@ -170,7 +176,7 @@ class CategoryController extends Controller
      *         description="The id that needs to be deleted",
      *         required=true,
      *         @OA\Schema(
-     *             type="string"
+     *             type="integer"
      *         )
      *     ),
      *     @OA\Response(
