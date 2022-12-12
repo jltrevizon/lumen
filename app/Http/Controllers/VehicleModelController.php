@@ -37,8 +37,8 @@ class VehicleModelController extends Controller
     * )
     */
 
-    public function getAll(){
-        return $this->getDataResponse($this->vehicleModelRepository->getAll(), HttpFoundationResponse::HTTP_OK);
+    public function getAll(Request $request){
+        return $this->getDataResponse($this->vehicleModelRepository->getAll($request), HttpFoundationResponse::HTTP_OK);
     }
 
     /**

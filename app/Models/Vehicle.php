@@ -847,6 +847,10 @@ class Vehicle extends Model
         return $query->whereIn('company_id', $ids);
     }
 
+    public function scopeByPlates($query, array $plates){
+        return $query->whereIn('plate', $plates);
+    }
+
     public function scopeByPlate($query, string $plate){
         return $query->where('plate','like',"%" . $plate . "%");
     }

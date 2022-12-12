@@ -2,10 +2,14 @@
 
 namespace App\Filters;
 
+use App\Models\Campa;
+use App\Traits\CoincidenceFilterTrait;
 use EloquentFilter\ModelFilter;
 
 class CampaFilter extends ModelFilter
 {
+    use CoincidenceFilterTrait;
+
     public function ids($ids){
         return $this->byIds($ids);
     }

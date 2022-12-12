@@ -65,6 +65,12 @@ class VehicleFilter extends ModelFilter
         return $this->byPlate($plate);
     }
 
+    public function plates($plates)
+    {
+        return $this->byPlates($plates);
+    }
+
+
     public function brands($ids)
     {
         return $this->brandIds($ids);
