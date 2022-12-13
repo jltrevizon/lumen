@@ -23,72 +23,108 @@ class DownloadController extends Controller
     *       in="query",
     *       description="String",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="check",
     *       in="query",
     *       description="Boolean",
     *       required=true,
+    *       @OA\Schema(
+    *           type="boolean",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="delivery_no",
     *       in="query",
     *       description="delivery no alb-",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="company",
     *       in="query",
     *       description="String",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="date_exit",
     *       in="query",
     *       description="date-time",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="created",
     *       in="query",
     *       description="date-time",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="address",
     *       in="query",
     *       description="string",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="reference",
     *       in="query",
     *       description="string",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="truck",
     *       in="query",
     *       description="string",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="trailer",
     *       in="query",
     *       description="string",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="driver",
     *       in="query",
     *       description="string",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="dni",
     *       in="query",
     *       description="string",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="vehicles",
@@ -96,12 +132,18 @@ class DownloadController extends Controller
     *       description="string",
     *       example="1,2,3",
     *       required=true,
+    *       @OA\Schema(
+    *           type="string",
+    *       )
     *     ),
     *     @OA\Parameter(
     *       name="total",
     *       in="query",
     *       description="integer",
     *       required=true,
+    *       @OA\Schema(
+    *           type="integer",
+    *       )
     *     ),
     *     @OA\Response(
     *         response=200,

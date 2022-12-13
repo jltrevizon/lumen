@@ -80,7 +80,7 @@ class VehicleModelController extends Controller
      *         required=true,
      *         @OA\JsonContent(ref="#/components/schemas/VehicleModel")
      *     ),
-     *     operationId="updateRole",
+     *     operationId="updateVehicleModel",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

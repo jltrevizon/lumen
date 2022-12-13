@@ -3498,86 +3498,128 @@
                         "name": "customer",
                         "in": "query",
                         "description": "String",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "check",
                         "in": "query",
                         "description": "Boolean",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
                     },
                     {
                         "name": "delivery_no",
                         "in": "query",
                         "description": "delivery no alb-",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "company",
                         "in": "query",
                         "description": "String",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "date_exit",
                         "in": "query",
                         "description": "date-time",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "created",
                         "in": "query",
                         "description": "date-time",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "address",
                         "in": "query",
                         "description": "string",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "reference",
                         "in": "query",
                         "description": "string",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "truck",
                         "in": "query",
                         "description": "string",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "trailer",
                         "in": "query",
                         "description": "string",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "driver",
                         "in": "query",
                         "description": "string",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "dni",
                         "in": "query",
                         "description": "string",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "name": "vehicles",
                         "in": "query",
                         "description": "string",
                         "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
                         "example": "1,2,3"
                     },
                     {
                         "name": "total",
                         "in": "query",
                         "description": "integer",
-                        "required": true
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -5503,7 +5545,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PendingTask"
+                                    "properties": {
+                                        "pending_task": {
+                                            "$ref": "#/components/schemas/PendingTask"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -5573,7 +5620,7 @@
                     "pending-tasks"
                 ],
                 "summary": "Create pending task",
-                "operationId": "createProvince",
+                "operationId": "createPendingTask",
                 "requestBody": {
                     "description": "Create pending task object",
                     "required": true,
@@ -7066,8 +7113,8 @@
                 "tags": [
                     "question-answers"
                 ],
-                "summary": "Updated question answer",
-                "operationId": "updateQuestionAnswer",
+                "summary": "Updated response",
+                "operationId": "updateResponseQuestionAnswer",
                 "parameters": [
                     {
                         "name": "id",
@@ -7080,7 +7127,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Updated question answer object",
+                    "description": "Updated response object",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -11264,7 +11311,7 @@
                     "sub-states"
                 ],
                 "summary": "Delete state",
-                "operationId": "deleteSubState",
+                "operationId": "deleteTypeTask",
                 "parameters": [
                     {
                         "name": "id",
@@ -11868,7 +11915,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Vehicle"
+                                    "$ref": "#/components/schemas/VehiclesByID"
                                 }
                             }
                         }
@@ -12150,7 +12197,7 @@
                                         "$ref": "#/components/schemas/State"
                                     },
                                     "date_start": {
-                                        "type": "strin",
+                                        "type": "string",
                                         "format": "date-time"
                                     },
                                     "date_end": {
@@ -13289,7 +13336,7 @@
                     "vehicle-models"
                 ],
                 "summary": "Updated vehicle model",
-                "operationId": "updateRole",
+                "operationId": "updateVehicleModel",
                 "parameters": [
                     {
                         "name": "id",
@@ -14653,7 +14700,7 @@
                             "data": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/Company"
+                                    "$ref": "#/components/schemas/CompanyWithSubStateAndTypeTask"
                                 }
                             }
                         },
@@ -19408,8 +19455,6 @@
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "name": "bearerAuth",
-                "in": "header",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
             }

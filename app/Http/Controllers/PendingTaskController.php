@@ -28,7 +28,7 @@ class PendingTaskController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/pending-tasks/getall",
+    *     path="/api/pending-tasks",
     *     tags={"pending-tasks"},
     *     summary="Get all pending tasks",
     *     security={
@@ -94,7 +94,13 @@ class PendingTaskController extends Controller
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/PendingTask"),
+    *         value= @OA\JsonContent(
+    *           @OA\Property(
+    *                  property="pending_task",
+    *                  type="object",
+    *                  ref="#/components/schemas/PendingTask",
+    *              ),
+    *         ),
     *    ),
     *     @OA\Response(
     *         response="404",
@@ -153,7 +159,7 @@ class PendingTaskController extends Controller
      *     security={
      *          {"bearerAuth": {}}
      *     },
-     *     operationId="createProvince",
+     *     operationId="createPendingTask",
      *     @OA\Response(
      *         response="201",
      *         description="Successful operation",

@@ -136,16 +136,16 @@ class QuestionAnswerController extends Controller
      * @OA\Put(
      *     path="/api/question-answers/update-response/{id}",
      *     tags={"question-answers"},
-     *     summary="Updated question answer",
+     *     summary="Updated response",
      *     security={
      *          {"bearerAuth": {}}
      *     },
      *     @OA\RequestBody(
-     *         description="Updated question answer object",
+     *         description="Updated response object",
      *         required=true,
      *         @OA\JsonContent(ref="#/components/schemas/QuestionAnswer")
      *     ),
-     *     operationId="updateQuestionAnswer",
+     *     operationId="updateResponseQuestionAnswer",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

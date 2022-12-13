@@ -53,7 +53,7 @@ class Company extends Model
     *              @OA\Property(
     *                  property="data",
     *                  type="array",
-    *                  @OA\Items(ref="#/components/schemas/Company"),
+    *                  @OA\Items(ref="#/components/schemas/CompanyWithSubStateAndTypeTask"),
     *              ),
     *          ),
     *      },

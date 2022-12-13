@@ -148,7 +148,7 @@ class VehicleController extends Controller
     *     @OA\Response(
     *         response=200,
     *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Vehicle"),
+    *         @OA\JsonContent(ref="#/components/schemas/VehiclesByID"),
     *    ),
     *     @OA\Response(
     *         response="404",
@@ -454,7 +454,7 @@ class VehicleController extends Controller
      *               ),
      *               @OA\Property(
      *                         property="date_start",
-     *                         type="strin",
+     *                         type="string",
      *                         format="date-time"
      *               ),
      *               @OA\Property(

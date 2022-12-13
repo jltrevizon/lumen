@@ -148,7 +148,7 @@ class TypeTaskController extends Controller
      *     path="/api/types-tasks/delete/{id}",
      *     summary="Delete state",
      *     tags={"sub-states"},
-     *     operationId="deleteSubState",
+     *     operationId="deleteTypeTask",
      *     security={
      *          {"bearerAuth": {}}
      *     },
