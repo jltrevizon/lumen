@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
+use App\Models\VehicleExit;
 use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\GroupTask;
@@ -435,6 +436,12 @@ class PendingTask extends Model
 
     public function lastDeliveryVehicle(){
         return $this->hasOne(DeliveryVehicle::class)->withTrashed()->ofMany([
+            'pending_task_id' => 'max'
+        ]);
+    }
+
+    public function lastVehicleExit(){
+        return $this->hasOne(VehicleExit::class)->ofMany([
             'pending_task_id' => 'max'
         ]);
     }
