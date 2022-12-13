@@ -17,6 +17,34 @@ class CampaUserController extends Controller
         $this->campaUserRepository = $campaUserRepository;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/assign-campa",
+     *     tags={"users"},
+     *     summary="Create campa user",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createCampaUser",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/CampaUser")
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Return user",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/User"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [
@@ -25,6 +53,40 @@ class CampaUserController extends Controller
 
         return $this->createDataResponse($this->campaUserRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/users/delete-campa",
+     *     summary="delete campa",
+     *     tags={"users"},
+     *     operationId="deleteCampaUser",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="message",
+     *                  type="string",
+     *                  example="campa deleted",
+     *              ),
+     *          ),
+     *    ),
+     *     @OA\RequestBody(
+     *         description="",
+     *         required=true,
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="campas",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/CampaUser")
+     *              ),
+     *          ),
+     *     )
+     * )
+     */
 
     public function delete(Request $request){
         $this->validate($request, [

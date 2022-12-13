@@ -32,6 +32,64 @@ class AuthController extends Controller
         }
     }
 
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/auth/signin",
+     *     tags={"auths"},
+     *     summary="Sign In",
+     *     operationId="SignIn",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Successful sign in",
+     *         value = @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="code",
+     *                  type="integer",
+     *              ),
+     *              @OA\Property(
+     *                  property="expires_in",
+     *                  type="integer",
+     *              ),
+     *              @OA\Property(
+     *                  property="token",
+     *                  type="string",
+     *              ),
+     *              @OA\Property(
+     *                  property="token_type",
+     *                  type="string",
+     *              ),
+     *              @OA\Property(
+     *                  property="user",
+     *                  ref="#/components/schemas/UserWithCampasAndRole",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *        response="400",
+     *        description="Unauthorized",
+     *     ),
+     *     @OA\RequestBody(
+     *         description="",
+     *         required=true,
+     *         value = @OA\JsonContent(
+     *              required={"email","password"},
+     *              @OA\Property(
+     *                  property="email",
+     *                  type="string",
+     *                  format="email"
+     *              ),
+     *              @OA\Property(
+     *                  property="password",
+     *                  type="string",
+     *                  format="password"
+     *              ),
+     *         )
+     *     )
+     * )
+     */
+
     public function login(Request $request){
         $credentials = ['email' => $request->input('email'), 'password' => $request->input('password')];
         if( !$token = Auth::attempt($credentials)){
@@ -43,6 +101,47 @@ class AuthController extends Controller
         }
         return $this->responseWithToken($token);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/refresh",
+    *     tags={"auths"},
+    *     summary="Get refresh token",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value = @OA\JsonContent(
+    *              @OA\Property(
+    *                  property="code",
+    *                  type="integer",
+    *              ),
+    *              @OA\Property(
+    *                  property="expires_in",
+    *                  type="integer",
+    *              ),
+    *              @OA\Property(
+    *                  property="token",
+    *                  type="string",
+    *              ),
+    *              @OA\Property(
+    *                  property="token_type",
+    *                  type="string",
+    *              ),
+    *              @OA\Property(
+    *                  property="user",
+    *                  ref="#/components/schemas/UserWithCampasAndRole",
+    *              ),
+    *          ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
 
     public function refresh(){
         return $this->responseWithToken(Auth::guard('api')->refresh());

@@ -13,6 +13,28 @@ class ManualQuestionnaireController extends Controller
         $this->manualQuestionnaireRepository = $manualQuestionnaireRepository;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/manual-questionnaire",
+     *     tags={"manual-questionnaire"},
+     *     summary="Create manual questionnaire",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createManualQuestionnaire",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/ManualQuestionnaire"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create manual questionnaire object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/ManualQuestionnaire"),
+     *     )
+     * )
+     */
+
     public function create(Request $request){
 
         $this->validate($request, [

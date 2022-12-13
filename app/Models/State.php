@@ -9,8 +9,77 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class State
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="State model",
+ *     description="State model",
+ * )
+ */
+
 class State extends Model
 {
+
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="company_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Company ID",
+     *     title="Company ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="name",
+     *     type="string",
+     *     description="Name",
+     *     title="Name",
+     * )
+     *
+     * @OA\Property(
+     *     property="type",
+     *     type="integer",
+     *     format="int32",
+     *     description="Type",
+     *     title="Type",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was deleted",
+     *     title="Deleted at",
+     * )
+     */
 
     use HasFactory, Filterable, SoftDeletes;
 

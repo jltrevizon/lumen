@@ -15,6 +15,57 @@ class SquareController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/squares",
+    *     tags={"squares"},
+    *     summary="Get all squares",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\JsonContent(ref="#/components/schemas/SquarePaginate")
+    *     ),
+    *     @OA\Response(
+    *         response=500,
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @param \Illuminate\Http\Request $request
@@ -26,6 +77,28 @@ class SquareController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/api/squares",
+     *     tags={"squares"},
+     *     summary="Create square",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createSquare",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Square"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create square object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Square"),
+     *     )
+     * )
+     */
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -35,6 +108,41 @@ class SquareController extends Controller
     {
         return $this->createDataResponse($this->squareRepository->store($request), Response::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/api/squares/{id}",
+     *     tags={"squares"},
+     *     summary="Updated square",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\RequestBody(
+     *         description="Updated square object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Square")
+     *     ),
+     *     operationId="updateSquare",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Square"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Square not found"
+     *     ),
+     * )
+     */
 
     /**
      * Update the specified resource in storage.

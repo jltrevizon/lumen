@@ -9,6 +9,29 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 class TypeBudgetLineController extends Controller
 {
     /**
+    * @OA\Get(
+    *     path="/api/type-budget-lines",
+    *     tags={"type-budget-lines"},
+    *     summary="Get all type budget lines",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/TypeBudgetLine")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

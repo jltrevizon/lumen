@@ -9,8 +9,196 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class Reception
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Reception model",
+ *     description="Reception model",
+ * )
+ */
+
 class Reception extends Model
 {
+    /**
+     * @OA\Schema(
+     *      schema="ReceptionPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/ReceptionWithCampaAndVehicle"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * /**
+     * @OA\Schema(
+     *      schema="ReceptionWithCampaAndVehicle",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Reception"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="campa",
+     *                  type="object",
+     *                  ref="#/components/schemas/Campa"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="Vehicle",
+     *                  type="object",
+     *                  ref="#/components/schemas/Vehicle"
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="ReceptionWithAllApprovedPendingTaskAndGroupTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Reception"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="group_task",
+     *                  type="object",
+     *                  ref="#/components/schemas/GroupTask"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="all_approved_pending_task",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/AllApprovedPendingTask"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="last_pending_task_delivery",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/LastPendingTaskDelivery"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="AllApprovedPendingTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/PendingTask"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="state_pending_task",
+     *                  type="object",
+     *                  ref="#/components/schemas/StatePendingTask"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="Task",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Task"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="user",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/User"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="user_start",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/User"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="campa_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Campa ID",
+     *     title="Campa ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="type_model_order_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type of Model Order ID",
+     *     title="Type of Model Order ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="group_task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Group Task ID",
+     *     title="Group Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="finished",
+     *     type="boolean",
+     *     description="Finished",
+     *     title="Finished",
+     * )
+     *
+     * @OA\Property(
+     *     property="has_accessories",
+     *     type="boolean",
+     *     description="Has accesories",
+     *     title="Has accesories",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was deleted",
+     *     title="Deleted at",
+     * )
+     *
+     */
+
     use HasFactory, Filterable;
 
     protected $fillable = [

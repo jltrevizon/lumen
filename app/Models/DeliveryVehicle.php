@@ -7,8 +7,134 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Delivery Vehicle
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Delivery vehicle model",
+ *     description="Delivery Vehicle model",
+ * )
+ */
+
 class DeliveryVehicle extends Model
 {
+
+    /**
+     * /**
+     * @OA\Schema(
+     *      schema="DeliveryVehiclePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DeliveryVehicle"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="DeliveryVehicleWithTypeModelOrder",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/DeliveryVehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="type_model_order",
+     *                   ref="#/components/schemas/TypeModelOrder"
+     *              )
+     *          ),
+     *      },
+     * )
+     *
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="pending_task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Pending Task ID",
+     *     title="Pending Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="campa_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Campa ID",
+     *     title="Campa ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="delivery_note_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Delivery Note ID",
+     *     title="Delivery Note ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="data_delivery",
+     *     type="string",
+     *     description="Data Delivery",
+     *     title="Data Delivery",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was deleted",
+     *     title="Deleted at",
+     * )
+     *
+     * @OA\Property(
+     *     property="delivery_by",
+     *     type="string",
+     *     description="Delivery by",
+     *     title="Delivery by",
+     * )
+     *
+     * @OA\Property(
+     *     property="canceled_by",
+     *     type="string",
+     *     description="Canceled by",
+     *     title="Canceled by",
+     * )
+     */
 
     use HasFactory, Filterable, SoftDeletes;
 

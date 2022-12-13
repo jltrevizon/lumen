@@ -225,7 +225,7 @@ class PendingTaskRepository extends Repository
     }
 
     private function realignPendingTask($pendingTask)
-    { 
+    {
         $this->vehicleRepository->newReception($pendingTask->vehicle_id);
         $reception = $pendingTask->vehicle->lastReception;
         PendingTask::where('reception_id', $reception->id)
@@ -255,7 +255,7 @@ class PendingTaskRepository extends Repository
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $firstPendingTask->datetime_pending = date('Y-m-d H:i:s');
                 $firstPendingTask->save();                
-            } else {                
+            } else {
                 $this->createPendingTaskCampa($pendingTask->vehicle, Task::TOCAMPA);
             }
         }
@@ -566,7 +566,7 @@ class PendingTaskRepository extends Repository
             }
         }
         if ($task->need_authorization == false) {
-            
+
             $this->vehicleRepository->newReception($vehicleId);
             $vehicle = Vehicle::findOrFail($vehicleId);
 

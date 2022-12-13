@@ -9,8 +9,104 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class Group Task
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Group Task model",
+ *     description="Group Task model",
+ * )
+ */
+
 class GroupTask extends Model
 {
+    /**
+     * @OA\Schema(
+     *      schema="GroupTaskPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/GroupTask"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="questionnaire_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Questionnaire ID",
+     *     title="Questionnaire ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="approved",
+     *     type="boolean",
+     *     description="Approved",
+     *     title="Approved",
+     * )
+     *
+     * @OA\Property(
+     *     property="approved_available",
+     *     type="boolean",
+     *     description="Approved available",
+     *     title="Approved available",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_approved",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime approved",
+     *     title="Datetime approved",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_defleeting",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime defleeting",
+     *     title="Datetime defleeting",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     */
 
     use HasFactory, Filterable;
 
@@ -85,7 +181,7 @@ class GroupTask extends Model
             ->where(function ($query) {
                 $query->where('state_pending_task_id', StatePendingTask::PENDING)
                 ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
-            });       
+            });
     }
 
     public function lastTaskWithState(){
@@ -95,20 +191,20 @@ class GroupTask extends Model
                 $query->where('state_pending_task_id', StatePendingTask::PENDING)
                 ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
                 ->orWhere('state_pending_task_id', StatePendingTask::FINISHED);
-            });       
+            });
     }
 
     public function lastChangeState(){
         return $this->hasOne(PendingTask::class)
             ->where('approved', true)
             ->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
-            ->whereNotNull('last_change_state');            
+            ->whereNotNull('last_change_state');
     }
 
     public function lastChangeSubState(){
         return $this->hasOne(PendingTask::class)
             ->where('approved', true)
-            ->whereNotNull('last_change_sub_state');            
+            ->whereNotNull('last_change_sub_state');
     }
 
     public function vehicle(){

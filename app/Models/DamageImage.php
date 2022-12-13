@@ -7,9 +7,83 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Damage Image
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Damage image model",
+ *     description="Damage image model",
+ * )
+ */
+
 class DamageImage extends Model
 {
-    
+
+    /**
+     * @OA\Schema(
+     *      schema="DamageImagePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DamageImage"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="damage_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Damage ID",
+     *     title="Damage ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="comment_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Comment ID",
+     *     title="Comment ID",
+     * )
+     *
+     *  @OA\Property(
+     *     property="url",
+     *     type="string",
+     *     description="URL",
+     *     title="URL",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     */
+
     use HasFactory, Filterable;
 
     protected $fillable = [
