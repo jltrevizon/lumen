@@ -53,7 +53,9 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $variable = [];
         foreach ($in_data as $key => $v) {
-            $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
+            $key_month = $v['typeModelOrder']['name'] ?? '';
+            $val_month = (int) $v['in_month'];
+            $variable[$key_month][$val_month] = $v['total'] ?? 0;
         }
 
         $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -110,7 +112,9 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $variable = [];
         foreach ($out_data as $key => $v) {
-            $variable[$v['typeModelOrder']['name']][(int) $v['out_month']] = $v['total'] ?? 0;
+            $key_month = $v['typeModelOrder']['name'] ?? '';
+            $val_month = (int) $v['out_month'];
+            $variable[$key_month][$val_month] = $v['total'] ?? 0;
         }
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
@@ -467,7 +471,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /** KPI PendingTasks */
         $company_id = $user->company_id;
         if ($company_id) {
-    
+
         }
 
         $data_now = PendingTask::with(['task'])
