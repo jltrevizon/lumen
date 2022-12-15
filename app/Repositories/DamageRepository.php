@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class DamageRepository extends Repository {
 
     public function __construct(
-        PendingTaskRepository $pendingTaskRepository, 
+        PendingTaskRepository $pendingTaskRepository,
         DamageVehicleMail $damageVehicleMail,
         DamageRoleRepository $damageRoleRepository,
         VehicleRepository $vehicleRepository,
@@ -45,9 +45,9 @@ class DamageRepository extends Repository {
         $damage->user_id = Auth::id();
         $damage->vehicle_id = $request->input('vehicle_id');
         $damage->save();
-        
+
         $vehicle = $damage->vehicle;
-        
+        $damage->reception_id = $vehicle->lastReception->id;
         $damage->save();
 
         $isDamageTask = false;
@@ -58,10 +58,10 @@ class DamageRepository extends Repository {
             $isDamageTask = true;
         }
 
-        if($isDamageTask) { 
-            $this->stateChangeRepository->updateSubStateVehicle($vehicle);         
+        if($isDamageTask) {
+            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         }
-        
+
         foreach($request->input('roles') as $role){
             $this->damageRoleRepository->create($damage->id, $role);
             if(env('APP_ENV') == 'production') {

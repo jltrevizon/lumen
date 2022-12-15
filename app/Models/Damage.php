@@ -242,6 +242,7 @@ class Damage extends Model
         'approved',
         'internal',
         'datetime_close',
+        'reception_id'
     ];
 
     public function campa(){
@@ -290,6 +291,10 @@ class Damage extends Model
 
     public function damageImages(){
         return $this->hasMany(DamageImage::class);
+    }
+    
+    public function reception(){
+        return $this->hasOne(Reception::class, 'id', 'reception_id');
     }
 
     public function pendingAuthorizations(){

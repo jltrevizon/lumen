@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Filters;
 
@@ -13,19 +13,23 @@ class HistoryLocationFilter extends ModelFilter
         return $this->whereIn('vehicle_id', $ids);
     }
 
+    public function receptionId($reception_id){
+        return $this->where('reception_id', $reception_id);
+    }
+
     public function squareIds($ids){
         return $this->whereIn('square_id', $ids);
     }
 
     public function streetIds($ids){
         return $this->whereHas('square', function($query) use ($ids) {
-            return $query->whereIn('street_id', $ids); 
+            return $query->whereIn('street_id', $ids);
         });
     }
 
     public function zoneIds($ids){
         return $this->whereHas('square.street', function($query) use ($ids) {
-            return $query->whereIn('zone_id', $ids); 
+            return $query->whereIn('zone_id', $ids);
         });
     }
 

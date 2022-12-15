@@ -18,11 +18,14 @@ class HistoryLocationRepository extends Repository {
     }
 
     public function saveFromBack($vehicleId, $squareId, $userId){
-        HistoryLocation::create([
+        $history = HistoryLocation::create([
             'vehicle_id' => $vehicleId,
             'square_id' => $squareId,
             'user_id' => $userId
         ]);
+        $vehicle = $history->vehicle;
+        $history->reception_id = $vehicle->lastReception->id;
+        $history->save();
     }
 
 }

@@ -229,6 +229,15 @@ class Reception extends Model
         return $this->hasMany(Accessory::class);
     }
 
+    public function damages(){
+        return $this->hasMany(Damage::class);
+    }
+
+    public function historyLocations(){
+        return $this->hasMany(HistoryLocation::class);
+    }
+
+
     public function pendingTasks() {
         return $this->hasMany(PendingTask::class);
     }

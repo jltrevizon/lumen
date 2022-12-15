@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Filters;
 
@@ -14,6 +14,10 @@ class DamageFilter extends ModelFilter
 
     public function campaIds($ids){
         return $this->whereIn('campa_id', $ids);
+    }
+
+    public function receptionId($reception_id){
+        return $this->where('reception_id', $reception_id);
     }
 
     public function vehicleCampaIds($ids){
@@ -53,7 +57,7 @@ class DamageFilter extends ModelFilter
 
     public function createdAtTo($dateTime)
     {
-        return $this->whereDate('created_at','<=', $dateTime); 
+        return $this->whereDate('created_at','<=', $dateTime);
     }
 
     public function userIds($ids)

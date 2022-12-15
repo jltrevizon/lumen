@@ -116,7 +116,8 @@ class HistoryLocation extends Model
     protected $fillable = [
         'vehicle_id',
         'square_id',
-        'user_id'
+        'user_id',
+        'reception_id',
     ];
 
     protected $dates = [
@@ -133,6 +134,10 @@ class HistoryLocation extends Model
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function reception(){
+        return $this->hasOne(Reception::class, 'id', 'reception_id');
     }
 
 }
