@@ -82,6 +82,7 @@ class VehicleRepository extends Repository
     public function getById($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
+        
         if (is_null($vehicle->lastReception)) {
             $this->newReception($vehicle->id);
         }
