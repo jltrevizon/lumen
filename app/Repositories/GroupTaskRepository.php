@@ -77,7 +77,7 @@ class GroupTaskRepository extends Repository
             }
             $group_task->save();
             $data_update =  [
-                'reception_id' => $vehicle->lastReception->id ?? null,
+                'group_task_id' => $group_task->id,
                 'state_pending_task_id' => StatePendingTask::FINISHED,
                 'user_id' => Auth::id(),
                 'user_start_id' => Auth::id(),
@@ -89,10 +89,9 @@ class GroupTaskRepository extends Repository
                 'order' => -1
             ];
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'reception_id' => $vehicle->lastReception->id,
                 'task_id' => Task::VALIDATE_CHECKLIST,
-                'vehicle_id' => $vehicle->id,
-                'state_pending_task_id' => 1
+                'vehicle_id' => $vehicle->id
             ], $data_update);
             if (is_null($pendingTask->datetime_pending)) {
                 $pendingTask->datetime_pending = Carbon::now();
@@ -102,7 +101,7 @@ class GroupTaskRepository extends Repository
             }
             $pendingTask->save();
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'reception_id' => $vehicle->lastReception->id,
                 'task_id' => Task::TOCAMPA,
                 'vehicle_id' => $vehicle->id
             ], $data_update);

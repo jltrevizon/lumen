@@ -785,44 +785,6 @@ class PendingTaskController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/pending-tasks/update-approved",
-     *     tags={"pending-tasks"},
-     *     summary="Updated approved",
-     *     security={
-     *          {"bearerAuth": {}}
-     *     },
-     *     @OA\Response(
-     *         response=200,
-     *         description="",
-     *         value= @OA\JsonContent(ref="#/components/schemas/PendingTask")
-     *     ),
-     *     @OA\RequestBody(
-     *         description="",
-     *         required=true,
-     *         value = @OA\JsonContent(
-     *                      @OA\Property(
-     *                         property="questionnaire_id",
-     *                         type="integer",
-     *                     ),
-     *                     @OA\Property(
-     *                         property="task_id",
-     *                         type="integer",
-     *                     ),
-     *                     @OA\Property(
-     *                         property="approved",
-     *                         type="boolean",
-     *                     ),
-     *                 ),
-     *     )
-     * )
-     */
-
-    public function updateApprovedPendingTaskFromValidation(Request $request){
-        return $this->updateDataResponse($this->pendingTaskRepository->updateApprovedPendingTaskFromValidation($request), HttpFoundationResponse::HTTP_OK);
-    }
-
-    /**
-     * @OA\Post(
      *     path="/api/pending-tasks/transfer",
      *     tags={"pending-tasks"},
      *     summary="Create transfer task",
