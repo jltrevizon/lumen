@@ -351,6 +351,14 @@ class VehicleFilter extends ModelFilter
     {
         return $this->orderBy($field);
     }
+
+    public function receptionsByUserCampa()
+    {
+        return $this->whereHas('receptions', function($q){
+            $campasIds = auth()->user()->campas()->pluck('campa_id');
+            $q->where('campa_id', $campasIds);
+        });
+    }
     public function withReceptionId($id)
     {
         $sql = <<<SQL
