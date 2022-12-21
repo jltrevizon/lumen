@@ -1095,10 +1095,8 @@ class Vehicle extends Model
 
     public function receptionsByUserCampa()
     {
-        return $this->whereHas('receptions', function($q){
-            $campasIds = auth()->user()->campas()->pluck('campa_id');
-            $q->where('campa_id', $campasIds);
-        });
+        $campasIds = auth()->user()->campas()->pluck('campa_id');
+        return $this->hasMany(Reception::class)->where('campa_id', $campasIds);
     }
 
 }
