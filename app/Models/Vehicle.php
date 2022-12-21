@@ -1093,12 +1093,4 @@ class Vehicle extends Model
         });
     }
 
-    public function checkListApproved() {
-        return $this->hasMany(PendingTask::class, 'vehicle_id')
-        ->where('approved', true)
-        ->where('task_id', Task::VALIDATE_CHECKLIST)
-        ->where(function ($query) {
-            $query->where('state_pending_task_id', StatePendingTask::FINISHED);
-        })->whereRaw('reception_id = 3976');
-    }
 }
