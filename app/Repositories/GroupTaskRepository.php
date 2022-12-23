@@ -125,7 +125,7 @@ class GroupTaskRepository extends Repository
             $vehicle->company_id = $user->company_id;
             $vehicle->save();
         }
-        if ($vehicle->has_environment_label == false  && !env('DISABLED_SEND_MAIL', false)) {
+        if ($vehicle->has_environment_label == false) {
             $this->notificationDAMail->build($vehicle->id);
         }
         $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
