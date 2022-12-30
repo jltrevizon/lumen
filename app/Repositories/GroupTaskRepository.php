@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Mail\NotificationDAMail;
 use App\Models\GroupTask;
 use App\Models\PendingTask;
+use App\Models\QuestionAnswer;
 use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\Task;
@@ -71,11 +72,6 @@ class GroupTaskRepository extends Repository
             $group_task->approved_available = true;
             $group_task->approved = true;
             $group_task->datetime_approved = Carbon::now();
-
-            if ($request->input('questionnaire_id')) {
-                $group_task->questionnaire_id = $request->input('questionnaire_id');
-            }
-            $group_task->save();
             $data_update =  [
                 'group_task_id' => $group_task->id,
                 'state_pending_task_id' => StatePendingTask::FINISHED,
@@ -88,18 +84,23 @@ class GroupTaskRepository extends Repository
                 'campa_id' => $vehicle->campa_id,
                 'order' => -1
             ];
-            $pendingTask = PendingTask::updateOrCreate([
-                'reception_id' => $vehicle->lastReception->id,
-                'task_id' => Task::VALIDATE_CHECKLIST,
-                'vehicle_id' => $vehicle->id
-            ], $data_update);
-            if (is_null($pendingTask->datetime_pending)) {
-                $pendingTask->datetime_pending = Carbon::now();
+            if ($request->input('questionnaire_id')) {
+                $group_task->questionnaire_id = $request->input('questionnaire_id');
+                $question_answer = QuestionAnswer::where('questionnaire_id', $group_task->questionnaire_id)
+                ->where('task_id', Task::VALIDATE_CHECKLIST)
+                ->first();
+                $pendingTask = PendingTask::updateOrCreate([
+                    'id' => $question_answer->pendingTask->id,
+                ], $data_update);
+                if (is_null($pendingTask->datetime_pending)) {
+                    $pendingTask->datetime_pending = Carbon::now();
+                }
+                if (is_null($pendingTask->datetime_start)) {
+                    $pendingTask->datetime_start = Carbon::now();
+                }
+                $pendingTask->save();
             }
-            if (is_null($pendingTask->datetime_start)) {
-                $pendingTask->datetime_start = Carbon::now();
-            }
-            $pendingTask->save();
+            $group_task->save();
             $pendingTask = PendingTask::updateOrCreate([
                 'reception_id' => $vehicle->lastReception->id,
                 'task_id' => Task::TOCAMPA,
