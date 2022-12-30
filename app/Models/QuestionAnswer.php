@@ -134,7 +134,4 @@ class QuestionAnswer extends Model
         return $this->belongsTo(Task::class);
     }
 
-    public function pendingTask(){
-        return $this->hasOne(PendingTask::class);
-    }
 }

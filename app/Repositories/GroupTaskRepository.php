@@ -89,16 +89,15 @@ class GroupTaskRepository extends Repository
                 $question_answer = QuestionAnswer::where('questionnaire_id', $group_task->questionnaire_id)
                 ->where('task_id', Task::VALIDATE_CHECKLIST)
                 ->first();
-                $pendingTask = PendingTask::updateOrCreate([
-                    'id' => $question_answer->pendingTask->id,
-                ], $data_update);
+                
+                $pendingTask = PendingTask::where('question_answer_id', $question_answer->id)->first();
                 if (is_null($pendingTask->datetime_pending)) {
-                    $pendingTask->datetime_pending = Carbon::now();
+                    $data_update->datetime_pending = Carbon::now();
                 }
                 if (is_null($pendingTask->datetime_start)) {
-                    $pendingTask->datetime_start = Carbon::now();
+                    $data_update->datetime_start = Carbon::now();
                 }
-                $pendingTask->save();
+                $pendingTask->update($data_update);
             }
             $group_task->save();
             $pendingTask = PendingTask::updateOrCreate([
