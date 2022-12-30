@@ -65,9 +65,9 @@ class GroupTaskRepository extends Repository
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         $group_task = $vehicle->lastReception?->groupTask;
-        
+
         if (!is_null($group_task)) {
-            
+
             $group_task->approved_available = true;
             $group_task->approved = true;
             $group_task->datetime_approved = Carbon::now();
@@ -125,7 +125,7 @@ class GroupTaskRepository extends Repository
             $vehicle->company_id = $user->company_id;
             $vehicle->save();
         }
-        if ($vehicle->has_environment_label == false) {
+        if ($vehicle->has_environment_label == false && !env('DISABLED_SEND_MAIL', false)) {
             $this->notificationDAMail->build($vehicle->id);
         }
         $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);

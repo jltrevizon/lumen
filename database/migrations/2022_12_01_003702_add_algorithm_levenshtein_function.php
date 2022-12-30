@@ -48,7 +48,7 @@ class AddAlgorithmLevenshteinFunction extends Migration
                 RETURN c;
             END
         SQL;
-        DB::statement($sql);
+       // DB::statement($sql);
 
         $sql = <<<SQL
         CREATE FUNCTION  `LEVENSHTEIN_RATIO`(s1 VARCHAR(255), s2 VARCHAR(255)) RETURNS int(11) DETERMINISTIC
@@ -60,7 +60,7 @@ class AddAlgorithmLevenshteinFunction extends Migration
             RETURN ROUND((1 - LEVENSHTEIN(s1, s2) / max_len) * 100);
         END
         SQL;
-        DB::statement($sql);
+       // DB::statement($sql);
     }
 
     /**
