@@ -77,7 +77,7 @@ class VehicleRepository extends Repository
     public function getById($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        
+
         if (is_null($vehicle->lastReception)) {
             $this->newReception($vehicle->id);
         }
@@ -90,10 +90,10 @@ class VehicleRepository extends Repository
     {
         $query = Vehicle::with($this->getWiths($request->with))
             ->filter($request->all());
-  
+
         $query->selectRaw('vehicles.*, (SELECT MAX(r.id) FROM receptions r WHERE r.vehicle_id = vehicles.id) as reception_id')
             ->orderBy('reception_id', 'desc');
-        
+
         if ($request->input('noPaginate')) {
             $vehicles = [
                 'data' => $query->get()
@@ -500,7 +500,49 @@ class VehicleRepository extends Repository
 
         return response()->json(['message' => 'Done!']);
     }
-
+    public function defleeting($id){
+        $vehicle = Vehicle::findOrFail($id);
+        if (!!$vehicle->lastReception && !!$vehicle->lastReception->lastQuestionnaire){
+            return [
+                'status'=>false,
+                'message'=>'Este vehículo tiene un cuestionario activo en la recepción actual.',
+                'data'=>$vehicle->lastReception->lastQuestionnaire
+            ];
+        }
+        if (is_null($vehicle->datetime_defleeting)) {
+            $vehicle->datetime_defleeting = Carbon::now();
+            $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+            $vehicle->save();
+            $pendingTask = new PendingTask();
+            $pendingTask->vehicle_id = $vehicle->id;
+            $pendingTask->reception_id = $vehicle->lastReception->id;
+            $pendingTask->task_id = Task::UBICATION;
+            $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
+            $pendingTask->duration = 1;
+            $pendingTask->order = $vehicle->lastReception->pendingTasks + 1;
+            $pendingTask->datetime_pending = Carbon::now();
+            $pendingTask->user_id = Auth::id();
+            $pendingTask->save();
+        } else {
+            if ($vehicle->lastReception) {
+                PendingTask::where('reception_id', $vehicle->lastReception)
+                ->where('task_id', Task::UBICATION)
+                ->chunk(200, function ($pendingTasks) {
+                    foreach ($pendingTasks as $pendingTask) {
+                        $pendingTask->update([
+                            'approved' => false,
+                            'order' => null,
+                            'state_pending_task_id' => null,
+                        ]);
+                    }
+                });
+            }
+            $vehicle->datetime_defleeting = null;
+            $vehicle->save();
+            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+        }
+        return $vehicle;
+    }
     public function defleet($id)
     {
         $reception = Reception::findOrFail($id);

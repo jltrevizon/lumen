@@ -1100,17 +1100,12 @@ class VehicleController extends Controller
      * )
      */
 
-    public function defleeting(Request $request)
+    public function defleeting($id)
     {
-        foreach ($request->input('plates') as $plate) {
-
-            $vehicle = Vehicle::where('plate', $plate)->first();
-            if ($vehicle) {
-                $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
-                // $vehicle->type_model_order_id = TypeModelOrder::VO;
-                $vehicle->save();
-            }
+        $data = $this->vehicleRepository->defleeting($id);
+        if (is_array($data) && $data['status'] === FALSE){
+            $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
-
 }

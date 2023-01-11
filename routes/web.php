@@ -34,7 +34,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     })->name('send-emails');*/
 
-    $router->post('/defleeting', 'VehicleController@defleeting');
+    $router->post('/defleeting/{id}', 'VehicleController@defleeting');
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
