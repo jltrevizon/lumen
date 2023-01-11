@@ -91,9 +91,9 @@ class VehicleFilter extends ModelFilter
         return $this->byBudgetPendingTaskIds($ids);
     }
 
-    public function budgetLastGroupTaskIds($ids)
+    public function stateBudgetPendingTaskIds($ids)
     {
-        return $this->whereHas('lastGroupTask.pendingTasks', function (Builder $builder) use ($ids) {
+        return $this->whereHas('lastReception.pendingTasks', function (Builder $builder) use ($ids) {
             return $builder->whereHas('budgetPendingTasks', function ($query) use ($ids) {
                 return $query->whereIn('state_budget_pending_task_id', $ids);
             })
@@ -109,13 +109,6 @@ class VehicleFilter extends ModelFilter
     public function categories($ids)
     {
         return $this->categoriesIds($ids);
-    }
-
-    public function groupTaskIds($ids)
-    {
-        return $this->whereHas('groupTasks', function (Builder $builder) use ($ids) {
-            return $builder->whereIn('id', $ids);
-        });
     }
 
     public function tradeStates($ids)
@@ -158,9 +151,9 @@ class VehicleFilter extends ModelFilter
         return $this->byRole($roleId);
     }
 
-    public function hasGroupTaskUnapproved($value)
+    public function hasReceptionApproved($value)
     {
-        return $this->byHasGroupTaskUnapproved($value);
+        return $this->byHasReceptionApproved($value);
     }
 
     public function hasOrderNotFinish($value)
@@ -256,23 +249,10 @@ class VehicleFilter extends ModelFilter
         });
     }
 
-    public function approvedQuestionnaires($value)
-    {
-        return $this->with(['questionnaries.reception.groupTask'])
-            ->whereHas('questionnaries', function ($query) use ($value) {
-                return $query->whereNotNull('reception_id');
-            })
-            ->whereHas('questionnaries.reception.groupTask', function ($query) use ($value) {
-                return $query->whereNotNull('questionnaire_id')
-                    ->where('approved_available', $value)
-                    ->where('approved', $value);
-            });
-    }
-
     public function approvedPendingTasksNotNull($value)
     {
         if ($value) {
-            $vehicle = Vehicle::whereHas('lastGroupTask', function ($query) {
+            $vehicle = Vehicle::whereHas('lastReception', function ($query) {
                 return $query->whereDoesntHave('approvedPendingTasks');
             })->get('id');
             $value = collect($vehicle)->map(function ($item) {
@@ -282,7 +262,7 @@ class VehicleFilter extends ModelFilter
         }
     }
 
-    public function lastGroupTaskFirstPendingTaskIds($value)
+    public function lastReceptionFirstPendingTaskIds($value)
     {
         if ($value) {
             $sql = <<<SQL
@@ -339,7 +319,7 @@ class VehicleFilter extends ModelFilter
 
     public function hasDamage($value)
     {
-        return $this->whereHas('lastGroupTask.damages');
+        return $this->whereHas('lastReception.damages');
     }
 
     public function orderDesc($field)
@@ -379,11 +359,4 @@ class VehicleFilter extends ModelFilter
         ));
     }
 
-    public function hasLastReceptionApprovedGroup($value)
-    {
-        return $this->whereHas('lastReception.groupTask', function ($query) use ($value) {
-            return $query->where('approved', $value)
-            ->where('approved_available', $value);
-        });
-    }
 }

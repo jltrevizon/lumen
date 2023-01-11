@@ -32,8 +32,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('status:pendingtask')->everyMinute();
-        $schedule->command('download:vehicles')->everyMinute();
+        // $schedule->command('status:pendingtask')->everyMinute();
+        // $schedule->command('download:vehicles')->everyMinute();
         $schedule->command('pendingtask:export')->dailyAt('20:00');
         // Informe de stock cada 2 horas
         $schedule->command('stock:vehicles')->dailyAt('06:00'); 

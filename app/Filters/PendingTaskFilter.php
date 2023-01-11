@@ -65,10 +65,6 @@ class PendingTaskFilter extends ModelFilter
         return $this->byStatePendingTaskIds($ids);
     }
 
-    public function groupTasks($ids){
-        return $this->byGroupTaskIds($ids);
-    }
-
     public function ids($ids){
         return $this->byIds($ids);
     }
@@ -151,15 +147,15 @@ class PendingTaskFilter extends ModelFilter
         return $this->whereIn('user_end_id', $ids);
     }
 
-    public function alreadyGroupTask($ids)
+    public function alreadyReception($ids)
     {
-        $vehicles = Vehicle::with('lastGroupTask')->get();
+        $vehicles = Vehicle::with('lastReception')->get();
         foreach ($vehicles as $key => $value) {
-            if ($value->lastGroupTask) {
-                $ids[] = $value->lastGroupTask->id;                
+            if ($value->lastReception) {
+                $ids[] = $value->lastReception->id;                
             }
         }
-        return $this->whereIn('group_task_id', $ids);
+        return $this->whereIn('reception_id', $ids);
     }
 
     public function approved($approved){

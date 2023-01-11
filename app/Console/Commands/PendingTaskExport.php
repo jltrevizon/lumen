@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Exports\PendingTaskExport as ExportsPendingTaskExport;
+use App\Models\Campa;
 use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -42,8 +43,14 @@ class PendingTaskExport extends Command
         ini_set("memory_limit", "-1");
         $date = microtime(true);
         $array = explode('.', $date);
-        if(env('APP_ENV') == 'production') {
-            Excel::store(new ExportsPendingTaskExport(request()), 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', 's3');
+        $campas = Campa::where('id', 1)->get();
+        $env = env('APP_ENV');
+        foreach ($campas as $key => $campa) {
+            $request = request();
+            $request->merge([
+                'campasIds' => [$campa->id]
+            ]);
+            Excel::store(new ExportsPendingTaskExport($request), $env . '/'. $campa->name .'/vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', $env == 'production' ? 's3' : 'public');
         }
     }
 }

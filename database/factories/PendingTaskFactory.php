@@ -20,7 +20,6 @@ class PendingTaskFactory extends Factory
             'vehicle_id' => Vehicle::factory()->create()->id,
             'task_id' => Task::factory()->create()->id,
             'state_pending_task_id' => StatePendingTask::factory()->create()->id,
-            'group_task_id' => GroupTask::factory()->create()->id,
             'duration' => $this->faker->randomNumber($nbDigits = 2, $strict = false),
             'order' => $this->faker->randomNumber($nbDigits = 1, $strict = false),
             'code_authorization' => $this->faker->numerify('#######'),

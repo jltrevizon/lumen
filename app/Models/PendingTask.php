@@ -237,14 +237,6 @@ class PendingTask extends Model
      * )
      *
      * @OA\Property(
-     *     property="group_task_id",
-     *     type="integer",
-     *     format="int64",
-     *     description="Group Task ID",
-     *     title="Group Task ID",
-     * )
-     *
-     * @OA\Property(
      *     property="damage_id",
      *     type="integer",
      *     format="int64",
@@ -549,10 +541,6 @@ class PendingTask extends Model
 
     public function scopeByStatePendingTaskIds($query,  array $ids){
         return $query->whereIn('state_pending_task_id', $ids);
-    }
-
-    public function scopeByGroupTaskIds($query,  array $ids){
-        return $query->whereIn('group_task_id', $ids);
     }
 
     public function scopeByIds($query, array $ids){

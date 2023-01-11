@@ -164,7 +164,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/pending-tasks/getall', 'PendingTaskController@getAll');
         $router->get('/pending-tasks', 'PendingTaskController@getPendingOrNextTask');
-        $router->post('/pending-tasks', 'PendingTaskController@create');
         $router->post('/pending-tasks/add-pending-task-finished', 'PendingTaskController@addPendingTaskFinished');
         $router->put('/pending-tasks/update/{id}', 'PendingTaskController@update');
         $router->delete('/pending-tasks/delete/{id}', 'PendingTaskController@delete');
@@ -177,7 +176,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/pending-task/order', 'PendingTaskController@orderPendingTask');
         $router->post('/pending-tasks/add', 'PendingTaskController@addPendingTask');
         $router->get('/pending-tasks/filter', 'PendingTaskController@pendingTasksFilter');
-        $router->get('/pending-tasks/filter-download-file', 'PendingTaskController@pendingTasksFilterDownloadFile');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
         $router->post('/pending-tasks/finish-all', 'PendingTaskController@finishAll');
         $router->post('/pending-tasks/transfer', 'PendingTaskController@createTransferTask');
@@ -291,7 +289,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->get('/vehicles/filter', 'VehicleController@filterVehicle');
-        $router->get('/vehicles/filter-download-file', 'VehicleController@filterVehicleDownloadFile');
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
         $router->get('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
         $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
@@ -442,6 +439,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/questionnaire','QuestionnaireController@index');
         $router->get('/questionnaire/{id}', 'QuestionnaireController@getById');
+        $router->post('/questionnaire/approved', 'QuestionnaireController@approved');
+
 
         /**
          * Login logs

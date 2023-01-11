@@ -2,15 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Console\Commands\StateChanges;
 use App\Models\PendingTask;
 use App\Models\Reception;
-use App\Models\Request;
-use App\Models\SubState;
-use App\Models\Vehicle;
-use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ReceptionRepository extends Repository
 {
@@ -19,12 +13,10 @@ class ReceptionRepository extends Repository
         UserRepository $userRepository,
         VehiclePictureRepository $vehiclePictureRepository,
         VehicleRepository $vehicleRepository,
-        GroupTaskRepository $groupTaskRepository
     ) {
         $this->userRepository = $userRepository;
         $this->vehiclePictureRepository = $vehiclePictureRepository;
         $this->vehicleRepository = $vehicleRepository;
-        $this->groupTaskRepository = $groupTaskRepository;
     }
 
     public function index($request)
@@ -52,15 +44,6 @@ class ReceptionRepository extends Repository
         $reception->vehicle_id = $request->input('vehicle_id');
         $reception->finished = false;
         $reception->has_accessories = false;
-
-
-        $group_task = $this->groupTaskRepository->create([
-            'vehicle_id' => $request->input('vehicle_id'),
-            'approved_available' => true,
-            'approved' => true
-        ]);
-        $group_task_id = $group_task->id;
-        $reception->group_task_id = $group_task_id;
 
         $reception->save();
         if (is_null($reception->vehicle->campa_id)) {

@@ -34,10 +34,20 @@ class QuestionnaireFilter extends ModelFilter
         return $this->whereNotNull('reception_id');
     }
 
+    /**
+     * @deprecate
+     */
     public function approvedGroupTask($value) {
         return $this->whereHas('reception.groupTask', function ($query) use ($value) {
             return $query->where('approved_available', $value)->where('approved', $value);
         });
+    }
+
+    public function isApproved($value) {
+        if ($value) {
+            return $this->whereNotNull('datetime_approved');
+        }
+        return $this->whereNull('datetime_approved');
     }
 
     public function isDefleeting($value) {

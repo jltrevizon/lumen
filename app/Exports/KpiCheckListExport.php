@@ -21,7 +21,7 @@ class KpiCheckListExport implements FromArray, WithHeadings
     public function array(): array
     {
 
-        $data = Vehicle::whereHas('lastUnapprovedGroupTask')
+        $data = Vehicle::whereHas('lastUnapprovedReception')
             ->whereHas('campa', function (Builder $builder) {
                 return $builder->where('company_id', Company::ALD);
             })

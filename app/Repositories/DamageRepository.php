@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Mail\DamageVehicleMail;
 use App\Mail\NotificationMail;
 use App\Models\Damage;
-use App\Models\StatusDamage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +18,6 @@ class DamageRepository extends Repository {
         DamageTaskRepository $damageTaskRepository,
         NotificationMail $notificationMail,
         StateChangeRepository $stateChangeRepository,
-        GroupTaskRepository $groupTaskRepository
     )
     {
         $this->pendingTaskRepository = $pendingTaskRepository;
@@ -29,7 +27,6 @@ class DamageRepository extends Repository {
         $this->damageTaskRepository = $damageTaskRepository;
         $this->notificationMail = $notificationMail;
         $this->stateChangeRepository = $stateChangeRepository;
-        $this->groupTaskRepository = $groupTaskRepository;
     }
 
     public function index($request){

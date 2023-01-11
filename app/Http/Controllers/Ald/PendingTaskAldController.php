@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\PendingTask;
 use Illuminate\Http\Request;
 use App\Repositories\TaskRepository;
-use App\Repositories\GroupTaskRepository;
 use App\Repositories\ReceptionRepository;
 use App\Repositories\StateChangeRepository;
 use App\Repositories\UserRepository;
@@ -18,7 +17,6 @@ class PendingTaskAldController extends Controller
 
     public function __construct(
         TaskRepository $taskRepository,
-        GroupTaskRepository $groupTaskRepository,
         VehicleRepository $vehicleRepository,
         UserRepository $userRepository,
         ReceptionRepository $receptionRepository,
@@ -26,7 +24,6 @@ class PendingTaskAldController extends Controller
     )
     {
         $this->taskRepository = $taskRepository;
-        $this->groupTaskRepository = $groupTaskRepository;
         $this->vehicleRepository = $vehicleRepository;
         $this->userRepository = $userRepository;
         $this->receptionRepository = $receptionRepository;

@@ -106,7 +106,7 @@ class GspRepository extends Repository {
                     "vehicle_id" => $lastPendingTask->vehicle_id,
                     "task_id" => $task_id,
                     "state_pending_task_id" => StatePendingTask::PENDING,
-                    "group_task_id" => $lastPendingTask->group_task_id,
+                    "reception_id" => $lastPendingTask->reception_id,
                     "duration" => 0,
                     "order" => $lastPendingTask->order - $order
                 ));
@@ -171,7 +171,7 @@ class GspRepository extends Repository {
                 "vehicle_id" => $lastPendingTask->vehicle_id,
                 "task_id" => 31,
                 "state_pending_task_id" => StatePendingTask::PENDING,
-                "group_task_id" => $lastPendingTask->group_task_id,
+                "reception_id" => $lastPendingTask->reception_id,
                 "duration" => 6,
                 "order" => $lastPendingTask->order + 1
             ));

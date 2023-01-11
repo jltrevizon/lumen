@@ -12,7 +12,6 @@ use App\Models\SubState;
 use App\Models\Task;
 use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Repositories\GroupTaskRepository;
 use App\Repositories\TaskReservationRepository;
 use App\Repositories\TaskRepository;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,14 +21,11 @@ use App\Repositories\IncidencePendingTaskRepository;
 use App\Repositories\PendingAuthorizationRepository as RepositoriesPendingAuthorizationRepository;
 use Carbon\Carbon;
 use DateTime;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class PendingTaskRepository extends Repository
 {
 
     public function __construct(
-        GroupTaskRepository $groupTaskRepository,
         TaskReservationRepository $taskReservationRepository,
         TaskRepository $taskRepository,
         UserRepository $userRepository,
@@ -43,7 +39,6 @@ class PendingTaskRepository extends Repository
         SquareRepository $squareRepository,
         HistoryLocationRepository $historyLocationRepository
     ) {
-        $this->groupTaskRepository = $groupTaskRepository;
         $this->taskReservationRepository = $taskReservationRepository;
         $this->taskRepository = $taskRepository;
         $this->userRepository = $userRepository;
@@ -75,53 +70,6 @@ class PendingTaskRepository extends Repository
             ->paginate($request->input('per_page'));
     }
 
-    public function pendingTasksFilterDownloadFile($request)
-    {
-        return PendingTask::select([
-            'id',
-            'vehicle_id',
-            'task_id',
-            'user_start_id',
-            'user_end_id',
-            'state_pending_task_id',
-            'datetime_start',
-            'datetime_finish',
-            'total_paused',
-            'group_task_id',
-            'reception_id'
-        ])
-            ->with(array(
-                'task'  => function ($query) {
-                    $query->select('id', 'name');
-                }, 'vehicle' => function ($query) {
-                    $query->select('id', 'plate');
-                },
-                'userStart' => function ($query) {
-                    $query->select('id', 'name');
-                },
-                'userEnd' => function ($query) {
-                    $query->select('id', 'name');
-                },
-                'statePendingTask' => function ($query) {
-                    $query->select('id', 'name');
-                },
-                'groupTask' => function ($query) {
-                    $query->select('id', 'created_at');
-                },
-                'reception' => function ($query) {
-                    $query->select('id', 'campa_id','created_at')
-                    ->with(array(
-                        'campa' => function ($query) {
-                            $query->select('id', 'name');
-                        }
-                    ));
-                }
-            ))
-            ->filter($request->all())
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->paginate($request->input('per_page'));
-    }
-
     public function getById($request, $id)
     {
         $pending_task = PendingTask::with($this->getWiths($request->with))
@@ -132,34 +80,17 @@ class PendingTaskRepository extends Repository
     public function getPendingOrNextTask($request)
     {
         $user = $this->userRepository->getById($request, Auth::id());
-        if ($user->workshop_id != null) {
-            return PendingTask::with($this->getWiths($request->with))
-                ->filter($request->all())
-                ->pendingOrInProgress()
-                ->where('approved', true)
-                ->get();
-        }
+        $query = PendingTask::with($this->getWiths($request->with))
+        ->filter($request->all())
+        ->pendingOrInProgress()
+        ->where('approved', true);
         if ($user['type_user_app_id'] == null && ($user['role_id'] == 1 || $user['role_id'] == 2 || $user['role_id'] == 3)) {
-            return $this->getPendingOrNextTaskByRole($request);
+           $query->byCampas($user->campas->pluck('id')->toArray());
+        } else {
+            $query->byCampas($user->campas->pluck('id')->toArray())
+            ->canSeeHomework($user['type_user_app_id']);
         }
-        return PendingTask::with($this->getWiths($request->with))
-            ->byCampas($user->campas->pluck('id')->toArray())
-            ->filter($request->all())
-            ->pendingOrInProgress()
-            ->canSeeHomework($user['type_user_app_id'])
-            ->where('approved', true)
-            ->get();
-    }
-
-    public function getPendingOrNextTaskByRole($request)
-    {
-        $user = $this->userRepository->getById($request, Auth::id());
-        return PendingTask::with($this->getWiths($request->with))
-            ->byCampas($user->campas->pluck('id')->toArray())
-            ->filter($request->all())
-            ->pendingOrInProgress()
-            ->where('approved', true)
-            ->get();
+        return $query->get();
     }
 
     public function create($request)
@@ -197,7 +128,7 @@ class PendingTaskRepository extends Repository
             $pending_task->datetime_pause = new DateTime();
             $pending_task->total_paused += $this->diffDateTimes($pending_task->datetime_start);
             $oldOrder = $pending_task->order;
-            $nextPendingTask = PendingTask::where('group_task_id', $pending_task->group_task_id)
+            $nextPendingTask = PendingTask::where('reception_id', $pending_task->reception_id)
                 ->where('approved', true)
                 ->whereNull('state_pending_task_id')
                 ->orderBy('order', 'ASC')
@@ -274,7 +205,6 @@ class PendingTaskRepository extends Repository
             'user_id' => Auth::id(),
             'user_start_id' => Auth::id(),
             'user_end_id' => Auth::id(),
-            'group_task_id' => $vehicle->lastReception->group_task_id,
             'order' => -1,
             'duration' => 0,
             'approved' => true,
@@ -373,8 +303,8 @@ class PendingTaskRepository extends Repository
             }
             $pending_task->damage_id ? $this->closeDamage($pending_task->damage_id) : null;
             $pending_task_next = null;
-            if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) {
-                $pending_task_next = $vehicle->lastGroupTask->approvedPendingTasks[0];
+            if (count($vehicle->lastReception->approvedPendingTasks) > 0) {
+                $pending_task_next = $vehicle->lastReception->approvedPendingTasks[0];
             }
             if ($pending_task_next) {
                 $pending_task_next->state_pending_task_id = StatePendingTask::PENDING;
@@ -454,9 +384,8 @@ class PendingTaskRepository extends Repository
     public function getPendingTasksByPlate($request)
     {
         $vehicle = $this->vehicleRepository->getByPlate($request);
-        $group = $this->groupTaskRepository->getLastByVehicle($vehicle->id);
         return PendingTask::with($this->getWiths($request->with))
-            ->where('group_task_id', $group->id)
+            ->where('reception_id', $vehicle->lastReception->id)
             ->where('approved', true)
             ->get();
     }
@@ -464,14 +393,12 @@ class PendingTaskRepository extends Repository
     public function addPendingTask($request)
     {
         $vehicle = $this->vehicleRepository->getById($request, $request->input('vehicle_id'));
-        $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))
-            ->get();
+        $pendingTasks = PendingTask::where('reception_id', $vehicle->lastReception->id)->get();
         $task = $this->taskRepository->getById([], $request->input('task_id'));
         $pendingTask = new PendingTask();
         $pendingTask->task_id = $task['id'];
         $pendingTask->campa_id = $vehicle->campa_id;
         $pendingTask->vehicle_id = $request->input('vehicle_id');
-        $pendingTask->group_task_id = $request->input('group_task_id');
         $pendingTask->reception_id = $vehicle->lastReception->id;
         $pendingTask->duration = $task['duration'];
         $pendingTask->order = count($pendingTasks) - 1;
@@ -483,7 +410,7 @@ class PendingTaskRepository extends Repository
 
     public function addPendingTaskFinished($request)
     {
-        $vehicle = Vehicle::with(['lastGroupTask.pendingTasks'])
+        $vehicle = Vehicle::with(['lastReception.pendingTasks'])
             ->findOrFail($request->input('vehicle_id'));
         $task = $this->taskRepository->getById([], $request->input('task_id'));
         $pendingTask = new PendingTask();
@@ -492,7 +419,6 @@ class PendingTaskRepository extends Repository
         $pendingTask->campa_id = $vehicle->campa_id;
         $pendingTask->reception_id = $vehicle->lastReception->id;
         $pendingTask->state_pending_task_id = StatePendingTask::FINISHED;
-        $pendingTask->group_task_id = $vehicle['lastGroupTask']['id'];
         $pendingTask->duration = $task['duration'];
         $pendingTask->order = -1;
         $pendingTask->approved = true;
@@ -507,9 +433,9 @@ class PendingTaskRepository extends Repository
         return $pendingTask;
     }
 
-    public function updatePendingTaskFromValidation($groupTask, $taskIdActual, $taskIdNew)
+    public function updatePendingTaskFromValidation($reception_id, $taskIdActual, $taskIdNew)
     {
-        $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
+        $pendingTask = PendingTask::where('reception_id', $reception_id)
             ->where('task_id', $taskIdActual)
             ->first();
         $pendingTask->task_id = $taskIdNew;
@@ -537,8 +463,8 @@ class PendingTaskRepository extends Repository
         $task = $this->taskRepository->getById([], $taskId);
         $vehicle = Vehicle::findOrFail($vehicleId);
         $orderLastPendingTask = 0;
-        if ($vehicle->lastGroupTask) {
-            $totalApproved = $vehicle->lastGroupTask->approvedPendingTasks;
+        if ($vehicle->lastReception) {
+            $totalApproved = $vehicle->lastReception->approvedPendingTasks;
             if (count($totalApproved) > 0) {
                 $orderLastPendingTask = $totalApproved[count($totalApproved) - 1]['order'];
             }
@@ -548,14 +474,7 @@ class PendingTaskRepository extends Repository
             $this->vehicleRepository->newReception($vehicleId);
             $vehicle = Vehicle::findOrFail($vehicleId);
 
-            $groupTask = $vehicle->lastReception->groupTask;
-
-            if (!$vehicle->lastReception->group_task_id) {
-                $vehicle->lastReception->group_task_id = $groupTask->id;
-                $vehicle->lastReception->save();
-            }
-
-            $damage->group_task_id = $groupTask->id;
+            $damage->reception_id = $vehicle->lastReception->id;
             $damage->save();
 
             PendingTask::create([
@@ -563,7 +482,6 @@ class PendingTaskRepository extends Repository
                 'task_id' => $taskId,
                 'reception_id' => $vehicle->lastReception->id,
                 'campa_id' => $vehicle->campa_id,
-                'group_task_id' => $damage->group_task_id,
                 'state_pending_task_id' => $orderLastPendingTask > 0 ? null : StatePendingTask::PENDING,
                 'datetime_pending' => $orderLastPendingTask > 0 ? null : date('Y-m-d H:i:s'),
                 'damage_id' => $damage->id,
@@ -582,14 +500,6 @@ class PendingTaskRepository extends Repository
         foreach ($request->input('vehicle_ids') as $id) {
             $vehicle = Vehicle::findOrFail($id);
             $task = $this->taskRepository->getById([], Task::TRANSFER);
-            $groupTask = $vehicle->lastReception?->groupTask;
-            if ($groupTask) {
-                $groupTask->approved = 1;
-                $groupTask->approved_available = 1;
-            } else {
-                $reception = $this->vehicleRepository->newReception($vehicle->id);
-                $groupTask = $reception->groupTask;
-            }
             PendingTask::create([
                 'vehicle_id' => $vehicle->id,
                 'reception_id' => $vehicle->lastReception->id ?? null,
@@ -597,7 +507,6 @@ class PendingTaskRepository extends Repository
                 'campa_id' => $vehicle->campa_id,
                 'state_pending_task_id' => StatePendingTask::IN_PROGRESS,
                 'user_start' => Auth::id(),
-                'group_task_id' => $groupTask->id,
                 'duration' => $task->duration,
                 'order' => 1,
                 'approved' => true,

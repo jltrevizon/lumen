@@ -8,9 +8,7 @@ use App\Models\PendingTask;
 use App\Models\StatePendingTask;
 use App\Models\SubState;
 use App\Models\Task;
-use App\Models\TypeReception;
 use App\Models\Vehicle;
-use App\Repositories\GroupTaskRepository;
 use App\Repositories\SquareRepository;
 use App\Repositories\StateChangeRepository;
 use App\Repositories\TaskRepository;
@@ -20,7 +18,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class AldController extends Controller
@@ -28,13 +25,11 @@ class AldController extends Controller
 
     public function __construct(
         TaskRepository $taskRepository,
-        GroupTaskRepository $groupTaskRepository,
         StateChangeRepository $stateChangeRepository,
         VehicleRepository $vehicleRepository,
         SquareRepository $squareRepository
     ) {
         $this->taskRepository = $taskRepository;
-        $this->groupTaskRepository = $groupTaskRepository;
         $this->stateChangeRepository = $stateChangeRepository;
         $this->vehicleRepository = $vehicleRepository;
         $this->squareRepository = $squareRepository;
@@ -44,7 +39,9 @@ class AldController extends Controller
     {
         try {
             return Vehicle::with($this->getWiths($request->with))
-                ->whereHas('lastUnapprovedGroupTask')
+                ->whereHas('lastQuestionnaire', function (Builder $builder) {
+                    return $builder->whereNull('datetime_approved');
+                })
                 ->whereHas('campa', function (Builder $builder) {
                     return $builder->where('company_id', Company::ALD);
                 })
@@ -59,8 +56,8 @@ class AldController extends Controller
     {
         try {
             return Vehicle::with($this->getWiths($request->with))
-                ->whereHas('groupTasks', function (Builder $builder) {
-                    return $builder->where('approved', true);
+                ->whereHas('lastQuestionnaire', function (Builder $builder) {
+                    return $builder->whereNotNull('datetime_approved');
                 })
                 ->whereHas('campa', function (Builder $builder) {
                     return $builder->where('company_id', Company::ALD);
@@ -70,12 +67,6 @@ class AldController extends Controller
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 409);
         }
-    }
-
-    public function lastGroupTask($vehicle_id)
-    {
-        $vehicle = Vehicle::findOrFail($vehicle_id);
-        return $vehicle->lastReception->groupTask;
     }
 
     public function createTaskVehiclesAvalible(Request $request)
@@ -100,10 +91,9 @@ class AldController extends Controller
                     'campa_id' => $vehicle->campa_id
                 ]);
             }
-            $groupTask = $this->lastGroupTask($vehicle->id);
             $pending_task = new PendingTask();
 
-            $tasksApproved = count($groupTask->approvedPendingTasks);
+            $tasksApproved = count($vehicle->lastReception->approvedPendingTasks);
 
             if ($tasksApproved == 0) {
                 $pending_task->order = 1;
@@ -117,7 +107,6 @@ class AldController extends Controller
             $pending_task->vehicle_id = $vehicle->id;
 
             $pending_task->reception_id = $vehicle->lastReception->id;
-            $pending_task->group_task_id = $groupTask->id;
 
             if (is_null($vehicle->campa_id) && $vehicle->lastReception->campa) {
                 $vehicle->campa_id = $vehicle->lastReception->campa->id;
@@ -145,12 +134,12 @@ class AldController extends Controller
             }
 
             $pending_task->save();
-            $groupTask = $this->lastGroupTask($vehicle->id);
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
             $is_pending_task = false;
             $order = 1;
 
-            foreach ($groupTask->approvedPendingTasks as $update_pending_task) {
+            foreach ($vehicle->lastReception->approvedPendingTasks as $update_pending_task) {
                 if (!is_null($update_pending_task->state_pending_task_id)) {
                     $is_pending_task = true;
                 }
@@ -163,13 +152,15 @@ class AldController extends Controller
                 $update_pending_task->save();
                 $order++;
             }
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
-            $groupTask = $this->lastGroupTask($vehicle->id);
+            if (count($vehicle->lastReception->approvedPendingTasks) > 0 && $vehicle->lastReception->approvedPendingTasks[0]->task_id == Task::CHECK_BLOCKED) {
+                $approvedPendingTask = $vehicle->lastReception->approvedPendingTasks[0];
 
-            if (count($groupTask->approvedPendingTasks) > 0 && $groupTask->approvedPendingTasks[0]->task_id == Task::CHECK_BLOCKED) {
-                $groupTask->approvedPendingTasks[0]->state_pending_task_id = StatePendingTask::IN_PROGRESS;
-                $groupTask->approvedPendingTasks[0]->datetime_start = date('Y-m-d H:i:s');
-                $groupTask->approvedPendingTasks[0]->save();
+                $approvedPendingTask->state_pending_task_id = StatePendingTask::IN_PROGRESS;
+                $approvedPendingTask->datetime_start = date('Y-m-d H:i:s');
+                $approvedPendingTask->save();
+
                 $vehicle->sub_state_id = SubState::CHECK_BLOCKED;
                 $vehicle->save();
             } else {
@@ -180,7 +171,7 @@ class AldController extends Controller
             }
 
             return $this->createDataResponse([
-                'data' => $groupTask->approvedPendingTasks,
+                'data' => $vehicle->lastReception->approvedPendingTasks,
                 'vehicle' => Vehicle::find($vehicle->id)
             ], HttpFoundationResponse::HTTP_CREATED);
         } catch (Exception $e) {

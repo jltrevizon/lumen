@@ -8,7 +8,6 @@ use App\Exports\StockVehiclesExport;
 use App\Models\Campa;
 use App\Models\PeopleForReport;
 use App\Models\Role;
-use App\Models\SubState;
 use App\Models\TypeReport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,7 +39,6 @@ class StockVehicles extends Mailable
     public function build()
     {
         $campas = Campa::where('active', true)->get();
-
         foreach ($campas as $campa) {
             $peopleForReport = PeopleForReport::with(['user'])
                 ->where('type_report_id', TypeReport::STOCK)
@@ -85,7 +83,8 @@ class StockVehicles extends Mailable
             foreach ($peopleForReport as $user) {
                 if ($user['user']['role_id'] != Role::GLOBAL_MANAGER) {
                     Mail::send('report-generic', $data, function ($message) use ($user, $attachments) {
-                        $message->to($user['user']['email'], $user['user']['name']);
+                        $env = env('APP_ENV');
+                        $message->to($env == 'production' ? $user['user']['email'] : env('MAIL_FROM_ADDRESS', 'focus@grupomobius.com'), $user['user']['name']);
                         $message->subject('Stock de vehículos');
                         $message->from('no-reply.focus@grupomobius.com', 'Focus');
                         foreach ($attachments as $filePath => $fileParameters) {
@@ -140,7 +139,8 @@ class StockVehicles extends Mailable
 
         foreach ($peopleForReport as $user) {
             Mail::send('report-generic', $data, function ($message) use ($user, $attachments) {
-                $message->to($user['user']['email'], $user['user']['name']);
+                $env = env('APP_ENV');
+                $message->to($env == 'production' ? $user['user']['email'] : env('MAIL_FROM_ADDRESS', 'focus@grupomobius.com'), $user['user']['name']);
                 $message->subject('Stock de vehículos');
                 $message->from('no-reply.focus@grupomobius.com', 'Focus');
                 foreach ($attachments as $filePath => $fileParameters) {

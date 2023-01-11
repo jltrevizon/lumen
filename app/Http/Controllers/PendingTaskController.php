@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PendingTask;
-use App\Http\Controllers\GroupTaskController;
 use App\Http\Controllers\TaskController;
 use App\Repositories\PendingTaskRepository;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -12,14 +11,12 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 class PendingTaskController extends Controller
 {
     public function __construct(
-        GroupTaskController $groupTaskController,
         TaskController $taskController,
         IncidenceController $incidenceController,
         VehicleController $vehicleController,
         PendingTaskRepository $pendingTaskRepository
         )
     {
-        $this->groupTaskController = $groupTaskController;
         $this->taskController = $taskController;
         $this->incidenceController = $incidenceController;
         $this->vehicleController = $vehicleController;
@@ -152,41 +149,6 @@ class PendingTaskController extends Controller
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/pending-tasks",
-     *     tags={"pending-tasks"},
-     *     summary="Create pending task",
-     *     security={
-     *          {"bearerAuth": {}}
-     *     },
-     *     operationId="createPendingTask",
-     *     @OA\Response(
-     *         response="201",
-     *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/PendingTask"),
-     *     ),
-     *     @OA\RequestBody(
-     *         description="Create pending task object",
-     *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/PendingTask"),
-     *     )
-     * )
-     */
-
-    public function create(Request $request){
-
-        $this->validate($request, [
-            'vehicle_id' => 'required|integer',
-            'task_id' => 'required|integer',
-            'group_task_id' => 'required|integer',
-            'duration' => 'required',
-            'order' => 'required|integer'
-        ]);
-
-        return $this->createDataResponse($this->pendingTaskRepository->create($request), HttpFoundationResponse::HTTP_CREATED);
-    }
-
-    /**
     * @OA\Get(
     *     path="/api/pending-tasks/filter",
     *     tags={"pending-tasks"},
@@ -271,62 +233,6 @@ class PendingTaskController extends Controller
 
     public function pendingTasksFilter(Request $request){
         return $this->getDataResponse($this->pendingTaskRepository->pendingTasksFilter($request), HttpFoundationResponse::HTTP_OK);
-    }
-
-    /**
-    * @OA\Get(
-    *     path="/api/pending-tasks/filter-download-file",
-    *     tags={"pending-tasks"},
-    *     summary="Get pending task filter download file",
-    *     security={
-    *          {"bearerAuth": {}}
-    *     },
-    *     @OA\Parameter(
-    *       name="with[]",
-    *       in="query",
-    *       description="A list of relatonship",
-    *       required=false,
-    *       @OA\Schema(
-    *           type="array",
-    *           example={"task","vehicle","reception","userStart","userEnd","statePendingTask","groupTask"},
-    *           @OA\Items(type="string")
-    *       )
-    *     ),
-    *     @OA\Parameter(
-    *       name="per_page",
-    *       in="query",
-    *       description="Items per page",
-    *       required=false,
-    *       @OA\Schema(
-    *           type="integer",
-    *           example=5,
-    *       )
-    *     ),
-    *     @OA\Parameter(
-    *       name="page",
-    *       in="query",
-    *       description="Page",
-    *       required=false,
-    *       @OA\Schema(
-    *           type="integer",
-    *           example=1,
-    *       )
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/PendingTaskPaginate"),
-    *     ),
-    *     @OA\Response(
-    *         response="500",
-    *         description="An error has occurred"
-    *     )
-
-    * )
-    */
-
-    public function pendingTasksFilterDownloadFile(Request $request){
-        return $this->getDataResponse($this->pendingTaskRepository->pendingTasksFilterDownloadFile($request), HttpFoundationResponse::HTTP_OK);
     }
 
     /**

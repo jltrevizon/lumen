@@ -112,9 +112,9 @@ class GroupTaskRepository extends Repository
                 $pendingTask->datetime_start = Carbon::now();
             }
             $pendingTask->save();
-            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+            $count = count($vehicle->lastReception->approvedPendingTasks);
             if ($count > 0) {
-                $pendingtTask = PendingTask::findOrFail($vehicle->lastGroupTask->approvedPendingTasks[0]->id);
+                $pendingtTask = PendingTask::findOrFail($vehicle->lastReception->approvedPendingTasks[0]->id);
                 $pendingtTask->state_pending_task_id = StatePendingTask::PENDING;
                 $pendingtTask->datetime_pending = Carbon::now();
                 $pendingtTask->save();
@@ -152,78 +152,5 @@ class GroupTaskRepository extends Repository
             ->first();
     }
 
-    public function disablePendingTasks($group_task)
-    {
-        $pendingTasks = PendingTask::where('group_task_id', $group_task->id)
-            ->whereNotNull('order')
-            ->count();
 
-        PendingTask::where('group_task_id', $group_task->id)
-            ->chunk(200, function ($pendingTasks) {
-                foreach ($pendingTasks as $pendingTask) {
-                    $pendingTask->update([
-                        'approved' => false
-                    ]);
-                }
-            });
-        $groupTask = GroupTask::findOrFail($group_task->id);
-        $groupTask->approved = true;
-        $groupTask->approved_available = true;
-        $groupTask->datetime_defleeting = Carbon::now();
-        $groupTask->save();
-
-        $pendingTask = new PendingTask();
-        $pendingTask->vehicle_id = $group_task->vehicle_id;
-        $pendingTask->reception_id = $group_task->vehicle->lastReception->id;
-        $pendingTask->task_id = Task::UBICATION;
-        $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
-        $pendingTask->group_task_id = $group_task->id;
-        $pendingTask->duration = 1;
-        $pendingTask->order = $pendingTasks + 1;
-        $pendingTask->datetime_pending = Carbon::now();
-        $pendingTask->user_id = Auth::id();
-        $pendingTask->save();
-    }
-
-    public function enablePendingTasks($group_task)
-    {
-        PendingTask::where('group_task_id', $group_task->id)
-            ->where('task_id', Task::UBICATION)
-            ->chunk(200, function ($pendingTasks) {
-                foreach ($pendingTasks as $pendingTask) {
-                    $pendingTask->update([
-                        'approved' => false,
-                        'order' => null,
-                        'state_pending_task_id' => null,
-                    ]);
-                }
-            });
-
-        PendingTask::where('group_task_id', $group_task->id)
-            ->whereNotNull('order')
-            ->chunk(200, function ($pendingTasks) {
-                foreach ($pendingTasks as $pendingTask) {
-                    $pendingTask->update([
-                        'approved' => true
-                    ]);
-                }
-            });
-
-        $groupTask = GroupTask::findOrFail($group_task->id);
-        $groupTask->approved = false;
-        $groupTask->approved_available = false;
-        $groupTask->datetime_defleeting = null;
-        $groupTask->save();
-        $this->orderPendingTask($groupTask);
-    }
-
-    private function orderPendingTask($group_task)
-    {
-        $pendingTask = PendingTask::where('group_task_id', $group_task->id)
-            ->orderBy('order', 'ASC')
-            ->first();
-        $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
-        $pendingTask->datetime_pending = Carbon::now();
-        $pendingTask->save();
-    }
 }

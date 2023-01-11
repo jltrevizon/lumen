@@ -607,7 +607,7 @@ class Vehicle extends Model
     }
 
     public function receptions(){
-        return $this->hasMany(Reception::class)->whereNotNull('group_task_id')->orderBy('id', 'desc');
+        return $this->hasMany(Reception::class)->orderBy('id', 'desc');
     }
 
     public function reception(){
@@ -671,7 +671,8 @@ class Vehicle extends Model
     }
 
     public function lastQuestionnaire(){
-        return $this->hasOne(Questionnaire::class)->with(['questionAnswers.question','questionAnswers.task'])->ofMany([
+        // ->with(['questionAnswers.question','questionAnswers.task'])
+        return $this->hasOne(Questionnaire::class)->ofMany([
             'id' => 'max'
         ]);
     }
@@ -743,10 +744,10 @@ class Vehicle extends Model
     }
 
     private function mechanic($query){
-        return $query->with(['vehicleModel.brand','lastGroupTask.approvedPendingTasks.task.subState','lastGroupTask.approvedPendingTasks.incidences','lastGroupTask.approvedPendingTasks.vehicle.vehicleModel.brand',
-            'lastGroupTask.approvedPendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
-            'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.task','lastGroupTask.pendingTasks.statePendingTask','typeModelOrder','lastGroupTask.approvedPendingTasks.statePendingTask',
-            'lastGroupTask.approvedPendingTasks' => function ($query) {
+        return $query->with(['vehicleModel.brand','lastReception.approvedPendingTasks.task.subState','lastReception.approvedPendingTasks.incidences','lastReception.approvedPendingTasks.vehicle.vehicleModel.brand',
+            'lastReception.approvedPendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
+            'requests.customer','lastReception.pendingTasks.budgetPendingTasks','lastReception.pendingTasks.incidences','lastReception.pendingTasks.task','lastReception.pendingTasks.statePendingTask','typeModelOrder','lastReception.approvedPendingTasks.statePendingTask',
+            'lastReception.approvedPendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                         ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
@@ -769,10 +770,10 @@ class Vehicle extends Model
     }
 
     private function chapa($query){
-        return $query->with(['vehicleModel.brand','lastGroupTask.approvedPendingTasks.task.subState','lastGroupTask.approvedPendingTasks.incidences','lastGroupTask.approvedPendingTasks.vehicle.vehicleModel.brand',
-        'lastGroupTask.approvedPendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
-        'requests.customer','lastGroupTask.pendingTasks.budgetPendingTasks','lastGroupTask.pendingTasks.incidences','lastGroupTask.pendingTasks.task','lastGroupTask.pendingTasks.statePendingTask','typeModelOrder','lastGroupTask.approvedPendingTasks.statePendingTask',
-        'lastGroupTask.approvedPendingTasks' => function ($query) {
+        return $query->with(['vehicleModel.brand','lastReception.approvedPendingTasks.task.subState','lastReception.approvedPendingTasks.incidences','lastReception.approvedPendingTasks.vehicle.vehicleModel.brand',
+        'lastReception.approvedPendingTasks.budgetPendingTasks.stateBudgetPendingTask','lastReception','campa','category','subState.state','tradeState','reservations',
+        'requests.customer','lastReception.pendingTasks.budgetPendingTasks','lastReception.pendingTasks.incidences','lastReception.pendingTasks.task','lastReception.pendingTasks.statePendingTask','typeModelOrder','lastReception.approvedPendingTasks.statePendingTask',
+        'lastReception.approvedPendingTasks' => function ($query) {
                 return $query->where(function($query){
                     return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                         ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS)
@@ -901,28 +902,15 @@ class Vehicle extends Model
     }
 
     public function scopeByStatePendingTasks($query, array $ids){
-        return $query->whereHas('lastGroupTask.approvedPendingTasks.task.subState', function (Builder $builder) use($ids) {
+        return $query->whereHas('lastReception.approvedPendingTasks.task.subState', function (Builder $builder) use($ids) {
             return $builder->whereIn('state_id', $ids);
         });
     }
 
     public function scopeBySubStatePendingTasks($query, array $ids){
-        return $query->whereHas('lastGroupTask.approvedPendingTasks.task', function (Builder $builder) use($ids) {
+        return $query->whereHas('lastReception.approvedPendingTasks.task', function (Builder $builder) use($ids) {
             return $builder->whereIn('sub_state_id', $ids);
         });
-    }
-
-    public function lastGroupTask(){
-        return $this->hasOne(GroupTask::class)->ofMany([
-            'id' => 'max'
-        ]);
-    }
-
-    public function lastGroupTasks(){
-        return $this->hasMany(GroupTask::class)
-            ->where(function($query){
-                return $query->where('created_at', '>=', '2020-10-07 14:36:58');
-            });
     }
 
     public function approvedPendingTasks(){
@@ -939,8 +927,8 @@ class Vehicle extends Model
 
     public function allApprovedPendingTasks(){
         return $this->hasMany(PendingTask::class, 'vehicle_id')
-            ->where('approved', 1)->with('groupTask')
-            ->orderBy('group_task_id', 'desc')
+            ->where('approved', 1)
+            ->orderBy('reception_id', 'desc')
             ->orderBy('order')
             ->orderBy('datetime_finish', 'desc');
     }
@@ -951,21 +939,22 @@ class Vehicle extends Model
         ]);
     }
 
-    public function lastUnapprovedGroupTask(){
-        return $this->hasOne(GroupTask::class)->ofMany([
+    public function lastUnapprovedReception(){
+        return $this->hasOne(Questionnaire::class)->ofMany([
             'id' => 'max'
         ], function ($query) {
             $query
-                ->whereRaw('id = (Select r2.group_task_id from receptions r2 where r2.id = (Select max(r.id) from receptions r where r.vehicle_id = group_tasks.vehicle_id))')
-                ->where('approved', false)
-                ->where('approved_available', false);
+                ->whereRaw('reception_id = (Select max(r.id) from receptions r where r.vehicle_id = questionnaires.vehicle_id)')
+                ->whereNull('datetime_approved');
         });
     }
 
-    public function scopeByHasGroupTaskUnapproved($query, $value){
-        return $query->whereHas('groupTasks', function(Builder $builder) {
-            return $builder->where('approved', false)
-                ->where('approved_available', false);
+    public function scopeByHasReceptionApproved($query, $value){
+        return $query->whereHas('lastReception.lastQuestionnarie', function(Builder $builder) use ($value) {
+            if (!$value) {
+                return $builder->whereNull('datetime_approved');
+            }
+            return $builder->whereNotNull('datetime_approved');
         });
     }
 
@@ -1075,20 +1064,20 @@ class Vehicle extends Model
 
 
     public function scopeByTaskSubStatesIds($query, $ids){
-        return $query->whereHas('lastGroupTask.approvedPendingTasks.task', function(Builder $builder) use ($ids){
+        return $query->whereHas('lastReception.approvedPendingTasks.task', function(Builder $builder) use ($ids){
             return $builder->whereIn('sub_state_id', $ids);
         });
     }
 
     public function scopeByTaskStatesIds($query, $ids){
-        return $query->whereHas('lastGroupTask.approvedPendingTasks.task.subState', function(Builder $builder) use ($ids){
+        return $query->whereHas('lastReception.approvedPendingTasks.task.subState', function(Builder $builder) use ($ids){
             return $builder->whereIn('state_id', $ids);
         });
 
     }
 
     public function scopeByTaskIds($query, $ids){
-        return $query->whereHas('lastGroupTask.approvedPendingTasks', function(Builder $builder) use ($ids){
+        return $query->whereHas('lastReception.approvedPendingTasks', function(Builder $builder) use ($ids){
             return $builder->whereIn('task_id', $ids);
         });
     }

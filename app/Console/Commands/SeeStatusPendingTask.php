@@ -7,6 +7,9 @@ use App\Models\PendingTask;
 use App\Models\Task;
 use DateTime;
 
+/**
+ * @Deprecated implementacion no usada desde 2021-12-30 08:59:19.0 
+ */
 class SeeStatusPendingTask extends Command
 {
     /**

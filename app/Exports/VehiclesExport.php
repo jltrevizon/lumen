@@ -18,7 +18,7 @@ class VehiclesExport implements FromCollection, WithMapping, WithHeadings
 
     public function collection()
     {
-        return Vehicle::with(['lastGroupTask.pendingTasks' => function($query){
+        return Vehicle::with(['lastReception.pendingTasks' => function($query){
             return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                 ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
         }])
@@ -42,12 +42,12 @@ class VehiclesExport implements FromCollection, WithMapping, WithHeadings
             $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at ?? null)) : null,
             $vehicle->subState->state->name ?? null,
             $vehicle->subState->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->task->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->statePendingTask->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->start_datetime ?? null,
+            $vehicle->lastReception->pendingTasks[0]->task->name ?? null,
+            $vehicle->lastReception->pendingTasks[0]->statePendingTask->name ?? null,
+            $vehicle->lastReception->pendingTasks[0]->start_datetime ?? null,
             $vehicle->square ? ($vehicle->square->street->zone->name . ' ' . $vehicle->square->street->name . ' ' . $vehicle->square->name) : null,
             $vehicle->lastDeliveryVehicle ? date('d-m-Y', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null,
-            $vehicle->lastGroupTask->pendingTasks[0]->observations ?? null 
+            $vehicle->lastReception->pendingTasks[0]->observations ?? null 
         ];
     }
 

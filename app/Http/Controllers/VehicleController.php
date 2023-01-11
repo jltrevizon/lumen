@@ -5,16 +5,11 @@ namespace App\Http\Controllers;
 use App\Mail\DownloadVehicles;
 use App\Models\PendingDownload;
 use App\Models\SubState;
-use App\Models\TypeModelOrder;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use App\Repositories\VehicleRepository;
-use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 
 class VehicleController extends Controller
 {
@@ -647,7 +642,6 @@ class VehicleController extends Controller
     *       required=false,
     *       @OA\Schema(
     *           type="array",
-    *           example={"budgetLastGroupTaskIds"},
     *           @OA\Items(type="string")
     *       )
     *     ),
@@ -789,62 +783,6 @@ class VehicleController extends Controller
 
     /**
     * @OA\Get(
-    *     path="/api/vehicles/filter-download-file",
-    *     tags={"vehicles"},
-    *     summary="Get vehicle filter download file ",
-    *     security={
-    *          {"bearerAuth": {}}
-    *     },
-    *     @OA\Parameter(
-    *       name="with[]",
-    *       in="query",
-    *       description="A list of relatonship",
-    *       required=false,
-    *       @OA\Schema(
-    *           type="array",
-    *           example={"task", "subState", "statePendingTask", "incidences", "budgetPendingTasks", "stateBudgetPendingTask"},
-    *           @OA\Items(type="string")
-    *       )
-    *     ),
-    *     @OA\Parameter(
-    *       name="per_page",
-    *       in="query",
-    *       description="Items per page",
-    *       required=false,
-    *       @OA\Schema(
-    *           type="integer",
-    *           example=5,
-    *       )
-    *     ),
-    *     @OA\Parameter(
-    *       name="page",
-    *       in="query",
-    *       description="Page",
-    *       required=false,
-    *       @OA\Schema(
-    *           type="integer",
-    *           example=1,
-    *       )
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Successful operation",
-    *         @OA\Items(ref="#/components/schemas/VehiclePaginate")
-    *     ),
-    *     @OA\Response(
-    *         response="500",
-    *         description="An error has occurred"
-    *     )
-    * )
-    */
-
-    public function filterVehicleDownloadFile(Request $request)
-    {
-        return $this->getDataResponse($this->vehicleRepository->filterVehicleDownloadFile($request), HttpFoundationResponse::HTTP_OK);
-    }
-
-    /**
-    * @OA\Get(
     *     path="/api/vehicles/reserved",
     *     tags={"vehicles"},
     *     summary="get vehicle reserved",
@@ -968,10 +906,6 @@ class VehicleController extends Controller
         ]);
 
         return $this->vehicleRepository->verifyPlateReception($request);
-    }
-    public function unapprovedTask()
-    {
-        return $this->vehicleRepository->unapprovedTask();
     }
 
     /**

@@ -115,4 +115,57 @@ class QuestionnaireController extends Controller
     public function getById(Request $request, $id){
         return $this->getDataResponse($this->questionnaireRepository->getById($request, $id));
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/questionnaire/approved",
+     *     summary="Approved available",
+     *     tags={"questionnaires"},
+     *     operationId="Approved",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\Response(
+     *         response=200,
+     *         description="",
+     *         @OA\JsonContent(
+     *              @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="Solicitud aprobada"
+     *              ),
+     *              @OA\Property(
+     *                   property="vehicle",
+     *                   type="string",
+     *                   ref="#/components/schemas/Vehicle"
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Unprocessable entity",
+     *     ),
+     *     @OA\RequestBody(
+     *         description="",
+     *         required=true,
+     *         value = @OA\JsonContent(
+     *                     required={"questionnaire_id"},
+     *                      @OA\Property(
+     *                         property="questionnaire_id",
+     *                         type="integer",
+     *                      ),
+     *                   ),
+     *          )
+     *     )
+     * )
+     */
+
+    public function approved(Request $request){
+        $data = $this->questionnaireRepository->approved($request);
+        if (!is_null($data)) {
+            return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
+        } else {
+            return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
 }

@@ -12433,7 +12433,6 @@
                                 "type": "string"
                             },
                             "example": [
-                                "budgetLastGroupTaskIds"
                             ]
                         }
                     },

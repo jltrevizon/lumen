@@ -227,6 +227,7 @@ class GroupTaskController extends Controller
     }
 
     /**
+     * @deprecate
      * @OA\Post(
      *     path="/api/grouptasks/approved-available",
      *     summary="Approved available",

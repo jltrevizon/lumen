@@ -22,6 +22,7 @@ class AllVehiclesExport implements FromCollection, WithMapping, WithHeadings
 
     public function map($vehicle): array
     {
+        $approvedPendingTask = $vehicle->lastReception?->lastPendingTaskWithState;
         return [
             $vehicle->plate,
             $vehicle->lastReception ? date('d-m-Y', strtotime($vehicle->lastReception->created_at ?? null)) : null,
@@ -39,12 +40,12 @@ class AllVehiclesExport implements FromCollection, WithMapping, WithHeadings
             '',
             $vehicle->category->name ?? null,
             $vehicle->typeModelOrder->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->task->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->statePendingTask->name ?? null,
-            $vehicle->lastGroupTask->pendingTasks[0]->start_datetime ?? null,
+            $approvedPendingTask?->task->name ?? null,
+            $approvedPendingTask?->statePendingTask->name ?? null,
+            $approvedPendingTask?->start_datetime ?? null,
             $vehicle->square ? ($vehicle->square->street->zone->name . ' ' . $vehicle->square->street->name . ' ' . $vehicle->square->name) : null,
             $vehicle->lastDeliveryVehicle ? ($vehicle->sub_state_id == SubState::ALQUILADO ? date('d-m-Y', strtotime($vehicle->lastDeliveryVehicle->created_at)) : null) : null,
-            $vehicle->lastGroupTask->pendingTasks[0]->observations ?? null
+            $approvedPendingTask?->observations ?? null
         ];
     }
 

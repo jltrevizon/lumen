@@ -187,12 +187,6 @@ class PendingtaskTest extends TestCase
     }
 
     /** @test */
-    public function should_search_by_group_task_ids()
-    {
-        $this->assertInstanceOf(Builder::class, $this->pendingTask->byGroupTaskIds([]));
-    }
-
-    /** @test */
     public function should_search_by_ids(){
         $this->assertInstanceOf(Builder::class, $this->pendingTask->byIds([]));
     }

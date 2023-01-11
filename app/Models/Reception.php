@@ -152,14 +152,6 @@ class Reception extends Model
      * )
      *
      * @OA\Property(
-     *     property="group_task_id",
-     *     type="integer",
-     *     format="int64",
-     *     description="Group Task ID",
-     *     title="Group Task ID",
-     * )
-     *
-     * @OA\Property(
      *     property="finished",
      *     type="boolean",
      *     description="Finished",
@@ -204,7 +196,6 @@ class Reception extends Model
     protected $fillable = [
         'campa_id',
         'vehicle_id',
-        'group_task_id',
         'finished',
         'has_accessories'
     ];
@@ -308,5 +299,44 @@ class Reception extends Model
         return $query->whereHas('vehicle', function (Builder $builder) use ($ids) {
             return $builder->whereNotIn('sub_state_id', $ids);
         });
+    }
+
+    public function lastPendingTaskWithState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->where(function ($query) {
+                $query->where('state_pending_task_id', StatePendingTask::PENDING)
+                ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
+            });
+    }
+
+    public function defaultOrderApprovedPendingTasks(){
+        return $this->hasMany(PendingTask::class)
+        ->where('approved', true)
+        ->where(function ($query) {
+            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
+                ->orWhereNull('state_pending_task_id');
+        })
+        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).') desc');
+    }
+
+    public function lastChangeState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
+            ->whereNotNull('last_change_state');
+    }
+
+    public function lastChangeSubState(){
+        return $this->hasOne(PendingTask::class)
+            ->where('approved', true)
+            ->whereNotNull('last_change_sub_state');
+    }
+
+    public function lastQuestionnaire(){
+        // ->with(['questionAnswers.question','questionAnswers.task'])
+        return $this->hasOne(Questionnaire::class)->ofMany([
+            'id' => 'max'
+        ]);
     }
 }

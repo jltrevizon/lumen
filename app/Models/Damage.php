@@ -133,13 +133,6 @@ class Damage extends Model
      *     title="Vehicle ID",
      * )
      *
-     * @OA\Property(
-     *     property="group_task_id",
-     *     type="integer",
-     *     format="int64",
-     *     description="Group Task ID",
-     *     title="Group Task ID",
-     * )
      *
      * @OA\Property(
      *     property="damage_type_id",
@@ -233,7 +226,6 @@ class Damage extends Model
         'campa_id',
         'user_id',
         'vehicle_id',
-        'group_task_id',
         'damage_type_id',
         'task_id',
         'severity_damage_id',
@@ -313,10 +305,6 @@ class Damage extends Model
         return $query->whereHas('tasks', function($builder) use($ids) {
             return $builder->whereIn('task_id', $ids);
         });
-    }
-
-    public function scopeByGroupTaskIds($query, array $ids){
-        return $query->whereIn('group_task_id', $ids);
     }
 
     public function scopeByStatusDamageIds($query, array $ids){

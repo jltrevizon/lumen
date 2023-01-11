@@ -446,7 +446,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         /** KPI Check List */
 
-        $data = Vehicle::whereHas('lastUnapprovedGroupTask')
+        $data = Vehicle::whereHas('lastUnapprovedReception')
             ->whereHas('campa', function (Builder $builder) {
                 return $builder->where('company_id', Company::ALD);
             })

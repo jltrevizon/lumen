@@ -56,12 +56,13 @@ class Questionnaire extends Model
      *     title="ID",
      * )
      *
+     * 
      * @OA\Property(
-     *     property="reception_id",
-     *     type="integer",
+     *     property="datetime_approved",
+     *     type="date",
      *     format="int64",
-     *     description="Reception ID",
-     *     title="Reception ID",
+     *     description="Datetime Approved",
+     *     title="Datetime Approved",
      * )
      *
      * @OA\Property(
@@ -109,7 +110,7 @@ class Questionnaire extends Model
     protected $fillable = [
         'user_id',
         'vehicle_id',
-        'reception_id',
+        'datetime_approved',
         'file'
     ];
 

@@ -3,38 +3,26 @@
 namespace App\Repositories\Invarat;
 
 use App\Models\BudgetPendingTask;
-use App\Models\Company;
-use App\Models\GroupTask;
 use App\Models\PendingTask;
-use App\Models\Request;
-use App\Models\StateBudgetPendingTask;
 use App\Models\StatePendingTask;
-use App\Models\SubState;
-use App\Models\Task;
-use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Repositories\GroupTaskRepository;
 use App\Repositories\PendingTaskCanceledRepository;
 use App\Repositories\Repository;
 use App\Repositories\TaskRepository;
-use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use function Symfony\Component\Translation\t;
 
 class InvaratPendingTaskRepository extends Repository {
 
     public function __construct(
         TaskRepository $taskRepository,
         VehicleRepository $vehicleRepository,
-        GroupTaskRepository $groupTaskRepository,
         PendingTaskCanceledRepository $pendingTaskCanceledRepository
     )
     {
         $this->taskRepository = $taskRepository;
         $this->vehicleRepository = $vehicleRepository;
-        $this->groupTaskRepository = $groupTaskRepository;
         $this->pendingTaskCanceledRepository = $pendingTaskCanceledRepository;
     }
 
@@ -46,8 +34,9 @@ class InvaratPendingTaskRepository extends Repository {
      */
     public function nextPendingTask($request){
 
+        $vehicle = Vehicle::findOrFail($request->vehicle_id);
         $pending_task = PendingTask::with('task')
-            ->where('group_task_id',$request->group_task_id)
+            ->where('reception_id',$vehicle->lastReception->id)
             ->where('vehicle_id',$request->vehicle_id)
             ->where('order',">",$request->order)
             ->where('state_pending_task_id',"!=",StatePendingTask::FINISHED)
@@ -137,8 +126,8 @@ class InvaratPendingTaskRepository extends Repository {
                 $pending_task->user_end_id = Auth::id();
                 $pending_task->datetime_finish = date('Y-m-d H:i:s');
 
-                if (count($vehicle->lastGroupTask->approvedPendingTasks) > 0) {
-                    $pending_task_next = $vehicle->lastGroupTask->approvedPendingTasks[0];
+                if (count($vehicle->lastReception->approvedPendingTasks) > 0) {
+                    $pending_task_next = $vehicle->lastReception->approvedPendingTasks[0];
 
                     if ($pending_task_next) {
                         $pending_task_next->state_pending_task_id = StatePendingTask::PENDING;
@@ -182,7 +171,7 @@ class InvaratPendingTaskRepository extends Repository {
     public function addPendingTaskReacondicionamiento($request)
     {
         $vehicle = $this->vehicleRepository->getById($request, $request->input('vehicle_id'));
-        $pendingTasks = PendingTask::where('group_task_id', $request->input('group_task_id'))->orderBy("order","DESC")->first();
+        $pendingTask = PendingTask::where('reception_id', $vehicle->lastReception->id)->orderBy("order","DESC")->first();
         $task = $this->taskRepository->getById([], $request->input('task_id'));
         $pendingTask = new PendingTask();
         $pendingTask->reception_id = $vehicle->lastReception->id;
@@ -190,9 +179,8 @@ class InvaratPendingTaskRepository extends Repository {
         $pendingTask->campa_id = $vehicle->campa_id;
         $pendingTask->vehicle_id = $request->input('vehicle_id');
         $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
-        $pendingTask->group_task_id = $request->input('group_task_id');
         $pendingTask->duration = $task['duration'];
-        $pendingTask->order = $request->input('order') != "" ? $request->input('order') :  $pendingTasks->order + 1;
+        $pendingTask->order = $request->input('order') != "" ? $request->input('order') :  $pendingTask->order + 1;
         $pendingTask->observations = $request->input('observations');
         $pendingTask->user_id = Auth::id();
 

@@ -46,14 +46,6 @@ class StateChange extends Model
      * )
      *
      * @OA\Property(
-     *     property="group_task_id",
-     *     type="integer",
-     *     format="int64",
-     *     description="Group Task ID",
-     *     title="Group Task ID",
-     * )
-     *
-     * @OA\Property(
      *     property="sub_state_id",
      *     type="integer",
      *     format="int64",

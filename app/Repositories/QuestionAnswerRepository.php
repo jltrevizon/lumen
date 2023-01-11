@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Mail\NotificationDAMail;
 use App\Mail\NotificationItvMail;
-use App\Models\GroupTask;
 use App\Models\PendingTask;
 use App\Models\QuestionAnswer;
 use App\Models\Questionnaire;
@@ -15,8 +14,8 @@ use App\Models\SubState;
 use App\Models\TypeModelOrder;
 use App\Models\User;
 use App\Models\Vehicle;
-use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class QuestionAnswerRepository
@@ -26,7 +25,6 @@ class QuestionAnswerRepository
         TaskRepository $taskRepository,
         QuestionnaireRepository $questionnaireRepository,
         ReceptionRepository $receptionRepository,
-        GroupTaskRepository $groupTaskRepository,
         PendingTaskRepository $pendingTaskRepository,
         VehicleRepository $vehicleRepository,
         NotificationDAMail $notificationDAMail,
@@ -38,7 +36,6 @@ class QuestionAnswerRepository
         $this->taskRepository = $taskRepository;
         $this->questionnaireRepository = $questionnaireRepository;
         $this->receptionRepository = $receptionRepository;
-        $this->groupTaskRepository = $groupTaskRepository;
         $this->pendingTaskRepository = $pendingTaskRepository;
         $this->vehicleRepository = $vehicleRepository;
         $this->notificationDAMail = $notificationDAMail;
@@ -50,148 +47,153 @@ class QuestionAnswerRepository
 
     public function create($request)
     {
-        $questionnaire = null;
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+        try {
+            DB::beginTransaction();
 
-        $this->vehicleRepository->newReception($request->input('vehicle_id'));
+            $questionnaire = null;
+            $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
-        $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-
-        if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
-            $questionnaire = $this->questionnaireRepository->create($vehicle->id);
-            $questionnaire->reception_id = $vehicle->lastReception->id;
-            $questionnaire->save();
-            $questions = $request->input('questions');
-            $has_environment_label = null;
-            foreach ($questions as $question) {
-                $questionAnswer = new QuestionAnswer();
-                $questionAnswer->questionnaire_id = $questionnaire['id'];
-                $questionAnswer->question_id = $question['question_id'];
-                $questionAnswer->task_id = $question['task_id'];
-                $questionAnswer->response = $question['response'];
-                $questionAnswer->description = $question['description'] ?? '';
-                $questionAnswer->save();
-                if ($questionAnswer->question_id === 9) {
-                    $has_environment_label = $question['response'];
-                }
-    
-                if ($questionAnswer->question_id === 4 && $question['response'] == 1) {
-                    $this->notificationItvMail->build($request->input('vehicle_id'));
-                }
+            if (!is_null($vehicle->lastReception->lastQuestionnaire)) {
+                return [
+                    'questionnaire' => $vehicle->lastReception->lastQuestionnaire
+                ];
             }
-            $vehicle->lastReception->groupTask->questionnaire_id = $questionnaire['id'];
-            $vehicle->lastReception->groupTask->approved_available = false;
-            $vehicle->lastReception->groupTask->approved = false;
-            $vehicle->lastReception->groupTask->save();
+
+            $this->vehicleRepository->newReception($request->input('vehicle_id'));
 
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-    
-            $pendingTasks = $vehicle->lastGroupTask->pendingTasks ?? null;
-            if ($pendingTasks) {
-                foreach ($pendingTasks as $key => $pending_task) {
-                    $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
-                    $pending_task->order = -1;
-                    if (is_null($pending_task->datetime_pending)) {
+
+            if ($vehicle->type_model_order_id === TypeModelOrder::ALDFLEX) {
+                $questionnaire = $this->questionnaireRepository->create($vehicle->id);
+                $questionnaire->reception_id = $vehicle->lastReception->id;
+                $questionnaire->save();
+                $questions = $request->input('questions');
+                $has_environment_label = null;
+                foreach ($questions as $question) {
+                    $questionAnswer = new QuestionAnswer();
+                    $questionAnswer->questionnaire_id = $questionnaire['id'];
+                    $questionAnswer->question_id = $question['question_id'];
+                    $questionAnswer->task_id = $question['task_id'];
+                    $questionAnswer->response = $question['response'];
+                    $questionAnswer->description = $question['description'] ?? '';
+                    $questionAnswer->save();
+                    if ($questionAnswer->question_id === 9) {
+                        $has_environment_label = $question['response'];
+                    }
+
+                    if ($questionAnswer->question_id === 4 && $question['response'] == 1) {
+                        $this->notificationItvMail->build($request->input('vehicle_id'));
+                    }
+                }
+
+                $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+
+                $pendingTasks = $vehicle->lastReception->pendingTasks ?? null;
+                if ($pendingTasks) {
+                    foreach ($pendingTasks as $key => $pending_task) {
+                        $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+                        $pending_task->order = -1;
+                        if (is_null($pending_task->datetime_pending)) {
+                            $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                        }
+                        if (is_null($pending_task->datetime_start)) {
+                            $pending_task->datetime_start = date('Y-m-d H:i:s');
+                        }
+                        if (is_null($pending_task->datetime_finish)) {
+                            $pending_task->datetime_finish = date('Y-m-d H:i:s');
+                        }
+                        if (is_null($pending_task->user_start_id)) {
+                            $pending_task->user_start_id = Auth::id();
+                        }
+                        if (is_null($pending_task->user_end_id)) {
+                            $pending_task->user_end_id = Auth::id();
+                        }
+                        $pending_task->save();
+                    }
+                }
+
+                $user = Auth::user();
+                $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
+
+                $tasks = $request->input('tasks');
+                $vehicleId = $request->input('vehicle_id');
+
+                $user = User::where('role_id', Role::CONTROL)
+                    ->first();
+                $vehicle = Vehicle::findOrFail($vehicleId);
+                $isPendingTaskAssign = false;
+                $order = 1;
+
+                foreach ($tasks as $task) {
+                    $pending_task = new PendingTask();
+                    $pending_task->vehicle_id = $vehicleId;
+                    $pending_task->reception_id = $vehicle->lastReception->id;
+                    $pending_task->campa_id = $vehicle->campa_id;
+                    $taskDescription = $this->taskRepository->getById([], $task['task_id']);
+                    $pending_task->task_id = $task['task_id'];
+                    $pending_task->approved = $task['approved'];
+                    $pending_task->created_from_checklist = true;
+
+                    $question_answer = QuestionAnswer::where('task_id', $task['task_id'])
+                        ->where('questionnaire_id', $questionnaire->id)->first();
+                    if (!is_null($question_answer)) {
+                        $pending_task->question_answer_id = $question_answer->id;
+                    }
+                    if ($task['approved'] == true && $isPendingTaskAssign == false) {
+                        if (!isset($task['without_state_pending_task'])) {
+                            $pending_task->state_pending_task_id = StatePendingTask::PENDING;
+                        }
                         $pending_task->datetime_pending = date('Y-m-d H:i:s');
+                        $isPendingTaskAssign = true;
                     }
-                    if (is_null($pending_task->datetime_start)) {
-                        $pending_task->datetime_start = date('Y-m-d H:i:s');
-                    }
-                    if (is_null($pending_task->datetime_finish)) {
-                        $pending_task->datetime_finish = date('Y-m-d H:i:s');
-                    }
-                    if (is_null($pending_task->user_start_id)) {
-                        $pending_task->user_start_id = Auth::id();
-                    }
-                    if (is_null($pending_task->user_end_id)) {
-                        $pending_task->user_end_id = Auth::id();
+                    $pending_task->user_id = $user->id;
+                    $pending_task->duration = $taskDescription['duration'];
+                    if ($task['approved'] == true) {
+                        $pending_task->order = $order;
+                        $order++;
                     }
                     $pending_task->save();
                 }
+
+                $this->vehicleRepository->updateBack($request);
+
+                $vehicle = Vehicle::find($request->input('vehicle_id'));
+                $vehicle->has_environment_label = $has_environment_label;
+                $vehicle->save();
+                $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+            } else if ($vehicle->lastReception) {
+                $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
+                $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
+                $vehicle->lastReception->save();
+                $sub_state_id = $vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET ? $vehicle->sub_state_id : SubState::CAMPA;
+                $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $sub_state_id);
             }
-    
 
-            $groupTask = GroupTask::findOrFail($vehicle->lastGroupTask->id);
-            $groupTask->questionnaire_id = $questionnaire['id'];
-            $groupTask->save();
-                
-            $user = Auth::user();
-            $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-    
-            $tasks = $request->input('tasks');
-            $groupTaskId = $groupTask->id;
-            $vehicleId = $request->input('vehicle_id');
-    
-            $user = User::where('role_id', Role::CONTROL)
-                ->first();
-            $vehicle = Vehicle::findOrFail($vehicleId);
-            $isPendingTaskAssign = false;
-            $order = 1;
-    
-            foreach ($tasks as $task) {
-                $pending_task = new PendingTask();
-                $pending_task->vehicle_id = $vehicleId;
-                $pending_task->reception_id = $vehicle->lastReception->id;
-                $pending_task->campa_id = $vehicle->campa_id;
-                $taskDescription = $this->taskRepository->getById([], $task['task_id']);
-                $pending_task->task_id = $task['task_id'];
-                $pending_task->approved = $task['approved'];
-                $pending_task->created_from_checklist = true;
-    
-                $question_answer = QuestionAnswer::where('task_id', $task['task_id'])
-                    ->where('questionnaire_id', $vehicle->lastQuestionnaire?->id)->first();
-                if (!is_null($question_answer)) {
-                    $pending_task->question_answer_id = $question_answer->id;
-                }
-                if ($task['approved'] == true && $isPendingTaskAssign == false) {
-                    if (!isset($task['without_state_pending_task'])) {
-                        $pending_task->state_pending_task_id = StatePendingTask::PENDING;
-                    }
-                    $pending_task->datetime_pending = date('Y-m-d H:i:s');
-                    $isPendingTaskAssign = true;
-                }
-                $pending_task->group_task_id = $groupTaskId;
-                $pending_task->user_id = $user->id;
-                $pending_task->duration = $taskDescription['duration'];
-                if ($task['approved'] == true) {
-                    $pending_task->order = $order;
-                    $order++;
-                }
-                $pending_task->save();
+            $pictures = $request->input('pictures') ?? [];
+
+            foreach ($pictures as $url) {
+                $this->vehiclePictureRepository->create([
+                    'vehicle_id' => $vehicle->id,
+                    'place' => 'Recepción',
+                    'url' => $url,
+                    'latitude' => $vehicle->latitude,
+                    'longitude' => $vehicle->longitude
+                ]);
             }
-    
-            $this->vehicleRepository->updateBack($request);
-    
-            $vehicle = Vehicle::find($request->input('vehicle_id'));
-            $vehicle->has_environment_label = $has_environment_label;
-            $vehicle->save();
-            $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-        } else if ($vehicle->lastReception) {
-            $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
-            $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
-            $vehicle->lastReception->save();
-            $sub_state_id = $vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET ? $vehicle->sub_state_id : SubState::CAMPA;
-            $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $sub_state_id);
-        }
 
-        $pictures = $request->input('pictures') ?? [];
+            if ($request->input('square_id')) {
+                $this->squareRepository->update($request, $request->input('square_id'));
+            }
 
-        foreach ($pictures as $url) {
-            $this->vehiclePictureRepository->create([
-                'vehicle_id' => $vehicle->id,
-                'place' => 'Recepción',
-                'url' => $url,
-                'latitude' => $vehicle->latitude,
-                'longitude' => $vehicle->longitude
-            ]);
+            DB::commit();
+            return [
+                'questionnaire' => $questionnaire
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+            throw $e;
         }
-       
-        if ($request->input('square_id')) {
-            $this->squareRepository->update($request, $request->input('square_id'));
-        }
-        return [
-            'questionnaire' => $questionnaire
-        ];
     }
 
     public function createChecklist($request)
@@ -230,8 +232,8 @@ class QuestionAnswerRepository
     {
         $questionAnswer = QuestionAnswer::findOrFail($id);
         if ($request->input('task_id')) {
-            $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
-            $this->pendingTaskRepository->updatePendingTaskFromValidation($groupTask, $request->input('last_task_id'), $request->input('task_id'));
+            $questionnaire = Questionnaire::find($request->input('questionnaire_id'));
+            $this->pendingTaskRepository->updatePendingTaskFromValidation($questionnaire->reception_id, $request->input('last_task_id'), $request->input('task_id'));
         }
         $questionAnswer->update($request->all());
         return ['question_answer' => $questionAnswer];
@@ -240,14 +242,13 @@ class QuestionAnswerRepository
     public function updateResponse($request, $id)
     {
         $questionAnswer = QuestionAnswer::findOrFail($id);
+        $vehicle = $questionAnswer->questionnaire->vehicle;
         $questionAnswer->update($request->all());
         $pendingTask = PendingTask::where('question_answer_id', $questionAnswer->id)->first();
         if (!is_null($pendingTask)) {
             $pendingTask->approved = $questionAnswer->response;
             $pendingTask->save();
-            $vehicle = $pendingTask->vehicle;
         } else if (!!$questionAnswer->response && !!$questionAnswer->task_id) {
-            $vehicle = $questionAnswer->questionnaire->vehicle;
             $pending_task = new PendingTask();
             $pending_task->question_answer_id = $questionAnswer->id;
             $pending_task->vehicle_id = $vehicle->id;
@@ -259,13 +260,12 @@ class QuestionAnswerRepository
             $pending_task->approved = $questionAnswer->response;
             $pending_task->created_from_checklist = true;
 
-            $count = count($vehicle->lastGroupTask->approvedPendingTasks);
+            $count = count($vehicle->lastReception->approvedPendingTasks);
 
             if (!!$pending_task->approved && $count == 0) {
                 $pending_task->state_pending_task_id = StatePendingTask::PENDING;
                 $pending_task->datetime_pending = date('Y-m-d H:i:s');
             }
-            $pending_task->group_task_id = $vehicle->lastGroupTask->id;
             $pending_task->user_id = Auth::id();
             if (!!$pending_task->approved) {
                 $pending_task->order = $count + 1;
@@ -276,11 +276,9 @@ class QuestionAnswerRepository
             }
             $pendingTask = $pending_task;
         }
-        if(isset($variable)) {
-            foreach ($vehicle->lastGroupTask->defaultOrderApprovedPendingTasks as $key => $value) {
-                $value->order = $key + 1;
-                $value->save();
-            }    
+        foreach ($vehicle->lastReception->defaultOrderApprovedPendingTasks as $key => $value) {
+            $value->order = $key + 1;
+            $value->save();
         }
         return $questionAnswer;
     }

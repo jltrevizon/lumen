@@ -8,7 +8,6 @@ use App\Models\Task;
 use App\Models\StatePendingTask;
 use DateTime;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -61,7 +60,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                         ));
                 },
                 'reception' => function ($q) {
-                    $q->select('id', 'created_at', 'type_model_order_id', 'campa_id', 'group_task_id')
+                    $q->select('id', 'created_at', 'type_model_order_id', 'campa_id')
                         ->with([
                             'typeModelOrder' => function ($query) {
                                 $query->select('id', 'name');
@@ -69,8 +68,8 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                             'campa' => function ($query) {
                                 $query->select('id', 'name');
                             },
-                            'groupTask' => function ($query) {
-                                $query->select('id', 'datetime_approved');
+                            'lastQuestionnaire' => function ($query) {
+                                $query->select('id', 'questionnaires.reception_id', 'datetime_approved');
                             },
                         ]);
                 },
@@ -92,7 +91,6 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             ->where('approved', true)
             ->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::IN_PROGRESS, StatePendingTask::FINISHED])
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-           //  ->where('vehicle_id', 15181)
             ->filter($this->request->all())
             ->get();
     }
@@ -108,7 +106,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
             $line = [
                 $data->vehicle->plate,
                 $this->dateFormat($data->reception?->created_at),
-                $this->dateFormat($data->reception?->groupTask?->datetime_approved),
+                $this->dateFormat($data->reception?->lastQuestionnaire?->datetime_approved),
                 $data->vehicle->kms,
                 $data->vehicle->vehicleModel->brand->name ?? null,
                 $data->vehicle->vehicleModel->name ?? null,
@@ -122,17 +120,17 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
                 $data->vehicle->category_name ?? null,
                 $data->task->name ?? null,
                 $data->statePendingTask->name,
-                $data->datetime_pending ? date('d/m/Y H:i:s', strtotime($data->datetime_pending)) : null,
-                $data->datetime_start ? date('d/m/Y H:i:s', strtotime($data->datetime_start)) : null,
-                $data->datetime_finish ? date('d/m/Y H:i:s', strtotime($data->datetime_finish)) : null,
+                $this->dateFormat($data->datetime_pending),
+                $this->dateFormat($data->datetime_start),
+                $this->dateFormat($data->datetime_finish),
                 $time_pending === 0 ? '0' : $time_pending,
                 $data->user_start?->name ?? null,
                 $data->user_end?->name ?? null,
                 round(($data->total_paused / 60), 4),
                 $data->reception?->typeModelOrder?->name,
-                $data->vehicle->lastDeliveryVehicle?->created_at ? date('d/m/Y H:i:s', strtotime($data->vehicle->lastDeliveryVehicle->created_at)) : null,
+                $this->dateFormat($data->vehicle->lastDeliveryVehicle?->created_at),
                 $data->estimatedDates?->pluck('estimated_date')->implode(',') ?? null,
-                $data->lastDeliveredPendingTask->datetime_finish ?? date('Y-m-d H:i:s')
+                $this->dateFormat($data->lastDeliveredPendingTask->datetime_finish ?? date('Y-m-d H:i:s'))
             ];
             array_push($array, $line);
         }
@@ -142,7 +140,7 @@ class PendingTaskExport implements FromCollection, WithMapping, WithHeadings
     public function dateFormat($date)
     {
         if ($date) {
-            return date('d/m/Y', strtotime($date));
+            return date('d/m/Y H:i', strtotime($date));
         }
         return '-';
     }

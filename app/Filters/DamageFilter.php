@@ -34,10 +34,6 @@ class DamageFilter extends ModelFilter
         return $this->byTaskIds($ids);
     }
 
-    public function groupTaskIds($ids){
-        return $this->byGroupTaskIds($ids);
-    }
-
     public function statusDamageIds($ids){
         return $this->byStatusDamageIds($ids);
     }
