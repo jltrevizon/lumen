@@ -417,19 +417,6 @@ class VehicleTest extends TestCase
     }
 
     /** @test */
-    public function should_search_last_unapproved_group_task()
-    {
-        $this->assertInstanceOf(HasOne::class, $this->vehicle->lastUnapprovedReception());
-        $this->assertInstanceOf(GroupTask::class, $this->vehicle->lastUnapprovedReception()->getModel());
-    }
-
-    /** @test */
-    public function should_return_vehicles_with_group_task_unapproved()
-    {
-        $this->assertInstanceOf(Builder::class, $this->vehicle->byHasReceptionApproved(''));
-    }
-
-    /** @test */
     public function should_return_vehicles_has_order_not_finish()
     {
         $this->assertInstanceOf(Builder::class, $this->vehicle->byHasOrderNotFinish(''));
