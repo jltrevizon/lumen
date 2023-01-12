@@ -65,9 +65,9 @@ class GroupTaskRepository extends Repository
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         $group_task = $vehicle->lastReception?->groupTask;
-        
+
         if (!is_null($group_task)) {
-            
+
             $group_task->approved_available = true;
             $group_task->approved = true;
             $group_task->datetime_approved = Carbon::now();
@@ -138,9 +138,7 @@ class GroupTaskRepository extends Repository
     public function declineGroupTask($request)
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
-        PendingTask::where('group_task_id', $request->input('group_task_id'))
-            ->delete();
-        GroupTask::findOrFail($request->input('group_task_id'))
+        PendingTask::where('reception_id',  $vehicle->lastReception->id)
             ->delete();
         $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         return ['message' => 'Solicitud declinada!'];
