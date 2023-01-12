@@ -53,7 +53,7 @@ class QuestionAnswerRepository
             $questionnaire = null;
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
 
-            if (!is_null($vehicle->lastReception->lastQuestionnaire)) {
+            if (!is_null($vehicle->lastReception->lastQuestionnaire) && $vehicle->sub_state_id !== SubState::ALQUILADO) {
                 return [
                     'questionnaire' => $vehicle->lastReception->lastQuestionnaire
                 ];

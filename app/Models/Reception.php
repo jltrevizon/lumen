@@ -230,7 +230,12 @@ class Reception extends Model
 
 
     public function pendingTasks() {
-        return $this->hasMany(PendingTask::class);
+        return $this->hasMany(PendingTask::class)
+        ->whereRaw(DB::raw('reception_id = (Select max(id) from receptions where receptions.vehicle_id = pending_tasks.vehicle_id)'))
+        ->where('approved', 1)
+        ->orderBy('state_pending_task_id', 'desc')
+        ->orderBy('order')
+        ->orderBy('datetime_finish', 'desc');;
     }
 
     public function approvedPendingTasks() {
