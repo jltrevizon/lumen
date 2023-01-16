@@ -19,7 +19,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class Vehicle
@@ -1084,8 +1086,11 @@ class Vehicle extends Model
 
     public function receptionsByUserCampa()
     {
-        $campasIds = auth()->user()->campas()->pluck('id');
-        return $this->hasMany(Reception::class)->whereIn('campa_id', $campasIds);
+        $user = Auth::user();
+        $campasIds = $user->campas()->pluck('id');
+        Log::debug($user);
+        Log::debug('DATA');
+        return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campasIds)->orderBy('id', 'desc');
     }
 
 }
