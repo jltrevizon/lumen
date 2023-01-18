@@ -41,7 +41,7 @@ class StateChangeRepository extends Repository
                 $sub_state_id = $pendingTask->task->sub_state_id;
                 if ($sub_state_id === SubState::ALQUILADO && $pendingTask->state_pending_task_id === StatePendingTask::FINISHED) {
                     $sub_state_id = SubState::ALQUILADO;
-                } else if (is_null($vehicle->lastReception->lastQuestionnaire?->datetime_approved)) {
+                } else if (!is_null($vehicle->lastReception->lastQuestionnaire) && is_null($vehicle->lastReception->lastQuestionnaire?->datetime_approved)) {
                     $sub_state_id = SubState::CHECK;
                 }
             }

@@ -296,7 +296,7 @@ class Reception extends Model
             ->where('task_id', Task::WORKSHOP_EXTERNAL)
             ->where('approved', true)
             ->where(function($query){
-                return $query->whereIn('state_pending_task_id', [StatePendingTask::PENDING, StatePendingTask::FINISHED]);
+                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED]);
             });
     }
 
