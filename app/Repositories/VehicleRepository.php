@@ -444,15 +444,6 @@ class VehicleRepository extends Repository
                         $this->deliveryVehicleRepository->createDeliveryVehicles($vehicle['id'], $request->input('data'), $deliveryNote->id);
 
                     } else if ($request->input('sub_state_id') == SubState::WORKSHOP_EXTERNAL || $request->input('sub_state_id') == SubState::TRANSIT) {
-                        if (!is_null($vehicle->lastReception)) {
-                            $count = 1;
-                            foreach ($vehicle->lastReception->pendingTasks as $key => $pending_task) {
-                                $count++;
-                                $pending_task->state_pending_task_id = null;
-                                $pending_task->order = $count;
-                                $pending_task->save();
-                            }
-                        }
                         $this->vehicleExitRepository->registerExit($vehicle['id'], $deliveryNote->id, $vehicle->campa_id);
                         $vehicle->sub_state_id = $request->input('sub_state_id');
                         $vehicle->save();
