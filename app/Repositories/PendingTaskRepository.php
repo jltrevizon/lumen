@@ -114,12 +114,22 @@ class PendingTaskRepository extends Repository
     public function update($request, $id)
     {
         $pending_task = PendingTask::findOrFail($id);
+        $state_pending_task_id = $pending_task->state_pending_task_id;
         empty($request->state_pending_task_id) ? true : $this->isPause($request, $pending_task);
         $pending_task->update($request->all());
         if ($request->input('approved') == 0 && $pending_task->damage_id != null) {
             $this->closeDamage($pending_task->damage_id);
         }
-        return ['pending_task' => $this->realignPendingTask($pending_task)];
+        if ($pending_task->task_id === Task::WORKSHOP_EXTERNAL && $pending_task->datetime_finish && $pending_task->user_end_id) {
+            $pending_task->vehicle->sub_state_id = null;
+            $pending_task->vehicle->save();
+            $this->stateChangeRepository->updateSubStateVehicle($pending_task->vehicle);
+        }
+        if ($state_pending_task_id != $request->state_pending_task_id) {
+            return ['pending_task' => $this->realignPendingTask($pending_task)];
+        } else {
+            return ['pending_task' => $pending_task];
+        }
     }
 
     private function isPause($request, $pending_task)

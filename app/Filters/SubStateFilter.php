@@ -11,8 +11,16 @@ class SubStateFilter extends ModelFilter
         return $this->byIds($ids);
     }
 
+    public function noIds($ids){
+        return $this->byNoIds($ids);
+    }
+
     public function stateIds($ids){
         return $this->byStateIds($ids);
+    }
+
+    public function noStateIds($ids){
+        return $this->byNoStateIds($ids);
     }
 
     public function orderDesc($field){

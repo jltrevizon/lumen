@@ -147,7 +147,15 @@ class SubState extends Model
         return $query->whereIn('state_id', $ids);
     }
 
+    public function scopeByNoStateIds($query, array $ids){
+        return $query->whereNotIn('state_id', $ids);
+    }
+
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
+    }
+
+    public function scopeByNoIds($query, array $ids){
+        return $query->whereNotIn('id', $ids);
     }
 }

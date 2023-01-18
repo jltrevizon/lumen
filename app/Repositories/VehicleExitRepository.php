@@ -55,12 +55,10 @@ class VehicleExitRepository extends Repository
             'state_pending_task_id' => StatePendingTask::FINISHED,
             'user_id' => Auth::id(),
             'user_start_id' => Auth::id(),
-            'user_end_id' => Auth::id(),
             'order' => 1,
             'approved' => true,
             'datetime_pending' => Carbon::now(),
             'datetime_start' => Carbon::now(),
-            // 'datetime_finish' =>  Carbon::now(),
             'campa_id' => $vehicle->campa_id
         ]);
         $vehicleExit->pending_task_id = $pending_task->id;
