@@ -505,7 +505,7 @@ class VehicleRepository extends Repository
             $pendingTask->vehicle_id = $vehicle->id;
             $pendingTask->reception_id = $vehicle->lastReception->id;
             $pendingTask->task_id = Task::UBICATION;
-            $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
+            $pendingTask->state_pending_task_id = count($vehicle->lastReception->approvedPendingTasks) == 0 ? StatePendingTask::PENDING : null;
             $pendingTask->duration = 1;
             $pendingTask->order = count($vehicle->lastReception->approvedPendingTasks) + 1;
             $pendingTask->datetime_pending = Carbon::now();
