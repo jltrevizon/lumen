@@ -8,6 +8,7 @@ use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
+use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
 use App\Models\TypeModelOrder;
@@ -387,18 +388,6 @@ class VehicleRepository extends Repository
             ->get();
     }
 
-    public function vehicleRequestDefleet($request)
-    {
-        $user = $this->userRepository->getById($request, Auth::id());
-        $vehicles = Vehicle::with($this->getWiths($request->with))
-            ->withRequestDefleetActive()
-            ->where('trade_state_id', TradeState::REQUEST_DEFLEET)
-            ->where('sub_state_id', '<>', SubState::SOLICITUD_DEFLEET)
-            ->byCampasOfUser($user->campas->pluck('id')->toArray())
-            ->get();
-        return ['vehicles' => $vehicles];
-    }
-
     public function vehiclesByState($request)
     {
         return Vehicle::with($this->getWiths($request->with))
@@ -502,14 +491,13 @@ class VehicleRepository extends Repository
     }
     public function defleeting($id){
         $vehicle = Vehicle::findOrFail($id);
-        if (!!$vehicle->lastReception && !!$vehicle->lastReception->lastQuestionnaire){
+        if (!!$vehicle->lastReception && !$vehicle->lastReception->lastQuestionnaire?->datetime_approved){
             return [
                 'status'=>false,
                 'message'=>'Este vehículo tiene un cuestionario activo en la recepción actual.',
                 'data'=>$vehicle->lastReception->lastQuestionnaire
             ];
-        }
-        if (is_null($vehicle->datetime_defleeting)) {
+        } else if (is_null($vehicle->datetime_defleeting)) {
             $vehicle->datetime_defleeting = Carbon::now();
             $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
             $vehicle->save();
@@ -519,7 +507,7 @@ class VehicleRepository extends Repository
             $pendingTask->task_id = Task::UBICATION;
             $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
             $pendingTask->duration = 1;
-            $pendingTask->order = $vehicle->lastReception->pendingTasks + 1;
+            $pendingTask->order = count($vehicle->lastReception->approvedPendingTasks) + 1;
             $pendingTask->datetime_pending = Carbon::now();
             $pendingTask->user_id = Auth::id();
             $pendingTask->save();
@@ -543,48 +531,10 @@ class VehicleRepository extends Repository
         }
         return $vehicle;
     }
-    public function defleet($id)
-    {
-        $reception = Reception::findOrFail($id);
-        $vehicle = $reception->vehicle;
-        $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
-        $vehicle->save();
-        if (is_null($reception->groupTask->datetime_defleeting)) {
-            $pendingTask = new PendingTask();
-            $pendingTask->vehicle_id = $reception->vehicle_id;
-            $pendingTask->reception_id = $vehicle->lastReception->id;
-            $pendingTask->task_id = Task::UBICATION;
-            $pendingTask->state_pending_task_id = StatePendingTask::PENDING;
-            $pendingTask->duration = 1;
-            $pendingTask->order = $vehicle->lastReception->pendingTasks + 1;
-            $pendingTask->datetime_pending = Carbon::now();
-            $pendingTask->user_id = Auth::id();
-            $pendingTask->save();
-        }
-        return $vehicle;
-    }
 
-    public function unDefleet($id)
-    {
+    public function updateSubStateVehicle($id) {
         $vehicle = Vehicle::findOrFail($id);
-        $vehicle->sub_state_id = SubState::CHECK;
-        $vehicle->save();
-        if ($vehicle->lastReception) {
-            PendingTask::where('reception_id', $vehicle->lastReception)
-            ->where('task_id', Task::UBICATION)
-            ->chunk(200, function ($pendingTasks) {
-                foreach ($pendingTasks as $pendingTask) {
-                    $pendingTask->update([
-                        'approved' => false,
-                        'order' => null,
-                        'state_pending_task_id' => null,
-                    ]);
-                }
-            });
-        }
-        return response()->json([
-            'message' => 'Vehicle defleeted!'
-        ]);
+        return $this->stateChangeRepository->updateSubStateVehicle($vehicle);
     }
 
     private function closeDamage($vehicleId)

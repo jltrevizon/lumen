@@ -34,8 +34,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     })->name('send-emails');*/
 
-    $router->post('/defleeting/{id}', 'VehicleController@defleeting');
-
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
     $router->get('/kpi-all', 'KpiController@kpiFull');
@@ -283,15 +281,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/vehicles/delete/{id}', 'VehicleController@delete');
         $router->post('/vehicles/return/{id}', 'VehicleController@returnVehicle');
         $router->post('/vehicles/delete-massive', 'VehicleController@deleteMassive');
-        $router->get('/vehicles/defleet', 'VehicleController@vehicleDefleet');
-        $router->get('/vehicles/defleet/{id}', 'VehicleController@defleet');
-        $router->get('/vehicles/undefleet/{id}', 'VehicleController@unDefleet');
+        $router->post('/vehicles/defleeting/{id}', 'VehicleController@defleeting');
+        $router->put('/vehicles/update-sub-state/{id}', 'VehicleController@updateSubStateVehicle');
         $router->get('/vehicle-with-reservation-without-order/campa', 'VehicleController@getVehiclesWithReservationWithoutOrderCampa');
         $router->post('/vehicle-with-reservation-without-contract/campa', 'VehicleController@getVehiclesWithReservationWithoutContractCampa');
         $router->get('/vehicles/filter', 'VehicleController@filterVehicle');
         $router->get('/vehicles/reserved', 'VehicleController@vehicleReserved');
         $router->get('/vehicles/totals/by-state', 'VehicleController@vehicleTotalsState');
-        $router->get('/vehicles/request/defleet', 'VehicleController@vehicleRequestDefleet');
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
         $router->post('/vehicles/set-vehicle-rented', 'VehicleController@setVehicleRented');

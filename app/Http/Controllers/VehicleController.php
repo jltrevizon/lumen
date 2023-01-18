@@ -838,34 +838,6 @@ class VehicleController extends Controller
     }
 
     /**
-    * @OA\Get(
-    *     path="/api/vehicles/request/defleet'",
-    *     tags={"vehicles"},
-    *     summary="get request defleet",
-    *     security={
-    *          {"bearerAuth": {}}
-    *     },
-    *     @OA\Response(
-    *         response=200,
-    *         description="Successful operation",
-    *         value= @OA\JsonContent(
-    *           type="array",
-    *           @OA\Items(ref="#/components/schemas/Vehicle")
-    *         ),
-    *     ),
-    *     @OA\Response(
-    *         response="404",
-    *         description="Vehicle not found."
-    *     )
-    * )
-    */
-
-    public function vehicleRequestDefleet(Request $request)
-    {
-        return $this->getDataResponse($this->vehicleRepository->vehicleRequestDefleet($request), HttpFoundationResponse::HTTP_OK);
-    }
-
-    /**
      * @OA\Post(
      *     path="/api/vehicles/verify-plate-reception",
      *     summary="Verify plate reception",
@@ -957,6 +929,11 @@ class VehicleController extends Controller
         return $this->updateDataResponse($this->vehicleRepository->changeSubState($request), HttpFoundationResponse::HTTP_OK);
     }
 
+    public function updateSubStateVehicle($id)
+    {
+        return $this->updateDataResponse($this->vehicleRepository->updateSubStateVehicle($id), HttpFoundationResponse::HTTP_OK);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/vehicles/set-vehicle-rented",
@@ -997,76 +974,6 @@ class VehicleController extends Controller
     }
 
     /**
-    * @OA\Get(
-    *     path="/api/vehicles/defleet/{id}",
-    *     tags={"vehicles"},
-    *     summary="Get defleet by id",
-    *    security={
-    *          {"bearerAuth": {}}
-    *     },
-    *     @OA\Parameter(
-    *         name="id",
-    *         in="path",
-    *         required=true,
-    *         @OA\Schema(
-    *             type="integer"
-    *         )
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Successful operation",
-    *         @OA\JsonContent(ref="#/components/schemas/Vehicle"),
-    *    ),
-    *     @OA\Response(
-    *         response="404",
-    *         description="Vehicle not found."
-    *     )
-    * )
-    */
-
-    public function defleet($id)
-    {
-        return $this->updateDataResponse($this->vehicleRepository->defleet($id), HttpFoundationResponse::HTTP_OK);
-    }
-
-    /**
-    * @OA\Get(
-    *     path="/api/vehicles/undefleet/{id}",
-    *     tags={"vehicles"},
-    *     summary="Undefleet by id",
-    *    security={
-    *          {"bearerAuth": {}}
-    *     },
-    *     @OA\Parameter(
-    *         name="id",
-    *         in="path",
-    *         required=true,
-    *         @OA\Schema(
-    *             type="integer"
-    *         )
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Successful operation",
-    *         @OA\Property(
-    *                  property="message",
-    *                  type="string",
-    *                  example="Vehicle defleeted"
-    *         ),
-    *    ),
-    *     @OA\Response(
-    *         response="404",
-    *         description="Defleet not found."
-    *     )
-    * )
-    */
-
-    public function unDefleet($id)
-    {
-        return $this->updateDataResponse($this->vehicleRepository->unDefleet($id), HttpFoundationResponse::HTTP_OK);
-    }
-
-    /**
      * @OA\Post(
      *     path="/api/defleeting",
      *     summary="Defleeting",
@@ -1104,7 +1011,7 @@ class VehicleController extends Controller
     {
         $data = $this->vehicleRepository->defleeting($id);
         if (is_array($data) && $data['status'] === FALSE){
-            $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
         return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
