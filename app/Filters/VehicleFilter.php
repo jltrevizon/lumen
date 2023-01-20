@@ -316,7 +316,20 @@ class VehicleFilter extends ModelFilter
                 ->whereNull('deleted_at');
         }
     }
+    public function notSubStateIds($ids){
+        return $this->whereNotIn('sub_state_id', $ids);
 
+    }
+    public function notExternalWorkshop($value)
+    {
+        if ($value == 1) {
+            return $this->whereHas('subState', function($q){
+                $state = ["1", "3",  "4",  "6",  "7", "8",  "9", "10",  "11", "12",  "13", "14",  "15"];
+                $q->whereIn('state_id', $state)
+                ->where('id', '<>', 22);
+           });
+        }
+    }
     public function hasDamage($value)
     {
         return $this->whereHas('lastReception.damages');
@@ -332,7 +345,7 @@ class VehicleFilter extends ModelFilter
         return $this->orderBy($field);
     }
 
-    
+
     public function withReceptionId($id)
     {
         $sql = <<<SQL
