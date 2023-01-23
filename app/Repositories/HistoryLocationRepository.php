@@ -24,7 +24,7 @@ class HistoryLocationRepository extends Repository {
             'user_id' => $userId
         ]);
         $vehicle = $history->vehicle;
-        $history->reception_id = $vehicle->lastReception->id;
+        $history->reception_id = isset($vehicle->lastReception->id) ? $vehicle->lastReception->id : null;
         $history->save();
     }
 
