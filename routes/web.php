@@ -25,14 +25,14 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-    $router->get('/command-artisan', function () {
+    /*$router->get('/command-artisan', function () {
         //ini_set("memory_limit", "-1");
         //ini_set('max_execution_time', '-1');
         //ob_clean();
         $exitCode = Artisan::call('db:seed', ['--class' => 'RepairApprovedQuestionnaries', '--force' => true]);
         return $exitCode === 0 ? 'successful run camand' : 'error run camand';
 
-    });
+    });*/
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
