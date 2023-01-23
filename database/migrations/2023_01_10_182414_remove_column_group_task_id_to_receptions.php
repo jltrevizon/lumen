@@ -16,7 +16,7 @@ class RemoveColumnGroupTaskIdToReceptions extends Migration
     public function up()
     {
         Schema::table('receptions', function (Blueprint $table) {
-            Artisan::call('db:seed', ['--class' => 'RepairApprovedQuestionnaries']);
+            //Artisan::call('db:seed', ['--class' => 'RepairApprovedQuestionnaries']);
             Reception::whereNotNull('group_task_id')->update([
                 'group_task_id' => null
             ]);

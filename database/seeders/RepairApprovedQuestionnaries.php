@@ -17,6 +17,7 @@ class RepairApprovedQuestionnaries extends Seeder
     {
         ini_set("memory_limit", "-1");
         ini_set('max_execution_time', '-1');
+        ob_clean();
         $questionaires = Questionnaire::whereNull('datetime_approved')->get();
         foreach ($questionaires as $key => $questionaire) {
             if ($questionaire->reception_id) {

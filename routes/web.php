@@ -5,6 +5,7 @@
 
 use App\Http\Controllers\Ald\PendingTaskAldController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,15 +25,14 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
-   /* Route::get('/send-emails', function () {
-        ini_set("memory_limit", "-1");
-        ini_set('max_execution_time', '-1');
-        ob_clean();
-
-        $exitCode = Artisan::call('stock:vehicles');
+    $router->get('/command-artisan', function () {
+        //ini_set("memory_limit", "-1");
+        //ini_set('max_execution_time', '-1');
+        //ob_clean();
+        $exitCode = Artisan::call('db:seed', ['--class' => 'RepairApprovedQuestionnaries']);
         return $exitCode === 0 ? 'successful run camand' : 'error run camand';
 
-    })->name('send-emails');*/
+    });
 
     $router->post('/auth/signin', 'AuthController@login');
     $router->get('/delivery-note-ald', 'DownloadController@deliveryNoteAld');
