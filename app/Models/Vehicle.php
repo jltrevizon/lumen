@@ -952,7 +952,7 @@ class Vehicle extends Model
     }
 
     public function scopeByHasReceptionApproved($query, $value){
-        return $query->whereHas('lastReception.lastQuestionnarie', function(Builder $builder) use ($value) {
+        return $query->whereHas('lastReception.lastQuestionnaire', function(Builder $builder) use ($value) {
             if (!$value) {
                 return $builder->whereNull('datetime_approved');
             }
