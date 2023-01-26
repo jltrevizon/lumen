@@ -40,7 +40,7 @@ class SquareRepository extends Repository
     {
         $square = Square::findOrFail($id);
         
-        if ($square->vehicle_id != $request->input('vehicle_id') ) {
+        if ($square->vehicle_id != $request->input('vehicle_id') || !$square->vehicle_id ) {
             if ($request->input('vehicle_id')) {
                 $this->freeSquare($request->input('vehicle_id'));
             } else if ($square->vehicle_id) {
