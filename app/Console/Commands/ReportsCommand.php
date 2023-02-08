@@ -2,14 +2,18 @@
 
 namespace App\Console\Commands;
 
+use App\Exports\DeliveryVehiclesExport;
+use App\Exports\EntriesVehiclesExport;
+use App\Exports\PendingTaskExport;
+use App\Exports\StockVehiclesExport;
+
 use App\Models\PeopleForReport;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-use App\Exports\PendingTaskExport as ExportsPendingTaskExport;
-use App\Exports\StockVehiclesExport;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
-use phpDocumentor\Reflection\Types\Object_;
 
 class ReportsCommand extends Command
 {
@@ -44,7 +48,7 @@ class ReportsCommand extends Command
      */
     public function handle()
     {
-
+        Log::debug(date('H') . 'HOUR');
         $reports = PeopleForReport::with(['typeReport', 'campa'])
             ->whereNotNull('email')
             ->whereHas('typeReport', function ($query) {
@@ -66,17 +70,16 @@ class ReportsCommand extends Command
             }
         }
         foreach ($reports as $key => $report) {
-            Log::debug(StockVehiclesExport::class);
+            $slug = strtolower(trim(preg_replace('/[^A-Za-záéíóúÁÉÍÓÚñÑ0-9-]+/', '-', strtolower($report->typeReport->name . '-' . $report->campa->name))));
+            $file_name = $slug . '-' . date('d-m-Y') . '-' . $array[0] . '.xlsx';
+            $disk =  $env == 'production' ? 's3' : 'public';
             switch ($report->typeReport->model_class) {
                 case PendingTaskExport::class:
                     $request = request();
                     $request->merge([
                         'campasIds' => [$report->campa_id]
                     ]);
-                    $slug = strtolower(trim(preg_replace('/[^A-Za-záéíóúÁÉÍÓÚñÑ0-9-]+/', '-', strtolower($report->typeReport->name . '-' . $report->campa->name))));
-                    $file_name = $slug . '-' . date('d-m-Y') . '-' . $array[0] . '.xlsx';
-                    $this->pushData($content, $report, $file_name);
-                    Excel::store(new ExportsPendingTaskExport($request), $file_name, $env == 'production' ? 's3' : 'public');
+                    Excel::store(new PendingTaskExport($request), $file_name, $disk);
                     break;
                 case StockVehiclesExport::class:
                     $request = request();
@@ -85,16 +88,49 @@ class ReportsCommand extends Command
                         'defleetingAndDelivery' => 1,
                         'campasIds' => [$report->campa_id]
                     ]);
-                    $slug = strtolower(trim(preg_replace('/[^A-Za-záéíóúÁÉÍÓÚñÑ0-9-]+/', '-', strtolower($report->typeReport->name . '-' . $report->campa->name))));
-                    $file_name = $slug . '-' . date('d-m-Y') . '-' . $array[0] . '.xlsx';
-                    $this->pushData($content, $report, $file_name);
-                    Excel::store(new StockVehiclesExport($request), $file_name, $env == 'production' ? 's3' : 'public');
+                    Excel::store(new StockVehiclesExport($request), $file_name, $disk);
+                    break;
+                case EntriesVehiclesExport::class:
+                    $request = request();
+                    $request->merge([
+                        'whereHasVehicle' => 0,
+                        'subStatesNotIds' => [10],
+                        'campaIds' => [$report->campa_id],
+                        'createdAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+                        'createdAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
+                    ]);
+                    Excel::store(new EntriesVehiclesExport($request), $file_name, $disk);
+                    break;
+                case DeliveryVehiclesExport::class:
+                    $request = request();
+                    $request->merge([
+                        'pendindTaskNull' => 0,
+                        'vehicleDeleted' => 0,
+                        'campaIds' => [$report->campa_id],
+                        'createdAtFrom' => Carbon::now('Europe/Madrid')->startOfDay()->timezone('UTC')->format('Y-m-d H:i:s'),
+                        'createdAtTo' => Carbon::now('Europe/Madrid')->endOfDay()->timezone('UTC')->format('Y-m-d H:i:s')
+                    ]);
+                    Excel::store(new DeliveryVehiclesExport($request), $file_name, $disk);
                     break;
                 default:
                     # code...
                     break;
             }
-            Log::debug($content);
+            $this->pushData($content, $report, $file_name);
+            $content->map(function ($item) {
+                $data = [
+                    'title' => 'Reporte',
+                    'sub_title' => $item->data->map(function ($value) {
+                        return $value->type_report_name . ' de la campa ' . $value->campa_name . ': ' . $value->url;
+                    })->join(', ')
+                ];
+                Log::debug($data);
+                Mail::send('report-generic', $data, function ($message) use ($item) {
+                    $message->to(env('APP_ENV') == 'production' ? $item->email : env('MAIL_FROM_ADDRESS', 'focus@grupomobius.com'), 'Reporte ALD');
+                    $message->subject('Repprte ALD');
+                    $message->from('no-reply.focus@grupomobius.com', 'Focus');
+                });
+            });
         }
     }
 

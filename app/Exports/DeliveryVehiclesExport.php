@@ -10,14 +10,14 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class DeliveryVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
-    public function __construct($params)
+    public function __construct($request)
     {
-        $this->params = $params;
+        $this->request = $request;
     }
 
     public function collection()
     {
-        return DeliveryVehicle::filter($this->params)->get();
+        return DeliveryVehicle::filter($this->request->all())->get();
     }
 
     public function map($deliveryVehicle): array

@@ -3,32 +3,26 @@
 namespace App\Exports;
 
 use App\Models\Reception;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 class EntriesVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
-    public function __construct($campaId)
+    public function __construct($request)
     {
-        $this->campaId = $campaId;
+        $this->request = $request;
     }
 
     public function collection()
     {
-        $params = array_merge([
-            'whereHasVehicle' => 0,
-            'subStatesNotIds' => [10]
-        ], $this->campaId == null ? [] : [
-            'campaIds' => [$this->campaId]
-        ]);
-        return Reception::whereDate('created_at', date('Y-m-d'))
-            ->filter($params)
-            ->get();
+        return Reception::filter($this->request->all())->get();
     }
 
     public function map($reception): array
     {
+        Log::debug($reception);
         return [
             date('d/m/Y'),
             $reception->vehicle->typeModelOrder->name ?? null,
