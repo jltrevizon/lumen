@@ -53,6 +53,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('entry:vehicles')->dailyAt('13:30');
         $schedule->command('delivery:vehicles')->dailyAt('13:30');
         $schedule->command('statistics')->dailyAt('18:00');
+
+        $schedule->command('reports')->everyTwoHours();
     }
 
 
