@@ -88,7 +88,8 @@ class PeopleForReport extends Model
     protected $fillable = [
         'user_id',
         'campa_id',
-        'type_report_id'
+        'type_report_id',
+        'email'
     ];
 
     public function user(){

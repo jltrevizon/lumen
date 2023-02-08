@@ -59,11 +59,15 @@ class TypeReport extends Model
     const EXITS = 2;
     const STOCK = 3;
     const STATISTICS = 4;
+    const PENDING_TASKS = 5;
 
     protected $fillable = [
-        'name'
+        'name',
+        'schedule'
     ];
-
+    protected $casts = [
+        'schedule' => 'array'
+    ];
     public function peopleForReports(){
         return $this->hasMany(PeopleForReport::class);
     }
