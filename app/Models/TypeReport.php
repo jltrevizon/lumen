@@ -63,7 +63,8 @@ class TypeReport extends Model
 
     protected $fillable = [
         'name',
-        'schedule'
+        'schedule',
+        'model_class'
     ];
     protected $casts = [
         'schedule' => 'array'
