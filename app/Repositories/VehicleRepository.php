@@ -492,7 +492,8 @@ class VehicleRepository extends Repository
             $vehicle->datetime_defleeting = Carbon::now();
             $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
             $vehicle->save();
-            $pendingTask = new PendingTask();
+            /* QUITAR TAREA DE UBICACION*/
+            /*$pendingTask = new PendingTask();
             $pendingTask->vehicle_id = $vehicle->id;
             $pendingTask->reception_id = $vehicle->lastReception->id;
             $pendingTask->task_id = Task::UBICATION;
@@ -501,7 +502,7 @@ class VehicleRepository extends Repository
             $pendingTask->order = count($vehicle->lastReception->approvedPendingTasks) + 1;
             $pendingTask->datetime_pending = Carbon::now();
             $pendingTask->user_id = Auth::id();
-            $pendingTask->save();
+            $pendingTask->save();*/
         } else {
             if ($vehicle->lastReception) {
                 PendingTask::where('reception_id', $vehicle->lastReception)
