@@ -17,6 +17,11 @@ class ReceptionFilter extends ModelFilter
         return $this->whereIn('vehicle_id', $ids);
     }
 
+    public function subStatesNotIds($ids)
+    {
+        return $this->bySubStatesNotIds($ids);
+    }
+
     public function vehiclePlate($plate)
     {
         return $this->whereHas('vehicle', function ($query) use ($plate) {
@@ -43,12 +48,12 @@ class ReceptionFilter extends ModelFilter
 
     public function createdAtFrom($dateTime)
     {
-        return $this->where('created_at','>=', $dateTime);
+        return $this->where('receptions.created_at','>=', $dateTime);
     }
 
     public function createdAtTo($dateTime)
     {
-        return $this->where('created_at','<=', $dateTime);
+        return $this->where('receptions.created_at','<=', $dateTime);
     }
 
     public function brandIds($ids)

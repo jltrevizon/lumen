@@ -24,6 +24,16 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
+   /* Route::get('/send-emails', function () {
+        ini_set("memory_limit", "-1");
+        ini_set('max_execution_time', '-1');
+        ob_clean();
+
+        $exitCode = Artisan::call('stock:vehicles');
+        return $exitCode === 0 ? 'successful run camand' : 'error run camand';
+
+    })->name('send-emails');*/
+
     $router->post('/defleeting', 'VehicleController@defleeting');
 
     $router->post('/auth/signin', 'AuthController@login');
@@ -169,7 +179,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/pending-tasks/filter', 'PendingTaskController@pendingTasksFilter');
         $router->get('/pending-tasks/filter-download-file', 'PendingTaskController@pendingTasksFilterDownloadFile');
         $router->get('/pending-tasks/{id}', 'PendingTaskController@getById');
-        $router->post('/pending-tasks/update-approved', 'PendingTaskController@updateApprovedPendingTaskFromValidation');
         $router->post('/pending-tasks/finish-all', 'PendingTaskController@finishAll');
         $router->post('/pending-tasks/transfer', 'PendingTaskController@createTransferTask');
 
@@ -289,7 +298,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
         $router->post('/vehicles/set-vehicle-rented', 'VehicleController@setVehicleRented');
-        $router->post('/vehicles/last-group-tasks','VehicleController@lastGroupTasks');
 
         /**
          * Vehicle model
@@ -534,7 +542,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
         $router->post('/accessory-vehicle', 'AccessoryVehicleController@store');
         $router->post('/accessory-vehicle/delete', 'AccessoryVehicleController@destroy');
-    
+
         /**
          * Damage images
          */
@@ -573,7 +581,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          */
         $router->get('/type-delivery-note', 'TypeDeliveryNoteController@index');
 
-        /** 
+        /**
          * Damage Type
          */
         $router->get('/damage-type', 'DamageTypeController@index');
@@ -582,11 +590,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Pending Authorization
          */
         $router->get('/pending-authorization','PendingAuthorizationController@index');
-    
+
         /** Estimated dates */
         $router->post('/estimated-dates', 'EstimatedDateController@store');
         $router->put('/estimated-dates/{id}', 'EstimatedDateController@update');
-        
+
         /**
          * Statistics
          */

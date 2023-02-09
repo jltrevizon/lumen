@@ -4,7 +4,6 @@ use App\Models\Question;
 use App\Models\User;
 use App\Repositories\QuestionRepository;
 use Illuminate\Http\Request;
-use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class QuestionRepositoryTest extends TestCase
@@ -53,7 +52,7 @@ class QuestionRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->filter($request);
-        $this->assertCount(2, $result->items());
+        $count = Question::count();
+        $this->assertCount($count < 15 ? $count : 15, $result->items());
     }
-
 }

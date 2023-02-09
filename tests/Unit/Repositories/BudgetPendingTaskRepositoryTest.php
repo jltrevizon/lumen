@@ -64,7 +64,8 @@ class BudgetPendingTaskRepositoryTest extends TestCase
         BudgetPendingTask::factory()->create();
         $request = new Request();
         $result = $this->repository->index($request);
-        $this->assertCount(2, $result->items());
+        $count = BudgetPendingTask::count();
+        $this->assertCount($count < 15 ? $count : 15, $result->items());
     }
 
 }

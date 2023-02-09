@@ -15,6 +15,40 @@ class ZoneController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/zones",
+    *     tags={"zones"},
+    *     summary="Get all zones",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/Zone")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @param \illuminate\Http\Request
@@ -34,6 +68,28 @@ class ZoneController extends Controller
     {
         //
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/zones",
+     *     tags={"zones"},
+     *     summary="Create zone",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createZone",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Zone"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create zone object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Zone"),
+     *     )
+     * )
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -67,6 +123,41 @@ class ZoneController extends Controller
     {
         //
     }
+
+    /**
+     * @OA\Put(
+     *     path="/api/zones/{id}",
+     *     tags={"zones"},
+     *     summary="Updated zones",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\RequestBody(
+     *         description="Updated zone object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Zone")
+     *     ),
+     *     operationId="updateZone",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Zone"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Zone not found"
+     *     ),
+     * )
+     */
 
     /**
      * Update the specified resource in storage.

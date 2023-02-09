@@ -65,9 +65,9 @@ class GroupTaskRepository extends Repository
     {
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         $group_task = $vehicle->lastReception?->groupTask;
-        
+
         if (!is_null($group_task)) {
-            
+
             $group_task->approved_available = true;
             $group_task->approved = true;
             $group_task->datetime_approved = Carbon::now();
@@ -77,7 +77,7 @@ class GroupTaskRepository extends Repository
             }
             $group_task->save();
             $data_update =  [
-                'reception_id' => $vehicle->lastReception->id ?? null,
+                'group_task_id' => $group_task->id,
                 'state_pending_task_id' => StatePendingTask::FINISHED,
                 'user_id' => Auth::id(),
                 'user_start_id' => Auth::id(),
@@ -89,10 +89,9 @@ class GroupTaskRepository extends Repository
                 'order' => -1
             ];
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'reception_id' => $vehicle->lastReception->id,
                 'task_id' => Task::VALIDATE_CHECKLIST,
-                'vehicle_id' => $vehicle->id,
-                'state_pending_task_id' => 1
+                'vehicle_id' => $vehicle->id
             ], $data_update);
             if (is_null($pendingTask->datetime_pending)) {
                 $pendingTask->datetime_pending = Carbon::now();
@@ -102,7 +101,7 @@ class GroupTaskRepository extends Repository
             }
             $pendingTask->save();
             $pendingTask = PendingTask::updateOrCreate([
-                'group_task_id' => $group_task->id,
+                'reception_id' => $vehicle->lastReception->id,
                 'task_id' => Task::TOCAMPA,
                 'vehicle_id' => $vehicle->id
             ], $data_update);
@@ -126,7 +125,7 @@ class GroupTaskRepository extends Repository
             $vehicle->company_id = $user->company_id;
             $vehicle->save();
         }
-        if ($vehicle->has_environment_label == false) {
+        if ($vehicle->has_environment_label == false && !env('DISABLED_SEND_MAIL', false)) {
             $this->notificationDAMail->build($vehicle->id);
         }
         $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
@@ -172,8 +171,8 @@ class GroupTaskRepository extends Repository
         $groupTask->approved_available = true;
         $groupTask->datetime_defleeting = Carbon::now();
         $groupTask->save();
-
-        $pendingTask = new PendingTask();
+        /* QUITAR TAREA DE UBICAION */
+        /*$pendingTask = new PendingTask();
         $pendingTask->vehicle_id = $group_task->vehicle_id;
         $pendingTask->reception_id = $group_task->vehicle->lastReception->id;
         $pendingTask->task_id = Task::UBICATION;
@@ -183,7 +182,7 @@ class GroupTaskRepository extends Repository
         $pendingTask->order = $pendingTasks + 1;
         $pendingTask->datetime_pending = Carbon::now();
         $pendingTask->user_id = Auth::id();
-        $pendingTask->save();
+        $pendingTask->save();*/
     }
 
     public function enablePendingTasks($group_task)

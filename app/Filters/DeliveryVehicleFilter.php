@@ -34,12 +34,17 @@ class DeliveryVehicleFilter extends ModelFilter
 
     public function createdAtFrom($dateTime)
     {
-        return $this->where('created_at','>=', $dateTime);
+        return $this->where('delivery_vehicles.created_at','>=', $dateTime);
     }
 
     public function createdAtTo($dateTime)
     {
-        return $this->where('created_at','<=', $dateTime);
+        return $this->where('delivery_vehicles.created_at','<=', $dateTime);
+    }
+
+    public function whereHasVehicle($value)
+    {
+        return $this->whereHas('vehicle');
     }
 
     public function vehicleDeleted($value){

@@ -2,9 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Company;
-use App\Models\StatePendingTask;
-use App\Models\SubState;
 use App\Models\Vehicle;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -14,24 +11,15 @@ use Carbon\Carbon;
 class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
 {
 
-    public function __construct($campaId)
+    public function __construct($request)
     {
-        $this->campaId = $campaId;
+        $this->request = $request;
     }
 
     public function collection()
     {
-        $ids = collect(SubState::where('id', '<>', SubState::ALQUILADO)->get())->map(function ($item){ return $item->id;})->toArray();
-        $filter = array_merge([ 'defleetingAndDelivery' => 1, 'subStates' => array_merge($ids, [null]) ]);
-        if($this->campaId == null) {
-            return Vehicle::whereIn('sub_state_id', $ids)
-            ->filter($filter)
-            ->get();
-        } else {
-            return Vehicle::where('campa_id', $this->campaId)
-                    ->filter($filter)
-                    ->get();
-        }
+        $request = $this->request;
+        return Vehicle::filter($request->all())->get();
     }
 
     public function map($vehicle): array
@@ -64,7 +52,8 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
         ];
     }
 
-    public function fixTime($date) {
+    public function fixTime($date)
+    {
         if ($date) {
             return (new  Carbon($date))->addHours(2)->format('d/m/Y H:m:i');
         }

@@ -9,9 +9,224 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Damage
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Damage model",
+ *     description="Damage model",
+ * )
+ */
+
 class Damage extends Model
 {
-    
+
+    /**
+     * @OA\Schema(
+     *      schema="DamagePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DamageWith"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="DamageWith",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Damage"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="user",
+     *                   type="object",
+     *                   ref="#/components/schemas/User"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="vehicle",
+     *                   type="object",
+     *                   ref="#/components/schemas/Vehicle"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="tasks",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Task"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="roles",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Role"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="comments",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Comment"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="severity_damage",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/SeverityDamage"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="status_damage",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/StatusDamage"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="damage_type",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/DamageType"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     *
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="campa_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Campa ID",
+     *     title="Campa ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="user_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="User ID",
+     *     title="User ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="group_task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Group Task ID",
+     *     title="Group Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="damage_type_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type of Damage ID",
+     *     title="Type of Damage ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Task ID",
+     *     title="Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="severity_damage_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Severity Damage ID",
+     *     title="Severity Damage ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="status_damage_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Status Damage ID",
+     *     title="Status Damage ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="description",
+     *     type="string",
+     *     description="Description",
+     *     title="Description",
+     * )
+     *
+     * @OA\Property(
+     *     property="approved",
+     *     type="boolean",
+     *     description="Approved",
+     *     title="Approved",
+     * )
+     *
+     * @OA\Property(
+     *     property="internal",
+     *     type="boolean",
+     *     description="Internal",
+     *     title="Internal",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_close",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetinme close",
+     *     title="Datetime close",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was deleted",
+     *     title="Deleted at",
+     * )
+     */
+
     use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
@@ -102,7 +317,7 @@ class Damage extends Model
     public function scopeByStatusDamageIds($query, array $ids){
         return $query->whereIn('status_damage_id', $ids);
     }
-    
+
     public function scopeByPlate($query, string $plate){
         return $query->whereHas('vehicle', function (Builder $builder) use($plate){
             return $builder->where('plate', 'like',"%$plate%");

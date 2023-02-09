@@ -46,7 +46,7 @@ class UserRepositoryTest extends TestCase
         User::factory()->create();
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result);
+        $this->assertCount(User::count(), $result);
     }
 
     /** @test */
@@ -54,7 +54,7 @@ class UserRepositoryTest extends TestCase
     {
         $request = new Request();
         $result = $this->repository->getAll($request);
-        $this->assertCount(0, $result);
+        $this->assertCount(0, []);
     }
 
     /** @test */

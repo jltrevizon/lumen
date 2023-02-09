@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Campa;
+use App\Models\CampaTypeModelOrder;
 
 class CampaRepository extends Repository {
 
@@ -29,12 +30,27 @@ class CampaRepository extends Repository {
 
     public function create($request){
         $campa = Campa::create($request->all());
-        return $campa;
+        $campaTypeModelOrder = [];
+        foreach ($request->input('type_model_orders', []) as $key => $type_model_order_id) {
+            $campaTypeModelOrder[] = [
+                'campa_id' => $campa->id,
+                'type_model_order_id' => $type_model_order_id
+            ];
+        }
+        $campa->campaTypeModelOrders()->createMany($campaTypeModelOrder);
+        return ["campa" => $campa];
     }
 
     public function update($request, $id){
         $campa = Campa::findOrFail($id);
         $campa->update($request->all());
-        return ['campa' => $campa];
+        CampaTypeModelOrder::where('campa_id', $id)->delete();
+        foreach ($request->input('type_model_orders', []) as $key => $type_model_order_id) {
+            CampaTypeModelOrder::create([
+                'campa_id' => $id,
+                'type_model_order_id' => $type_model_order_id
+            ]);
+        }
+        return ["campa" => $campa];
     }
 }

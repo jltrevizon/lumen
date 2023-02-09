@@ -225,7 +225,7 @@ class PendingTaskRepository extends Repository
     }
 
     private function realignPendingTask($pendingTask)
-    { 
+    {
         $this->vehicleRepository->newReception($pendingTask->vehicle_id);
         $reception = $pendingTask->vehicle->lastReception;
         PendingTask::where('reception_id', $reception->id)
@@ -255,7 +255,7 @@ class PendingTaskRepository extends Repository
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $firstPendingTask->datetime_pending = date('Y-m-d H:i:s');
                 $firstPendingTask->save();                
-            } else {                
+            } else {
                 $this->createPendingTaskCampa($pendingTask->vehicle, Task::TOCAMPA);
             }
         }
@@ -389,7 +389,11 @@ class PendingTaskRepository extends Repository
                     $vehicle->save();
                 }
                 $this->createPendingTaskCampa($vehicle, $pending_task->task_id === Task::CHECK_BLOCKED ? Task::CHECK_RELEASE : Task::TOCAMPA);
-                $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $pending_task->task_id === Task::CHECK_BLOCKED ? SubState::CHECK_RELEASE : SubState::CAMPA);
+                $force_sub_state_id = $pending_task->task_id === Task::CHECK_BLOCKED ? SubState::CHECK_RELEASE : SubState::CAMPA;
+                if ($vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET) {
+                    $force_sub_state_id = SubState::SOLICITUD_DEFLEET;
+                }
+                $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $force_sub_state_id);
                 return [
                     "status" => "OK",
                     "message" => "No hay más tareas"
@@ -512,28 +516,6 @@ class PendingTaskRepository extends Repository
         $pendingTask->save();
     }
 
-    public function updateApprovedPendingTaskFromValidation($request)
-    {
-        $groupTask = $this->groupTaskRepository->groupTaskByQuestionnaireId($request->input('questionnaire_id'));
-        $pendingTasksApproved = PendingTask::where('group_task_id', $groupTask['id'])
-            ->where('approved', true)
-            ->count();
-        PendingTask::where('group_task_id', $groupTask['id'])
-            ->where('task_id', $request->input('task_id'))
-            ->chunk(200, function ($pendingTasks) use ($request, $pendingTasksApproved) {
-                foreach ($pendingTasks as $pendingTask) {
-                    $pendingTask->update(['approved' => $request->input('approved'), 'order' => $pendingTasksApproved + 1]);
-                }
-            });
-        $pendingTask = PendingTask::where('group_task_id', $groupTask['id'])
-            ->where('task_id', $request->input('task_id'))
-            ->first();
-        return $this->realignPendingTask($pendingTask);
-        return [
-            'message' => 'Pending task update'
-        ];
-    }
-
     public function approvedFalse($vehicleId)
     {
         PendingTask::where('vehicle_id', $vehicleId)
@@ -562,7 +544,7 @@ class PendingTaskRepository extends Repository
             }
         }
         if ($task->need_authorization == false) {
-            
+
             $this->vehicleRepository->newReception($vehicleId);
             $vehicle = Vehicle::findOrFail($vehicleId);
 
@@ -600,11 +582,14 @@ class PendingTaskRepository extends Repository
         foreach ($request->input('vehicle_ids') as $id) {
             $vehicle = Vehicle::findOrFail($id);
             $task = $this->taskRepository->getById([], Task::TRANSFER);
-            $groupTask = $this->groupTaskRepository->create([
-                'vehicle_id' => $vehicle->id,
-                'approved_available' => 1,
-                'approved' => 1
-            ]);
+            $groupTask = $vehicle->lastReception?->groupTask;
+            if ($groupTask) {
+                $groupTask->approved = 1;
+                $groupTask->approved_available = 1;
+            } else {
+                $reception = $this->vehicleRepository->newReception($vehicle->id);
+                $groupTask = $reception->groupTask;
+            }
             PendingTask::create([
                 'vehicle_id' => $vehicle->id,
                 'reception_id' => $vehicle->lastReception->id ?? null,

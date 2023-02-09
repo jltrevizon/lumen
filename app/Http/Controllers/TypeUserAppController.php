@@ -10,6 +10,29 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 class TypeUserAppController extends Controller
 {
     /**
+    * @OA\Get(
+    *     path="/api/type-user-app",
+    *     tags={"type-user-apps"},
+    *     summary="Get all type user app",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/TypeUserApp")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

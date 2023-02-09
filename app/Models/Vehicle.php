@@ -21,8 +21,501 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class Vehicle
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Vehicle model",
+ *     description="Vehicle model",
+ * )
+ */
+
 class Vehicle extends Model
 {
+
+    /**
+     * @OA\Schema(
+     *      schema="VehicleWithAccessories",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Vehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="accesories",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Accessory")
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="VehiclesWith",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Vehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="accessories",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Accessory"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="orders",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Order"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="requests",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Request"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="reservations",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Reservation"),
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="category",
+     *                   type="object",
+     *                   ref="#/components/schemas/Category"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="color",
+     *                   type="object",
+     *                   ref="#/components/schemas/Color"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="campa",
+     *                   type="object",
+     *                   ref="#/components/schemas/Campa"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="sub_state",
+     *                   type="object",
+     *                   ref="#/components/schemas/SubStateWithState"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="type_model_order",
+     *                   type="object",
+     *                   ref="#/components/schemas/TypeModelOrder"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="vehicle_model",
+     *                   type="object",
+     *                   ref="#/components/schemas/VehicleModelWithBrand"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="square",
+     *                   type="object",
+     *                   ref="#/components/schemas/SquareWithStreet"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="last_delivery_vehicle",
+     *                   type="object",
+     *                   ref="#/components/schemas/LastDeliveryVehicle"
+     *              )
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="VehiclePaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/VehiclesWith"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="VehiclesByID",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Vehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="last_group_task",
+     *                   type="object",
+     *                   ref="#/components/schemas/GroupTask"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="category",
+     *                   type="object",
+     *                   ref="#/components/schemas/Category"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="sub_state",
+     *                   type="object",
+     *                   ref="#/components/schemas/SubStateWithState"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="type_model_order",
+     *                   type="object",
+     *                   ref="#/components/schemas/TypeModelOrder"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="vehicle_model",
+     *                   type="object",
+     *                   ref="#/components/schemas/VehicleModelWithBrand"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="square",
+     *                   type="object",
+     *                   ref="#/components/schemas/SquareWithStreet"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="last_questionnaire",
+     *                   type="object",
+     *                   ref="#/components/schemas/LastQuestionnaire"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="receptions",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/Reception")
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="reception",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/ReceptionWithAllApprovedPendingTaskAndGroupTask")
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle_pictures",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/VehiclePicture")
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle_exits",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/VehicleExit")
+     *              ),
+     *          ),
+     *      },
+     * )
+     *
+     * @OA\Schema(
+     *      schema="VehicleWithVehicleModel",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Vehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle_model",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/VehicleModel")
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="VehicleWithTypeModelOrderAndVehicleModel",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Vehicle"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="type_model_order",
+     *                   type="object",
+     *                   ref="#/components/schemas/TypeModelOrder"
+     *              )
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                   property="vehicle_model",
+     *                   type="object",
+     *                   ref="#/components/schemas/VehicleModelWithBrand"
+     *              )
+     *          ),
+     *      },
+     * )
+     *
+     *
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="remote_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Remote ID",
+     *     title="Remote ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="company_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Company ID",
+     *     title="Company ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="campa_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Campa ID",
+     *     title="Campa ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="category_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Category ID",
+     *     title="Category ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="sub_state_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Sub State ID",
+     *     title="Sub State ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="color_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Color ID",
+     *     title="Color ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="type_model_order_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type Model Order ID",
+     *     title="Type Model Order ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="ubication",
+     *     type="string",
+     *     description="Ubication",
+     *     title="Ubication",
+     * )
+     *
+     * @OA\Property(
+     *     property="plate",
+     *     type="string",
+     *     description="Plate",
+     *     title="Plate",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_model_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle Model ID",
+     *     title="Vehicle Model ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="kms",
+     *     type="integer",
+     *     format="int32",
+     *     description="KMS",
+     *     title="KMS",
+     * )
+     *
+     * @OA\Property(
+     *     property="last_change_state",
+     *     type="string",
+     *     format="date-time",
+     *     description="Last Change State",
+     *     title="Last Change State",
+     * )
+     *
+     * @OA\Property(
+     *     property="last_change_sub_state",
+     *     type="string",
+     *     format="date-time",
+     *     description="Last Change Sub State",
+     *     title="Last Change Sub State",
+     * )
+     *
+     * @OA\Property(
+     *     property="next_itv",
+     *     type="string",
+     *     format="date-time",
+     *     description="Next ITV",
+     *     title="Next ITV",
+     * )
+     *
+     * @OA\Property(
+     *     property="has_environment_label",
+     *     type="boolean",
+     *     description="Has environment label",
+     *     title="Has environment label",
+     * )
+     *
+     * @OA\Property(
+     *     property="observations",
+     *     type="string",
+     *     description="Observations",
+     *     title="Observations",
+     * )
+     *
+     * @OA\Property(
+     *     property="priority",
+     *     type="boolean",
+     *     description="Priority",
+     *     title="Priority",
+     * )
+     *
+     * @OA\Property(
+     *     property="version",
+     *     type="string",
+     *     description="Version",
+     *     title="Version",
+     * )
+     *
+     * @OA\Property(
+     *     property="vin",
+     *     type="string",
+     *     description="Vin",
+     *     title="Vin",
+     * )
+     *
+     * @OA\Property(
+     *     property="first_plate",
+     *     type="string",
+     *     format="date-time",
+     *     description="First Plate",
+     *     title="First Plate",
+     * )
+     *
+     * @OA\Property(
+     *     property="latitude",
+     *     type="string",
+     *     description="Latitude",
+     *     title="Latitude",
+     * )
+     *
+     * @OA\Property(
+     *     property="longitude",
+     *     type="string",
+     *     description="Longitude",
+     *     title="Longitude",
+     * )
+     *
+     * @OA\Property(
+     *     property="image",
+     *     type="string",
+     *     description="Image",
+     *     title="Image",
+     * )
+     *
+     * @OA\Property(
+     *     property="trade_state_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Trade State ID",
+     *     title="Trade State ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="documentation",
+     *     type="boolean",
+     *     description="Documentation",
+     *     title="Documentation",
+     * )
+     *
+     * @OA\Property(
+     *     property="ready_to_delivery",
+     *     type="boolean",
+     *     description="Ready to delivery",
+     *     title="Ready to delivery",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_by",
+     *     type="integer",
+     *     format="int64",
+     *     description="Created by",
+     *     title="Created by",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was deleted",
+     *     title="Deleted at",
+     * )
+     *
+     * @OA\Property(
+     *     property="deleted_user_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Deleted User ID",
+     *     title="Deleted User ID",
+     * )
+     */
 
     use HasFactory, Filterable, SoftDeletes;
 
@@ -53,7 +546,10 @@ class Vehicle extends Model
         'trade_state_id',
         'documentation',
         'ready_to_delivery',
-        'deleted_user_id'
+        'deleted_user_id',
+        'seater',
+        'created_at',
+        'updated_at'
     ];
 
     public function category(){
@@ -91,17 +587,6 @@ class Vehicle extends Model
                 return $query->where('state_pending_task_id', StatePendingTask::PENDING)
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             })->whereHas('budgetPendingTasks');
-    }
-
-    public function lastPendingTaskDelivery(){
-        return $this->hasOne(PendingTask::class, 'vehicle_id')->ofMany([
-            'id' => 'max'
-            ])
-            ->where('approved', true)
-            ->where('task_id', Task::TOALQUILADO)
-            ->where(function($query){
-                return $query->whereIn('state_pending_task_id', [StatePendingTask::FINISHED, StatePendingTask::CANCELED]);
-            });
     }
 
     public function groupTasks(){
@@ -329,7 +814,7 @@ class Vehicle extends Model
     }
 
     public function scopeCampasIds($query, array $campasIds){
-        $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0); 
+        $ids = array_filter($campasIds, fn($value) => !is_null($value) && $value !== '' && $value != 0);
         if (count($ids) == count($campasIds)) {
             return $query->whereIn('campa_id', $ids);
         }
@@ -352,8 +837,18 @@ class Vehicle extends Model
         });
     }
 
+    public function scopeStateNotIds($query, array $ids){
+        return $query->whereHas('subState', function (Builder $builder) use ($ids) {
+            return $builder->whereNotIn('state_id', $ids);
+        });
+    }
+
     public function scopeByCompanies($query, array $ids){
         return $query->whereIn('company_id', $ids);
+    }
+
+    public function scopeByPlates($query, array $plates){
+        return $query->whereIn('plate', $plates);
     }
 
     public function scopeByPlate($query, string $plate){

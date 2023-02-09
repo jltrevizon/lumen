@@ -15,6 +15,29 @@ class SeverityDamageController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/severity-damages",
+    *     tags={"severity-damages"},
+    *     summary="Get all severity-damages",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         value= @OA\JsonContent(
+    *           type="array",
+    *           @OA\Items(ref="#/components/schemas/SeverityDamage")
+    *         ),
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -33,6 +56,28 @@ class SeverityDamageController extends Controller
     {
         //
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/severity-damages",
+     *     tags={"severity-damages"},
+     *     summary="Create severity damage",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createSeverityDamage",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/SeverityDamage"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create severity damage object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/SeverityDamage"),
+     *     )
+     * )
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -66,6 +111,42 @@ class SeverityDamageController extends Controller
     {
         //
     }
+
+    /**
+     * @OA\Put(
+     *     path="/api/severity-damages/{id}",
+     *     tags={"severity-damages"},
+     *     summary="Updated severity damage",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     @OA\RequestBody(
+     *         description="Updated severity damage object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/SeverityDamage")
+     *     ),
+     *     operationId="updateSeverityDamage",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/SeverityDamage"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Severity damage not found"
+     *     ),
+     * )
+     */
+
 
     /**
      * Update the specified resource in storage.

@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Models\Color;
 use App\Repositories\Repository;
-use Illuminate\Support\Facades\DB;
 
 class ColorRepository extends Repository {
 
-    public function index(){
-        return Color::all();
+    public function index($request){
+        return Color::with($this->getWiths($request->with))
+        ->filter($request->all())
+        ->get();
     }
 
     public function getOrCreateColor($color){

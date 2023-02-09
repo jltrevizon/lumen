@@ -22,6 +22,19 @@ class VehicleFilter extends ModelFilter
         return $this->campasIds($ids);
     }
 
+    public function campaIds($ids)
+    {
+        return $this->campasIds($ids);
+    }
+
+    public function campaNull($value)
+    {
+        if ($value) {
+            return $this->whereNull('campa_id');
+        }
+        return $this->whereNotNull('campa_id');
+    }
+
     public function companyIds($ids)
     {
         return $this->byCompanies($ids);
@@ -42,10 +55,21 @@ class VehicleFilter extends ModelFilter
         return $this->stateIds($ids);
     }
 
+    public function statesNotIds($ids)
+    {
+        return $this->stateNotIds($ids);
+    }
+
     public function plate($plate)
     {
         return $this->byPlate($plate);
     }
+
+    public function plates($plates)
+    {
+        return $this->byPlates($plates);
+    }
+
 
     public function brands($ids)
     {
@@ -264,7 +288,8 @@ class VehicleFilter extends ModelFilter
             $sql = <<<SQL
                 select pt.task_id
                 from pending_tasks pt
-                WHERE pt.state_pending_task_id <> 3
+                WHERE pt.state_pending_task_id in (1, 2)
+                AND pt.reception_id = (Select max(r.id) from receptions r where r.vehicle_id = pt.vehicle_id)
                 AND pt.approved = 1
                 AND pt.vehicle_id = vehicles.id
                 ORDER BY pt.state_pending_task_id DESC, pt.order, pt.datetime_finish DESC
@@ -291,7 +316,8 @@ class VehicleFilter extends ModelFilter
                 ->where('approved', 1)
                 ->where('task_id', 38)
                 ->whereRaw(DB::raw('reception_id = (Select max(r.id) from receptions r where r.vehicle_id = pending_tasks.vehicle_id)'))
-                ->whereRaw(DB::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))
+                ->whereRaw(DB::raw('exists (SELECT v.id from vehicles v where v.sub_state_id = 8 and v.id = vehicle_id)'))
+                //->whereRaw(DB::raw('vehicle_id in (SELECT v.id from vehicles v where v.sub_state_id = 8)'))
                 ->get('vehicle_id')
         )->map(function ($item) {
             return $item->vehicle_id;
@@ -325,7 +351,13 @@ class VehicleFilter extends ModelFilter
     {
         return $this->orderBy($field);
     }
-
+    public function withReceptionId($id)
+    {
+        $sql = <<<SQL
+            Select max(r.id) from receptions r where r.vehicle_id = vehicles.id
+        SQL;
+        return $this->selectRaw("*, (SELECT r.id FROM receptions r WHERE r.id = ". ($id ? $id : "({$sql})") ." AND vehicles.id = r.vehicle_id ) AS reception_id");
+    }
     public function withUbication()
     {
         return $this->with(array(

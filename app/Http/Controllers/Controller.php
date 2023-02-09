@@ -11,10 +11,26 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+* @OA\Info(title="API Focus", version="1.0")
+*
+* @OA\Server(url=SWAGGER_API_HOST_LOCAL)
+* @OA\Server(url=SWAGGER_API_HOST_DEV)
+* @OA\Server(url=SWAGGER_API_HOST_PROD)
+*
+* @OA\SecurityScheme(
+*      securityScheme="bearerAuth",
+*      type="http",
+*      scheme="bearer",
+*      bearerFormat="JWT",
+* )
+*/
+
+
 class Controller extends BaseController
 {
     protected function responseWithToken($token){
-        $user = User::with(['role','campas.company'])
+        $user = User::with(['role','campas.company', 'campas.campaTypeModelOrders.typeModelOrder'])
                     ->where('id', Auth::id())
                     ->first();
         return response()->json([
@@ -26,6 +42,77 @@ class Controller extends BaseController
         ], Response::HTTP_OK);
     }
 
+    /**
+     * @OA\Schema(
+     *      schema="Links",
+     *      @OA\Property(
+     *          property="active",
+     *          type="boolean",
+     *      ),
+     *      @OA\Property(
+     *          property="label",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="url",
+     *          type="string",
+     *      ),
+     * ),
+     *
+     * @OA\Schema(
+     *      schema="Paginate",
+     *      @OA\Property(
+     *          property="current_page",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="first_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="from",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="last_page",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="last_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="links",
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/Links")
+     *      ),
+     *      @OA\Property(
+     *          property="next_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="path",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="per_page",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="per_page_url",
+     *          type="string",
+     *      ),
+     *      @OA\Property(
+     *          property="to",
+     *          type="integer",
+     *      ),
+     *      @OA\Property(
+     *          property="total",
+     *          type="integer",
+     *      ),
+     * ),
+     *
+     */
     public function getDataResponse($data, $code = Response::HTTP_OK): JsonResponse {
         try {
             return response()->json($data, $code);

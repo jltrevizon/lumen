@@ -11,8 +11,102 @@ use App\Models\Customer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Request
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Request model",
+ *     description="Request model",
+ * )
+ */
+
 class Request extends Model
 {
+
+    /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="customer_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Customer ID",
+     *     title="Customer ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="state_request_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="State Request ID",
+     *     title="State Request ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="type_request_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Type Request ID",
+     *     title="Type Request ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_request",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime Request",
+     *     title="Datetime Request",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_decline",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime Decline",
+     *     title="Datetime Decline",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_approved",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime Approved",
+     *     title="Datetime Approved",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     */
 
     use HasFactory;
 

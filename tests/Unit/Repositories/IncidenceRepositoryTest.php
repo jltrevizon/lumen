@@ -25,7 +25,8 @@ class IncidenceRepositoryTest extends TestCase
         $request = new Request();
         $request->with = [];
         $result = $this->repository->getAll($request);
-        $this->assertCount(2, $result->items());
+        $count = Incidence::count();
+        $this->assertCount($count < 15 ? $count : 15, $result->items());
     }
 
     /** @test */

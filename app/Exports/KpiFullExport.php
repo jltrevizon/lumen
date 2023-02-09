@@ -5,14 +5,15 @@ namespace App\Exports;
 use App\Models\Vehicle;
 use App\Models\Campa;
 use App\Models\Company;
+use App\Models\DeliveryVehicle;
 use App\Models\PendingTask;
 use App\Models\Reception;
-use App\Views\InKpiView;
-use App\Views\OutKpiView;
+use App\Models\SubState;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
@@ -27,46 +28,34 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
     public function array(): array
     {
-
+        ini_set("memory_limit", "-1");
+        $user = Auth::user();
+        $request = $this->request;
         $year = $this->request->input('year') ?? date('Y');
         $ids = $this->request->input('typeModelOrderIds') ?? null;
         $campas = $this->request->input('campas') ?? null;
 
-        $in_data = InKpiView::with(['typeModelOrder'])
-            ->where('in_year', $year)
-            ->where(function ($query) use ($ids) {
-                if ($ids) {
-                    $query->whereIn('type_model_order_id', $ids);
-                }
-            })
-            ->select(
-                DB::raw('count(in_kpi) as `total`'),
-                DB::raw('type_model_order_id'),
-                DB::raw('in_month')
-            )
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
+        $in_data = Reception::with(['typeModelOrder'])->filter(array_merge($request->all(), ['whereHasVehicle' => 1]))
+            ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
+            ->orderBy('year')
+            ->orderBy('in_month')
             ->get();
 
-        $out_data = OutKpiView::with(['typeModelOrder'])
-            ->where('out_year', $year)
-            ->where(function ($query) use ($ids) {
-                if ($ids) {
-                    $query->whereIn('type_model_order_id', $ids);
-                }
-            })
-            ->select(
-                DB::raw('count(out_kpi) as `total`'),
-                DB::raw('type_model_order_id'),
-                DB::raw('out_month')
-            )
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->groupBy('type_model_order_id', 'out_kpi', 'out_month')
+        $out_data = DeliveryVehicle::with(['typeModelOrder'])->filter(array_merge($request->all(), ['whereHasVehicle' => 1]))
+            ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
+            ->orderBy('year')
+            ->orderBy('out_month')
             ->get();
 
         $variable = [];
         foreach ($in_data as $key => $v) {
-            $variable[$v['typeModelOrder']['name']][(int) $v['in_month']] = $v['total'] ?? 0;
+            $key_month = $v['typeModelOrder']['name'] ?? '';
+            $val_month = (int) $v['in_month'];
+            $variable[$key_month][$val_month] = $v['total'] ?? 0;
         }
 
         $value[] = ['Año ' . $year, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -123,7 +112,9 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $variable = [];
         foreach ($out_data as $key => $v) {
-            $variable[$v['typeModelOrder']['name']][(int) $v['out_month']] = $v['total'] ?? 0;
+            $key_month = $v['typeModelOrder']['name'] ?? '';
+            $val_month = (int) $v['out_month'];
+            $variable[$key_month][$val_month] = $v['total'] ?? 0;
         }
 
         $value[] = ['', '', '', '', '', '', '', '', '', '', '', '', ''];
@@ -172,11 +163,11 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                 strval($v['11'] ?? 0),
                 strval($v['12'] ?? 0)
             ];
-        }        
+        }
 
         $stok = Vehicle::with(['typeModelOrder'])
             ->whereRaw('YEAR(created_at) = ' . $year)
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->filter(array_merge($request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -194,8 +185,13 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             $variable[$v['typeModelOrder']['name']][(int) $v['month']] = ($v['total'] ?? 0) - ($v['deleted'] ?? 0);
         }
 
+        $idSubState = collect(SubState::where('id', '<>', SubState::ALQUILADO)->whereIn('state_id', [1, 2, 3, 4, 6])->get())->map(function ($item) {
+            return $item->id;
+        })->toArray();
+
         $stok_now = Vehicle::with(['typeModelOrder'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->filter(array_merge($request->all(), ['defleetingAndDelivery' => 1]))
+            ->whereIn('sub_state_id', $idSubState)
             ->select(
                 DB::raw('count(id) as `total`'),
                 DB::raw('count(deleted_at) as `deleted`'),
@@ -249,7 +245,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
             return $item->id;
         })->toArray();
         $data_now = Reception::with(['typeModelOrder'])
-            ->filter($this->request->all())
+            ->filter($request->all())
             ->select(
                 DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = receptions.vehicle_id) as type_model_order_id'),
                 DB::raw('CASE WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 15 THEN 14 WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 30 THEN 29 WHEN TIMESTAMPDIFF(day, created_at, CURRENT_TIMESTAMP) < 45 THEN 44 ELSE 45 END AS bit'),
@@ -311,7 +307,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /* Taller */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->filter(array_merge($request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -340,7 +336,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /* Pendiente V.O. */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->filter(array_merge($request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -369,7 +365,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /* Predisponible */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1]))
+            ->filter(array_merge($request->all(), ['defleetingAndDelivery' => 1]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -399,7 +395,7 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         /* Disponible */
 
         $data = Vehicle::with(['typeModelOrder', 'subState.state'])
-            ->filter(array_merge($this->request->all(), ['defleetingAndDelivery' => 1], ['typeModelOrder' => 4]))
+            ->filter(array_merge($request->all(), ['defleetingAndDelivery' => 1], ['typeModelOrder' => 4]))
             ->select(
                 DB::raw('count(sub_state_id) as `total`'),
                 DB::raw('type_model_order_id'),
@@ -430,9 +426,9 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
 
         $total_no_disponibles = $total_taller + $total_predisponible + $total_pendiente_venta;
         $total_general = $total_disponibles + $total_no_disponibles;
-       
-        $value[$base_index][2] = strval($total_general);
-        $value[$base_index + 1][2] = strval($total_no_disponibles);
+
+        $value[$base_index - 1][2] = strval($total_general);
+        $value[$base_index][2] = strval($total_no_disponibles);
 
         for ($i = 0; $i < count($value); $i++) {
             if ($value[$i][3] == '%') {
@@ -473,24 +469,31 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         $value[] = ['Tareas pendientes', 'En curso', 'Pte', 'Total', ''];
 
         /** KPI PendingTasks */
+        $company_id = $user->company_id;
+        if ($company_id) {
+
+        }
 
         $data_now = PendingTask::with(['task'])
-            ->filter($this->request->all())
+            ->filter(array_merge($request->all(), ['states' => [1, 2, 3, 4, 6]]))
             ->select(
-                DB::raw('id'),
                 DB::raw('task_id'),
                 DB::raw('state_pending_task_id'),
-                DB::raw('COUNT(id) as total'),
-                DB::raw('(SELECT type_model_order_id FROM vehicles WHERE id = pending_tasks.vehicle_id) as type_model_order_id')
+                DB::raw('COUNT(id) as total')
             )
             ->whereRaw('reception_id IN(SELECT MAX(id) FROM receptions g GROUP BY vehicle_id)')
             ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->whereIn('state_pending_task_id', [1, 2])
             ->where('approved', 1)
+            ->when($company_id, function($q) use ($company_id) {
+                $q->whereHas('task', function($q2) use ($company_id) {
+                    $q2->where('company_id', $company_id);
+                });
+            })
+            ->whereNotIn('task_id', [37, 38, 39])
             ->groupBy('task_id', 'state_pending_task_id')
             ->orderBy('task_id')
             ->get();
-
 
         $variable = [];
         foreach ($data_now as $key => $v) {
@@ -514,7 +517,6 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
         }
 
         return $value;
-
     }
 
     public function obtenerPorcentaje($cantidad, $total)
@@ -535,8 +537,8 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
-                $cellRange = 'A1:W1'; 
+            AfterSheet::class => function (AfterSheet $event) {
+                $cellRange = 'A1:W1';
                 $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(14);
 
                 $styleArray = [
@@ -544,18 +546,16 @@ class KpiFullExport implements FromArray, WithHeadings, WithEvents
                         'bold' => true,
                     ]
                 ];
-                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A17:W17')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A28:W28')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A38:W38')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A49:W49')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A77:W77')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A87:W87')->ApplyFromArray($styleArray); 
-                $event->sheet->getStyle('A92:W92')->ApplyFromArray($styleArray); 
+                $event->sheet->getStyle('A2:W2')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A6:W6')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A17:W17')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A28:W28')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A38:W38')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A49:W49')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A77:W77')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A87:W87')->ApplyFromArray($styleArray);
+                $event->sheet->getStyle('A92:W92')->ApplyFromArray($styleArray);
             },
         ];
     }
-
 }
-

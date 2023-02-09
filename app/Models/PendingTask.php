@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Vehicle;
+use App\Models\VehicleExit;
 use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\GroupTask;
@@ -12,11 +13,387 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Pending Task
+ *
+ * @package Focus API
+ *
+ *
+ * @OA\Schema(
+ *     title="Pending Task model",
+ *     description="Pending Task model",
+ * )
+ */
+
 class PendingTask extends Model
 {
+    /**
+     *
+     *  @OA\Schema(
+     *      schema="PendingTaskPaginate",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/Paginate"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/PendingTask"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="LastDeliveryVehicle",
+     *      allOf = {
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="campa",
+     *                  type="object",
+     *                  ref="#/components/schemas/Campa"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="campa_id",
+     *                  type="integer",
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="canceled_by",
+     *                  type="string",
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="data_delivery",
+     *                  type="string",
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="created_at",
+     *                  type="string",
+     *                  format="date-time"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="deleted_at",
+     *                  type="string",
+     *                  format="date-time"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="created_at",
+     *                  type="string",
+     *                  format="date-time"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="updated_at",
+     *                  type="string",
+     *                  format="date-time"
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="id",
+     *                  type="integer",
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="delivery_note_id",
+     *                  type="integer",
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="pending_task_id",
+     *                  type="integer",
+     *              ),
+     *          ),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle_id",
+     *                  type="integer",
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="LastPendingTaskDelivery",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/PendingTask"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="last_delivery_vehicle",
+     *                  type="array",
+     *                  @OA\Items(ref="#/components/schemas/LastDeliveryVehicleWithPendingTask"),
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="LastDeliveryVehicleWithPendingTask",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/PendingTask"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="pending_task",
+     *                  type="object",
+     *                  ref="#/components/schemas/PendingTask",
+     *              ),
+     *          ),
+     *      },
+     * )
+     * @OA\Schema(
+     *      schema="PendingTaskWithVehicle",
+     *      allOf = {
+     *          @OA\Schema(ref="#/components/schemas/PendingTask"),
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="vehicle",
+     *                  type="object",
+     *                  ref="#/components/schemas/Vehicle"
+     *              ),
+     *          ),
+     *      },
+     * )
+     *
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     format="int64",
+     *     description="ID",
+     *     title="ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="vehicle_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Vehicle ID",
+     *     title="Vehicle ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="reception_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Reception ID",
+     *     title="Reception ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="question_answer_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Question Answer ID",
+     *     title="Question Answer ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Task ID",
+     *     title="Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="campa_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Campa ID",
+     *     title="Campa ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="state_pending_task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="State Pending Task ID",
+     *     title="State Pending Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="user_start_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="User Start ID",
+     *     title="User Start ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="user_end_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="User End ID",
+     *     title="User End ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="group_task_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Group Task ID",
+     *     title="Group Task ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="damage_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="Damage ID",
+     *     title="Damage ID",
+     * )
+     *
+     * @OA\Property(
+     *     property="duration",
+     *     type="number",
+     *     format="double",
+     *     description="duration",
+     *     title="duration",
+     * )
+     *
+     * @OA\Property(
+     *     property="order",
+     *     type="integer",
+     *     format="int32",
+     *     description="Order",
+     *     title="Order",
+     * )
+     *
+     * @OA\Property(
+     *     property="approved",
+     *     type="boolean",
+     *     description="Approved",
+     *     title="Approved",
+     * )
+     *
+     * @OA\Property(
+     *     property="observations",
+     *     type="string",
+     *     description="Observations",
+     *     title="Observations",
+     * )
+     *
+     * @OA\Property(
+     *     property="code_authorization",
+     *     type="string",
+     *     description="Code of Authorization",
+     *     title="Code of Authorization",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_from_checklist",
+     *     type="boolean",
+     *     description="Created from Checklist",
+     *     title="Created from Checklist",
+     * )
+     *
+     * @OA\Property(
+     *     property="status_color",
+     *     type="string",
+     *     description="Status color",
+     *     title="Status color",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_pending",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime pending",
+     *     title="Datetime pending",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_start",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime start",
+     *     title="Datetime start",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_pause",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime pause",
+     *     title="Datetime pause",
+     * )
+     *
+     * @OA\Property(
+     *     property="total_paused",
+     *     type="number",
+     *     format="double",
+     *     description="Total paused",
+     *     title="Total paused",
+     * )
+     *
+     * @OA\Property(
+     *     property="datetime_finish",
+     *     type="string",
+     *     format="date-time",
+     *     description="Datetime finish",
+     *     title="Datetime finish",
+     * )
+     *
+     * @OA\Property(
+     *     property="last_change_state",
+     *     type="string",
+     *     format="date-time",
+     *     description="Last Change State",
+     *     title="Last Change State",
+     * )
+     *
+     * @OA\Property(
+     *     property="last_change_sub_state",
+     *     type="string",
+     *     format="date-time",
+     *     description="Last Change Sub State",
+     *     title="Last Change Sub State",
+     * )
+     *
+     * @OA\Property(
+     *     property="created_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was created",
+     *     title="Created at",
+     * )
+     *
+     * @OA\Property(
+     *     property="updated_at",
+     *     type="string",
+     *     format="date-time",
+     *     description="When was last updated",
+     *     title="Updated at",
+     * )
+     *
+     * @OA\Property(
+     *     property="comment_state",
+     *     type="string",
+     *     description="Comment State",
+     *     title="Comment State",
+     * )
+     *
+     * @OA\Property(
+     *     property="user_id",
+     *     type="integer",
+     *     format="int64",
+     *     description="User ID",
+     *     title="User ID",
+     * )
+     */
+
     use HasFactory, Filterable;
 
-    const ORDER_TASKS = [39, 11, 2, 3, 4, 41, 5, 6, 7, 8]; 
+    const ORDER_TASKS = [39, 11, 2, 3, 4, 41, 5, 6, 7, 8];
 
     protected $fillable = [
         'vehicle_id',
@@ -61,6 +438,16 @@ class PendingTask extends Model
         return $this->hasOne(DeliveryVehicle::class)->withTrashed()->ofMany([
             'pending_task_id' => 'max'
         ]);
+    }
+
+    public function lastVehicleExit(){
+        return $this->hasOne(VehicleExit::class)->ofMany([
+            'pending_task_id' => 'max'
+        ]);
+    }
+
+    public function lastDeliveredPendingTask(){
+        return $this->belongsTo(PendingTask::class, 'last_delivered_pending_task_id', 'id');
     }
 
     public function questionAnswer(){

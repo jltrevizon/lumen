@@ -12,13 +12,9 @@ use App\Exports\KpiPendingTaskExport;
 use App\Exports\KpiSubStateExport;
 use App\Exports\KpiSubStateMonthExport;
 use App\Exports\StockVehiclesExport;
-use App\Models\Company;
-use App\Models\PendingTask;
-use App\Models\StatePendingTask;
+use App\Models\DeliveryVehicle;
 use App\Models\Vehicle;
 use App\Models\Reception;
-use App\Views\InKpiView;
-use App\Views\OutKpiView;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -31,40 +27,107 @@ class KpiController extends Controller
     {
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpis/inpu",
+    *     tags={"kpis"},
+    *     summary="Get inpu",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\Items(ref="#/components/schemas/ReceptionWithTypeModelOrder")
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
     public function inpu(Request $request)
     {
-        $data = InKpiView::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->select(
-                DB::raw('count(in_kpi) as `total`'),
-                DB::raw('view_kpis.type_model_order_id'),
-                DB::raw('view_kpis.in_month')
-            )
-            ->groupBy('type_model_order_id', 'in_kpi', 'in_month')
+        $in_data = Reception::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 0]))
+            ->selectRaw('vehicles.type_model_order_id,COUNT(receptions.vehicle_id) as total, MONTH(receptions.created_at) as in_month, YEAR(receptions.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'receptions.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'in_month')
+            ->orderBy('year')
+            ->orderBy('in_month')
             ->get();
 
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($in_data, HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpis/out",
+    *     tags={"kpis"},
+    *     summary="Get out",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\Items(ref="#/components/schemas/DeliveryVehicleWithTypeModelOrder")
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
 
     public function out(Request $request)
     {
-        $data = OutKpiView::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->select(
-                DB::raw('count(out_kpi) as `total`'),
-                DB::raw('view_kpis.type_model_order_id'),
-                DB::raw('view_kpis.out_month')
-            )
-            ->groupBy('type_model_order_id', 'out_kpi', 'out_month')
+
+        $out_data = DeliveryVehicle::with(['typeModelOrder'])->filter(array_merge($this->request->all(), ['whereHasVehicle' => 1]))
+            ->selectRaw('vehicles.type_model_order_id,COUNT(delivery_vehicles.vehicle_id) as total, MONTH(delivery_vehicles.created_at) as out_month, YEAR(delivery_vehicles.created_at) as year')
+            ->join('vehicles', 'vehicles.id', '=', 'delivery_vehicles.vehicle_id')
+            ->groupBy('vehicles.type_model_order_id', 'year', 'out_month')
+            ->orderBy('year')
+            ->orderBy('out_month')
             ->get();
-        return $this->getDataResponse($data, HttpFoundationResponse::HTTP_OK);
+        return $this->getDataResponse($out_data, HttpFoundationResponse::HTTP_OK);
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-sub-states",
+    *     tags={"kpis"},
+    *     summary="get kpi sub states",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function subStates(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiSubStateExport($request), 'Kpi_Sub-Estados-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-sub-states-month",
+    *     tags={"kpis"},
+    *     summary="get kpi sub states month",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function subStatesMonth(Request $request)
     {
@@ -90,11 +153,41 @@ class KpiController extends Controller
         return Excel::download(new KpiSubStateMonthExport($request), 'Kpi_Sub-Estados-Mes' . date('Y-m-d') . '.xlsx');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-diff-reception",
+    *     tags={"kpis"},
+    *     summary="get kpi diff reception",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
+
     public function diffTimeReception(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiDiffTimeReceptionExport($request), 'Kpi_Diferencia_Dias-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-check-list",
+    *     tags={"kpis"},
+    *     summary="get kpi checklist",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function checkList(Request $request)
     {
@@ -102,23 +195,85 @@ class KpiController extends Controller
         return Excel::download(new KpiCheckListExport($request), 'Kpi_Ckeck_List' . date('Y-m-d') . '.xlsx');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-inpu-out-stock",
+    *     tags={"kpis"},
+    *     summary="get kpi inpu out stock",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
+
     public function kpiInpuOut(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiInpuOutExport($request), 'Kpi_Entradas_Salidas-' . date('Y-m-d') . '.xlsx');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-all",
+    *     tags={"kpis"},
+    *     summary="get kpi all",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
+
     public function kpiFull(Request $request)
     {
+        ini_set("memory_limit", "-1");
+        ini_set('max_execution_time', '-1');
         ob_clean();
         return Excel::download(new KpiFullExport($request), 'Kpi-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/kpi-pending-tasks",
+    *     tags={"kpis"},
+    *     summary="get kpi pending tasks",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function kpiPendingTask(Request $request)
     {
         ob_clean();
         return Excel::download(new KpiPendingTaskExport($request), 'Kpi_Tareas_Pendientes-' . date('Y-m-d') . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/stock-pending-tasks",
+    *     tags={"kpis"},
+    *     summary="get stock pending tasks",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function pendingTask(Request $request)
     {
@@ -127,8 +282,23 @@ class KpiController extends Controller
         $date = microtime(true);
         $array = explode('.', $date);
         ob_clean();
-        return Excel::download(new ExportsPendingTaskExport, 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
+        return Excel::download(new ExportsPendingTaskExport($request), 'vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
+
+    /**
+    * @OA\Get(
+    *     path="/api/stock-vehicles",
+    *     tags={"kpis"},
+    *     summary="get stock vehicles",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *          @OA\MediaType(
+    *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    *         ),
+    *     ),
+    * )
+    */
 
     public function stockVehicle(Request $request)
     {
@@ -137,9 +307,6 @@ class KpiController extends Controller
         $date = microtime(true);
         $array = explode('.', $date);
         ob_clean();
-        return Excel::download(new StockVehiclesExport($request->input('campaId')), 'stock-vehículos-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
+        return Excel::download(new StockVehiclesExport($request), 'stock-vehículos-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
-
-
-    
 }

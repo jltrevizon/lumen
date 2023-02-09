@@ -18,6 +18,7 @@ use App\Repositories\VehicleRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -82,6 +83,23 @@ class AldController extends Controller
         try {
             $this->vehicleRepository->newReception($request->input('vehicle_id'));
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
+            if (!!$request->input('return_workshop_external')) {
+                $vehicle->sub_state_id = null;
+                $vehicle->save();
+                PendingTask::updateOrCreate([
+                    'vehicle_id' => $vehicle->id,
+                    'reception_id' => $vehicle->lastReception->id ?? null,
+                    'task_id' => Task::WORKSHOP_EXTERNAL
+                ], [
+                    'state_pending_task_id' => StatePendingTask::FINISHED,
+                    'user_end_id' => Auth::id(),
+                    'order' => -1,
+                    'datetime_pending' => Carbon::now(),
+                    'datetime_start' => Carbon::now(),
+                    'datetime_finish' =>  Carbon::now(),
+                    'campa_id' => $vehicle->campa_id
+                ]);
+            }
             $groupTask = $this->lastGroupTask($vehicle->id);
             $pending_task = new PendingTask();
 

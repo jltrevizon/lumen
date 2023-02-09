@@ -16,8 +16,59 @@ class DamageImageController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *     path="/api/damage-images",
+    *     tags={"damage-images"},
+    *     summary="Get all damage image",
+    *     security={
+    *          {"bearerAuth": {}}
+    *     },
+    *     @OA\Parameter(
+    *       name="with[]",
+    *       in="query",
+    *       description="A list of relatonship",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="array",
+    *           example={"relationship1","relationship2"},
+    *           @OA\Items(type="string")
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="per_page",
+    *       in="query",
+    *       description="Items per page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=5,
+    *       )
+    *     ),
+    *     @OA\Parameter(
+    *       name="page",
+    *       in="query",
+    *       description="Page",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="integer",
+    *           example=1,
+    *       )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Successful operation",
+    *         @OA\Items(ref="#/components/schemas/DamageImagePaginate")
+    *     ),
+    *     @OA\Response(
+    *         response="500",
+    *         description="An error has occurred."
+    *     )
+    * )
+    */
+
+    /**
      * Display a listing of the resource.
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -25,6 +76,28 @@ class DamageImageController extends Controller
     {
         return $this->getDataResponse($this->damageImageRepository->index($request), Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/damage-images",
+     *     tags={"damage-images"},
+     *     summary="Create damage image",
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     operationId="createDamageImage",
+     *     @OA\Response(
+     *         response="201",
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/DamageImage"),
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Create damage image object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/DamageImage"),
+     *     )
+     * )
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -36,6 +109,41 @@ class DamageImageController extends Controller
     {
         return $this->createDataResponse($this->damageImageRepository->store($request), Response::HTTP_CREATED);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/api/damage-images/{id}",
+     *     tags={"damage-images"},
+     *     security={
+     *          {"bearerAuth": {}}
+     *     },
+     *     summary="Updated damage image",
+     *     @OA\RequestBody(
+     *         description="Updated damage image object",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/DamageImage")
+     *     ),
+     *     operationId="updateDamageImage",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="id that to be updated",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/DamageImage"),
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Damage image not found"
+     *     ),
+     * )
+     */
 
     /**
      * Update the specified resource in storage.
