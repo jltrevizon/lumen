@@ -171,8 +171,8 @@ class GroupTaskRepository extends Repository
         $groupTask->approved_available = true;
         $groupTask->datetime_defleeting = Carbon::now();
         $groupTask->save();
-
-        $pendingTask = new PendingTask();
+        /* QUITAR TAREA DE UBICAION */
+        /*$pendingTask = new PendingTask();
         $pendingTask->vehicle_id = $group_task->vehicle_id;
         $pendingTask->reception_id = $group_task->vehicle->lastReception->id;
         $pendingTask->task_id = Task::UBICATION;
@@ -182,7 +182,7 @@ class GroupTaskRepository extends Repository
         $pendingTask->order = $pendingTasks + 1;
         $pendingTask->datetime_pending = Carbon::now();
         $pendingTask->user_id = Auth::id();
-        $pendingTask->save();
+        $pendingTask->save();*/
     }
 
     public function enablePendingTasks($group_task)
