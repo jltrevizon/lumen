@@ -1087,10 +1087,8 @@ class Vehicle extends Model
     public function receptionsByUserCampa()
     {
         $user = Auth::user();
-        $campasIds = $user->campas()->pluck('id');
-        Log::debug($user);
-        Log::debug('DATA');
-        return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campasIds)->orderBy('id', 'desc');
+        $campas_user_ids = CampaUser::where('user_id', $user->id)->get()->pluck('campa_id');
+        return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campas_user_ids)->orderBy('id', 'desc');
     }
 
 }
