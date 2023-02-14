@@ -324,7 +324,7 @@ class VehicleFilter extends ModelFilter
     {
         if ($value == 1) {
             return $this->whereHas('subState', function($q){
-                $state = ["1", "3",  "4",  "6",  "7", "8",  "9", "10",  "11", "12",  "13", "14",  "15"];
+                $state = [1, 2, 3,  4,  6,  7, 8,  9, 10,  11, 12,  13, 14,  15];
                 $q->whereIn('state_id', $state)
                 ->where('id', '<>', 22);
            });

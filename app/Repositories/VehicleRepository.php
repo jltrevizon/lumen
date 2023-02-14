@@ -109,7 +109,34 @@ class VehicleRepository extends Repository
     {
         $vehicles = $request->input('vehicles');
         foreach ($vehicles as $vehicle) {
-            $existVehicle = Vehicle::where('plate', $vehicle['plate'])
+            Vehicle::updateOrCreate([
+                'plate' => $vehicle['plate']
+            ], $vehicle);
+
+            $_vehicle = Vehicle::where('plate', $vehicle['plate'])->first();
+
+            foreach ($vehicle['receptions'] as $key => $reception) {
+                Reception::updateOrCreate([
+                    'vehicle_id' => $_vehicle->id,
+                    'created_at' => Carbon::parse($reception['created_at'])->toDateTimeString()
+                ], $reception);
+            }
+
+            if (count($vehicle['accessories']) > 0) {
+                DB::table('accessory_vehicle')
+                ->where('vehicle_id', $_vehicle->id)
+                ->delete();
+            }
+            foreach ($vehicle['accessories'] as $accessory) {
+                $accessory['vehicle_id'] = $_vehicle->id;
+                DB::table('accessory_vehicle')->insert($accessory);
+            }
+
+//           
+
+           
+
+            /* $existVehicle = Vehicle::where('plate', $vehicle['plate'])
                 ->first();
             if ($existVehicle) {
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
@@ -120,7 +147,7 @@ class VehicleRepository extends Repository
                 $existVehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
                 $existVehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
                 $existVehicle->save();
-            }
+            }*/
         }
         return ['message' => 'Vehicles created!'];
     }

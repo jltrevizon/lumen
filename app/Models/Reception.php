@@ -198,7 +198,9 @@ class Reception extends Model
         'type_model_order_id',
         'vehicle_id',
         'finished',
-        'has_accessories'
+        'has_accessories',
+        'created_at',
+        'updated_at'
     ];
 
     protected $dates = [
