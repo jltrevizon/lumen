@@ -255,7 +255,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     public function campas(){
-        return $this->hasMany(Campa::class);
+        return $this->belongsToMany(Campa::class);
     }
 
     public function role(){
