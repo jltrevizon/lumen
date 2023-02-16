@@ -532,7 +532,7 @@ class VehicleRepository extends Repository
             $pendingTask->user_id = Auth::id();
             $pendingTask->save();*/
         } else {
-            if ($vehicle->lastReception) {
+          /*  if ($vehicle->lastReception) {
                 PendingTask::where('reception_id', $vehicle->lastReception)
                 ->where('task_id', Task::UBICATION)
                 ->chunk(200, function ($pendingTasks) {
@@ -544,7 +544,7 @@ class VehicleRepository extends Repository
                         ]);
                     }
                 });
-            }
+            }*/
             $vehicle->datetime_defleeting = null;
             $vehicle->save();
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
