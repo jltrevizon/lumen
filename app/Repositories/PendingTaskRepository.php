@@ -330,8 +330,8 @@ class PendingTaskRepository extends Repository
                 }
                 $this->createPendingTaskCampa($vehicle, $pending_task->task_id === Task::CHECK_BLOCKED ? Task::CHECK_RELEASE : Task::TOCAMPA);
                 $force_sub_state_id = $pending_task->task_id === Task::CHECK_BLOCKED ? SubState::CHECK_RELEASE : SubState::CAMPA;
-                if ($vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET) {
-                    $force_sub_state_id = SubState::SOLICITUD_DEFLEET;
+                if ($vehicle->sub_state_id === SubState::DEFLEETED) {
+                    $force_sub_state_id = SubState::DEFLEETED;
                 }
                 $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $force_sub_state_id);
                 return [
@@ -348,7 +348,7 @@ class PendingTaskRepository extends Repository
                 $pending_task->user_end_id = Auth::id();
                 $pending_task->save();
                 $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-                if ($vehicle->sub_state_id !== SubState::SOLICITUD_DEFLEET) {
+                if ($vehicle->sub_state_id !== SubState::DEFLEETED) {
                     $vehicle = $this->vehicleRepository->pendingOrInProgress($pending_task['vehicle_id']);
                 }
                 if ($vehicle->trade_state_id == TradeState::PRE_RESERVED) {

@@ -165,7 +165,7 @@ class QuestionAnswerRepository
                 $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
                 $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
                 $vehicle->lastReception->save();
-                $sub_state_id = $vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET ? $vehicle->sub_state_id : SubState::CAMPA;
+                $sub_state_id = $vehicle->sub_state_id === SubState::DEFLEETED ? $vehicle->sub_state_id : SubState::CAMPA;
                 $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $sub_state_id);
             }
 

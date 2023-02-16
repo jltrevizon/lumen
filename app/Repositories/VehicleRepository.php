@@ -458,7 +458,7 @@ class VehicleRepository extends Repository
                         if (is_null($vehicle->lastReception)) {
                             $this->newReception($vehicle['id']);
                         }
-                        if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
+                        if ($vehicle->sub_state_id != SubState::DEFLEETED) {
                             $vehicle->sub_state_id = null;
                         } else {
                             $vehicle->type_model_order_id = TypeModelOrder::VO_ENTREGADO;
@@ -509,15 +509,16 @@ class VehicleRepository extends Repository
     }
     public function defleeting($id){
         $vehicle = Vehicle::findOrFail($id);
-        if (!!$vehicle->lastReception && !$vehicle->lastReception->lastQuestionnaire?->datetime_approved){
+       /* if (!!$vehicle->lastReception && !$vehicle->lastReception->lastQuestionnaire?->datetime_approved){
             return [
                 'status'=>false,
                 'message'=>'Este vehículo tiene un cuestionario activo en la recepción actual.',
                 'data'=>$vehicle->lastReception->lastQuestionnaire
             ];
-        } else if (is_null($vehicle->datetime_defleeting)) {
+        } else */
+        if (is_null($vehicle->datetime_defleeting)) {
             $vehicle->datetime_defleeting = Carbon::now();
-            $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+            $vehicle->sub_state_id = SubState::DEFLEETED;
             $vehicle->save();
             /* QUITAR TAREA DE UBICACION*/
             /*$pendingTask = new PendingTask();
