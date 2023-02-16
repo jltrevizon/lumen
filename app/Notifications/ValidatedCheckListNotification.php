@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ValidatedCheckListNotification extends Notification implements ShouldQueue
+class ValidatedCheckListNotification extends Notification
 {
     use Queueable;
 
@@ -47,18 +47,7 @@ class ValidatedCheckListNotification extends Notification implements ShouldQueue
                     ->line('Thank you for using our application!');
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toDatabase($notifiable)
-    {
-        return [
-            'response' => $this->data
-        ];
-    }
+
 
     /**
      * Get the array representation of the notification.

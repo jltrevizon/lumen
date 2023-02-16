@@ -172,8 +172,8 @@ class QuestionnaireController extends Controller
              ->pluck('user_id');
              $send_to = User::whereIn('id', $ids)->get();
              foreach ($send_to as $key => $value) {
-                // Notification::send($send_to, new ValidatedCheckListNotification($data));
-                $value->notify(new ValidatedCheckListNotification($data));
+                Notification::send($send_to, new ValidatedCheckListNotification($data));
+                //$value->notify(new ValidatedCheckListNotification($data));
              }
             return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
         } else {

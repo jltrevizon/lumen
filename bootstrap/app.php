@@ -116,7 +116,7 @@ $app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->register(Chuckrincon\LumenConfigDiscover\DiscoverServiceProvider::class);
 $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 $app->register(\SwaggerLume\ServiceProvider::class);
-$app->register(Illuminate\Support\Facades\Notification::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
