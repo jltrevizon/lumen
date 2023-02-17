@@ -509,43 +509,13 @@ class VehicleRepository extends Repository
     }
     public function defleeting($id){
         $vehicle = Vehicle::findOrFail($id);
-       /* if (!!$vehicle->lastReception && !$vehicle->lastReception->lastQuestionnaire?->datetime_approved){
-            return [
-                'status'=>false,
-                'message'=>'Este vehículo tiene un cuestionario activo en la recepción actual.',
-                'data'=>$vehicle->lastReception->lastQuestionnaire
-            ];
-        } else */
         if (is_null($vehicle->datetime_defleeting)) {
             $vehicle->datetime_defleeting = Carbon::now();
             $vehicle->sub_state_id = SubState::DEFLEETED;
             $vehicle->save();
-            /* QUITAR TAREA DE UBICACION*/
-            /*$pendingTask = new PendingTask();
-            $pendingTask->vehicle_id = $vehicle->id;
-            $pendingTask->reception_id = $vehicle->lastReception->id;
-            $pendingTask->task_id = Task::UBICATION;
-            $pendingTask->state_pending_task_id = count($vehicle->lastReception->approvedPendingTasks) == 0 ? StatePendingTask::PENDING : null;
-            $pendingTask->duration = 1;
-            $pendingTask->order = count($vehicle->lastReception->approvedPendingTasks) + 1;
-            $pendingTask->datetime_pending = Carbon::now();
-            $pendingTask->user_id = Auth::id();
-            $pendingTask->save();*/
         } else {
-          /*  if ($vehicle->lastReception) {
-                PendingTask::where('reception_id', $vehicle->lastReception)
-                ->where('task_id', Task::UBICATION)
-                ->chunk(200, function ($pendingTasks) {
-                    foreach ($pendingTasks as $pendingTask) {
-                        $pendingTask->update([
-                            'approved' => false,
-                            'order' => null,
-                            'state_pending_task_id' => null,
-                        ]);
-                    }
-                });
-            }*/
             $vehicle->datetime_defleeting = null;
+            $vehicle->sub_state_id = null;
             $vehicle->save();
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         }
