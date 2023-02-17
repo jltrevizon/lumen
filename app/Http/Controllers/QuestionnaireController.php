@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CampaUser;
 use App\Models\Questionnaire;
+use App\Models\User;
+use App\Notifications\ValidatedCheckListNotification;
 use App\Repositories\QuestionnaireRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class QuestionnaireController extends Controller
@@ -163,6 +168,13 @@ class QuestionnaireController extends Controller
     public function approved(Request $request){
         $data = $this->questionnaireRepository->approved($request);
         if (!is_null($data)) {
+             $ids = CampaUser::where('campa_id', 4)
+             ->get()
+             ->pluck('user_id');
+             $send_to = User::whereIn('id', $ids)->get();
+             foreach ($send_to as $key => $value) {
+                Notification::send($value, new ValidatedCheckListNotification($data));
+             }
             return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
         } else {
             return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);

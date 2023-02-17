@@ -59,6 +59,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Users
          */
         $router->get('/users/getall', 'UserController@getAll');
+        $router->get('/users/notifications', 'UserController@notifications');
         $router->get('/users/{id}', 'UserController@getById');
         $router->post('/users', 'UserController@create');
         $router->post('/users/create-without-password', 'UserController@createUserWithoutPassword');
