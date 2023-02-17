@@ -71,7 +71,7 @@ class ReportsCommand extends Command
         }
         foreach ($reports as $key => $report) {
             $slug = strtolower(trim(preg_replace('/[^A-Za-záéíóúÁÉÍÓÚñÑ0-9-]+/', '-', strtolower($report->typeReport->name . '-' . $report->campa->name))));
-            $file_name = env('FOLDER_REPORT') . '/' . $slug . '-' . date('d-m-Y') . '-' . $array[0] . '.xlsx';
+            $file_name = env('FOLDER_REPORT') . $slug . '-' . date('d-m-Y') . '-' . $array[0] . '.xlsx';
             $disk =  $env == 'production' ? 's3' : 'public';
             switch ($report->typeReport->model_class) {
                 case PendingTaskExport::class:
