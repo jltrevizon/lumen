@@ -81,14 +81,14 @@ class PendingTaskRepository extends Repository
     {
         $user = $this->userRepository->getById($request, Auth::id());
         $query = PendingTask::with($this->getWiths($request->with))
-        ->filter($request->all())
-        ->pendingOrInProgress()
-        ->where('approved', true);
+            ->filter($request->all())
+            ->pendingOrInProgress()
+            ->where('approved', true);
         if ($user['type_user_app_id'] == null && ($user['role_id'] == 1 || $user['role_id'] == 2 || $user['role_id'] == 3)) {
-           $query->byCampas($user->campas->pluck('id')->toArray());
+            $query->byCampas($user->campas->pluck('id')->toArray());
         } else {
             $query->byCampas($user->campas->pluck('id')->toArray())
-            ->canSeeHomework($user['type_user_app_id']);
+                ->canSeeHomework($user['type_user_app_id']);
         }
         return $query->get();
     }
@@ -195,11 +195,12 @@ class PendingTaskRepository extends Repository
             if (!is_null($firstPendingTask)) {
                 $firstPendingTask->state_pending_task_id = StatePendingTask::PENDING;
                 $firstPendingTask->datetime_pending = date('Y-m-d H:i:s');
-                $firstPendingTask->save();                
+                $firstPendingTask->save();
+                $this->stateChangeRepository->updateSubStateVehicle($reception->vehicle);
             } else {
                 $this->createPendingTaskCampa($pendingTask->vehicle, Task::TOCAMPA);
+                $this->stateChangeRepository->updateSubStateVehicle($reception->vehicle, null, SubState::CAMPA);
             }
-            $this->stateChangeRepository->updateSubStateVehicle($reception->vehicle, null, SubState::CAMPA);
         } else {
             $this->stateChangeRepository->updateSubStateVehicle($reception->vehicle);
         }
