@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportsCommand extends Command
@@ -116,7 +117,8 @@ class ReportsCommand extends Command
                     # code...
                     break;
             }
-            $this->pushData($content, $report, $file_name);
+            $url=Storage::disk($disk)->url($file_name);
+            $this->pushData($content, $report, $url);
             $content->map(function ($item) {
                 $data = [
                     'title' => 'Reporte',
@@ -134,12 +136,12 @@ class ReportsCommand extends Command
         }
     }
 
-    function pushData(&$content, $report, $file_name)
+    function pushData(&$content, $report, $url)
     {
         $arr = $content->where('email', $report->email)->first();
         $arr->data->push((object) [
             'type_report_name' => $report->typeReport->name,
-            'url' => env('AWS_URL') . '/' . $file_name,
+            'url' => $url,
             'campa_name' => $report->campa->name
         ]);
     }
