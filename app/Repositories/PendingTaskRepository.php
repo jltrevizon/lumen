@@ -199,9 +199,9 @@ class PendingTaskRepository extends Repository
             } else {
                 $this->createPendingTaskCampa($pendingTask->vehicle, Task::TOCAMPA);
             }
-            $this->stateChangeRepository->updateSubStateVehicle($pending_task->vehicle, null, SubState::CAMPA);
+            $this->stateChangeRepository->updateSubStateVehicle($reception->vehicle, null, SubState::CAMPA);
         } else {
-            $this->stateChangeRepository->updateSubStateVehicle($pendingTask->vehicle);
+            $this->stateChangeRepository->updateSubStateVehicle($reception->vehicle);
         }
         return $pendingTask;
     }
