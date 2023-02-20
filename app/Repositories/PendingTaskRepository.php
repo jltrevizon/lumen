@@ -121,7 +121,7 @@ class PendingTaskRepository extends Repository
             $this->closeDamage($pending_task->damage_id);
         }
         if (count($pending_task->vehicle->lastReception->approvedPendingTasks) === 0) {
-            $this->stateChangeRepository->updateSubStateVehicle($pending_task->vehicle, SubState::CAMPA);
+            $this->stateChangeRepository->updateSubStateVehicle($pending_task->vehicle, null, SubState::CAMPA);
         }
         if ($pending_task->task_id === Task::WORKSHOP_EXTERNAL && $pending_task->datetime_finish && $pending_task->user_end_id) {
             $pending_task->vehicle->sub_state_id = null;
