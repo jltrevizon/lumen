@@ -168,7 +168,7 @@ class QuestionnaireController extends Controller
     public function approved(Request $request){
         $data = $this->questionnaireRepository->approved($request);
         if (!is_null($data)) {
-             $ids = CampaUser::where('campa_id', 4)
+             $ids = CampaUser::where('campa_id', $data['vehicle']['campa_id'])
              ->get()
              ->pluck('user_id');
              $send_to = User::whereIn('id', $ids)->get();

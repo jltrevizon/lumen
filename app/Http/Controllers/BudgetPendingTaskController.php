@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CampaUser;
+use App\Models\User;
+use App\Notifications\BudgetPendingTaskNotification;
 use App\Repositories\BudgetPendingTaskRepository;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -36,7 +39,15 @@ class BudgetPendingTaskController extends Controller
      */
 
     public function store(Request $request){
-        return $this->createDataResponse($this->budgetPendingTaskRepository->store($request), HttpFoundationResponse::HTTP_CREATED);
+        $data = $this->budgetPendingTaskRepository->store($request);
+        $ids = CampaUser::where('campa_id', $data->campa_id)
+        ->get()
+        ->pluck('user_id');
+        $send_to = User::whereIn('id', $ids)->get();
+        foreach ($send_to as $key => $value) {
+           Notification::send($value, new BudgetPendingTaskNotification($data));
+        }
+        return $this->createDataResponse($data, HttpFoundationResponse::HTTP_CREATED);
     }
 
     /**
