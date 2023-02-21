@@ -53,6 +53,7 @@ class QuestionnaireRepository extends Repository
         try {
             DB::beginTransaction();
             $data = null;
+            $user = Auth::user();
             $questionnaire = Questionnaire::with('user')->findOrFail($request->input('questionnaire_id'));
             $vehicle = $questionnaire->vehicle;
 
@@ -110,7 +111,6 @@ class QuestionnaireRepository extends Repository
                 }
 
                 if (is_null($vehicle->company_id)) {
-                    $user = Auth::user();
                     $vehicle->company_id = $user->company_id;
                     $vehicle->save();
                 }
@@ -127,7 +127,9 @@ class QuestionnaireRepository extends Repository
 
             DB::commit();
             $data['questionnaire'] = $questionnaire;
-            $data['user'] = Auth::user();
+            $data['user'] = $user;
+            $createdAt = Carbon::parse($questionnaire->datetime_approved);
+            $data['title'] = 'Vehiculo ' . $vehicle->plate . ' con checlist aprobado por el usuario ' . $user->name . ' El dia ' . $createdAt;
             return response()->json($data);
         } catch (Exception $e) {
             DB::rollBack();
