@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CampaUser;
+use App\Models\User;
+use App\Notifications\DamageNotification;
 use App\Repositories\DamageRepository;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Notification;
 
 class DamageController extends Controller
 {
@@ -127,6 +131,16 @@ class DamageController extends Controller
     public function store(Request $request)
     {
         $data = $this->damageRepository->store($request);
+        $ids = CampaUser::where('campa_id', $data->campa_id)
+            ->get()
+            ->pluck('user_id');
+        $send_to = User::whereIn('id', $ids)->get();
+        foreach ($send_to as $key => $value) {
+            Notification::send($value, new DamageNotification([
+                'data' => $data,
+                'title' => 'Se ha subido una incidencia al vehiculo ' . $data->vehicle->plate
+            ]));
+        }
         return $this->createDataResponse($data, Response::HTTP_CREATED);
     }
 
