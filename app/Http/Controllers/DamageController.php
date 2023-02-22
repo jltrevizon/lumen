@@ -131,7 +131,7 @@ class DamageController extends Controller
     public function store(Request $request)
     {
         $data = $this->damageRepository->store($request);
-        $ids = CampaUser::where('campa_id', $data->campa_id)
+        $ids = CampaUser::where('campa_id', $data->vehicle->campa_id)
             ->get()
             ->pluck('user_id');
         $send_to = User::whereIn('id', $ids)->get();
