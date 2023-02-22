@@ -52,16 +52,13 @@ class QuestionnaireRepository extends Repository
     {
         try {
             DB::beginTransaction();
-            $data = null;
+            $data = collect([]);
             $user = Auth::user();
             $questionnaire = Questionnaire::with('user')->findOrFail($request->input('questionnaire_id'));
             $vehicle = $questionnaire->vehicle;
 
             if (!is_null($questionnaire->datetime_approved)) {
-                $data = [
-                    'message' => 'Currently Approved',
-                    'vehicle' => $vehicle
-                ];
+                $data['message'] = 'Currently Approved';
             } else {
 
                 $questionnaire->datetime_approved = Carbon::now();
@@ -119,18 +116,16 @@ class QuestionnaireRepository extends Repository
                 }
                 $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
 
-                $data = [
-                    'message' => 'Solicitud aprobada!',
-                    'vehicle' => $vehicle
-                ];
+                $data['message'] = 'Solicitud aprobada!';
             }
 
             DB::commit();
             $data['questionnaire'] = $questionnaire;
             $data['user'] = $user;
+            $data['vehicle'] = $vehicle;
             $createdAt = Carbon::parse($questionnaire->datetime_approved);
             $data['title'] = 'Vehiculo ' . $vehicle->plate . ' con checlist aprobado por el usuario ' . $user->name . ' El dia ' . $createdAt;
-            return response()->json($data);
+            return $data;
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e);

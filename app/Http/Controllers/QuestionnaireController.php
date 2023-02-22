@@ -168,14 +168,15 @@ class QuestionnaireController extends Controller
     public function approved(Request $request){
         $data = $this->questionnaireRepository->approved($request);
         if (!is_null($data)) {
-             $ids = CampaUser::where('campa_id', $data['vehicle']['campa_id'])
+             $ids = CampaUser::where('campa_id', $data['vehicle']->campa_id)
              ->get()
              ->pluck('user_id');
              $send_to = User::whereIn('id', $ids)->get();
+             $res = response()->json($data);
              foreach ($send_to as $key => $value) {
-                Notification::send($value, new ValidatedCheckListNotification($data));
+                Notification::send($value, new ValidatedCheckListNotification($res));
              }
-            return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
+            return $this->updateDataResponse($res, HttpFoundationResponse::HTTP_OK);
         } else {
             return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
