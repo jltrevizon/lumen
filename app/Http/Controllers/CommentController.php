@@ -99,7 +99,7 @@ class CommentController extends Controller
 
     public function store(Request $request){
         $data = $this->commentRepository->store($request);
-        $ids = CampaUser::where('campa_id', $data->vehicle->campa_id)
+        $ids = CampaUser::where('campa_id', $data->damage->vehicle->campa_id)
             ->get()
             ->pluck('user_id');
         $send_to = User::whereIn('id', $ids)->get();
