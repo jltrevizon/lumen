@@ -35,7 +35,8 @@ class StateChangeRepository extends Repository
                 if (count($pendingTasks) > 0) {
                     $sub_state_id = SubState::ALQUILADO;
                 } else if ($sub_state_id != SubState::ALQUILADO) {
-                    $sub_state_type_model_order = $vehicle->type_model_order_id === TypeModelOrder::ALDFLEX ? SubState::CHECK_RELEASE : SubState::CAMPA;
+                    $ald_sub_state_id = count($vehicle->lastReception->pendingTasks) === 0 ? SubState::CHECK_RELEASE : SubState::CAMPA;
+                    $sub_state_type_model_order = $vehicle->type_model_order_id === TypeModelOrder::ALDFLEX ? $ald_sub_state_id : SubState::CAMPA;
                     $sub_state_id = $param_sub_state_id ?? $sub_state_type_model_order;
                 }                    
             } else {
