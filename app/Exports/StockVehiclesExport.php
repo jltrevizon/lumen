@@ -55,7 +55,7 @@ class StockVehiclesExport implements FromCollection, WithMapping, WithHeadings
     public function fixTime($date)
     {
         if ($date) {
-            return (new  Carbon($date))->addHours(2)->format('d/m/Y H:m:i');
+            return (new  Carbon($date))->addHours(2)->format('d/m/y');
         }
         return $date;
     }
