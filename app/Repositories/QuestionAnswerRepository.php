@@ -191,6 +191,7 @@ class QuestionAnswerRepository
             $pending_task->reception_id = $vehicle->lastReception->id;
             $pending_task->campa_id = $vehicle->campa_id;
             $pending_task->task_id = Task::RECEPTION;
+            $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
             $pending_task->approved = 1;
             $pending_task->created_from_checklist = true;
             $pending_task->datetime_pending = date('Y-m-d H:i:s');
