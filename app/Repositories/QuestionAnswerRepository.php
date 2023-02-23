@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\StatePendingTask;
 use App\Repositories\StateChangeRepository;
 use App\Models\SubState;
+use App\Models\Task;
 use App\Models\TypeModelOrder;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -184,6 +185,22 @@ class QuestionAnswerRepository
             if ($request->input('square_id')) {
                 $this->squareRepository->update($request, $request->input('square_id'));
             }
+
+            $pending_task = new PendingTask();
+            $pending_task->vehicle_id = $vehicle->id;
+            $pending_task->reception_id = $vehicle->lastReception->id;
+            $pending_task->campa_id = $vehicle->campa_id;
+            $pending_task->task_id = Task::RECEPTION;
+            $pending_task->approved = 1;
+            $pending_task->created_from_checklist = true;
+            $pending_task->datetime_pending = date('Y-m-d H:i:s');
+            $pending_task->datetime_start = date('Y-m-d H:i:s');
+            $pending_task->datetime_finish = date('Y-m-d H:i:s');
+            $pending_task->user_start_id = Auth::id();
+            $pending_task->user_end_id = Auth::id();
+            $pending_task->user_start_id = Auth::id();
+            $pending_task->user_id = Auth::id();
+            $pending_task->save();
 
             DB::commit();
             return [
