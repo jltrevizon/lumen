@@ -322,12 +322,7 @@ class VehicleRepository extends Repository
             $reception = $vehicle->lastReception;
         }
 
-        $user = Auth::user();
-
-        $vehicle->campa_id = $user['campas'][0]['id'];
-        $vehicle->save();
-
-        $reception->campa_id = $user['campas'][0]['id'];
+        $reception->campa_id = $vehicle->campa_id;
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
         $reception->has_accessories = false;

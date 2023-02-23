@@ -60,6 +60,12 @@ class QuestionAnswerRepository
                 ];
             }
 
+
+            $user = Auth::user();
+
+            $vehicle->campa_id = $user['campas'][0]['id'];
+            $vehicle->save();
+
             $this->vehicleRepository->newReception($request->input('vehicle_id'));
 
             $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
