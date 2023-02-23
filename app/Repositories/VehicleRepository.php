@@ -207,14 +207,6 @@ class VehicleRepository extends Repository
         return response()->json(['vehicle' => $vehicle]);
     }
 
-    public function updateCampa($vehicle_id, $campa)
-    {
-        $vehicle = Vehicle::findOrFail($vehicle_id);
-        $vehicle->campa_id = $campa;
-        $vehicle->save();
-        return $vehicle;
-    }
-
     public function updateTradeState($vehicle_id, $trade_state_id)
     {
         $vehicle = Vehicle::findOrFail($vehicle_id);
@@ -329,7 +321,13 @@ class VehicleRepository extends Repository
         } else {
             $reception = $vehicle->lastReception;
         }
-        $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
+
+        $user = Auth::user();
+
+        $vehicle->campa_id = $user['campas'][0]['id'];
+        $vehicle->save();
+
+        $reception->campa_id = $user['campas'][0]['id'];
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
         $reception->has_accessories = false;

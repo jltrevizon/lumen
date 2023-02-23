@@ -113,9 +113,6 @@ class QuestionAnswerRepository
                     }
                 }
 
-                $user = Auth::user();
-                $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-
                 $tasks = $request->input('tasks');
                 $vehicleId = $request->input('vehicle_id');
 
