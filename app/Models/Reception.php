@@ -200,7 +200,31 @@ class Reception extends Model
         'finished',
         'has_accessories',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'remote_id',
+        'company_id',
+        "campa_id",
+        'category_id',
+        'sub_state_id',
+        'color_id',
+        'plate',
+        'vehicle_model_id',
+        'type_model_order_id',
+        'kms',
+        'next_itv',
+        'has_environment_label',
+        'observations',
+        'priority',
+        'version',
+        'vin',
+        'first_plate',
+        'latitude',
+        'longitude',
+        'trade_state_id',
+        'documentation',
+        'ready_to_delivery',
+        'deleted_user_id',
+        'seater',
     ];
 
     protected $dates = [
@@ -209,6 +233,10 @@ class Reception extends Model
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
+    public function subState(){
+        return $this->belongsTo(SubState::class);
     }
 
     public function typeModelOrder(){

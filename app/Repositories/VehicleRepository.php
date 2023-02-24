@@ -279,13 +279,54 @@ class VehicleRepository extends Repository
 
     public function delete($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
-        $vehicle->deleted_user_id = Auth::id();
-        $this->squareRepository->freeSquare($vehicle->id);
-        $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
-        $vehicle->save();
-        $vehicle->delete();
-        return ['message' => 'Vehicle deleted'];
+        try {
+            DB::beginTransaction();
+            $vehicle = Vehicle::findOrFail($id);
+            $vehicle->deleted_user_id = Auth::id();
+            $this->squareRepository->freeSquare($vehicle->id);
+            $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
+            $vehicle->save();
+            $this->updateReceptionVehicle($vehicle);
+            $vehicle->delete();
+        
+            DB::commit();
+            return ['message' => 'Vehicle deleted'];
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+            throw $e;
+        }
+    }
+
+    public function updateReceptionVehicle($vehicle) {
+        if (!is_null($vehicle->lastReception)) {
+            Reception::where('id', $vehicle->lastReception->id)->update([
+                'remote_id' => $vehicle->remote_id,
+                'company_id'=>$vehicle->company_id,
+                "campa_id"=>$vehicle->campa_id,
+                'category_id'=>$vehicle->category_id,
+                'sub_state_id'=>$vehicle->sub_state_id,
+                'color_id'=>$vehicle->color_id,
+                'plate'=>$vehicle->plate,
+                'vehicle_model_id'=>$vehicle->vehicle_model_id,
+                'type_model_order_id'=>$vehicle->type_model_order_id,
+                'kms'=>$vehicle->kms,
+                'next_itv'=>$vehicle->next_itv,
+                'has_environment_label'=>$vehicle->has_environment_label,
+                'observations'=>$vehicle->observations,
+                'priority'=>$vehicle->priority,
+                'version'=>$vehicle->version,
+                'vin'=>$vehicle->vin,
+                'first_plate'=>$vehicle->first_plate,
+                'latitude'=>$vehicle->latitude,
+                'longitude'=>$vehicle->longitude,
+                'trade_state_id'=>$vehicle->trade_state_id,
+                'documentation'=>$vehicle->documentation,
+                'ready_to_delivery'=>$vehicle->ready_to_delivery,
+                'deleted_user_id'=>$vehicle->deleted_user_id,
+                'seater'=>$vehicle->seater,
+            ]);
+        }
     }
 
     public function returnVehicle($request, $id)
@@ -311,7 +352,6 @@ class VehicleRepository extends Repository
 
     public function newReception($vehicle_id, $force = false)
     {
-        $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
         $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {
             return $item->id;
@@ -469,6 +509,7 @@ class VehicleRepository extends Repository
                         $vehicle->save();
                     }
                     $this->freeSquare($vehicle);
+                    $this->updateReceptionVehicle($vehicle);
                 }
             });
         return [
