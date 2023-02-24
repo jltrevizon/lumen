@@ -325,14 +325,14 @@ class Reception extends Model
             });
     }
 
-    public function defaultOrderApprovedPendingTasks(){
-        return $this->hasMany(PendingTask::class)
+    public function defaultOrderApprovedPendingTasks() {
+        return $this->hasMany(PendingTask::class, 'reception_id')
         ->where('approved', true)
         ->where(function ($query) {
-            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
+            $query->whereNotIn('state_pending_task_id',[StatePendingTask::FINISHED, StatePendingTask::CANCELED])
                 ->orWhereNull('state_pending_task_id');
         })
-        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).') desc');
+        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).') asc');
     }
 
     public function lastChangeState(){
