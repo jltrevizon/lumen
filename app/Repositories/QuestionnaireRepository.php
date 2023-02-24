@@ -124,7 +124,7 @@ class QuestionnaireRepository extends Repository
             $data['user'] = $user;
             $data['vehicle'] = $vehicle;
             $createdAt = Carbon::parse($questionnaire->datetime_approved);
-            $data['title'] = 'Vehiculo ' . $vehicle->plate . ' con checlist aprobado por el usuario ' . $user->name . ' El dia ' . $createdAt;
+            $data['title'] = 'Vehiculo ' . $vehicle->plate . ' con check list aprobado por el usuario ' . $user->name . ' El dia ' . $createdAt;
             return $data;
         } catch (Exception $e) {
             DB::rollBack();
