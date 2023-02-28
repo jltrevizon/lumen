@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Damage;
 use App\Models\PendingTask;
+use App\Models\Questionnaire;
 use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
 use App\Models\TypeModelOrder;
@@ -287,6 +287,9 @@ class VehicleRepository extends Repository
             $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
             $vehicle->save();
             $this->updateReceptionVehicle($vehicle);
+            if (!is_null($vehicle->lastReception)) {
+                Questionnaire::where('reception_id', $vehicle->lastReception->id)->delete();
+            }
             $vehicle->delete();
         
             DB::commit();
