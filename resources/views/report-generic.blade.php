@@ -10,6 +10,7 @@
     <h1>Hola!</h1>
     <h2>{{$title}}</h2>
     <p>{{$sub_title}}</p>
+    <div>{!! isset($body) ? $body : '' !!}</div>
     <div class="row justify-content-md-center" style="justify-content: center !important;">
         <div class="col-md-8">
             <p style="color: #8898aa !important; text-align: center !important;">

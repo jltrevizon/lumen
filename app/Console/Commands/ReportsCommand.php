@@ -76,24 +76,21 @@ class ReportsCommand extends Command
             $disk =  $env == 'production' ? 's3' : 'public';
             switch ($report->typeReport->model_class) {
                 case PendingTaskExport::class:
-                    $request = request();
-                    $request->merge([
+                    $request = collect([
                         'campasIds' => [$report->campa_id]
                     ]);
                     Excel::store(new PendingTaskExport($request), $file_name, $disk);
                     break;
                 case StockVehiclesExport::class:
-                    $request = request();
-                    $request->merge([
+                    $request = collect([
                         'statesNotIds' => [4, 5, 10],
                         'defleetingAndDelivery' => 1,
-                        'campasIds' => [$report->campa_id]
+                        'campaIds' => [$report->campa_id]
                     ]);
                     Excel::store(new StockVehiclesExport($request), $file_name, $disk);
                     break;
                 case EntriesVehiclesExport::class:
-                    $request = request();
-                    $request->merge([
+                    $request = collect([
                         'whereHasVehicle' => 0,
                         'subStatesNotIds' => [10],
                         'campaIds' => [$report->campa_id],
@@ -103,8 +100,7 @@ class ReportsCommand extends Command
                     Excel::store(new EntriesVehiclesExport($request), $file_name, $disk);
                     break;
                 case DeliveryVehiclesExport::class:
-                    $request = request();
-                    $request->merge([
+                    $request = collect([
                         'pendindTaskNull' => 0,
                         'vehicleDeleted' => 0,
                         'campaIds' => [$report->campa_id],
@@ -119,21 +115,24 @@ class ReportsCommand extends Command
             }
             $url=Storage::disk($disk)->url($file_name);
             $this->pushData($content, $report, $url);
-            $content->map(function ($item) {
-                $data = [
-                    'title' => 'Reporte',
-                    'sub_title' => $item->data->map(function ($value) {
-                        return $value->type_report_name . ' de la campa ' . $value->campa_name . ': ' . $value->url;
-                    })->join(', ')
-                ];
-                Log::debug($data);
-                Mail::send('report-generic', $data, function ($message) use ($item) {
-                    $message->to(env('APP_ENV') == 'production' ? $item->email : env('MAIL_FROM_ADDRESS', 'focus@grupomobius.com'), 'Reporte ALD');
-                    $message->subject('Repprte ALD');
-                    $message->from('no-reply.focus@grupomobius.com', 'Focus');
-                });
-            });
+
         }
+        $content->map(function ($item) {
+            $data = [
+                'title' => 'Reporte',
+                'sub_title' => '',
+                'body' => '<ul>'.$item->data->map(function ($value) {
+                    return '<li>'.$value->type_report_name . ' de la campa ' . $value->campa_name . ':<br/><a href="' . $value->url .'">' . $value->url .'</a></li>';
+                })->join('<br/>').'</ul>'
+            ];
+            Log::debug($data);
+            $this->info(print_r($data, true));
+            Mail::send('report-generic', $data, function ($message) use ($item) {
+                $message->to(env('APP_ENV') == 'production' ? $item->email : env('MAIL_FROM_ADDRESS', 'focus@grupomobius.com'), 'Reporte ALD');
+                $message->subject('Repprte ALD');
+                $message->from('no-reply.focus@grupomobius.com', 'Focus');
+            });
+        });
     }
 
     function pushData(&$content, $report, $url)
