@@ -68,6 +68,7 @@ $app->singleton(
 
 $app->configure('app');
 $app->configure('dompdf');
+$app->configure('activitylog');
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -117,6 +118,7 @@ $app->register(Chuckrincon\LumenConfigDiscover\DiscoverServiceProvider::class);
 $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 $app->register(\SwaggerLume\ServiceProvider::class);
 $app->register(Illuminate\Notifications\NotificationServiceProvider::class);
+$app->register(Spatie\Activitylog\ActivitylogServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
