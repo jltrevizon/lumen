@@ -12,6 +12,8 @@ use App\Models\Incidence;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  * Class Pending Task
@@ -383,7 +385,7 @@ class PendingTask extends Model
      * )
      */
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, LogsActivity;
 
     const ORDER_TASKS = [39, 11, 2, 3, 4, 41, 5, 6, 7, 8];
 
@@ -560,5 +562,11 @@ class PendingTask extends Model
     public function scopeWhereDateBetween($query,$fieldName,$fromDate,$todate)
     {
         return $query->whereDate($fieldName,'>=',$fromDate)->whereDate($fieldName,'<=',$todate);
+    }
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*'])
+        ->logOnlyDirty();
     }
 }
