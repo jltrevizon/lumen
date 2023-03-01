@@ -382,4 +382,8 @@ class Reception extends Model
             'id' => 'max'
         ]);
     }
+
+    public function deletedUser(){
+        return $this->belongsTo(User::class, 'deleted_user_id');
+    }
 }
