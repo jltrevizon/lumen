@@ -65,8 +65,10 @@ class StateChangeRepository extends Repository
                     if (count($pendingTasks) > 0) {
                         $sub_state_id = SubState::ALQUILADO;
                     } else if ($sub_state_id != SubState::ALQUILADO) {
+
                         $sub_state_id = $param_sub_state_id ?? SubState::CAMPA;
-                    }                    
+                        
+                    }                   
                 } else {
                     $pendingTask = $approvedPendingTasks[0];
                     $sub_state_id = $pendingTask->task->sub_state_id;

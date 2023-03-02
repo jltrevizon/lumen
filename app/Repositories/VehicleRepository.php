@@ -421,7 +421,9 @@ class VehicleRepository extends Repository
         $vehicle->restore();
         $this->finishPendingTaskLastGroupTask($vehicle->id);
         $this->newReception($vehicle->id, true);
-        $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+        
+        $param_sub_state_id = is_null($vehicle->sub_status_id) ? SubState::CHECK_BLOCKED : null;
+        $this->stateChangeRepository->updateSubStateVehicle($vehicle, $param_sub_state_id);
         return $vehicle;
     }
 
