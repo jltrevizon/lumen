@@ -304,7 +304,14 @@ class VehicleRepository extends Repository
     public function update($request, $id)
     {
         $vehicle = Vehicle::findOrFail($id);
-        $vehicle->update($request->all());
+        if ($vehicle->type_model_order_id === TypeModelOrder::VO_ENTREGADO && 
+            $request->input('type_model_order_id') !== TypeModelOrder::VO_ENTREGADO){ 
+            $vehicle->sub_state_id = SubState::CAMPA; 
+            $vehicle->save(); 
+        } else {
+            $vehicle->update($request->all());
+        }
+        
         return Vehicle::with($this->getWiths($request->with) ?? [])->findOrFail($id);
     }
 
