@@ -12,6 +12,7 @@ use App\Models\Vehicle;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
 use App\Models\TypeModelOrder;
+use App\Models\VehicleComment;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CategoryRepository;
@@ -586,6 +587,17 @@ class VehicleRepository extends Repository
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             }])
             ->first();
+    }
+
+    public function comments($data) {
+        $vehicle = Vehicle::findOrFail($data['vehicle_id']);
+        $vehicle_comment = VehicleComment::create([
+            'vehicle_id' => $vehicle->id,
+            'reception_id' => $vehicle->lastReception->id,
+            'user_id' => Auth::id(),
+            'description' => $data['description']
+        ]);
+        return VehicleComment::where('id', $vehicle_comment->id)->with(['user'])->first();
     }
 
 }

@@ -386,4 +386,8 @@ class Reception extends Model
     public function deletedUser(){
         return $this->belongsTo(User::class, 'deleted_user_id');
     }
+
+    public function vehicleComments() {
+        return $this->hasMany(VehicleComment::class);
+    }
 }

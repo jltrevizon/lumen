@@ -723,6 +723,10 @@ class Vehicle extends Model
         return $this->hasMany(SubStateChangeHistory::class);
     }
 
+    public function vehicleComments() {
+        return $this->hasMany(VehicleComment::class);
+    }
+
     public function stateChange(){
         return $this->hasMany(StateChange::class);
     }
