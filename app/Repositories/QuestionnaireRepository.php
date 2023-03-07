@@ -36,4 +36,9 @@ class QuestionnaireRepository extends Repository {
                     ->findOrFail($id);
     }
 
+    public function delete($vehicleId){
+        //$quetionnaire = Questionnaire::where('vehicle_id', $vehicleId)->
+        return Questionnaire::where('vehicle_id', $vehicleId)->where('questionnaire_id', null)->delete();
+    }
+
 }
