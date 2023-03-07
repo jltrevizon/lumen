@@ -305,7 +305,8 @@ class VehicleRepository extends Repository
     {
         $vehicle = Vehicle::findOrFail($id);
         if ($vehicle->type_model_order_id === TypeModelOrder::VO_ENTREGADO && 
-            $request->input('type_model_order_id') !== TypeModelOrder::VO_ENTREGADO){ 
+            $request->input('type_model_order_id') !== TypeModelOrder::VO_ENTREGADO){
+            $vehicle->type_model_order_id = $request->input('type_model_order_id');
             $vehicle->sub_state_id = SubState::CAMPA; 
             $vehicle->save(); 
         } else {
