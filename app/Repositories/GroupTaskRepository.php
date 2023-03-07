@@ -226,13 +226,4 @@ class GroupTaskRepository extends Repository
         $pendingTask->datetime_pending = Carbon::now();
         $pendingTask->save();
     }
-
-    public function deleteGroupTask($vehicle_id)
-    {
-        $grouptask = GroupTask::where('vehicle_id', $vehicle_id)->where('questionnaire_id', null)->orderBy('created_at', 'desc')->first();
-        PendingTask::where('group_task_id', $grouptask['id'])->delete();
-        GroupTask::where('vehicle_id', $vehicle_id)->where('questionnaire_id', null)->delete();
-        
-        return ['message' => 'Borrado'];
-    }
 }

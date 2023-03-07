@@ -7,7 +7,6 @@ use App\Models\PendingTask;
 use App\Models\Vehicle;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -109,7 +108,7 @@ class GroupTask extends Model
      * )
      */
 
-    use HasFactory, Filterable, SoftDeletes;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'vehicle_id',
