@@ -300,4 +300,11 @@ class Reception extends Model
             return $builder->whereNotIn('sub_state_id', $ids);
         });
     }
+
+    public function lastQuestionnaire(){
+        // ->with(['questionAnswers.question','questionAnswers.task'])
+        return $this->hasOne(Questionnaire::class)->ofMany([
+            'id' => 'max'
+        ]);
+    }
 }
