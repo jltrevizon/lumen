@@ -7,10 +7,12 @@ use Carbon\Carbon;
 use App\Models\Damage;
 use App\Models\Vehicle;
 use App\Models\SubState;
+use App\Models\GroupTask;
 use App\Models\Reception;
 use App\Models\TradeState;
 use App\Models\PendingTask;
 use App\Models\StatusDamage;
+use App\Models\Questionnaire;
 use App\Models\TypeModelOrder;
 use App\Models\StatePendingTask;
 use Illuminate\Support\Facades\DB;
@@ -23,9 +25,9 @@ use App\Repositories\StateRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\GroupTaskRepository;
 use App\Repositories\ReceptionRepository;
+
 use Illuminate\Database\Eloquent\Builder;
 use App\Repositories\StateChangeRepository;
-
 use App\Repositories\VehicleExitRepository;
 use App\Repositories\VehicleModelRepository;
 use App\Repositories\TypeModelOrderRepository;
@@ -411,6 +413,12 @@ class VehicleRepository extends Repository
         $last_reception = Reception::where('vehicle_id', $vehicle->id)->orderBy('id', 'DESC')
                             ->first();
         $this->cancelAllPendingTask($last_reception->id);
+        $group_task = GroupTask::where('vehicle_id', $vehicle->id)->orderBy('id', 'desc')->first();
+        if(!is_null($group_task->questionnaire_id)){
+            $group_task->questionnaire_id = null;
+            $group_task->save();
+        }
+        //Questionnaire::where('reception_id', $last_reception->id)->delete();
         $vehicle->save();
         $vehicle->delete();
         return ['message' => 'Vehicle deleted'];
@@ -724,6 +732,7 @@ class VehicleRepository extends Repository
                 $pending->save();
             }
         }
+        
         return;
     }
 
