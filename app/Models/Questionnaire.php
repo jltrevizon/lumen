@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Questionnaire
@@ -104,7 +105,7 @@ class Questionnaire extends Model
      * )
      */
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes ;
 
     protected $fillable = [
         'user_id',
