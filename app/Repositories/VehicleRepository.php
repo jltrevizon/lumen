@@ -2,34 +2,35 @@
 
 namespace App\Repositories;
 
+use DateTime;
+use Carbon\Carbon;
 use App\Models\Damage;
-use App\Models\PendingTask;
-use App\Models\Reception;
-use App\Models\SubState;
-use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Models\StatePendingTask;
+use App\Models\SubState;
+use App\Models\Reception;
+use App\Models\TradeState;
+use App\Models\PendingTask;
 use App\Models\StatusDamage;
 use App\Models\TypeModelOrder;
-use DateTime;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
-use App\Repositories\CategoryRepository;
-use App\Repositories\DefleetVariableRepository;
-use App\Repositories\GroupTaskRepository;
-use App\Repositories\StateRepository;
-use App\Repositories\BrandRepository;
-use App\Repositories\VehicleModelRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\TypeModelOrderRepository;
-use App\Repositories\DeliveryVehicleRepository;
-use App\Repositories\VehicleExitRepository;
-use App\Repositories\StateChangeRepository;
-
-use App\Repositories\CampaRepository;
-use Carbon\Carbon;
+use App\Models\StatePendingTask;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Auth;
+use App\Repositories\BrandRepository;
+use App\Repositories\CampaRepository;
+use App\Repositories\StateRepository;
+use App\Repositories\CategoryRepository;
+use App\Repositories\GroupTaskRepository;
+use App\Repositories\ReceptionRepository;
+use Illuminate\Database\Eloquent\Builder;
+use App\Repositories\StateChangeRepository;
+
+use App\Repositories\VehicleExitRepository;
+use App\Repositories\VehicleModelRepository;
+use App\Repositories\TypeModelOrderRepository;
+use App\Repositories\DefleetVariableRepository;
+use App\Repositories\DeliveryVehicleRepository;
 
 class VehicleRepository extends Repository
 {
@@ -50,7 +51,7 @@ class VehicleRepository extends Repository
         SquareRepository $squareRepository,
         StateChangeRepository $stateChangeRepository,
         HistoryLocationRepository $historyLocationRepository,
-        VehiclePictureRepository $vehiclePictureRepository
+        VehiclePictureRepository $vehiclePictureRepository,
     ) {
         $this->userRepository = $userRepository;
         $this->categoryRepository = $categoryRepository;
@@ -407,6 +408,9 @@ class VehicleRepository extends Repository
         $vehicle->deleted_user_id = Auth::id();
         $this->squareRepository->freeSquare($vehicle->id);
         $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
+        $last_reception = Reception::where('vehicle_id', $vehicle->id)->orderBy('id', 'DESC')
+                            ->first();
+        $this->cancelAllPendingTask($last_reception->id);
         $vehicle->save();
         $vehicle->delete();
         return ['message' => 'Vehicle deleted'];
@@ -710,6 +714,17 @@ class VehicleRepository extends Repository
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             }])
             ->first();
+    }
+
+    public function cancelAllPendingTask($last_reception_id){
+        $pendingTask = PendingTask::where('reception_id', $last_reception_id)->get();
+        foreach($pendingTask as $pending){
+            if($pending->state_pending_task_id !== StatePendingTask::FINISHED){
+                $pending->state_pending_task_id = StatePendingTask::CANCELED;
+                $pending->save();
+            }
+        }
+        return;
     }
 
 }
