@@ -611,4 +611,15 @@ class PendingTaskRepository extends Repository
             'message' => 'Task Transfer added!'
         ]);
     }
+
+    public function cancelAllPendingTask($last_reception_id){
+        $pendingTask = PendingTask::where('reception_id', $last_reception_id)->get();
+        foreach($pendingTask as $pending){
+            if($pending->state_pending_task_id !== 3){
+                $pending->state_pending_task_id = 4;
+                $pending->save();
+            }
+        }
+        return;
+    }
 }
