@@ -2,24 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Campa;
-use App\Models\Category;
 use App\Models\State;
-use App\Models\DeliveryVehicle;
 use App\Models\Request;
-use App\Models\PendingTask;
+use App\Models\Category;
 use App\Models\GroupTask;
-use App\Models\VehiclePicture;
-use App\Models\Reservation;
-use App\Models\HistoryLocation;
 use App\Models\Reception;
 use App\Models\TradeState;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\PendingTask;
+use App\Models\Reservation;
+use App\Models\VehiclePicture;
 use EloquentFilter\Filterable;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\DeliveryVehicle;
+use App\Models\HistoryLocation;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Vehicle
@@ -517,7 +519,7 @@ class Vehicle extends Model
      * )
      */
 
-    use HasFactory, Filterable, SoftDeletes;
+    use HasFactory, Filterable, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'remote_id',
@@ -551,6 +553,8 @@ class Vehicle extends Model
         'created_at',
         'updated_at'
     ];
+
+    protected static $recordEvents = ['created', 'updated','deleted'];
 
     public function category(){
         return $this->belongsTo(Category::class, 'category_id');
@@ -1100,5 +1104,39 @@ class Vehicle extends Model
         ->where(function ($query) {
             $query->where('state_pending_task_id', StatePendingTask::FINISHED);
         })->whereRaw('reception_id = 3976');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['remote_id',
+        'company_id',
+        "campa_id",
+        'category_id',
+        'sub_state_id',
+        'color_id',
+        'ubication',
+        'plate',
+        'vehicle_model_id',
+        'color',
+        'type_model_order_id',
+        'kms',
+        'last_change_state',
+        'last_change_sub_state',
+        'next_itv',
+        'has_environment_label',
+        'observations',
+        'priority',
+        'version',
+        'vin',
+        'first_plate',
+        'latitude',
+        'longitude',
+        'trade_state_id',
+        'documentation',
+        'ready_to_delivery',
+        'deleted_user_id',
+        'seater',
+        ])->useLogName('vehicle');
     }
 }
