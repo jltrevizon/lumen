@@ -17,7 +17,8 @@ class QuestionnaireRepository extends Repository {
 
     public function index($request){
         return Questionnaire::with($this->getWiths($request->with))
-            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            //->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
+            ->whereNotNull('deleted_at')
             ->filter($request->all())
             ->paginate($request->input('per_page'));
     }

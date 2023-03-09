@@ -418,7 +418,7 @@ class VehicleRepository extends Repository
             $group_task->questionnaire_id = null;
             $group_task->save();
         }
-        //Questionnaire::where('reception_id', $last_reception->id)->delete();
+        Questionnaire::where('reception_id', $last_reception->id)->delete();
         $vehicle->save();
         $vehicle->delete();
         return ['message' => 'Vehicle deleted'];
