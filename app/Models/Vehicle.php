@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Vehicle
@@ -1100,5 +1101,12 @@ class Vehicle extends Model
         ->where(function ($query) {
             $query->where('state_pending_task_id', StatePendingTask::FINISHED);
         })->whereRaw('reception_id = 3976');
+    }
+
+    public function receptionsByUserCampa()
+    {
+        $user = Auth::user();
+        $campasIds = $user->campas()->pluck('id');
+        return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campasIds)->orderBy('id', 'desc');
     }
 }
