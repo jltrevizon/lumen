@@ -16,10 +16,18 @@ class QuestionnaireRepository extends Repository {
     }
 
     public function index($request){
-        return Questionnaire::with($this->getWiths($request->with))
-            //->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
-            ->whereNotNull('deleted_at')
+            return Questionnaire::with($this->getWiths($request->with))
+            ->whereRaw('vehicle_id NOT IN(SELECT id FROM vehicles WHERE deleted_at is not null)')
             ->filter($request->all())
+            ->paginate($request->input('per_page'));
+        
+    }
+
+    public function filterQuestionaries($request){
+        return Questionnaire::with($this->getWiths($request->with))
+            ->filter($request->all())
+            ->orderBy('created_at', 'desc')
+            ->first()
             ->paginate($request->input('per_page'));
     }
 

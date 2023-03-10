@@ -551,7 +551,8 @@ class Vehicle extends Model
         'deleted_user_id',
         'seater',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'deleted_at'
     ];
 
     protected static $recordEvents = ['created', 'updated','deleted'];
