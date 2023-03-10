@@ -2,26 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Campa;
-use App\Models\State;
-use App\Models\Request;
 use App\Models\Category;
+use App\Models\State;
+use App\Models\DeliveryVehicle;
+use App\Models\Request;
+use App\Models\PendingTask;
 use App\Models\GroupTask;
+use App\Models\VehiclePicture;
+use App\Models\Reservation;
+use App\Models\HistoryLocation;
 use App\Models\Reception;
 use App\Models\TradeState;
-use App\Models\PendingTask;
-use App\Models\Reservation;
-use App\Models\VehiclePicture;
-use EloquentFilter\Filterable;
-use App\Models\DeliveryVehicle;
-use App\Models\HistoryLocation;
-use Illuminate\Support\Facades\DB;
-use Spatie\Activitylog\LogOptions;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Vehicle
@@ -519,7 +518,7 @@ class Vehicle extends Model
      * )
      */
 
-    use HasFactory, Filterable, SoftDeletes, LogsActivity;
+    use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
         'remote_id',
@@ -551,11 +550,8 @@ class Vehicle extends Model
         'deleted_user_id',
         'seater',
         'created_at',
-        'updated_at',
-        'deleted_at'
+        'updated_at'
     ];
-
-    protected static $recordEvents = ['created', 'updated','deleted'];
 
     public function category(){
         return $this->belongsTo(Category::class, 'category_id');
@@ -1107,37 +1103,10 @@ class Vehicle extends Model
         })->whereRaw('reception_id = 3976');
     }
 
-    public function getActivitylogOptions(): LogOptions
+    public function receptionsByUserCampa()
     {
-        return LogOptions::defaults()
-        ->logOnly(['remote_id',
-        'company_id',
-        "campa_id",
-        'category_id',
-        'sub_state_id',
-        'color_id',
-        'ubication',
-        'plate',
-        'vehicle_model_id',
-        'color',
-        'type_model_order_id',
-        'kms',
-        'last_change_state',
-        'last_change_sub_state',
-        'next_itv',
-        'has_environment_label',
-        'observations',
-        'priority',
-        'version',
-        'vin',
-        'first_plate',
-        'latitude',
-        'longitude',
-        'trade_state_id',
-        'documentation',
-        'ready_to_delivery',
-        'deleted_user_id',
-        'seater',
-        ])->useLogName('vehicle');
+        $user = Auth::user();
+        $campasIds = $user->campas()->pluck('id');
+        return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campasIds)->orderBy('id', 'desc');
     }
 }
