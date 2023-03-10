@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Models\PendingTask;
 use App\Models\SubState;
 use App\Models\TypeTask;
-use App\Models\PurchaseOperation;
+use App\Models\PendingTask;
 use EloquentFilter\Filterable;
+use App\Models\PurchaseOperation;
+use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -117,7 +119,7 @@ class Task extends Model
      * )
      */
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, LogsActivity;
 
     const UBICATION = 1;
     const TOCAMPA = 37;
@@ -175,5 +177,18 @@ class Task extends Model
 
     public function scopeByCompany($query, array $ids){
         return $query->whereIn('company_id', $ids);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly([ 'company_id',
+                    'sub_state_id',
+                    'type_task_id',
+                    'need_authorization',
+                    'name',
+                    'duration'
+        ])->useLogName('task');
+        
     }
 }

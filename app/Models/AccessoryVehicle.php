@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Accessory Vehicle Type
@@ -54,11 +56,21 @@ class AccessoryVehicle extends Model
      * )
      *
      */
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    protected static $recordEvents = ['created', 'updated','deleted'];
 
     protected $fillable = [
         'accessory_id',
         'vehicle_id'
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly([ 'accessory_id',
+        'vehicle_id'])->useLogName('vehicle accessory');
+        
+    }
 
 }

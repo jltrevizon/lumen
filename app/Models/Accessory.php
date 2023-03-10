@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -60,7 +62,7 @@ class Accessory extends Model
      *     title="Updated at",
      * )
      */
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, LogsActivity;
 
     const ACCESSORY = 1;
     const DOCUMENTATION = 2;
@@ -69,6 +71,7 @@ class Accessory extends Model
         'accessory_type_id',
         'name'
     ];
+    protected static $recordEvents = ['created', 'updated','deleted'];
 
     public function accessoryType(){
         return $this->belongsTo(AccessoryType::class);
@@ -80,6 +83,14 @@ class Accessory extends Model
 
     public function scopeByIds($query, array $ids){
         return $query->whereIn('id', $ids);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly([ 'accessory_type_id',
+        'name'])->useLogName('accessory');
+        
     }
 
 }
