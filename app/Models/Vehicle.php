@@ -1145,7 +1145,7 @@ class Vehicle extends Model
         'ready_to_delivery',
         'deleted_user_id',
         'seater',
-        'updated_at'])->useLogName('vehicle accessory');
+        'updated_at'])->useLogName('vehicle');
         
     }
 }
