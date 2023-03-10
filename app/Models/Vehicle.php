@@ -1109,4 +1109,8 @@ class Vehicle extends Model
         $campasIds = $user->campas()->pluck('id');
         return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campasIds)->orderBy('id', 'desc');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 38bb0c6379c7553cf387e9b82e39cda2b350f621
