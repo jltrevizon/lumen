@@ -23,14 +23,6 @@ class QuestionnaireRepository extends Repository {
         
     }
 
-    public function filterQuestionaries($request){
-        return Questionnaire::with($this->getWiths($request->with))
-            ->filter($request->all())
-            ->orderBy('created_at', 'desc')
-            ->first()
-            ->paginate($request->input('per_page'));
-    }
-
     public function create($vehicleId){
         $vehicle = Vehicle::findOrFail($vehicleId);
         return  Questionnaire::create([
