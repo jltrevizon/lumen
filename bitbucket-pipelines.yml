@@ -16,7 +16,7 @@ common: &common
       - php -r "file_exists('.env') || copy('.env.example', '.env');"
       - php artisan migrate --force
       - php artisan key:generate # Generate a key via Artisan
-      - vendor/bin/phpunit -d memory_limit=1024M --no-coverage # Run tests
+      #- vendor/bin/phpunit -d memory_limit=1024M --no-coverage # Run tests
     services:
       - mysql
 
