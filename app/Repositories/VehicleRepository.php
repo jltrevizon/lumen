@@ -413,11 +413,11 @@ class VehicleRepository extends Repository
         $last_reception = Reception::where('vehicle_id', $vehicle->id)->orderBy('id', 'DESC')
                             ->first();
         $this->cancelAllPendingTask($last_reception->id);
-        $group_task = GroupTask::where('vehicle_id', $vehicle->id)->orderBy('id', 'desc')->first();
+        /*$group_task = GroupTask::where('vehicle_id', $vehicle->id)->orderBy('id', 'desc')->first();
         if(!is_null($group_task->questionnaire_id)){
             $group_task->questionnaire_id = null;
             $group_task->save();
-        }
+        }*/
         Questionnaire::where('reception_id', $last_reception->id)->delete();
         $vehicle->save();
         $vehicle->delete();
