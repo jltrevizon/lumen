@@ -117,10 +117,29 @@ class VehicleRepository extends Repository
             $_vehicle = Vehicle::where('plate', $vehicle['plate'])->first();
 
             foreach ($vehicle['receptions'] as $key => $reception) {
+                unset($reception['vehicle_id']);
+                unset($reception['group_task_id']);
+                unset($reception['id']);
                 Reception::updateOrCreate([
                     'vehicle_id' => $_vehicle->id,
                     'created_at' => Carbon::parse($reception['created_at'])->toDateTimeString()
                 ], $reception);
+                foreach ($reception['pending_tasks'] as $key => $pending_task) {
+                    unset($pending_task['vehicle_id']);
+                    unset($pending_task['group_task_id']);
+                    unset($pending_task['reception_id']);
+                    unset($pending_task['question_answer_id']);
+                    unset($pending_task['id']);
+                    $_reception = Reception::where([ 
+                        'vehicle_id' => $_vehicle->id,
+                        'created_at' => Carbon::parse($reception['created_at'])->toDateTimeString()
+                    ])->first();
+                    PendingTask::updateOrCreate([
+                        'reception_id' => $_reception->id,
+                        'vehicle_id' => $_vehicle->id,
+                        'created_at' => Carbon::parse($reception['created_at'])->toDateTimeString()
+                    ], $pending_task);
+                }
             }
 
             if (count($vehicle['accessories']) > 0) {
