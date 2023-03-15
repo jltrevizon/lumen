@@ -137,7 +137,7 @@ class VehicleRepository extends Repository
                     PendingTask::updateOrCreate([
                         'reception_id' => $_reception->id,
                         'vehicle_id' => $_vehicle->id,
-                        'created_at' => Carbon::parse($reception['created_at'])->toDateTimeString()
+                        'created_at' => Carbon::parse($pending_task['created_at'])->toDateTimeString()
                     ], $pending_task);
                 }
             }
