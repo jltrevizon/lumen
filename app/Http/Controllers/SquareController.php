@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Square;
 use App\Repositories\SquareRepository;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -155,4 +156,15 @@ class SquareController extends Controller
     {
         return $this->updateDataResponse($this->squareRepository->update($request, $id), Response::HTTP_OK);
     }
+
+    public function delete($id){
+        return $this->deleteDataResponse($this->squareRepository->delete($id), Response::HTTP_OK);
+    }
+
+    // public function delete($id){
+    //     Square::where('id', $id)
+    //         ->delete();
+
+    //     return [ 'message' => 'Square deleted' ];
+    // }
 }
