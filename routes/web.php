@@ -500,6 +500,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/squares','SquareController@index');
         $router->post('/squares','SquareController@store');
         $router->put('/squares/{id}','SquareController@update');
+        $router->delete('/squares/{id}', 'SquareController@delete');
+
 
         /**
          * Colors

@@ -78,4 +78,14 @@ class SquareRepository extends Repository
             $squareUpdate->save();
         }
     }
+
+    public function delete($id){
+        $square = Square::find($id);
+        if(!empty($square)){
+            $square->delete();
+            return [ 'message' => 'Square deleted' ];
+        } else {
+            return [ 'message' => 'iMPOSSIBLE DELETE'];
+        }
+    }
 }
