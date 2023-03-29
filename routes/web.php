@@ -541,6 +541,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
         $router->post('/accessory-vehicle', 'AccessoryVehicleController@store');
         $router->post('/accessory-vehicle/delete', 'AccessoryVehicleController@destroy');
+        $router->get('/accessory-vehicle/export','AccessoryVehicleController@export');
 
         /**
          * Damage images
