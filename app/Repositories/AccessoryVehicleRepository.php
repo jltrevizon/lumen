@@ -11,8 +11,9 @@ use Carbon\Carbon;
 class AccessoryVehicleRepository extends Repository {
 
     public function index($request){
-        return DB::table('accessory_vehicle')
-            ->get();
+        return AccessoryVehicle::with($this->getWiths($request->with))
+        ->filter($request->all())
+        ->get();
     }
 
     public function store($request){
