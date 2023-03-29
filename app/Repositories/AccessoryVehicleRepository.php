@@ -11,9 +11,16 @@ use Carbon\Carbon;
 class AccessoryVehicleRepository extends Repository {
 
     public function index($request){
-        return AccessoryVehicle::with($this->getWiths($request->with))
-        ->filter($request->all())
-        ->get();
+        $query = AccessoryVehicle::with($this->getWiths($request->with))
+        ->filter($request->all());
+        if ($request->input('noPaginate')) {
+            $data = [
+                'data' => $query->get()
+            ];
+        } else {
+            $data =  $query->paginate($request->input('per_page') ?? 5);
+        }
+        return $data;
     }
 
     public function store($request){

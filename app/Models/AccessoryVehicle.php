@@ -62,6 +62,8 @@ class AccessoryVehicle extends Model
         'vehicle_id'
     ];
 
+    protected $table = 'accessory_vehicle';
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
     }
