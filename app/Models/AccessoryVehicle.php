@@ -68,7 +68,7 @@ class AccessoryVehicle extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function accesory(){
+    public function accessory(){
         return $this->belongsTo(Accessory::class);
     }
 
