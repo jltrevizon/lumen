@@ -8,6 +8,8 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  * Class Reception
@@ -191,14 +193,40 @@ class Reception extends Model
      *
      */
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, LogsActivity;
 
     protected $fillable = [
         'campa_id',
         'type_model_order_id',
         'vehicle_id',
         'finished',
-        'has_accessories'
+        'has_accessories',
+        'created_at',
+        'updated_at',
+        'remote_id',
+        'company_id',
+        "campa_id",
+        'category_id',
+        'sub_state_id',
+        'color_id',
+        'plate',
+        'vehicle_model_id',
+        'type_model_order_id',
+        'kms',
+        'next_itv',
+        'has_environment_label',
+        'observations',
+        'priority',
+        'version',
+        'vin',
+        'first_plate',
+        'latitude',
+        'longitude',
+        'trade_state_id',
+        'documentation',
+        'ready_to_delivery',
+        'deleted_user_id',
+        'seater',
     ];
 
     protected $dates = [
@@ -207,6 +235,10 @@ class Reception extends Model
 
     public function vehicle(){
         return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
+    public function subState(){
+        return $this->belongsTo(SubState::class);
     }
 
     public function typeModelOrder(){
@@ -237,6 +269,13 @@ class Reception extends Model
         ->orderBy('state_pending_task_id', 'desc')
         ->orderBy('order')
         ->orderBy('datetime_finish', 'desc');;
+    }
+
+    public function receptionPendingTask() {
+        return $this->hasMany(PendingTask::class)
+        ->whereRaw(DB::raw('reception_id = (Select max(id) from receptions where receptions.vehicle_id = pending_tasks.vehicle_id)'))
+        ->where('task_id', Task::RECEPTION)
+        ->where('approved', 1);
     }
 
     public function approvedPendingTasks() {
@@ -303,7 +342,7 @@ class Reception extends Model
 
     public function scopeBySubStatesNotIds($query, array $ids){
         return $query->whereHas('vehicle', function (Builder $builder) use ($ids) {
-            return $builder->whereNotIn('sub_state_id', $ids);
+            return $builder->whereNotIn('sub_state_id', $ids)->orWhereNull('sub_state_id');
         });
     }
 
@@ -316,14 +355,14 @@ class Reception extends Model
             });
     }
 
-    public function defaultOrderApprovedPendingTasks(){
-        return $this->hasMany(PendingTask::class)
+    public function defaultOrderApprovedPendingTasks() {
+        return $this->hasMany(PendingTask::class, 'reception_id')
         ->where('approved', true)
         ->where(function ($query) {
-            $query->where('state_pending_task_id', '<>', StatePendingTask::FINISHED)
+            $query->whereNotIn('state_pending_task_id',[StatePendingTask::FINISHED, StatePendingTask::CANCELED])
                 ->orWhereNull('state_pending_task_id');
         })
-        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).') desc');
+        ->orderByRaw('FIELD(task_id,'.implode(',',PendingTask::ORDER_TASKS).') asc');
     }
 
     public function lastChangeState(){
@@ -344,5 +383,20 @@ class Reception extends Model
         return $this->hasOne(Questionnaire::class)->ofMany([
             'id' => 'max'
         ]);
+    }
+
+    public function deletedUser(){
+        return $this->belongsTo(User::class, 'deleted_user_id');
+    }
+
+    public function vehicleComments() {
+        return $this->hasMany(VehicleComment::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*'])
+        ->logOnlyDirty();
     }
 }

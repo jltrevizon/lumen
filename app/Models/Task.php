@@ -127,6 +127,7 @@ class Task extends Model
     const WORKSHOP_EXTERNAL = 53;
     const CHECK_BLOCKED = 61;
     const CHECK_RELEASE = 64;
+    const RECEPTION = 68;
 
     protected $fillable = [
         'company_id',

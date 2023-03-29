@@ -4,14 +4,15 @@ namespace App\Repositories;
 
 use App\Models\Damage;
 use App\Models\PendingTask;
+use App\Models\Questionnaire;
 use App\Models\Reception;
 use App\Models\SubState;
 use App\Models\TradeState;
 use App\Models\Vehicle;
-use App\Models\Task;
 use App\Models\StatePendingTask;
 use App\Models\StatusDamage;
 use App\Models\TypeModelOrder;
+use App\Models\VehicleComment;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\CategoryRepository;
@@ -109,7 +110,53 @@ class VehicleRepository extends Repository
     {
         $vehicles = $request->input('vehicles');
         foreach ($vehicles as $vehicle) {
-            $existVehicle = Vehicle::where('plate', $vehicle['plate'])
+            Vehicle::updateOrCreate([
+                'plate' => $vehicle['plate']
+            ], $vehicle);
+
+            $_vehicle = Vehicle::where('plate', $vehicle['plate'])->first();
+
+            foreach ($vehicle['receptions'] as $key => $reception) {
+                unset($reception['vehicle_id']);
+                unset($reception['group_task_id']);
+                unset($reception['id']);
+                Reception::updateOrCreate([
+                    'vehicle_id' => $_vehicle->id,
+                    'created_at' => Carbon::parse($reception['created_at'])->toDateTimeString()
+                ], $reception);
+                foreach ($reception['pending_tasks'] as $key => $pending_task) {
+                    unset($pending_task['vehicle_id']);
+                    unset($pending_task['group_task_id']);
+                    unset($pending_task['reception_id']);
+                    unset($pending_task['question_answer_id']);
+                    unset($pending_task['id']);
+                    $_reception = Reception::where([ 
+                        'vehicle_id' => $_vehicle->id,
+                        'created_at' => Carbon::parse($reception['created_at'])->toDateTimeString()
+                    ])->first();
+                    PendingTask::updateOrCreate([
+                        'reception_id' => $_reception->id,
+                        'vehicle_id' => $_vehicle->id,
+                        'created_at' => Carbon::parse($pending_task['created_at'])->toDateTimeString()
+                    ], $pending_task);
+                }
+            }
+
+            if (count($vehicle['accessories']) > 0) {
+                DB::table('accessory_vehicle')
+                ->where('vehicle_id', $_vehicle->id)
+                ->delete();
+            }
+            foreach ($vehicle['accessories'] as $accessory) {
+                $accessory['vehicle_id'] = $_vehicle->id;
+                DB::table('accessory_vehicle')->insert($accessory);
+            }
+
+//           
+
+           
+
+            /* $existVehicle = Vehicle::where('plate', $vehicle['plate'])
                 ->first();
             if ($existVehicle) {
                 $category = $this->categoryRepository->searchCategoryByName($vehicle['category']);
@@ -120,7 +167,7 @@ class VehicleRepository extends Repository
                 $existVehicle->vehicle_model_id = $vehicle_model ? $vehicle_model['id'] : null;
                 $existVehicle->type_model_order_id = $typeModelOrder ? $typeModelOrder['id'] : null;
                 $existVehicle->save();
-            }
+            }*/
         }
         return ['message' => 'Vehicles created!'];
     }
@@ -178,14 +225,6 @@ class VehicleRepository extends Repository
         $vehicle = Vehicle::findOrFail($request->input('vehicle_id'));
         $vehicle->update($request->all());
         return response()->json(['vehicle' => $vehicle]);
-    }
-
-    public function updateCampa($vehicle_id, $campa)
-    {
-        $vehicle = Vehicle::findOrFail($vehicle_id);
-        $vehicle->campa_id = $campa;
-        $vehicle->save();
-        return $vehicle;
     }
 
     public function updateTradeState($vehicle_id, $trade_state_id)
@@ -260,13 +299,57 @@ class VehicleRepository extends Repository
 
     public function delete($id)
     {
-        $vehicle = Vehicle::findOrFail($id);
-        $vehicle->deleted_user_id = Auth::id();
-        $this->squareRepository->freeSquare($vehicle->id);
-        $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
-        $vehicle->save();
-        $vehicle->delete();
-        return ['message' => 'Vehicle deleted'];
+        try {
+            DB::beginTransaction();
+            $vehicle = Vehicle::findOrFail($id);
+            $vehicle->deleted_user_id = Auth::id();
+            $this->squareRepository->freeSquare($vehicle->id);
+            $this->historyLocationRepository->saveFromBack($vehicle->id, null, Auth::id());
+            $vehicle->save();
+            $this->updateReceptionVehicle($vehicle);
+            if (!is_null($vehicle->lastReception)) {
+                Questionnaire::where('reception_id', $vehicle->lastReception->id)->delete();
+            }
+            $vehicle->delete();
+        
+            DB::commit();
+            return ['message' => 'Vehicle deleted'];
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e);
+            throw $e;
+        }
+    }
+
+    public function updateReceptionVehicle($vehicle) {
+        if (!is_null($vehicle->lastReception)) {
+            Reception::where('id', $vehicle->lastReception->id)->update([
+                'remote_id' => $vehicle->remote_id,
+                'company_id'=>$vehicle->company_id,
+                "campa_id"=>$vehicle->campa_id,
+                'category_id'=>$vehicle->category_id,
+                'sub_state_id'=>$vehicle->sub_state_id,
+                'color_id'=>$vehicle->color_id,
+                'plate'=>$vehicle->plate,
+                'vehicle_model_id'=>$vehicle->vehicle_model_id,
+                'type_model_order_id'=>$vehicle->type_model_order_id,
+                'kms'=>$vehicle->kms,
+                'next_itv'=>$vehicle->next_itv,
+                'has_environment_label'=>$vehicle->has_environment_label,
+                'observations'=>$vehicle->observations,
+                'priority'=>$vehicle->priority,
+                'version'=>$vehicle->version,
+                'vin'=>$vehicle->vin,
+                'first_plate'=>$vehicle->first_plate,
+                'latitude'=>$vehicle->latitude,
+                'longitude'=>$vehicle->longitude,
+                'trade_state_id'=>$vehicle->trade_state_id,
+                'documentation'=>$vehicle->documentation,
+                'ready_to_delivery'=>$vehicle->ready_to_delivery,
+                'deleted_user_id'=>$vehicle->deleted_user_id,
+                'seater'=>$vehicle->seater,
+            ]);
+        }
     }
 
     public function returnVehicle($request, $id)
@@ -292,7 +375,6 @@ class VehicleRepository extends Repository
 
     public function newReception($vehicle_id, $force = false)
     {
-        $user = $this->userRepository->getById([], Auth::id());
         $vehicle = Vehicle::find($vehicle_id);
         $vehicle_ids = collect(Vehicle::where('id', $vehicle->id)->filter(['defleetingAndDelivery' => 0])->get())->map(function ($item) {
             return $item->id;
@@ -302,7 +384,8 @@ class VehicleRepository extends Repository
         } else {
             $reception = $vehicle->lastReception;
         }
-        $reception->campa_id = $user->campas->pluck('id')->toArray()[0];;
+
+        $reception->campa_id = $vehicle->campa_id;
         $reception->vehicle_id = $vehicle_id;
         $reception->finished = false;
         $reception->has_accessories = false;
@@ -431,7 +514,7 @@ class VehicleRepository extends Repository
                         if (is_null($vehicle->lastReception)) {
                             $this->newReception($vehicle['id']);
                         }
-                        if ($vehicle->sub_state_id != SubState::SOLICITUD_DEFLEET) {
+                        if ($vehicle->sub_state_id != SubState::DEFLEETED) {
                             $vehicle->sub_state_id = null;
                         } else {
                             $vehicle->type_model_order_id = TypeModelOrder::VO_ENTREGADO;
@@ -449,6 +532,7 @@ class VehicleRepository extends Repository
                         $vehicle->save();
                     }
                     $this->freeSquare($vehicle);
+                    $this->updateReceptionVehicle($vehicle);
                 }
             });
         return [
@@ -482,41 +566,13 @@ class VehicleRepository extends Repository
     }
     public function defleeting($id){
         $vehicle = Vehicle::findOrFail($id);
-        if (!!$vehicle->lastReception && !$vehicle->lastReception->lastQuestionnaire?->datetime_approved){
-            return [
-                'status'=>false,
-                'message'=>'Este vehículo tiene un cuestionario activo en la recepción actual.',
-                'data'=>$vehicle->lastReception->lastQuestionnaire
-            ];
-        } else if (is_null($vehicle->datetime_defleeting)) {
+        if (is_null($vehicle->datetime_defleeting)) {
             $vehicle->datetime_defleeting = Carbon::now();
-            $vehicle->sub_state_id = SubState::SOLICITUD_DEFLEET;
+            $vehicle->sub_state_id = SubState::DEFLEETED;
             $vehicle->save();
-            $pendingTask = new PendingTask();
-            $pendingTask->vehicle_id = $vehicle->id;
-            $pendingTask->reception_id = $vehicle->lastReception->id;
-            $pendingTask->task_id = Task::UBICATION;
-            $pendingTask->state_pending_task_id = count($vehicle->lastReception->approvedPendingTasks) == 0 ? StatePendingTask::PENDING : null;
-            $pendingTask->duration = 1;
-            $pendingTask->order = count($vehicle->lastReception->approvedPendingTasks) + 1;
-            $pendingTask->datetime_pending = Carbon::now();
-            $pendingTask->user_id = Auth::id();
-            $pendingTask->save();
         } else {
-            if ($vehicle->lastReception) {
-                PendingTask::where('reception_id', $vehicle->lastReception)
-                ->where('task_id', Task::UBICATION)
-                ->chunk(200, function ($pendingTasks) {
-                    foreach ($pendingTasks as $pendingTask) {
-                        $pendingTask->update([
-                            'approved' => false,
-                            'order' => null,
-                            'state_pending_task_id' => null,
-                        ]);
-                    }
-                });
-            }
             $vehicle->datetime_defleeting = null;
+            $vehicle->sub_state_id = null;
             $vehicle->save();
             $this->stateChangeRepository->updateSubStateVehicle($vehicle);
         }
@@ -550,6 +606,17 @@ class VehicleRepository extends Repository
                     ->orWhere('state_pending_task_id', StatePendingTask::IN_PROGRESS);
             }])
             ->first();
+    }
+
+    public function comments($data) {
+        $vehicle = Vehicle::findOrFail($data['vehicle_id']);
+        $vehicle_comment = VehicleComment::create([
+            'vehicle_id' => $vehicle->id,
+            'reception_id' => $vehicle->lastReception->id,
+            'user_id' => Auth::id(),
+            'description' => $data['description']
+        ]);
+        return VehicleComment::where('id', $vehicle_comment->id)->with(['user'])->first();
     }
 
 }

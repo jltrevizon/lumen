@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AccessoryVehicleExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Repositories\AccessoryVehicleRepository;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -130,5 +132,15 @@ class AccessoryVehicleController extends Controller
     public function destroy(Request $request)
     {
         return $this->createDataResponse($this->accessoryVehicleRepository->delete($request), Response::HTTP_CREATED);
+    }
+
+    public function export(Request $request)
+    {
+        ini_set("memory_limit", "-1");
+        ini_set('max_execution_time', '-1');
+        $date = microtime(true);
+        $array = explode('.', $date);
+        ob_clean();
+        return Excel::download(new AccessoryVehicleExport($request), 'Accesorios-' . date('d-m-Y') . '-' . $array[0] . '.xlsx');
     }
 }

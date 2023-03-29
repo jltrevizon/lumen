@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  * Class Vehicle
@@ -519,7 +521,7 @@ class Vehicle extends Model
      * )
      */
 
-    use HasFactory, Filterable, SoftDeletes;
+    use HasFactory, Filterable, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'remote_id',
@@ -719,6 +721,10 @@ class Vehicle extends Model
 
     public function subStateChangeHistories(){
         return $this->hasMany(SubStateChangeHistory::class);
+    }
+
+    public function vehicleComments() {
+        return $this->hasMany(VehicleComment::class);
     }
 
     public function stateChange(){
@@ -1087,10 +1093,14 @@ class Vehicle extends Model
     public function receptionsByUserCampa()
     {
         $user = Auth::user();
-        $campasIds = $user->campas()->pluck('id');
-        Log::debug($user);
-        Log::debug('DATA');
-        return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campasIds)->orderBy('id', 'desc');
+        $campas_user_ids = CampaUser::where('user_id', $user->id)->get()->pluck('campa_id');
+        return $this->hasMany(Reception::class, 'vehicle_id')->whereIn('campa_id', $campas_user_ids)->orderBy('id', 'desc');
     }
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*'])
+        ->logOnlyDirty();
+    }
 }

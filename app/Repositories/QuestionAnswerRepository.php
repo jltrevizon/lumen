@@ -11,6 +11,7 @@ use App\Models\Role;
 use App\Models\StatePendingTask;
 use App\Repositories\StateChangeRepository;
 use App\Models\SubState;
+use App\Models\Task;
 use App\Models\TypeModelOrder;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -58,6 +59,12 @@ class QuestionAnswerRepository
                     'questionnaire' => $vehicle->lastReception->lastQuestionnaire
                 ];
             }
+
+
+            $user = Auth::user();
+
+            $vehicle->campa_id = $user['campas'][0]['id'];
+            $vehicle->save();
 
             $this->vehicleRepository->newReception($request->input('vehicle_id'));
 
@@ -112,9 +119,6 @@ class QuestionAnswerRepository
                     }
                 }
 
-                $user = Auth::user();
-                $this->vehicleRepository->updateCampa($request->input('vehicle_id'), $user['campas'][0]['id']);
-
                 $tasks = $request->input('tasks');
                 $vehicleId = $request->input('vehicle_id');
 
@@ -165,7 +169,7 @@ class QuestionAnswerRepository
                 $vehicle->lastReception->created_at = date('Y-m-d H:i:s');
                 $vehicle->lastReception->updated_at = date('Y-m-d H:i:s');
                 $vehicle->lastReception->save();
-                $sub_state_id = $vehicle->sub_state_id === SubState::SOLICITUD_DEFLEET ? $vehicle->sub_state_id : SubState::CAMPA;
+                $sub_state_id = $vehicle->sub_state_id === SubState::DEFLEETED ? $vehicle->sub_state_id : SubState::CAMPA;
                 $this->stateChangeRepository->updateSubStateVehicle($vehicle, null, $sub_state_id);
             }
 
@@ -184,6 +188,23 @@ class QuestionAnswerRepository
             if ($request->input('square_id')) {
                 $this->squareRepository->update($request, $request->input('square_id'));
             }
+
+            $pending_task = new PendingTask();
+            $pending_task->vehicle_id = $vehicle->id;
+            $pending_task->reception_id = $vehicle->lastReception->id;
+            $pending_task->campa_id = $vehicle->campa_id;
+            $pending_task->task_id = Task::RECEPTION;
+            $pending_task->state_pending_task_id = StatePendingTask::FINISHED;
+            $pending_task->approved = 1;
+            $pending_task->created_from_checklist = true;
+            $pending_task->datetime_pending = date('Y-m-d H:i:s');
+            $pending_task->datetime_start = date('Y-m-d H:i:s');
+            $pending_task->datetime_finish = date('Y-m-d H:i:s');
+            $pending_task->user_start_id = Auth::id();
+            $pending_task->user_end_id = Auth::id();
+            $pending_task->user_start_id = Auth::id();
+            $pending_task->user_id = Auth::id();
+            $pending_task->save();
 
             DB::commit();
             return [

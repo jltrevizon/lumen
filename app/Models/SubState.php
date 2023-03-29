@@ -102,7 +102,7 @@ class SubState extends Model
     const TRANSFORMACION = 5;
     const ITV = 6;
     const LIMPIEZA = 7;
-    const SOLICITUD_DEFLEET = 8;
+    const DEFLEETED = 8;
     const SIN_DOCUMENTACION = 9;
     const ALQUILADO = 10;
     const CHECK = 11;

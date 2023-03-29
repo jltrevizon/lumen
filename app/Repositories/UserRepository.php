@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends Repository {
@@ -59,6 +60,11 @@ class UserRepository extends Repository {
     public function getUserByEmail($email){
         return User::where('email', $email)
                 ->first();
+    }
+
+    public function notifications($request){
+        $user = Auth::user();
+        return $user->notifications()->paginate();
     }
 
 }

@@ -60,4 +60,6 @@ class CampaUser extends Model
         'user_id'
     ];
 
+    protected $table = 'campa_user';
+
 }

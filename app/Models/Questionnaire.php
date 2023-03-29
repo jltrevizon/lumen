@@ -5,6 +5,9 @@ namespace App\Models;
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * Class Questionnaire
@@ -56,7 +59,7 @@ class Questionnaire extends Model
      *     title="ID",
      * )
      *
-     * 
+     *
      * @OA\Property(
      *     property="datetime_approved",
      *     type="date",
@@ -105,7 +108,7 @@ class Questionnaire extends Model
      * )
      */
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'user_id',
@@ -118,6 +121,10 @@ class Questionnaire extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
     public function reception(){
         return $this->belongsTo(Reception::class);
     }
@@ -128,5 +135,11 @@ class Questionnaire extends Model
 
     public function groupTask(){
         return $this->hasOne(GroupTask::class);
+    }
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*'])
+        ->logOnlyDirty();
     }
 }

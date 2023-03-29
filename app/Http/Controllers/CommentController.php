@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CampaUser;
+use App\Models\Comment;
+use App\Models\User;
+use App\Notifications\CommentNotification;
 use App\Repositories\CommentRepository;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Notification;
 
 class CommentController extends Controller
 {
@@ -93,7 +98,19 @@ class CommentController extends Controller
      */
 
     public function store(Request $request){
-        return $this->createDataResponse($this->commentRepository->store($request), Response::HTTP_CREATED);
+        $data = $this->commentRepository->store($request);
+        $ids = CampaUser::where('campa_id', $data->damage->vehicle->campa_id)
+            ->get()
+            ->pluck('user_id');
+        $send_to = User::whereIn('id', $ids)->get();
+        $comment = Comment::with('damage')->find($data['id']);
+        foreach ($send_to as $key => $value) {
+            Notification::send($value, new CommentNotification([
+                'data' => $comment,
+                'title' => 'Se ha comentado la incidencia del vehiculo ' . $comment->damage->vehicle->plate . ' : ' . $data['description']
+            ]));
+        }
+        return $this->createDataResponse($data, Response::HTTP_CREATED);
     }
 
 }

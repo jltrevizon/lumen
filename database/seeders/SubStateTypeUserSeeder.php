@@ -56,7 +56,7 @@ class SubStateTypeUserSeeder extends Seeder
                 'type_user_app_id' => TypeUserApp::RESPONSABLE_CAMPA
             ],
             [
-                'sub_state_id' => SubState::SOLICITUD_DEFLEET,
+                'sub_state_id' => SubState::DEFLEETED,
                 'type_user_app_id' => TypeUserApp::RESPONSABLE_CAMPA
             ],
             [

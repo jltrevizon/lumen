@@ -52,77 +52,80 @@ class QuestionnaireRepository extends Repository
     {
         try {
             DB::beginTransaction();
-            $questionnaire = Questionnaire::findOrFail($request->input('questionnaire_id'));
+            $data = collect([]);
+            $user = Auth::user();
+            $questionnaire = Questionnaire::with('user')->findOrFail($request->input('questionnaire_id'));
             $vehicle = $questionnaire->vehicle;
 
             if (!is_null($questionnaire->datetime_approved)) {
-                return response()->json([
-                    'message' => 'Currently Approved',
-                    'vehicle' => $vehicle
-                ]);
+                $data['message'] = 'Currently Approved';
+            } else {
+
+                $questionnaire->datetime_approved = Carbon::now();
+                $questionnaire->save();
+
+                $data_update =  [
+                    'state_pending_task_id' => StatePendingTask::FINISHED,
+                    'user_id' => Auth::id(),
+                    'user_start_id' => Auth::id(),
+                    'user_end_id' => Auth::id(),
+                    'duration' => 0,
+                    'approved' => true,
+                    'datetime_finish' => Carbon::now(),
+                    'campa_id' => $vehicle->campa_id,
+                    'order' => -1
+                ];
+                $pendingTask = PendingTask::updateOrCreate([
+                    'reception_id' => $vehicle->lastReception->id,
+                    'task_id' => Task::VALIDATE_CHECKLIST,
+                    'vehicle_id' => $vehicle->id
+                ], $data_update);
+                if (is_null($pendingTask->datetime_pending)) {
+                    $pendingTask->datetime_pending = Carbon::now();
+                }
+                if (is_null($pendingTask->datetime_start)) {
+                    $pendingTask->datetime_start = Carbon::now();
+                }
+                $pendingTask->save();
+                $pendingTask = PendingTask::updateOrCreate([
+                    'reception_id' => $vehicle->lastReception->id,
+                    'task_id' => Task::TOCAMPA,
+                    'vehicle_id' => $vehicle->id
+                ], $data_update);
+                if (is_null($pendingTask->datetime_pending)) {
+                    $pendingTask->datetime_pending = Carbon::now();
+                }
+                if (is_null($pendingTask->datetime_start)) {
+                    $pendingTask->datetime_start = Carbon::now();
+                }
+                $pendingTask->save();
+                $count = count($vehicle->lastReception->approvedPendingTasks);
+                if ($count > 0) {
+                    $pendingtTask = PendingTask::findOrFail($vehicle->lastReception->approvedPendingTasks[0]->id);
+                    $pendingtTask->state_pending_task_id = StatePendingTask::PENDING;
+                    $pendingtTask->datetime_pending = Carbon::now();
+                    $pendingtTask->save();
+                }
+
+                if (is_null($vehicle->company_id)) {
+                    $vehicle->company_id = $user->company_id;
+                    $vehicle->save();
+                }
+                if ($vehicle->has_environment_label == false) {
+                    $this->notificationDAMail->build($vehicle->id);
+                }
+                $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
+
+                $data['message'] = 'Solicitud aprobada!';
             }
 
-            $questionnaire->datetime_approved = Carbon::now();
-            $questionnaire->save();
-
-            $data_update =  [
-                'state_pending_task_id' => StatePendingTask::FINISHED,
-                'user_id' => Auth::id(),
-                'user_start_id' => Auth::id(),
-                'user_end_id' => Auth::id(),
-                'duration' => 0,
-                'approved' => true,
-                'datetime_finish' => Carbon::now(),
-                'campa_id' => $vehicle->campa_id,
-                'order' => -1
-            ];
-            $pendingTask = PendingTask::updateOrCreate([
-                'reception_id' => $vehicle->lastReception->id,
-                'task_id' => Task::VALIDATE_CHECKLIST,
-                'vehicle_id' => $vehicle->id
-            ], $data_update);
-            if (is_null($pendingTask->datetime_pending)) {
-                $pendingTask->datetime_pending = Carbon::now();
-            }
-            if (is_null($pendingTask->datetime_start)) {
-                $pendingTask->datetime_start = Carbon::now();
-            }
-            $pendingTask->save();
-            $pendingTask = PendingTask::updateOrCreate([
-                'reception_id' => $vehicle->lastReception->id,
-                'task_id' => Task::TOCAMPA,
-                'vehicle_id' => $vehicle->id
-            ], $data_update);
-            if (is_null($pendingTask->datetime_pending)) {
-                $pendingTask->datetime_pending = Carbon::now();
-            }
-            if (is_null($pendingTask->datetime_start)) {
-                $pendingTask->datetime_start = Carbon::now();
-            }
-            $pendingTask->save();
-            $count = count($vehicle->lastReception->approvedPendingTasks);
-            if ($count > 0) {
-                $pendingtTask = PendingTask::findOrFail($vehicle->lastReception->approvedPendingTasks[0]->id);
-                $pendingtTask->state_pending_task_id = StatePendingTask::PENDING;
-                $pendingtTask->datetime_pending = Carbon::now();
-                $pendingtTask->save();
-            }
-
-            if (is_null($vehicle->company_id)) {
-                $user = Auth::user();
-                $vehicle->company_id = $user->company_id;
-                $vehicle->save();
-            }
-            if ($vehicle->has_environment_label == false) {
-                $this->notificationDAMail->build($vehicle->id);
-            }
-            $vehicle = $this->stateChangeRepository->updateSubStateVehicle($vehicle);
-            
             DB::commit();
-            return response()->json([
-                'message' => 'Solicitud aprobada!',
-                'vehicle' => $vehicle
-            ]);
+            $data['questionnaire'] = $questionnaire;
+            $data['user'] = $user;
+            $data['vehicle'] = $vehicle;
+            $createdAt = Carbon::parse($questionnaire->datetime_approved);
+            $data['title'] = 'Vehiculo ' . $vehicle->plate . ' con check list aprobado por el usuario ' . $user->name . ' El dia ' . $createdAt;
+            return $data;
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e);

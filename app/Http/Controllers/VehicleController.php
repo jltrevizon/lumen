@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Repositories\VehicleRepository;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class VehicleController extends Controller
 {
@@ -1013,6 +1014,11 @@ class VehicleController extends Controller
         if (is_array($data) && $data['status'] === FALSE){
             return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
+    }
+
+    public function comments(Request $request) {
+        $data = $this->vehicleRepository->comments($request->all());
         return $this->updateDataResponse($data, HttpFoundationResponse::HTTP_OK);
     }
 }

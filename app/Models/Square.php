@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 /**
  * Class Square
@@ -125,13 +127,17 @@ class Square extends Model
      *     title="Updated at",
      * )
      */
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, SoftDeletes;
 
     protected $fillable = [
         'street_id',
         'vehicle_id',
         'user_id',
         'name'
+    ];
+
+    protected $dates = [
+        'deleted_at'
     ];
 
     public function street(){

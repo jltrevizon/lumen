@@ -43,14 +43,17 @@ class PendingTaskExport extends Command
         ini_set("memory_limit", "-1");
         $date = microtime(true);
         $array = explode('.', $date);
-        $campas = Campa::where('id', 1)->get();
+        $campas = Campa::where('active', 1)->get();
         $env = env('APP_ENV');
         foreach ($campas as $key => $campa) {
             $request = request();
             $request->merge([
                 'campasIds' => [$campa->id]
             ]);
-            Excel::store(new ExportsPendingTaskExport($request), $env . '/'. $campa->name .'/vehículos-tareas-realizadas-' . date('d-m-Y') . '-' . $array[0] . '.xlsx', $env == 'production' ? 's3' : 'public');
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', strtolower($campa->name))));
+            $file_name = 'tareas-realizadas-' . $slug . '-' . date('d-m-Y') . '-' . $array[0] . '.xlsx';
+          //  $url = env('AWS_URL') . '/' . $file_name;
+            Excel::store(new ExportsPendingTaskExport($request), $file_name, $env == 'production' ? 's3' : 'public');
         }
     }
 }

@@ -59,6 +59,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
          * Users
          */
         $router->get('/users/getall', 'UserController@getAll');
+        $router->get('/users/notifications', 'UserController@notifications');
         $router->get('/users/{id}', 'UserController@getById');
         $router->post('/users', 'UserController@create');
         $router->post('/users/create-without-password', 'UserController@createUserWithoutPassword');
@@ -291,6 +292,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/vehicles/{id}', 'VehicleController@getById');
         $router->post('/vehicles/by-state-date','VehicleController@vehicleByState');
         $router->post('/vehicles/set-vehicle-rented', 'VehicleController@setVehicleRented');
+        $router->post('/vehicles/comments', 'VehicleController@comments');
 
         /**
          * Vehicle model
@@ -498,6 +500,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/squares','SquareController@index');
         $router->post('/squares','SquareController@store');
         $router->put('/squares/{id}','SquareController@update');
+        $router->delete('/squares/{id}', 'SquareController@delete');
+
 
         /**
          * Colors
@@ -537,6 +541,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/accessory-vehicle', 'AccessoryVehicleController@index');
         $router->post('/accessory-vehicle', 'AccessoryVehicleController@store');
         $router->post('/accessory-vehicle/delete', 'AccessoryVehicleController@destroy');
+        $router->get('/accessory-vehicle/export','AccessoryVehicleController@export');
 
         /**
          * Damage images

@@ -40,7 +40,7 @@ class SquareRepository extends Repository
     {
         $square = Square::findOrFail($id);
         
-        if ($square->vehicle_id != $request->input('vehicle_id') ) {
+        if ($square->vehicle_id != $request->input('vehicle_id') || !$square->vehicle_id ) {
             if ($request->input('vehicle_id')) {
                 $this->freeSquare($request->input('vehicle_id'));
             } else if ($square->vehicle_id) {
@@ -76,6 +76,16 @@ class SquareRepository extends Repository
         if ($squareUpdate) {
             $squareUpdate->vehicle_id = $vehicle_id;
             $squareUpdate->save();
+        }
+    }
+
+    public function delete($id){
+        $square = Square::find($id);
+        if(!empty($square)){
+            $square->delete();
+            return [ 'message' => 'Square deleted' ];
+        } else {
+            return [ 'message' => 'iMPOSSIBLE DELETE'];
         }
     }
 }

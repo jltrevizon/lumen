@@ -3,11 +3,13 @@
 namespace App\Filters;
 
 use App\Filters\Base\BaseFilter\BaseFilter;
+use App\Models\CampaUser;
 use App\Models\PendingTask;
 use App\Models\Role;
 use EloquentFilter\ModelFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Vehicle;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class VehicleFilter extends ModelFilter
@@ -324,7 +326,7 @@ class VehicleFilter extends ModelFilter
     {
         if ($value == 1) {
             return $this->whereHas('subState', function($q){
-                $state = ["1", "3",  "4",  "6",  "7", "8",  "9", "10",  "11", "12",  "13", "14",  "15"];
+                $state = [1, 2, 3,  4,  6,  7, 8,  9, 10,  11, 12,  13, 14,  15];
                 $q->whereIn('state_id', $state)
                 ->where('id', '<>', 22);
            });
@@ -348,10 +350,12 @@ class VehicleFilter extends ModelFilter
 
     public function withReceptionId($id)
     {
+        $user = Auth::user();
+        $campas_user_ids = implode(',',collect(CampaUser::where('user_id', $user->id)->get()->pluck('campa_id'))->toArray());
         $sql = <<<SQL
             Select max(r.id) from receptions r where r.vehicle_id = vehicles.id
         SQL;
-        return $this->selectRaw("*, (SELECT r.id FROM receptions r WHERE r.id = ". ($id ? $id : "({$sql})") ." AND vehicles.id = r.vehicle_id ) AS reception_id");
+        return $this->selectRaw("*, (SELECT r.id FROM receptions r WHERE r.id = ". ($id ? $id : "({$sql} AND r.campa_id IN({$campas_user_ids}))") ." AND vehicles.id = r.vehicle_id ) AS reception_id");
     }
     public function withUbication()
     {

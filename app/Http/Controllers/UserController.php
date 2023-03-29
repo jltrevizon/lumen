@@ -307,5 +307,7 @@ class UserController extends Controller
     public function getUsersByRole(Request $request, $role_id){
         return $this->getDataResponse($this->userRepository->getUsersByRole($request, $role_id), HttpFoundationResponse::HTTP_OK);
     }
-
+    public function notifications(Request $request){
+        return $this->getDataResponse($this->userRepository->notifications($request), HttpFoundationResponse::HTTP_OK);
+    }
 }

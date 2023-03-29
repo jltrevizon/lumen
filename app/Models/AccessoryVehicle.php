@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -54,11 +55,21 @@ class AccessoryVehicle extends Model
      * )
      *
      */
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'accessory_id',
         'vehicle_id'
     ];
+
+    protected $table = 'accessory_vehicle';
+
+    public function vehicle(){
+        return $this->belongsTo(Vehicle::class);
+    }
+
+    public function accessory(){
+        return $this->belongsTo(Accessory::class);
+    }
 
 }
