@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * Class Question Answer
@@ -111,7 +113,7 @@ class QuestionAnswer extends Model
      * )
      */
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         "task_id",
@@ -132,6 +134,12 @@ class QuestionAnswer extends Model
 
     public function task(){
         return $this->belongsTo(Task::class);
+    }
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*'])
+        ->logOnlyDirty();
     }
 
 }

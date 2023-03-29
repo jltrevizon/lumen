@@ -8,6 +8,8 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  * Class Reception
@@ -191,7 +193,7 @@ class Reception extends Model
      *
      */
 
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, LogsActivity;
 
     protected $fillable = [
         'campa_id',
@@ -340,7 +342,7 @@ class Reception extends Model
 
     public function scopeBySubStatesNotIds($query, array $ids){
         return $query->whereHas('vehicle', function (Builder $builder) use ($ids) {
-            return $builder->whereNotIn('sub_state_id', $ids);
+            return $builder->whereNotIn('sub_state_id', $ids)->orWhereNull('sub_state_id');
         });
     }
 
@@ -389,5 +391,12 @@ class Reception extends Model
 
     public function vehicleComments() {
         return $this->hasMany(VehicleComment::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*'])
+        ->logOnlyDirty();
     }
 }
